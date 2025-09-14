@@ -63,7 +63,6 @@ unique_name_in_owner = true
 mouse_filter = 2
 
 [node name="Minimap" parent="HUD" instance=ExtResource("6_xel07")]
-visible = false
 offset_top = -230.0
 offset_right = 200.0
 offset_bottom = -30.0
@@ -92,7 +91,7 @@ spawn_path = NodePath("../Pickups")
 autostart = true
 
 [node name="EnemySpawnTimer" type="Timer" parent="."]
-wait_time = 15.0
+wait_time = 5.0
 autostart = true
 
 [node name="AnimalSpawnTimer" type="Timer" parent="."]
@@ -102,7 +101,6 @@ autostart = true
 [node name="dayNight" type="CanvasModulate" parent="."]
 script = ExtResource("7_4y3sb")
 gradient_texture = ExtResource("8_le63a")
-INGAME_SPEED = 5.0
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_dr53p")

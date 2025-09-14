@@ -10,7 +10,7 @@ var direction = Vector2.ZERO
 var _pixels_moved: int = 0
 var move_speed_factor = 3
 var act : String = ""
-var attack_rate : int = 1
+var attackRate : int = 1
 
 # Server: TCP + WebSocket Upgrade
 var _tcp_server := TCPServer.new()
@@ -21,7 +21,7 @@ var time 		:= 0
 @export var playerName : String:
 	set(value):
 		playerName = value
-		$PlayerUi.setPlayerName(value)
+		$PlayerStatus.setPlayerName(value)
 		
 @export var characterFile : String:
 	set(value):
@@ -29,6 +29,7 @@ var time 		:= 0
 		$MovingParts/Sprite2D.texture = load("res://assets/characters/bodies/"+value)
 		
 var inventory : Control
+@onready var inventory2 : Control = $Inventory
 
 var equippedItem : String:
 	set(value):
@@ -46,7 +47,7 @@ var equippedItem : String:
 	set(value):
 		hp = value
 		$bloodParticles.emitting = true
-		$PlayerUi.setHPBarRatio(hp/maxHP)
+		$PlayerStatus.setHPBarRatio(hp/maxHP)
 		if hp <= 0:
 			die()
 			
@@ -122,27 +123,24 @@ func is_moving() -> bool:
 func input():
 	if is_moving(): return
 	if Input.is_action_pressed("walkRight"):
-		print("input walkRight")
 		direction = Vector2(1, 0)
 	elif Input.is_action_pressed("walkLeft"):
-		print("input walkLeft")
 		direction = Vector2(-1, 0)
 	elif Input.is_action_pressed("walkUp"):
-		print("input walkUp")
 		direction = Vector2(0, -1)
 	elif Input.is_action_pressed("walkDown"):
-		print("input walkDown")
 		direction = Vector2(0, 1)
-		
+	elif Input.is_action_pressed("leftClickAction"):
+		hit("leftClickAction")
 
-		
+
 func _physics_process(delta: float) -> void:
 	if str(multiplayer.get_unique_id()) != name:
 		return
 		
 	act = net_commander()
 	press_action(act)
-	input()
+	input() # manuelle Eingabe
 	tile_move(delta)
 
 
@@ -159,7 +157,6 @@ func tile_move(delta : float):
 		_pixels_moved = 0
 		ws_peer.send_text("Godot: " + act)
 		act = ""
-		
 	animate_player(direction)
 
 func animate_player(dir: Vector2):
@@ -169,8 +166,6 @@ func animate_player(dir: Vector2):
 			$AnimationPlayer.play("walking")
 	else:
 		$AnimationPlayer.stop()
-
-
 
 func net_commander() -> String:
 	var action : String = ""
@@ -202,25 +197,26 @@ func net_commander() -> String:
 func press_action(action : String):
 	if action == "":
 		return
-		
+	action = action.strip_edges()
+	hit(action)
 	if "sage" in action:
 		print("sage:"+action)
 		var text = action.trim_prefix("sage")
 		sendMessage(text)
 		ws_peer.send_text("Godot: " + action)
 		
-	if "nutze Item" in action:
-		print("nutze Item:"+action)
-		var item_id_str = action.trim_prefix("nutze Item")
+	if "use item" in action:
+		var item_id_str = action.trim_prefix("use item").strip_edges()
+		print("action: "+action+" item_id_str: "+item_id_str)
+		var item_id : int = -1
 		if item_id_str.is_valid_int():
-			var item_id = int(item_id_str)
+			item_id = int(item_id_str)
 			inventory.itemSelected(item_id)
-		ws_peer.send_text("Godot: " + action)
+			inventory.selectionChanged.emit(item_id)
+			
+		ws_peer.send_text("Godot: " + action + ", item: "+str(item_id))
 		
 	if "walk" in action:
-		#Input.action_press(action) 
-		#await get_tree().create_timer(0.1).timeout
-		#Input.action_release(action)
 		if action == "walkRight":
 			#print("input walkRight")
 			direction = Vector2(1, 0)
@@ -233,19 +229,23 @@ func press_action(action : String):
 		elif action == "walkDown":
 			#print("input walkDown")
 			direction = Vector2(0, 1)
-			
+
+
+
+
+func hit(action : String):
+	#print("hit")
 	if "leftClickAction" == action:
-		$AnimationPlayer.speed_scale = attack_rate
+		$AnimationPlayer.speed_scale = attackRate
 		var action_anim = Items.equips[equippedItem]["attack"] if equippedItem else "punching"
 		if !$AnimationPlayer.is_playing() or $AnimationPlayer.current_animation != action_anim:
 			$AnimationPlayer.play(action_anim)
-			print("Play Animation")
-			var delay : float = 0.8 / attack_rate
+			#print("Play Animation")
+			var delay : float = 0.8 / attackRate
 			await get_tree().create_timer(delay).timeout
 			$AnimationPlayer.stop()
 			ws_peer.send_text("Godot: " + action)
-
-
+			
 func _on_next_item():
 	inventory.nextSelection()
 

@@ -36,6 +36,7 @@ func spawnObjects(amount):
 	return spawnedThisWave
 
 func trySpawnObjectWave():
+	#print("SpawnObjects: "+ str(spawnedObjects)+ " maxObjects: "+str(maxObjects) )
 	if spawnedObjects < maxObjects:
 		var toMax := maxObjects - spawnedObjects
 		spawnObjects(min(objectWaveCount, toMax))
@@ -61,8 +62,8 @@ func set_level_options(level : int):
 		
 	if level == 1:
 		$Enemies.maxEnemiesPerPlayer = 0
-		$Animal.maxAnimalsPerPlayer  = 2
+		$Animal.maxAnimalsPerPlayer  = 25
 		
 	if level == 2:
-		$Enemies.maxEnemiesPerPlayer = 1
-		$Animal.maxAnimalsPerPlayer  = 2
+		$Enemies.maxEnemiesPerPlayer = 25
+		$Animal.maxAnimalsPerPlayer  = 6

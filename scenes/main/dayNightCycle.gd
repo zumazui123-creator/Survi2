@@ -10,7 +10,7 @@ signal time_tick(day:int, hour:int, minute:int)
 
 @export var gradient_texture:GradientTexture1D
 @export var INGAME_SPEED = 10.0
-@export var INITIAL_HOUR = 12:
+@export var INITIAL_HOUR = 18:
 	set(h):
 		INITIAL_HOUR = h
 		time = INGAME_TO_REAL_MINUTE_DURATION * MINUTES_PER_HOUR * INITIAL_HOUR
@@ -18,11 +18,30 @@ signal time_tick(day:int, hour:int, minute:int)
 
 @export var time:float= 0.0
 var past_minute:int= -1
+var hour : int = -1
 
 func get_time() -> float:
 	return time
-
+	
+func get_hour() -> int:
+	return hour
+	
+func isNightTime():
+	if get_hour() > 18 || get_hour() < 6:
+		return true
+	else: 
+		return false
+		
 func _ready() -> void:
+	if gradient_texture == null:
+		gradient_texture = GradientTexture1D.new()
+		var g = Gradient.new()
+		g.add_point(0.0, Color(0, 0, 0))
+		g.add_point(0.5, Color(1, 1, 1))
+		g.add_point(1.0, Color(0, 0, 0))
+		gradient_texture.gradient = g
+		gradient_texture.width = 400
+		print("⚠️ No gradient set, using fallback.")
 	time = INGAME_TO_REAL_MINUTE_DURATION * MINUTES_PER_HOUR * INITIAL_HOUR
 
 
@@ -42,7 +61,7 @@ func _recalculate_time() -> void:
 
 	var current_day_minutes = total_minutes % int(MINUTES_PER_DAY)
 
-	var hour = int(current_day_minutes / MINUTES_PER_HOUR)
+	hour = int(current_day_minutes / MINUTES_PER_HOUR)
 	var minute = int(current_day_minutes % int(MINUTES_PER_HOUR))
 	
 	if past_minute != minute:

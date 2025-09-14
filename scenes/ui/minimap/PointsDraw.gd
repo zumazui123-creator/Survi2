@@ -1,7 +1,7 @@
 extends Control
 
 const PLAYER_COLOR := Color(1.0, 0.0, 0.0)   # Red color for player
-@export var tile_size: Vector2 = Vector2(3, 3)
+@export var tile_size: Vector2 = Vector2(1, 1)
 @export var tilemap: TileMapLayer
 @export var player: Node2D
 

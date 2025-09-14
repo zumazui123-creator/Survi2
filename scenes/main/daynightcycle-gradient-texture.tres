@@ -7,4 +7,3 @@ colors = PackedColorArray(0.338491, 0.35888, 0.602406, 1, 0.36296, 0.343755, 0.6
 
 [resource]
 gradient = SubResource("Gradient_faefq")
-width = 2048

@@ -156,7 +156,15 @@ func spawnPlayer(playerName, id, characterFile):
 	newPlayer.characterFile = characterFile
 	newPlayer.name = str(id)
 	main.get_node("Players").add_child(newPlayer)
-	newPlayer.sendPos.rpc(map.tile_map.map_to_local(map.walkable_tiles.pick_random()))
+	
+	var spawn_tiles = [] 
+	for vec in map.walkable_tiles:
+		if vec.x > map.map_width*0.3 && vec.x < map.map_width*0.7:
+			if vec.y > map.map_height*0.3 && vec.y < map.map_height*0.7:
+				spawn_tiles.append(vec)
+	var spawnPosition = spawn_tiles.pick_random()
+	
+	newPlayer.sendPos.rpc(map.tile_map.map_to_local( spawnPosition ))
 
 @rpc("any_peer", "call_remote", "reliable")
 func showSpawnUI():

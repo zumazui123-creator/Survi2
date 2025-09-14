@@ -2,20 +2,47 @@
 
 [ext_resource type="Script" uid="uid://bruqpv3kpycof" path="res://scenes/character/player.gd" id="1_7xvi4"]
 [ext_resource type="Texture2D" uid="uid://cojm327d0qfvc" path="res://assets/characters/bodies/4.png" id="2_s20bt"]
-[ext_resource type="PackedScene" uid="uid://fgbg7uc3rey6" path="res://scenes/ui/playerUI/playerUI.tscn" id="3_brb0h"]
 [ext_resource type="AudioStream" uid="uid://p6udp7goe4do" path="res://assets/sfx/step.ogg" id="4_bflkw"]
 [ext_resource type="Texture2D" uid="uid://bq2x0tji1tvkq" path="res://assets/characters/hands/hands-sheet.png" id="4_yjkcj"]
 [ext_resource type="AudioStream" uid="uid://bdbqwftwm7jjj" path="res://assets/sfx/swing.ogg" id="5_xs70q"]
 [ext_resource type="Script" uid="uid://bl0tm663e7r6k" path="res://scenes/character/player_status.gd" id="7_wmtbp"]
 [ext_resource type="Script" uid="uid://dsnm03bgpmori" path="res://scenes/character/code.gd" id="8_5y66v"]
-[ext_resource type="PackedScene" uid="uid://cfks0l8xsjo55" path="res://scenes/main/HUD/hydration_bar.tscn" id="9_g2qfr"]
-[ext_resource type="Script" uid="uid://yd2wu1wfiudc" path="res://scenes/main/HUD/survival_bars.gd" id="10_xub24"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_khhcq"]
 height = 20.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_cdkds"]
 radius = 16.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5y66v"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uicah"]
+bg_color = Color(0.807843, 0.294118, 0.235294, 0.556863)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.52549, 0.52549, 0.52549, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+expand_margin_left = 2.0
+expand_margin_top = 2.0
+expand_margin_right = 2.0
+expand_margin_bottom = 2.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g2qfr"]
+bg_color = Color(0, 0.529412, 0.113725, 1)
+border_color = Color(0.701961, 0.701961, 0.701961, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+expand_margin_left = 2.0
+expand_margin_top = 2.0
+expand_margin_right = 2.0
+expand_margin_bottom = 2.0
 
 [sub_resource type="Animation" id="Animation_l6e13"]
 resource_name = "punching"
@@ -281,6 +308,7 @@ _data = [Vector2(0.00279329, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 2
 
 [node name="Player" type="CharacterBody2D" groups=["damageable", "player"]]
+position = Vector2(639, 362)
 script = ExtResource("1_7xvi4")
 
 [node name="MovingParts" type="Node2D" parent="."]
@@ -318,22 +346,99 @@ shape = SubResource("CircleShape2D_cdkds")
 [node name="Camera2D" type="Camera2D" parent="."]
 enabled = false
 
-[node name="PlayerUi" parent="." instance=ExtResource("3_brb0h")]
+[node name="PlayerStatus" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
 offset_left = -50.0
 offset_top = -50.0
-offset_right = -50.0
-offset_bottom = -50.0
+offset_right = 50.0
+offset_bottom = 50.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 10
+script = ExtResource("7_wmtbp")
 
-[node name="SurvivalBars" parent="." instance=ExtResource("9_g2qfr")]
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = -626.0
-offset_top = 246.0
-offset_right = -334.0
-offset_bottom = 345.0
-grow_vertical = 0
-script = ExtResource("10_xub24")
+[node name="NameTag" type="PanelContainer" parent="PlayerStatus"]
+layout_direction = 1
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -50.0
+offset_right = 50.0
+offset_bottom = 20.0
+grow_horizontal = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_5y66v")
+
+[node name="hpBar" type="ProgressBar" parent="PlayerStatus/NameTag"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_styles/background = SubResource("StyleBoxFlat_uicah")
+theme_override_styles/fill = SubResource("StyleBoxFlat_g2qfr")
+max_value = 1.0
+value = 1.0
+show_percentage = false
+
+[node name="nameLabel" type="Label" parent="PlayerStatus/NameTag"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 10)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 14
+text = "playerName"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 1
+
+[node name="HydrationBar" type="ProgressBar" parent="PlayerStatus"]
+modulate = Color(0, 0.491312, 0.491312, 1)
+self_modulate = Color(0.0216716, 0, 0.829495, 1)
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = -579.0
+offset_top = -285.0
+offset_right = -479.0
+offset_bottom = -258.0
+grow_vertical = 2
+rounded = true
+
+[node name="WasserLabel" type="Label" parent="PlayerStatus/HydrationBar"]
+modulate = Color(0.00130165, 0.129496, 0.566333, 1)
+layout_mode = 1
+offset_left = 112.0
+offset_top = 2.0
+offset_right = 169.0
+offset_bottom = 25.0
+text = "Wasser"
+
+[node name="FoodBar" type="ProgressBar" parent="PlayerStatus"]
+modulate = Color(0.227451, 0.12549, 0.0588235, 1)
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = -579.0
+offset_top = -252.0
+offset_right = -479.0
+offset_bottom = -225.0
+grow_vertical = 2
+rounded = true
+
+[node name="FoodLabel" type="Label" parent="PlayerStatus/FoodBar"]
+modulate = Color(0.22673, 0.127422, 0.0601467, 1)
+layout_mode = 1
+offset_left = 112.0
+offset_top = 2.0
+offset_right = 169.0
+offset_bottom = 25.0
+text = "Essen"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
@@ -385,19 +490,17 @@ offset_bottom = -50.0
 grow_horizontal = 2
 grow_vertical = 0
 
-[node name="PlayerStatus" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-script = ExtResource("7_wmtbp")
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+offset = Vector2(640, 360)
+transform = Transform2D(1, 0, 0, 1, 640, 360)
 
-[node name="Code" type="Node2D" parent="."]
-z_index = 2
+[node name="Code" type="Node2D" parent="CanvasLayer"]
+z_index = 6
+z_as_relative = false
 position = Vector2(218, -371)
 script = ExtResource("8_5y66v")
 
-[node name="CodeContainer" type="VBoxContainer" parent="Code"]
+[node name="CodeContainer" type="VBoxContainer" parent="CanvasLayer/Code"]
 offset_left = 33.0
 offset_top = 13.0
 offset_right = 421.0
@@ -405,13 +508,13 @@ offset_bottom = 493.0
 size_flags_horizontal = 6
 size_flags_vertical = 3
 
-[node name="HauptCodeLabel" type="Label" parent="Code/CodeContainer"]
+[node name="HauptCodeLabel" type="Label" parent="CanvasLayer/Code/CodeContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
 text = "Haupt-Code"
 
-[node name="CodeEdit" type="CodeEdit" parent="Code/CodeContainer"]
+[node name="CodeEdit" type="CodeEdit" parent="CanvasLayer/Code/CodeContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 scroll_smooth = true
@@ -421,24 +524,24 @@ symbol_tooltip_on_hover = true
 gutters_draw_bookmarks = true
 gutters_draw_line_numbers = true
 
-[node name="ButtonCotainer" type="HBoxContainer" parent="Code/CodeContainer"]
+[node name="ButtonCotainer" type="HBoxContainer" parent="CanvasLayer/Code/CodeContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_constants/separation = 15
 
-[node name="PlayButton" type="Button" parent="Code/CodeContainer/ButtonCotainer"]
+[node name="PlayButton" type="Button" parent="CanvasLayer/Code/CodeContainer/ButtonCotainer"]
 layout_mode = 2
 text = "Play"
 
-[node name="StopButton" type="Button" parent="Code/CodeContainer/ButtonCotainer"]
+[node name="StopButton" type="Button" parent="CanvasLayer/Code/CodeContainer/ButtonCotainer"]
 layout_mode = 2
 text = "Stop"
 
-[node name="CodeDeleteButton" type="Button" parent="Code/CodeContainer/ButtonCotainer"]
+[node name="CodeDeleteButton" type="Button" parent="CanvasLayer/Code/CodeContainer/ButtonCotainer"]
 layout_mode = 2
 text = "Code löschen"
 
-[node name="ActionsContainer" type="VBoxContainer" parent="Code"]
+[node name="ActionsContainer" type="VBoxContainer" parent="CanvasLayer/Code"]
 offset_left = 46.0
 offset_top = 516.0
 offset_right = 407.0
@@ -446,67 +549,67 @@ offset_bottom = 679.0
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Code/ActionsContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Code/ActionsContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="BewegContainer" type="VBoxContainer" parent="Code/ActionsContainer/HBoxContainer"]
+[node name="BewegContainer" type="VBoxContainer" parent="CanvasLayer/Code/ActionsContainer/HBoxContainer"]
 layout_mode = 2
 
-[node name="BewegeLabel" type="Label" parent="Code/ActionsContainer/HBoxContainer/BewegContainer"]
+[node name="BewegeLabel" type="Label" parent="CanvasLayer/Code/ActionsContainer/HBoxContainer/BewegContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Bewege"
 
-[node name="ObenButton" type="Button" parent="Code/ActionsContainer/HBoxContainer/BewegContainer"]
+[node name="ObenButton" type="Button" parent="CanvasLayer/Code/ActionsContainer/HBoxContainer/BewegContainer"]
 layout_mode = 2
 text = "oben"
 
-[node name="LinksRechtsContainer" type="HBoxContainer" parent="Code/ActionsContainer/HBoxContainer/BewegContainer"]
+[node name="LinksRechtsContainer" type="HBoxContainer" parent="CanvasLayer/Code/ActionsContainer/HBoxContainer/BewegContainer"]
 layout_mode = 2
 theme_override_constants/separation = 9
 
-[node name="LinksButton" type="Button" parent="Code/ActionsContainer/HBoxContainer/BewegContainer/LinksRechtsContainer"]
+[node name="LinksButton" type="Button" parent="CanvasLayer/Code/ActionsContainer/HBoxContainer/BewegContainer/LinksRechtsContainer"]
 layout_mode = 2
 text = "links"
 
-[node name="rechtsButton" type="Button" parent="Code/ActionsContainer/HBoxContainer/BewegContainer/LinksRechtsContainer"]
+[node name="rechtsButton" type="Button" parent="CanvasLayer/Code/ActionsContainer/HBoxContainer/BewegContainer/LinksRechtsContainer"]
 layout_mode = 2
 text = "rechts"
 
-[node name="UntenButton" type="Button" parent="Code/ActionsContainer/HBoxContainer/BewegContainer"]
+[node name="UntenButton" type="Button" parent="CanvasLayer/Code/ActionsContainer/HBoxContainer/BewegContainer"]
 layout_mode = 2
 text = "unten"
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="Code/ActionsContainer/HBoxContainer"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="CanvasLayer/Code/ActionsContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
 
-[node name="Label" type="Label" parent="Code/ActionsContainer/HBoxContainer/VBoxContainer2"]
+[node name="Label" type="Label" parent="CanvasLayer/Code/ActionsContainer/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
 text = "Action"
 
-[node name="attackeButton" type="Button" parent="Code/ActionsContainer/HBoxContainer/VBoxContainer2"]
+[node name="attackeButton" type="Button" parent="CanvasLayer/Code/ActionsContainer/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 8
 text = "attacke"
 
-[node name="sageButton" type="Button" parent="Code/ActionsContainer/HBoxContainer/VBoxContainer2"]
+[node name="sageButton" type="Button" parent="CanvasLayer/Code/ActionsContainer/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 8
 text = "sage"
 
-[node name="VBoxContainer3" type="VBoxContainer" parent="Code/ActionsContainer/HBoxContainer"]
+[node name="VBoxContainer3" type="VBoxContainer" parent="CanvasLayer/Code/ActionsContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="Code/ActionsContainer/HBoxContainer/VBoxContainer3"]
+[node name="Label" type="Label" parent="CanvasLayer/Code/ActionsContainer/HBoxContainer/VBoxContainer3"]
 layout_mode = 2
 text = "Funktion"
 
-[node name="ItemList" type="ItemList" parent="Code/ActionsContainer/HBoxContainer/VBoxContainer3"]
+[node name="ItemList" type="ItemList" parent="CanvasLayer/Code/ActionsContainer/HBoxContainer/VBoxContainer3"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -515,15 +618,16 @@ auto_width = true
 item_count = 1
 item_0/text = "wiederhole 3 mal"
 
-[node name="createFunction" type="Button" parent="Code/ActionsContainer"]
+[node name="createFunction" type="Button" parent="CanvasLayer/Code/ActionsContainer"]
 layout_mode = 2
 text = "Erstelle Funktion"
 
-[node name="PopupPanel" type="PopupPanel" parent="Code/ActionsContainer"]
+[node name="PopupPanel" type="PopupPanel" parent="CanvasLayer/Code/ActionsContainer"]
+unique_name_in_owner = true
 title = "Funktionen"
 size = Vector2i(600, 600)
 
-[node name="CodeEdit" type="CodeEdit" parent="Code/ActionsContainer/PopupPanel"]
+[node name="CodeEdit" type="CodeEdit" parent="CanvasLayer/Code/ActionsContainer/PopupPanel"]
 custom_minimum_size = Vector2(400, 400)
 anchors_preset = 9
 anchor_bottom = 1.0
@@ -541,13 +645,13 @@ symbol_tooltip_on_hover = true
 gutters_draw_bookmarks = true
 gutters_draw_line_numbers = true
 
-[connection signal="pressed" from="Code/CodeContainer/ButtonCotainer/PlayButton" to="." method="_on_play_button_pressed"]
-[connection signal="pressed" from="Code/CodeContainer/ButtonCotainer/CodeDeleteButton" to="Code" method="_on_code_delete_button_pressed"]
-[connection signal="pressed" from="Code/ActionsContainer/HBoxContainer/BewegContainer/ObenButton" to="Code" method="_on_oben_button_pressed"]
-[connection signal="pressed" from="Code/ActionsContainer/HBoxContainer/BewegContainer/LinksRechtsContainer/LinksButton" to="Code" method="_on_links_button_pressed"]
-[connection signal="pressed" from="Code/ActionsContainer/HBoxContainer/BewegContainer/LinksRechtsContainer/rechtsButton" to="Code" method="_on_rechts_button_pressed"]
-[connection signal="pressed" from="Code/ActionsContainer/HBoxContainer/BewegContainer/UntenButton" to="Code" method="_on_unten_button_pressed"]
-[connection signal="pressed" from="Code/ActionsContainer/HBoxContainer/VBoxContainer2/attackeButton" to="Code" method="_on_attacke_button_pressed"]
-[connection signal="pressed" from="Code/ActionsContainer/HBoxContainer/VBoxContainer2/sageButton" to="Code" method="_on_sage_button_pressed"]
-[connection signal="item_clicked" from="Code/ActionsContainer/HBoxContainer/VBoxContainer3/ItemList" to="Code" method="_on_item_list_item_clicked"]
-[connection signal="pressed" from="Code/ActionsContainer/createFunction" to="Code" method="_on_create_function_pressed"]
+[connection signal="pressed" from="CanvasLayer/Code/CodeContainer/ButtonCotainer/PlayButton" to="." method="_on_play_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/Code/CodeContainer/ButtonCotainer/CodeDeleteButton" to="CanvasLayer/Code" method="_on_code_delete_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/Code/ActionsContainer/HBoxContainer/BewegContainer/ObenButton" to="CanvasLayer/Code" method="_on_oben_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/Code/ActionsContainer/HBoxContainer/BewegContainer/LinksRechtsContainer/LinksButton" to="CanvasLayer/Code" method="_on_links_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/Code/ActionsContainer/HBoxContainer/BewegContainer/LinksRechtsContainer/rechtsButton" to="CanvasLayer/Code" method="_on_rechts_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/Code/ActionsContainer/HBoxContainer/BewegContainer/UntenButton" to="CanvasLayer/Code" method="_on_unten_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/Code/ActionsContainer/HBoxContainer/VBoxContainer2/attackeButton" to="CanvasLayer/Code" method="_on_attacke_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/Code/ActionsContainer/HBoxContainer/VBoxContainer2/sageButton" to="CanvasLayer/Code" method="_on_sage_button_pressed"]
+[connection signal="item_clicked" from="CanvasLayer/Code/ActionsContainer/HBoxContainer/VBoxContainer3/ItemList" to="CanvasLayer/Code" method="_on_item_list_item_clicked"]
+[connection signal="pressed" from="CanvasLayer/Code/ActionsContainer/createFunction" to="CanvasLayer/Code" method="_on_create_function_pressed"]

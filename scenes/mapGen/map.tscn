@@ -8,5 +8,6 @@ script = ExtResource("1_gggpt")
 
 [node name="TileMap" type="TileMapLayer" parent="."]
 use_parent_material = true
+position = Vector2(111, -9)
 tile_set = ExtResource("2_c3hbg")
 navigation_visibility_mode = 1

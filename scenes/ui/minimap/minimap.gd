@@ -2,12 +2,12 @@ extends Control
 
 const WALKABLE_TILES := [Vector2i(0,0), Vector2i(1,0), Vector2i(2,0), Vector2i(3,0), Vector2i(16,0), Vector2i(17,0)]
 const WALKABLE_COLOR := Color(0.0, 1.0, 0.0)  # Green color for walkable tiles
-const DEFAULT_COLOR := Color(1.0, 1.0, 1.0, 0.2)   # White color for non-walkable tiles
+const DEFAULT_COLOR := Color(0, 0, 1, 0.6) #Color(1.0, 1.0, 1.0, 0.2)   # White color for non-walkable tiles
 
 @export var tilemap: TileMapLayer
 @export var player: Node2D
-@export var minimap_size: Vector2 = Vector2(200, 200)
-@export var tile_size: Vector2 = Vector2(3, 3)
+@export var minimap_size: Vector2 = Vector2(256, 256)
+@export var tile_size: Vector2 = Vector2(1, 1)
 var drawn = false
 
 func _ready():

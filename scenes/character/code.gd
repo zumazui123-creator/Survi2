@@ -38,7 +38,7 @@ func _on_item_list_item_clicked(index: int, at_position: Vector2, mouse_button_i
 	code_edit.insert_text_at_caret(item_text+"\n")
 	
 
-@onready var popup = $PopupPanel
+@onready var popup = %PopupPanel
 func _on_create_function_pressed() -> void:
 	popup.popup_centered()
 	pass # Replace with function body.

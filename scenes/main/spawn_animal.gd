@@ -3,8 +3,8 @@ extends Node2D
 var animalTypes := Items.animals.keys()
 const animalWaveCount := 1
 var maxAnimalsPerPlayer :int = 5
-const animalSpawnRadiusMin := 8
-const animalSpawnRadiusMax := 9
+const animalSpawnRadiusMin := 2
+const animalSpawnRadiusMax := 20
 var spawnedAnimals := {}
 
 @onready var navHelper : Node2D = $"../NavHelper"

@@ -13,6 +13,8 @@ class Parser():
             return clean_line
         if "gehe zurück" in clean_line.lower():
             return "gehe zurück"
+        if "nutze item" in clean_line.lower():
+            return "use item " + clean_line.split(" ")[-1]
             
         match clean_line.lower(): 
             case "links":
@@ -178,7 +180,7 @@ class Parser():
             print(f"{filepath} existiert nicht")
             return
 
-    def parse(self,code : str) -> List[tuple]:
+    def parse(self,code : str) -> List[str]:
         if not code:
             return []
         
@@ -204,6 +206,6 @@ class Parser():
             if action != "":
                 actions.append(action)
 
-        compressed_actions = self.compress_sequence(actions)
-        return compressed_actions
+        # compressed_actions = self.compress_sequence(actions)
+        return actions
     

@@ -9,6 +9,14 @@ var inventories := {}
 var durabilities := {}
 # {1: {"pickaxe": 95}}
 
+
+func getItems(id :String):
+	if inventories.size() == 0:
+		return {}
+	if inventories[id].size() == 0:
+		return {}
+	return inventories[id]
+
 func _ready():
 	#if !multiplayer.is_server():
 		#return

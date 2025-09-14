@@ -45,7 +45,7 @@ def receiver_loop():
 
             if "play_it_now" in message:
                 for msg in converted_msg:
-                    payload = f"{msg[0]} , {msg[1]}"
+                    payload = msg #f"{msg[0]} , {msg[1]}"
                     ws.send(payload)
                     log(f"➡️ Sent action: {payload}")
 

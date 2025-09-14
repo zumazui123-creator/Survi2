@@ -22,6 +22,7 @@ Multihelper="*res://scenes/autoloads/Multihelper.gd"
 Inventory="*res://scenes/autoloads/Inventory.gd"
 Items="*res://scenes/autoloads/Items.gd"
 Map="*res://scenes/mapGen/map.gd"
+GameTime="*res://scenes/main/dayNightCycle.gd"
 
 [display]
 

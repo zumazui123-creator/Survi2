@@ -40,7 +40,7 @@ func populateSlots():
 	for c in %Slots.get_children():
 		c.queue_free()
 	var slotScene := preload("res://scenes/ui/inventory/inventory_slot.tscn")
-	for i in range(slotCount):
+	for i in range(1,slotCount+1):
 		var slot := slotScene.instantiate()
 		slot.index = i
 		selectionChanged.connect(slot.selectionChanged)
@@ -86,7 +86,6 @@ func prevSelection():
 	selectionChanged.emit(selectedSlot)
 
 func itemSelected(id):
-
 	var equipList := Items.equips.keys()
 	if id in equipList:
 		player.tryEquipItem.rpc_id(1, id)

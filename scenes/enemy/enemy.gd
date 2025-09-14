@@ -6,6 +6,7 @@ var targetPlayer : CharacterBody2D
 	set(value):
 		targetPlayerId = value
 		targetPlayer = get_node("../../Players/"+str(value))
+@onready var dayNight 	  = $"../dayNight"
 
 #stats
 @export var enemyId := "":
@@ -40,7 +41,10 @@ func _process(_delta):
 		else:
 			tryAttack()
 	else:
-		die(false)
+		if GameTime.isNightTime():
+			die(false)
+		else:
+			die(true)
 
 func rotateToTarget():
 	$MovingParts.look_at(targetPlayer.position)
@@ -81,5 +85,7 @@ func die(dropLoot):
 			dropLoots()
 
 func dropLoots():
+	if not GameTime.isNightTime():
+		return
 	for drop in drops.keys():
 		Items.spawnPickups(drop, position, randi_range(drops[drop]["min"],drops[drop]["max"]))
