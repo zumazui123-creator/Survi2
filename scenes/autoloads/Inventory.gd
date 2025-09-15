@@ -103,19 +103,11 @@ func useItemDurability(id, item, durabilityDamage = 1):
 			durabilities[id].erase(item)
 		else:
 			inventoryUpdated.emit(id)
-func useItemConsume(id, item):
-	if id not in durabilities:
-		durabilities[id] = {}
-	if "durability" in Items.equips[item]:
-		if item in durabilities[id]:
-			durabilities[id][item] -= durabilityDamage
-		else:
-			durabilities[id][item] = Items.equips[item]["durability"] - durabilityDamage
-		if durabilities[id][item] <= 0:
-			removeItem(id, item)
-			durabilities[id].erase(item)
-		else:
-			inventoryUpdated.emit(id)
+			
+#func useItemConsume(id, item):
+	#removeItem(id, item)
+		
+		
 			
 @rpc("any_peer", "call_local", "reliable")
 func tryCraftItem(id, item) -> bool:

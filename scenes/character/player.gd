@@ -280,6 +280,17 @@ func punchCheckCollision():
 func sendProjectile(towards):
 	Items.spawnProjectile(self, spawnsProjectile, towards, "damageable")
 
+@rpc("authority", "call_local", "reliable")	
+func get_heal(heal_hp : float):
+	hp += heal_hp
+	
+
+@rpc("any_peer", "call_local", "reliable")	
+func consumeItem(item, item_prop):
+	if "hp" in item_prop:
+		get_heal.rpc( 100 )#item["hp"])
+	Inventory.removeItem(str(name),item)
+
 @rpc("authority", "call_local", "reliable")
 func increaseScore(by):
 	hp += by * 5
@@ -347,12 +358,9 @@ func unequipItem():
 	if multiplayer.is_server():
 		for c in %Equipment.get_children():
 			c.queue_free()
-
-@rpc("any_peer", "call_local", "reliable")			
-func consumeItem(item):
-	if "hp" in item:
-		hp += item["hp"]
 			
+
+	
 func itemRemoved(id, item):
 	if !multiplayer.is_server():
 		return
