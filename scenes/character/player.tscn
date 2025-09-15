@@ -308,7 +308,6 @@ _data = [Vector2(0.00279329, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 2
 
 [node name="Player" type="CharacterBody2D" groups=["damageable", "player"]]
-position = Vector2(639, 362)
 script = ExtResource("1_7xvi4")
 
 [node name="MovingParts" type="Node2D" parent="."]
@@ -515,6 +514,7 @@ size_flags_vertical = 0
 text = "Haupt-Code"
 
 [node name="CodeEdit" type="CodeEdit" parent="CanvasLayer/Code/CodeContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 scroll_smooth = true
