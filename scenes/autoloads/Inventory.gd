@@ -103,7 +103,12 @@ func useItemDurability(id, item, durabilityDamage = 1):
 			durabilities[id].erase(item)
 		else:
 			inventoryUpdated.emit(id)
-
+			
+#func useItemConsume(id, item):
+	#removeItem(id, item)
+		
+		
+			
 @rpc("any_peer", "call_local", "reliable")
 func tryCraftItem(id, item) -> bool:
 	if canCraftItem(id, item):

@@ -17,7 +17,7 @@ var _tcp_server := TCPServer.new()
 var _ws_peers 	:= []  # Liste der aktiven WebSocket-Verbindungen
 var time 		:= 0
 
-@onready var code_edit = $Code/CodeContainer/CodeEdit
+@onready var code_edit = %CodeEdit
 @export var playerName : String:
 	set(value):
 		playerName = value
@@ -211,7 +211,7 @@ func press_action(action : String):
 		var item_id : int = -1
 		if item_id_str.is_valid_int():
 			item_id = int(item_id_str)
-			inventory.itemSelected(item_id)
+			#inventory.itemSelected(item_id)
 			inventory.selectionChanged.emit(item_id)
 			
 		ws_peer.send_text("Godot: " + action + ", item: "+str(item_id))
@@ -246,21 +246,21 @@ func hit(action : String):
 			$AnimationPlayer.stop()
 			ws_peer.send_text("Godot: " + action)
 			
-func _on_next_item():
-	inventory.nextSelection()
-
-# Define what happens when previousItem is triggered
-func _on_previous_item():
-	inventory.prevSelection()
+#func _on_next_item():
+	#inventory.nextSelection()
+#
+## Define what happens when previousItem is triggered
+#func _on_previous_item():
+	#inventory.prevSelection()
 
 # Handle input events
-func _unhandled_input(event):
-	if name != str(multiplayer.get_unique_id()):
-		return
-	if event.is_action_pressed("nextItem"):
-		_on_next_item()
-	elif event.is_action_pressed("previousItem"):
-		_on_previous_item()
+#func _unhandled_input(event):
+	#if name != str(multiplayer.get_unique_id()):
+		#return
+	#if event.is_action_pressed("nextItem"):
+		#_on_next_item()
+	#elif event.is_action_pressed("previousItem"):
+		#_on_previous_item()
 
 func punchCheckCollision():
 	var id = multiplayer.get_unique_id()
@@ -279,6 +279,17 @@ func punchCheckCollision():
 @rpc("any_peer", "reliable")
 func sendProjectile(towards):
 	Items.spawnProjectile(self, spawnsProjectile, towards, "damageable")
+
+@rpc("authority", "call_local", "reliable")	
+func get_heal(heal_hp : float):
+	hp += heal_hp
+	
+
+@rpc("any_peer", "call_local", "reliable")	
+func consumeItem(item, item_prop):
+	if "hp" in item_prop:
+		get_heal.rpc( 100 )#item["hp"])
+	Inventory.removeItem(str(name),item)
 
 @rpc("authority", "call_local", "reliable")
 func increaseScore(by):
@@ -347,8 +358,9 @@ func unequipItem():
 	if multiplayer.is_server():
 		for c in %Equipment.get_children():
 			c.queue_free()
-	
 			
+
+	
 func itemRemoved(id, item):
 	if !multiplayer.is_server():
 		return

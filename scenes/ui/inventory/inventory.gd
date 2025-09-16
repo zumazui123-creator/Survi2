@@ -73,17 +73,17 @@ func populateRecipes():
 		%Recipes.add_child(recipeSlot)
 		recipeSlot.recipeSelected.connect(recipeSelected)
 
-func nextSelection():
-	selectedSlot += 1
-	if selectedSlot == slotCount:
-		selectedSlot = 0
-	selectionChanged.emit(selectedSlot)
-
-func prevSelection():
-	selectedSlot -= 1
-	if selectedSlot < 0:
-		selectedSlot = slotCount - 1
-	selectionChanged.emit(selectedSlot)
+#func nextSelection():
+	#selectedSlot += 1
+	#if selectedSlot == slotCount:
+		#selectedSlot = 0
+	#selectionChanged.emit(selectedSlot)
+#
+#func prevSelection():
+	#selectedSlot -= 1
+	#if selectedSlot < 0:
+		#selectedSlot = slotCount - 1
+	#selectionChanged.emit(selectedSlot)
 
 func itemSelected(id):
 	var equipList := Items.equips.keys()
@@ -91,6 +91,10 @@ func itemSelected(id):
 		player.tryEquipItem.rpc_id(1, id)
 	elif player.equippedItem:
 		player.unequipItem.rpc()
+		
+	var consumeList := Items.consume.keys()
+	if id in consumeList:
+		player.consumeItem.rpc_id(1, id, Items.consume[id] ) 
 
 func _on_craft_button_pressed():
 	if %craftCont.visible:
