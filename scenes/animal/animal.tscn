@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=3 uid="uid://4yb25tbuu2at"]
 
 [ext_resource type="Script" uid="uid://ow586srjgj2u" path="res://scenes/animal/animal.gd" id="1_428fe"]
-[ext_resource type="Texture2D" uid="uid://bd3vs8r3l184c" path="res://assets/characters/enemy/zombie.png" id="2_f46n4"]
+[ext_resource type="Texture2D" uid="uid://bp720hn6brr53" path="res://assets/characters/enemy/zombie.png" id="2_f46n4"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_m76gk"]
 
