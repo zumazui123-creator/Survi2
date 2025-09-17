@@ -615,8 +615,9 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 select_mode = 1
 auto_width = true
-item_count = 1
+item_count = 2
 item_0/text = "wiederhole 3 mal"
+item_1/text = "nutze Item 1"
 
 [node name="createFunction" type="Button" parent="CanvasLayer/Code/ActionsContainer"]
 layout_mode = 2
