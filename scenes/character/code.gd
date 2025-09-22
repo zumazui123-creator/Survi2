@@ -33,7 +33,7 @@ func _on_sage_button_pressed() -> void:
 func _on_item_list_item_clicked(index: int, at_position: Vector2, mouse_button_index: int) -> void:
 	var item_text = item_list.get_item_text(index)
 	if item_text == "wiederhole 3 mal":
-		item_text = "wiederhole 3 mal\nende"
+		item_text = "wiederhole 3 mal\n\nende"
 	
 	code_edit.insert_text_at_caret(item_text+"\n")
 	
