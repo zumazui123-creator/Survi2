@@ -12,6 +12,7 @@ var move_speed_factor = 3
 var act : String = ""
 var attackRate : int = 1
 
+
 # Server: TCP + WebSocket Upgrade
 var _tcp_server := TCPServer.new()
 var _ws_peers 	:= []  # Liste der aktiven WebSocket-Verbindungen
@@ -77,6 +78,7 @@ var ws_peer = WebSocketPeer.new()
 var last_angle = 0.0 # für godot server nötig
 
 func _ready():
+	
 	_tcp_server.listen(8765)  # Port 8765
 	print("Server gestartet auf ws://localhost:8765")
 	
@@ -144,7 +146,7 @@ func _physics_process(delta: float) -> void:
 	tile_move(delta)
 
 
-func tile_move(delta : float):		
+func tile_move(delta : float):
 	if not is_moving():
 		return
 			

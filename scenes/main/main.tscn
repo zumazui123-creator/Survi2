@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://ccrctrojuyiel"]
+[gd_scene load_steps=16 format=3 uid="uid://ccrctrojuyiel"]
 
 [ext_resource type="Script" uid="uid://c4h0ahffrs4to" path="res://scenes/main/main.gd" id="1_5kenc"]
 [ext_resource type="PackedScene" uid="uid://bf074ibcy5o0" path="res://scenes/mapGen/map.tscn" id="1_vj1jr"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://becibolw633ar" path="res://code_editor.tscn" id="3_blune"]
 [ext_resource type="Script" uid="uid://dhjwv3aq1c8ed" path="res://scenes/main/spawn_enemies.gd" id="3_th5th"]
 [ext_resource type="Script" uid="uid://dl6e2xb030n8p" path="res://scenes/main/spawn_animal.gd" id="4_th5th"]
+[ext_resource type="Script" uid="uid://cddr76mw3uc08" path="res://scenes/main/objects.gd" id="5_7smn1"]
 [ext_resource type="PackedScene" uid="uid://c0gaxwlt4ajax" path="res://scenes/ui/playersList/generalHud.tscn" id="5_th5th"]
 [ext_resource type="PackedScene" uid="uid://bmv1uy5a1k05u" path="res://scenes/ui/inventory/inventory.tscn" id="6_tq15c"]
 [ext_resource type="PackedScene" uid="uid://cogav6f5iu6qb" path="res://scenes/ui/minimap/minimap.tscn" id="6_xel07"]
@@ -37,6 +38,7 @@ script = ExtResource("4_th5th")
 [node name="Projectiles" type="Node2D" parent="."]
 
 [node name="Objects" type="Node2D" parent="."]
+script = ExtResource("5_7smn1")
 
 [node name="NavHelper" type="Node2D" parent="."]
 script = ExtResource("10_40gnc")
@@ -101,6 +103,7 @@ autostart = true
 [node name="dayNight" type="CanvasModulate" parent="."]
 script = ExtResource("7_4y3sb")
 gradient_texture = ExtResource("8_le63a")
+INITIAL_HOUR = 7
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_dr53p")

@@ -3,6 +3,8 @@ extends Node
 var playerScenePath = preload("res://scenes/character/player.tscn")
 var isHost = false
 var mapSeed = randi()
+var level :int = 0 
+
 var map: Node2D
 var main: Node2D
 
@@ -25,8 +27,8 @@ var syncedPlayers = []
 
 var player_info = {"name": ""}
 
-var level :int = 0 
-var a = 1
+
+
 @onready var game = get_node("/root/Game")
 func _ready():
 	multiplayer.peer_connected.connect(_on_player_connected)
@@ -144,7 +146,6 @@ func get_map_position(coords : Vector2i):
 	return map.tile_map.local_to_map(coords)
 	
 func requestSpawn(playerName, id, characterFile):
-	main.set_level_options(Multihelper.level) 
 	player_info["name"] = playerName
 	player_info["body"] = characterFile
 	player_info["score"] = 0
@@ -160,12 +161,16 @@ func spawnPlayer(playerName, id, characterFile):
 	newPlayer.name = str(id)
 	main.get_node("Players").add_child(newPlayer)
 	
-	var spawn_tiles = [] 
-	for vec in map.walkable_tiles:
-		if vec.x > map.map_width*0.3 && vec.x < map.map_width*0.7:
-			if vec.y > map.map_height*0.3 && vec.y < map.map_height*0.7:
-				spawn_tiles.append(vec)
-	var spawnPosition = spawn_tiles.pick_random()
+	#var spawn_tiles = [] 
+	#for vec in map.walkable_tiles:
+		#if vec.x > map.map_width*0.3 && vec.x < map.map_width*0.7:
+			#if vec.y > map.map_height*0.3 && vec.y < map.map_height*0.7:
+				#spawn_tiles.append(vec)
+	var spawnPosition = Vector2i(0,0)
+	if map.laby_map.spawnPosition > Vector2i(0,0):
+		spawnPosition = map.laby_map.spawnPosition
+	else :
+		spawnPosition = map.walkable_tiles.pick_random()
 	
 	newPlayer.sendPos.rpc(map.tile_map.map_to_local( spawnPosition ))
 

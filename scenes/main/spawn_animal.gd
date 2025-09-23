@@ -2,7 +2,7 @@ extends Node2D
 
 var animalTypes := Items.animals.keys()
 const animalWaveCount := 1
-var maxAnimalsPerPlayer :int = 5
+var maxAnimalsPerPlayer :int = Constants.MAX_ANIMALS_PER_PLAYER
 const animalSpawnRadiusMin := 2
 const animalSpawnRadiusMax := 20
 var spawnedAnimals := {}

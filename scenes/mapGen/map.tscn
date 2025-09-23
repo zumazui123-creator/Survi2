@@ -1,13 +1,16 @@
-[gd_scene load_steps=3 format=3 uid="uid://bf074ibcy5o0"]
+[gd_scene load_steps=4 format=3 uid="uid://bf074ibcy5o0"]
 
 [ext_resource type="Script" uid="uid://bbn7yedve2law" path="res://scenes/mapGen/map.gd" id="1_gggpt"]
 [ext_resource type="TileSet" uid="uid://cny45owea8lcj" path="res://assets/tileset/tileset.tres" id="2_c3hbg"]
+[ext_resource type="Script" uid="uid://bqqq0ujqgl6ln" path="res://scenes/mapGen/labyrinth.gd" id="3_qpycp"]
 
 [node name="Map" type="Node2D"]
 script = ExtResource("1_gggpt")
 
 [node name="TileMap" type="TileMapLayer" parent="."]
 use_parent_material = true
-position = Vector2(111, -9)
 tile_set = ExtResource("2_c3hbg")
 navigation_visibility_mode = 1
+
+[node name="Labyrinth" type="Node" parent="."]
+script = ExtResource("3_qpycp")

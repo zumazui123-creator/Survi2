@@ -8,11 +8,11 @@
 [ext_resource type="Script" uid="uid://bl0tm663e7r6k" path="res://scenes/character/player_status.gd" id="7_wmtbp"]
 [ext_resource type="Script" uid="uid://dsnm03bgpmori" path="res://scenes/character/code.gd" id="8_5y66v"]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_khhcq"]
-height = 20.0
+[sub_resource type="CircleShape2D" id="CircleShape2D_wmtbp"]
+radius = 20.0
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_cdkds"]
-radius = 16.0
+[sub_resource type="CircleShape2D" id="CircleShape2D_5y66v"]
+radius = 31.0
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5y66v"]
 
@@ -334,13 +334,14 @@ unique_name_in_owner = true
 unique_name_in_owner = true
 position = Vector2(27, 0)
 rotation = 1.5708
-shape = SubResource("CapsuleShape2D_khhcq")
+shape = SubResource("CircleShape2D_wmtbp")
 
 [node name="Equipment" type="Node2D" parent="MovingParts"]
 unique_name_in_owner = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("CircleShape2D_cdkds")
+position = Vector2(-0.5, 0)
+shape = SubResource("CircleShape2D_5y66v")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 enabled = false
@@ -352,10 +353,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -50.0
-offset_top = -50.0
-offset_right = 50.0
-offset_bottom = 50.0
+offset_left = -32.0
+offset_top = -32.0
+offset_right = 32.0
+offset_bottom = 32.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 10
@@ -644,6 +645,8 @@ highlight_current_line = true
 symbol_tooltip_on_hover = true
 gutters_draw_bookmarks = true
 gutters_draw_line_numbers = true
+
+[node name="RigidBody2D" type="RigidBody2D" parent="."]
 
 [connection signal="pressed" from="CanvasLayer/Code/CodeContainer/ButtonCotainer/PlayButton" to="." method="_on_play_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/Code/CodeContainer/ButtonCotainer/CodeDeleteButton" to="CanvasLayer/Code" method="_on_code_delete_button_pressed"]
