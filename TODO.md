@@ -1,19 +1,30 @@
 
+
+Asking:
 Shadow-Clone for simulating ?
 
-Food -> kill and eat instant
+Möglich:
+- Tower u. Hero defense 
 
-Eine Task Menu:
-  - Task generate Kekse die man ohne zu viel schritte einsammeln muss
-  level 2 mit wenig codezeilen als bei level 1
-  
+TODO:
+- food und water aufüllen
+
+- Animals:
+    - Hasen die weg laufen -> abgabe
+    - Pig 
+
+- Eine Task Menu (oben links):
+    - Task generate Kekse die man ohne zu viel schritte einsammeln muss:
+        - level 2 mint wenig codezeilen als bei level 1
 
 
-Labyrinth wieso ki sinn macht:
-  - Ein Labyringth, da muss man durch mit wegfrei
+- Funktionen:
+  - weg frei
+  - wennn weg frei dann links sonst rechts 
 
-  - auf jedenfall brauchen:
-    - wegfrei 
 
-  Beim Release:
-   - night day speed of: überlegen bei leveln < 2 -> nacht rythmus fckp
+- Labyrinth durchgehen mit einem einzigen Code durchlauf
+  - TileMap Labyrinth strecke -> Abgabe
+   
+- Konstruiere Mauern und Türme mit einem Code einzigen Code durchlaufen
+
