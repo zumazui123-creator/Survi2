@@ -25,6 +25,11 @@ TODO:
 
 - Labyrinth durchgehen mit einem einzigen Code durchlauf
   - TileMap Labyrinth strecke -> Abgabe
+  - evtl kleine Rätsel einbauen
    
 - Konstruiere Mauern und Türme mit einem Code einzigen Code durchlaufen
 
+
+Beim Realease:
+  - dayNight speed 20
+  - move speed

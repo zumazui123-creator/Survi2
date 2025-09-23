@@ -25,8 +25,8 @@ var syncedPlayers = []
 
 var player_info = {"name": ""}
 
-var level :int = 0
-
+var level :int = 0 
+var a = 1
 @onready var game = get_node("/root/Game")
 func _ready():
 	multiplayer.peer_connected.connect(_on_player_connected)

@@ -12,7 +12,6 @@ var animals := {
 var consume := {
 	"food": {"hp": 10, "food": 20},
 	"berries": {"hp": 10, "food": 20},
-	"sap": {"speed": 0.2,}
 }
 
 var objects := {

@@ -58,16 +58,12 @@ func set_level_options(level : int):
 	
 	if level == 0:
 		$Enemies.maxEnemiesPerPlayer = 0
-		$Animal.maxAnimalsPerPlayer  = 50
+		$Animal.maxAnimalsPerPlayer  = 0
 		
 	if level == 1:
 		$Enemies.maxEnemiesPerPlayer = 0
 		$Animal.maxAnimalsPerPlayer  = 25
 		
 	if level == 2:
-		$Enemies.maxEnemiesPerPlayer = 5
-		$Animal.maxAnimalsPerPlayer  = 35
-			
-	if level == 3:
 		$Enemies.maxEnemiesPerPlayer = 25
-		$Animal.maxAnimalsPerPlayer  = 45
+		$Animal.maxAnimalsPerPlayer  = 6

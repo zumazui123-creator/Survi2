@@ -281,19 +281,14 @@ func sendProjectile(towards):
 	Items.spawnProjectile(self, spawnsProjectile, towards, "damageable")
 
 @rpc("authority", "call_local", "reliable")	
-func get_heal(heal_hp : float ):
+func get_heal(heal_hp : float):
 	hp += heal_hp
 	
-@rpc("authority", "call_local", "reliable")	
-func add_speed(speed : float ):
-	move_speed_factor += speed
 
 @rpc("any_peer", "call_local", "reliable")	
 func consumeItem(item, item_prop):
 	if "hp" in item_prop:
-		get_heal.rpc(item_prop["hp"])
-	if "speed" in item_prop:
-		add_speed.rpc( item_prop["speed"])
+		get_heal.rpc( 100 )#item["hp"])
 	Inventory.removeItem(str(name),item)
 
 @rpc("authority", "call_local", "reliable")

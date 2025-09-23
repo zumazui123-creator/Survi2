@@ -87,32 +87,7 @@ texture = ExtResource("2_r4dn6")
 layout_mode = 2
 text = ">"
 
-[node name="LevelContainer" type="PanelContainer" parent="VBoxContainer2"]
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_qdlud")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer2/LevelContainer"]
-layout_mode = 2
-alignment = 1
-
-[node name="Label" type="Label" parent="VBoxContainer2/LevelContainer/VBoxContainer"]
-layout_mode = 2
-text = "Level"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="LevelList" type="ItemList" parent="VBoxContainer2/LevelContainer/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-auto_width = true
-item_count = 4
-item_0/text = "Level 0"
-item_1/text = "Level 1"
-item_2/text = "Level 2"
-item_3/text = "Level 3"
-
-[node name="Button" type="Button" parent="VBoxContainer2/LevelContainer/VBoxContainer"]
+[node name="Button" type="Button" parent="VBoxContainer2/CharacterlContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4

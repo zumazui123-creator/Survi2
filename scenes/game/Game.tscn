@@ -6,11 +6,11 @@
 [node name="Game" type="Node"]
 script = ExtResource("1_gg5nw")
 
-[node name="LevelSpawner" type="MultiplayerSpawner" parent="."]
-spawn_path = NodePath("../Level")
-
 [node name="Level" type="Node" parent="."]
 unique_name_in_owner = true
+
+[node name="LevelSpawner" type="MultiplayerSpawner" parent="."]
+spawn_path = NodePath("../Level")
 
 [node name="UI" type="CanvasLayer" parent="."]
 
