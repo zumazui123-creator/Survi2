@@ -25,6 +25,8 @@ var syncedPlayers = []
 
 var player_info = {"name": ""}
 
+var level :int = 0
+
 @onready var game = get_node("/root/Game")
 func _ready():
 	multiplayer.peer_connected.connect(_on_player_connected)
@@ -110,6 +112,7 @@ func player_loaded():
 	main = game.get_node("Level/Main")
 	var mapData := {
 		"seed": mapSeed,
+		#"level": level,
 	}
 	sendGameData.rpc_id(sender_id, spawnedPlayers, mapData)
 	#print(connectedPlayers)
@@ -134,14 +137,14 @@ func _on_server_disconnected():
 func loadMap():
 	main = get_node("/root/Game/Level/Main")
 	map  = main.get_node("Map")
-	map.generateMap()
+	map.generateMap(level)
 
 func get_map_position(coords : Vector2i):
 	print("get_map_position")
 	return map.tile_map.local_to_map(coords)
 	
-func requestSpawn(playerName, id, characterFile,selcted_level : int):
-	main.set_level_options(selcted_level) 
+func requestSpawn(playerName, id, characterFile):
+	main.set_level_options(Multihelper.level) 
 	player_info["name"] = playerName
 	player_info["body"] = characterFile
 	player_info["score"] = 0
@@ -172,3 +175,6 @@ func showSpawnUI():
 	var retry = spawnPlayerScene.instantiate()
 	retry.retry = true
 	get_node("/root/Game/Level/Main/HUD").add_child(retry)
+
+func setLevel(level :int):
+	self.level = level

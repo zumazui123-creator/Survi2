@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://do5frseoo8sxj"]
 
 [ext_resource type="Script" uid="uid://ckvxoflf7pw3c" path="res://scenes/ui/spawn/spawnPlayer.gd" id="1_buuas"]
-[ext_resource type="Texture2D" uid="uid://dwepm28anrij5" path="res://assets/characters/bodies/1.png" id="2_r4dn6"]
+[ext_resource type="Texture2D" uid="uid://d3a5etq5s64gq" path="res://assets/characters/bodies/1.png" id="2_r4dn6"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qdlud"]
 bg_color = Color(0.180392, 0.180392, 0.180392, 1)
@@ -87,31 +87,7 @@ texture = ExtResource("2_r4dn6")
 layout_mode = 2
 text = ">"
 
-[node name="LevelContainer" type="PanelContainer" parent="VBoxContainer2"]
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_qdlud")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer2/LevelContainer"]
-layout_mode = 2
-alignment = 1
-
-[node name="Label" type="Label" parent="VBoxContainer2/LevelContainer/VBoxContainer"]
-layout_mode = 2
-text = "Level"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="LevelList" type="ItemList" parent="VBoxContainer2/LevelContainer/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-auto_width = true
-item_count = 3
-item_0/text = "Level 0"
-item_1/text = "Level 1"
-item_2/text = "Level 2"
-
-[node name="Button" type="Button" parent="VBoxContainer2/LevelContainer/VBoxContainer"]
+[node name="Button" type="Button" parent="VBoxContainer2/CharacterlContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -119,4 +95,4 @@ text = "Erstellen"
 
 [connection signal="pressed" from="VBoxContainer2/CharacterlContainer/VBoxContainer/BodySelectBox/prevCharacterButton" to="." method="_on_prev_character_button_pressed"]
 [connection signal="pressed" from="VBoxContainer2/CharacterlContainer/VBoxContainer/BodySelectBox/nextCharacterButton" to="." method="_on_next_character_button_pressed"]
-[connection signal="pressed" from="VBoxContainer2/LevelContainer/VBoxContainer/Button" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="VBoxContainer2/CharacterlContainer/VBoxContainer/Button" to="." method="_on_button_pressed"]

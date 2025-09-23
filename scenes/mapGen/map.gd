@@ -15,8 +15,12 @@ var walkable_tiles = []
 @onready var tile_map = $TileMap
 
 
+func generateLabyrinth():
+	full_terrain_witn_water_fields()
+
 	
-func generateMap():
+func generateMap(level : int):
+	print("generated:"+str(level))
 	noise.seed = Multihelper.mapSeed
 	noise.noise_type = FastNoiseLite.TYPE_PERLIN
 	noise.fractal_octaves = 1.1
@@ -37,6 +41,13 @@ func generate_terrain():
 			else:
 				tile_coord = waterCoors.pick_random()
 				tile_map.set_cell(Vector2i(x, y), tileset_source, tile_coord, 0)
+
+func full_terrain_witn_water_fields():
+	var tile_coord = Vector2i()
+	for y in range(map_height):
+		for x in range(map_width):
+			tile_coord = waterCoors.pick_random()
+			tile_map.set_cell(Vector2i(x, y), tileset_source, tile_coord, 0)
 
 func generate_borders():
 	var edge_x = -1

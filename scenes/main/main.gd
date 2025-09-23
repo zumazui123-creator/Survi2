@@ -2,9 +2,9 @@ extends Node2D
 
 #objects
 const initialSpawnObjects := 10
-const maxObjects := Constants.MAX_OBJECTS
+const maxObjects 	  := Constants.MAX_OBJECTS
 const objectWaveCount := 10
-var spawnedObjects := 0
+var spawnedObjects 	  := 0
 
 func _ready():
 	if multiplayer.is_server():

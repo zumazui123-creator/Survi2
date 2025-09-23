@@ -36,9 +36,14 @@ func _ready() -> void:
 	if gradient_texture == null:
 		gradient_texture = GradientTexture1D.new()
 		var g = Gradient.new()
-		g.add_point(0.0, Color(0, 0, 0))
-		g.add_point(0.5, Color(1, 1, 1))
-		g.add_point(1.0, Color(0, 0, 0))
+		g.add_point(0.0, Color(0.0, 0.02, 0.2))     # mitten in der Nacht, fast schwarz/blau
+		g.add_point(0.15, Color(0.1, 0.1, 0.5))     # früher Morgen
+		g.add_point(0.3, Color(0.4, 0.6, 1.0))      # Morgenlichte blau
+		g.add_point(0.45, Color(1.0, 0.9, 0.5))     # Sonnenaufgang gelb
+		g.add_point(0.6, Color(1.0, 0.5, 0.0))      # Sonnenuntergang orange
+		g.add_point(0.75, Color(0.8, 0.1, 0.1))     # kurz bevor Rot
+		g.add_point(0.9, Color(0.2, 0.02, 0.2))     # Abenddämmerung
+		g.add_point(1.0, Color(0.0, 0.0, 0.1))      # Nacht
 		gradient_texture.gradient = g
 		gradient_texture.width = 400
 		print("⚠️ No gradient set, using fallback.")

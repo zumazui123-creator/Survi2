@@ -14,15 +14,10 @@ func _ready():
 func _on_button_pressed():
 	if %nameInput.text == "":
 		%nameInput.text = "Unknow"
-	var selc_items = levelList.get_selected_items()
-	var selcted_level : int = 0
-	if not selc_items.is_empty():
-		selcted_level = selc_items[0]
-	print(selcted_level)
+	
 	Multihelper.requestSpawn(%nameInput.text, 
-	multiplayer.get_unique_id(), 
-	str(selectedCharacterIndex)+".png",
-	selcted_level
+		multiplayer.get_unique_id(), 
+		str(selectedCharacterIndex)+".png",
 	)
 	queue_free()
 
