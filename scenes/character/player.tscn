@@ -1,18 +1,17 @@
 [gd_scene load_steps=20 format=3 uid="uid://bmhxilkffhqa5"]
 
 [ext_resource type="Script" uid="uid://bruqpv3kpycof" path="res://scenes/character/player.gd" id="1_7xvi4"]
-[ext_resource type="Texture2D" uid="uid://cprhhbhqaij5" path="res://assets/characters/bodies/4.png" id="2_s20bt"]
-[ext_resource type="AudioStream" uid="uid://ds8a23j0eg4hy" path="res://assets/sfx/step.ogg" id="4_bflkw"]
-[ext_resource type="Texture2D" uid="uid://bnfqlk3fs5moa" path="res://assets/characters/hands/hands-sheet.png" id="4_yjkcj"]
-[ext_resource type="AudioStream" uid="uid://2kibx8mg1ogv" path="res://assets/sfx/swing.ogg" id="5_xs70q"]
+[ext_resource type="Texture2D" uid="uid://cojm327d0qfvc" path="res://assets/characters/bodies/4.png" id="2_s20bt"]
+[ext_resource type="AudioStream" uid="uid://p6udp7goe4do" path="res://assets/sfx/step.ogg" id="4_bflkw"]
+[ext_resource type="Texture2D" uid="uid://bq2x0tji1tvkq" path="res://assets/characters/hands/hands-sheet.png" id="4_yjkcj"]
+[ext_resource type="AudioStream" uid="uid://bdbqwftwm7jjj" path="res://assets/sfx/swing.ogg" id="5_xs70q"]
 [ext_resource type="Script" uid="uid://bl0tm663e7r6k" path="res://scenes/character/player_status.gd" id="7_wmtbp"]
 [ext_resource type="Script" uid="uid://dsnm03bgpmori" path="res://scenes/character/code.gd" id="8_5y66v"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_wmtbp"]
-radius = 20.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_5y66v"]
-radius = 31.0
+radius = 15.0
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5y66v"]
 

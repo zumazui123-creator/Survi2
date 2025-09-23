@@ -9,7 +9,6 @@ func spawnObjects(amount):
 	var breakableScene := preload("res://scenes/spawn/object/breakable.tscn")
 	var spawnedThisWave := 0
 	for i in range(amount):
-		print(Multihelper.map.walkable_tiles)
 		var spawnPos = Multihelper.map.tile_map.map_to_local(
 							Multihelper.map.walkable_tiles.pick_random())
 		var breakable := breakableScene.instantiate()

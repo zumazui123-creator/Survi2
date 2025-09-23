@@ -5,7 +5,7 @@ signal object_destroyed
 signal player_killed
 
 #move speed
-const TILE_SIZE = 64
+const TILE_SIZE = 32
 var direction = Vector2.ZERO
 var _pixels_moved: int = 0
 var move_speed_factor = 3
@@ -157,10 +157,16 @@ func tile_move(delta : float):
 	if _pixels_moved >= TILE_SIZE/move_speed_factor:
 		direction = Vector2.ZERO
 		_pixels_moved = 0
+		snap_to_tiles_position()
 		ws_peer.send_text("Godot: " + act)
 		act = ""
 	animate_player(direction)
-
+	
+func snap_to_tiles_position():
+	var needed_map = Multihelper.map.tile_map.local_to_map( position )
+	var needed_posi = Multihelper.map.tile_map.map_to_local( needed_map )
+	self.position = needed_posi
+	
 func animate_player(dir: Vector2):
 	if dir != Vector2.ZERO:
 		$MovingParts.rotation = dir.angle()

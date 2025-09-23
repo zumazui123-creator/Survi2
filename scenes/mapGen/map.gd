@@ -9,7 +9,7 @@ var tileset_source = 1
 
 
 # Noise parameters
-var tile_size = 64
+#var tile_size = 64
 var map_width = Constants.MAP_SIZE.x
 var map_height = Constants.MAP_SIZE.y
 
