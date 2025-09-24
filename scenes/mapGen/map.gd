@@ -2,7 +2,7 @@ extends Node2D
 
 var grassAtlasCoords = [Vector2i(0,0),Vector2i(1,0),Vector2i(2,0),Vector2i(3,0),Vector2i(16,0),Vector2i(17,0)]
 var waterCoors = [Vector2i(18,0), Vector2i(19,0)]
-var blockStoneCoors = [Vector2i(6,0),Vector2i(7,0),Vector2i(8,0),Vector2i(9,0), Vector2i(10,0)]
+#var blockStoneCoors = [Vector2i(6,0),Vector2i(7,0),Vector2i(8,0),Vector2i(9,0), Vector2i(10,0)]
 var noise = FastNoiseLite.new()
 var tileset_source = 1
 
@@ -28,10 +28,11 @@ func generateMap(level : int):
 		print("gen. level 1")
 		generate_terrain()
 		set_level_options(1)
+		generate_borders()
 	if level == 0: 
-		laby_map.generateLabyrinth(100)
+		walkable_tiles = laby_map.generateLabyrinth(1)
 		
-	generate_borders()
+	
 
 
 
@@ -88,8 +89,11 @@ func noneSpawnObjAndMobs():
 
 func set_grass_field(tile_place : Vector2i ):
 	var tile_coord = grassAtlasCoords.pick_random()
+	tile_coord = Vector2i(0,0)
 	tile_map.set_cell(tile_place, tileset_source, tile_coord, 0)
 	walkable_tiles.append(tile_place)
+	var src = tile_map.get_cell_source_id(tile_place)
+	print("set grass field: "+str(src)+"  on:"+str(tile_place))
 	
 func set_level_options(level : int):
 	print("set level options:"+str(level))

@@ -13,7 +13,7 @@ func _on_hostDebugButton_pressed():
 	var selcted_level : int = 0
 	if not selc_items.is_empty():
 		selcted_level = selc_items[0]
-	print(selcted_level)
+	print("selec levvel"+str(selcted_level))
 	Multihelper.setLevel(selcted_level)
 	Multihelper.create_game()
 
