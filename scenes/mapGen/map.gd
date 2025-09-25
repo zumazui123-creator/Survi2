@@ -90,9 +90,13 @@ func set_grass_field(tile_place : Vector2i ):
 	var tile_coord = grassAtlasCoords.pick_random()
 	tile_coord = Vector2i(0,0)
 	tile_map.set_cell(tile_place, tileset_source, tile_coord, 0)
-	walkable_tiles.append(tile_place)
-	var src = tile_map.get_cell_source_id(tile_place)
-	#print("set grass field: "+str(src)+"  on:"+str(tile_place))
+
+	
+func set_field(tile_place : Vector2i, atlasCoor : Vector2i ):
+	tile_map.set_cell(tile_place, tileset_source, atlasCoor, 0)
+
+
+
 	
 func set_level_options(level : int):
 	#print("set level options:"+str(level))

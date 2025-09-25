@@ -19,17 +19,26 @@ expand_margin_bottom = 30.0
 
 [node name="Complete" type="Control"]
 layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("1_4jwnx")
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="."]
-layout_mode = 0
-offset_left = 561.0
-offset_top = 124.0
-offset_right = 767.0
-offset_bottom = 513.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -165.0
+offset_top = -111.0
+offset_right = 113.0
+offset_bottom = 55.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_constants/separation = 100
 
 [node name="Container" type="PanelContainer" parent="VBoxContainer2"]
@@ -61,4 +70,5 @@ text = "Nochmal"
 layout_mode = 2
 text = "Nächsten Level"
 
+[connection signal="pressed" from="VBoxContainer2/Container/VBoxContainer/HBoxContainer/RetryButton" to="." method="_on_retry_button_pressed"]
 [connection signal="pressed" from="VBoxContainer2/Container/VBoxContainer/HBoxContainer/NextButton" to="." method="_on_next_button_pressed"]

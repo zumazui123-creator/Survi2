@@ -1,4 +1,4 @@
-import websocket
+import websocket # type: ignore
 import time
 import threading
 import tkinter as tk
@@ -52,6 +52,10 @@ def receiver_loop():
                     # warte auf Antwort BEVOR die nächste Aktion gesendet wird
                     reply = ws.recv()
                     log(f"✅ Received reply: {reply}")
+
+                ws.send("End Sequenz")
+                reply = ws.recv()
+                log(f"✅ Received End reply: {reply}")
 
         except Exception as e:
             log(f"⚠️ Error in receiver loop: {e}")

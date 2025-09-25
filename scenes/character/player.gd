@@ -248,6 +248,13 @@ func press_action(action : String):
 			#print("input walkDown")
 			direction = Vector2(0, 1)
 
+	if Multihelper.level in range(0,2) and "End Sequenz" in action:
+		code_edit.text = ""
+		var end = Multihelper.map.laby_map.spawnPosition
+		var start = Multihelper.map.tile_map.map_to_local( end )
+		position = start
+		ws_peer.send_text("Godot: " + action)
+		print("End Sequenz")
 
 
 
@@ -391,11 +398,6 @@ func projectileHit(body):
 
 func _on_play_button_pressed() -> void:
 	ws_peer.send_text("play_it_now\n"+code_edit.text )
-
-
-
-
-
 
 
 

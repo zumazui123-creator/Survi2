@@ -24,7 +24,7 @@ TODO:
 
 Labyrinth:
   - Labyrinth durchgehen mit einem einzigen Code durchlauf
-  
+  - TaskUI: to desrice what to do
   - evtl kleine Rätsel einbauen
 
    

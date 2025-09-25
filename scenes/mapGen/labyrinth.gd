@@ -6,6 +6,7 @@ var walkable_tiles = []
 var spawnPosition = Vector2i(0,0)
 var endPosition = Vector2i(0,0)
 var randomDirection = [Vector2i(1,0),Vector2i(-1,0),Vector2i(0,1),Vector2i(0,-1)]
+var atlasCoorWhiteField = Vector2i(11,0)
 
 func generateLabyrinth( tilesSize : int): 
 	Multihelper.setMobs(0,0,0,0)
@@ -27,4 +28,5 @@ func generateLabyrinth( tilesSize : int):
 		
 	spawnPosition = walkable_tiles[0]
 	endPosition = walkable_tiles[-1]
+	map.set_field(endPosition, atlasCoorWhiteField)
 	return walkable_tiles
