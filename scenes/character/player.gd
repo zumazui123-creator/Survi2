@@ -3,7 +3,7 @@ extends CharacterBody2D
 signal mob_killed
 signal object_destroyed
 signal player_killed
-
+#signal end_goal_reached
 #move speed
 const TILE_SIZE = 32
 var direction = Vector2.ZERO
@@ -11,7 +11,7 @@ var _pixels_moved: int = 0
 var move_speed_factor = 3
 var act : String = ""
 var attackRate : int = 1
-
+var current_map_position : Vector2i 
 
 # Server: TCP + WebSocket Upgrade
 var _tcp_server := TCPServer.new()
@@ -30,7 +30,8 @@ var time 		:= 0
 		$MovingParts/Sprite2D.texture = load("res://assets/characters/bodies/"+value)
 		
 var inventory : Control
-@onready var inventory2 : Control = $Inventory
+var completeUI : Control
+#@onready var inventory2 : Control = $Inventory #TODO ?
 
 var equippedItem : String:
 	set(value):
@@ -87,10 +88,14 @@ func _ready():
 		mob_killed.connect(mobKilled)
 		player_killed.connect(enemyPlayerKilled)
 		object_destroyed.connect(objectDestroyed)
+		#end_goal_reached.connect()
 
 	if name == str(multiplayer.get_unique_id()):
 		print("player HUD")
-		inventory = get_parent().get_parent().get_node("HUD/Inventory")
+		var main = get_parent().get_parent()
+		
+		inventory = main.get_node("HUD/Inventory")
+		completeUI = main.get_node("HUD/Complete")
 		inventory.player = self
 		$Camera2D.enabled = true
 		
@@ -139,17 +144,22 @@ func input():
 func _physics_process(delta: float) -> void:
 	if str(multiplayer.get_unique_id()) != name:
 		return
-		
+	
 	act = net_commander()
 	press_action(act)
 	input() # manuelle Eingabe
 	tile_move(delta)
+	win_condition()
 
-
+func win_condition():
+	var end_goal_position = Multihelper.map.laby_map.endPosition
+	if current_map_position == end_goal_position:
+		completeUI.visible = true
+		
 func tile_move(delta : float):
 	if not is_moving():
 		return
-			
+	
 	_pixels_moved += 1
 	velocity = direction * move_speed_factor
 	move_and_collide(velocity)
@@ -157,15 +167,15 @@ func tile_move(delta : float):
 	if _pixels_moved >= TILE_SIZE/move_speed_factor:
 		direction = Vector2.ZERO
 		_pixels_moved = 0
+		current_map_position = Multihelper.map.tile_map.local_to_map( position )
 		snap_to_tiles_position()
 		ws_peer.send_text("Godot: " + act)
 		act = ""
 	animate_player(direction)
 	
 func snap_to_tiles_position():
-	var needed_map = Multihelper.map.tile_map.local_to_map( position )
-	var needed_posi = Multihelper.map.tile_map.map_to_local( needed_map )
-	self.position = needed_posi
+	var snap_position = Multihelper.map.tile_map.map_to_local( current_map_position )
+	self.position = snap_position
 	
 func animate_player(dir: Vector2):
 	if dir != Vector2.ZERO:

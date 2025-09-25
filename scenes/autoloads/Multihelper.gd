@@ -151,28 +151,26 @@ func requestSpawn(playerName, id, characterFile):
 	player_info["score"] = 0
 	spawnedPlayers[id] = player_info
 	_register_character.rpc(player_info)
-	spawnPlayer.rpc_id(1, playerName, id, characterFile)
+	addPlayer.rpc_id(1, playerName, id, characterFile)
+	spawnPlayers()
 
 @rpc("any_peer", "call_local", "reliable")
-func spawnPlayer(playerName, id, characterFile):
+func addPlayer(playerName, id, characterFile):
 	var newPlayer := playerScenePath.instantiate()
 	newPlayer.playerName = playerName
 	newPlayer.characterFile = characterFile
 	newPlayer.name = str(id)
 	main.get_node("Players").add_child(newPlayer)
 	
-	#var spawn_tiles = [] 
-	#for vec in map.walkable_tiles:
-		#if vec.x > map.map_width*0.3 && vec.x < map.map_width*0.7:
-			#if vec.y > map.map_height*0.3 && vec.y < map.map_height*0.7:
-				#spawn_tiles.append(vec)
-	var spawnPosition = Vector2i(0,0)
-	if map.laby_map.spawnPosition > Vector2i(0,0):
-		spawnPosition = map.laby_map.spawnPosition
-	else :
-		spawnPosition = map.walkable_tiles.pick_random()
-	
-	newPlayer.sendPos.rpc(map.tile_map.map_to_local( spawnPosition ))
+func spawnPlayers():
+	var players = main.get_node("Players")
+	for newPlayer in players.get_children():
+		var spawnPosition = Vector2i(0,0)
+		if map.laby_map.spawnPosition > Vector2i(0,0):
+			spawnPosition = map.laby_map.spawnPosition
+		else :
+			spawnPosition = map.walkable_tiles.pick_random()
+		newPlayer.sendPos.rpc(map.tile_map.map_to_local( spawnPosition ))
 
 @rpc("any_peer", "call_remote", "reliable")
 func showSpawnUI():
@@ -180,6 +178,13 @@ func showSpawnUI():
 	var retry = spawnPlayerScene.instantiate()
 	retry.retry = true
 	get_node("/root/Game/Level/Main/HUD").add_child(retry)
+
+func setMobs(initialSpawnObjects : int , maxObjects : int ,
+			maxEnemiesPerPlayer : int,
+			maxAnimalsPerPlayer : int ):
+	main.setMobs( initialSpawnObjects , maxObjects ,
+			 		maxEnemiesPerPlayer,
+			 		maxAnimalsPerPlayer )
 
 func setLevel(level :int):
 	self.level = level

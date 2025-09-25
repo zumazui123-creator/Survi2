@@ -1,4 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://xisgglhsre7n"]
+[gd_scene load_steps=3 format=3 uid="uid://xisgglhsre7n"]
+
+[ext_resource type="Script" uid="uid://6pylyyv6snsr" path="res://scenes/main/HUD/complete.gd" id="1_4jwnx"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1jjuw"]
 bg_color = Color(0.180392, 0.180392, 0.180392, 1)
@@ -20,8 +22,10 @@ layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
+script = ExtResource("1_4jwnx")
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="."]
+layout_mode = 0
 offset_left = 561.0
 offset_top = 124.0
 offset_right = 767.0
@@ -56,3 +60,5 @@ text = "Nochmal"
 [node name="NextButton" type="Button" parent="VBoxContainer2/Container/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = "Nächsten Level"
+
+[connection signal="pressed" from="VBoxContainer2/Container/VBoxContainer/HBoxContainer/NextButton" to="." method="_on_next_button_pressed"]

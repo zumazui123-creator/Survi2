@@ -14,7 +14,7 @@ var map_width = Constants.MAP_SIZE.x
 var map_height = Constants.MAP_SIZE.y
 
 @onready var enemies = $"../Enemies"
-@onready var animal = $"../Animal"
+@onready var animals = $"../Animals"
 
 
 var walkable_tiles = []
@@ -24,13 +24,16 @@ var walkable_tiles = []
 
 func generateMap(level : int):
 	print("generated:"+str(level))
-	if level == 1:
+	if level == 0: 
+		walkable_tiles = laby_map.generateLabyrinth(4)
+	if level == 1: 
+		walkable_tiles = laby_map.generateLabyrinth(14)
+	if level == 2:
 		print("gen. level 1")
 		generate_terrain()
 		set_level_options(1)
 		generate_borders()
-	if level == 0: 
-		walkable_tiles = laby_map.generateLabyrinth(4)
+	
 		
 	
 
@@ -81,11 +84,7 @@ func generate_borders():
 		tile_map.set_cell(Vector2i(x2, edge_y), tileset_source, tile_coord, 0)
 		tile_map.set_cell(Vector2i(x2, edge_y2), tileset_source, tile_coord, 0)
 
-func noneSpawnObjAndMobs():
-	Constants.INITAL_OBJECTS 	= 0
-	Constants.MAX_OBJECTS		= 0
-	Constants.MAX_ENEMIES_PER_PLAYER = 0
-	Constants.MAX_ANIMALS_PER_PLAYER = 0
+
 
 func set_grass_field(tile_place : Vector2i ):
 	var tile_coord = grassAtlasCoords.pick_random()
@@ -93,19 +92,19 @@ func set_grass_field(tile_place : Vector2i ):
 	tile_map.set_cell(tile_place, tileset_source, tile_coord, 0)
 	walkable_tiles.append(tile_place)
 	var src = tile_map.get_cell_source_id(tile_place)
-	print("set grass field: "+str(src)+"  on:"+str(tile_place))
+	#print("set grass field: "+str(src)+"  on:"+str(tile_place))
 	
 func set_level_options(level : int):
-	print("set level options:"+str(level))
+	#print("set level options:"+str(level))
 	
 	if level == 0:
 		enemies.maxEnemiesPerPlayer = 0
-		animal.maxAnimalsPerPlayer  = 0
+		animals.maxAnimalsPerPlayer  = 0
 		
 	if level == 1:
 		enemies.maxEnemiesPerPlayer = 0
-		animal.maxAnimalsPerPlayer  = 25
+		animals.maxAnimalsPerPlayer  = 25
 		
 	if level == 2:
 		enemies.maxEnemiesPerPlayer = 25
-		animal.maxAnimalsPerPlayer  = 6
+		animals.maxAnimalsPerPlayer  = 6

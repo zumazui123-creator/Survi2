@@ -33,7 +33,7 @@ script = ExtResource("1_5kenc")
 [node name="Enemies" type="Node2D" parent="."]
 script = ExtResource("3_th5th")
 
-[node name="Animal" type="Node2D" parent="."]
+[node name="Animals" type="Node2D" parent="."]
 script = ExtResource("4_th5th")
 
 [node name="Projectiles" type="Node2D" parent="."]
@@ -58,7 +58,6 @@ offset_right = 1.0
 offset_bottom = -1.0
 
 [node name="SpawnPlayer" parent="HUD" instance=ExtResource("2_ajc02")]
-visible = false
 
 [node name="Inventory" parent="HUD" instance=ExtResource("6_tq15c")]
 
@@ -72,6 +71,7 @@ offset_right = 200.0
 offset_bottom = -30.0
 
 [node name="Complete" parent="HUD" instance=ExtResource("13_raeie")]
+visible = false
 
 [node name="PlayerSpawner" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("uid://bmhxilkffhqa5")

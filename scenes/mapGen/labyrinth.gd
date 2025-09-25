@@ -8,9 +8,9 @@ var endPosition = Vector2i(0,0)
 var randomDirection = [Vector2i(1,0),Vector2i(-1,0),Vector2i(0,1),Vector2i(0,-1)]
 
 func generateLabyrinth( tilesSize : int): 
-	map.noneSpawnObjAndMobs()
+	Multihelper.setMobs(0,0,0,0)
 	map.full_terrain_with_water_fields()
-
+	walkable_tiles = []
 	var tile_coord = Vector2i()
 
 	var walkVec = Vector2i(int(map.map_height/2),int(map.map_width/2)) 
@@ -21,7 +21,7 @@ func generateLabyrinth( tilesSize : int):
 		var wide = randi() % 5
 		for i in range(wide):
 			walkVec += randomVec
-			print("tile:"+str(tile)+str(walkVec))
+			#print("tile:"+str(tile)+str(walkVec))
 			map.set_grass_field(walkVec)
 			walkable_tiles.append(walkVec)
 		
