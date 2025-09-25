@@ -30,7 +30,7 @@ func generateMap(level : int):
 		set_level_options(1)
 		generate_borders()
 	if level == 0: 
-		walkable_tiles = laby_map.generateLabyrinth(1)
+		walkable_tiles = laby_map.generateLabyrinth(4)
 		
 	
 

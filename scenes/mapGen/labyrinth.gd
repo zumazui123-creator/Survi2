@@ -17,16 +17,14 @@ func generateLabyrinth( tilesSize : int):
 	var randomVec = Vector2i()
 	for tile in range(tilesSize): 
 		
-		#randomVec = randomDirection.pick_random()
-		#var wide = randi() % 5
-		##for i in range(1): #TODO range(wide)
-			#walkVec += randomVec
-		for i in range(3):
-			walkVec += Vector2i(1,0)
+		randomVec = randomDirection.pick_random()
+		var wide = randi() % 5
+		for i in range(wide):
+			walkVec += randomVec
 			print("tile:"+str(tile)+str(walkVec))
 			map.set_grass_field(walkVec)
 			walkable_tiles.append(walkVec)
 		
 	spawnPosition = walkable_tiles[0]
-	#endPosition = walkable_tiles[-1]
+	endPosition = walkable_tiles[-1]
 	return walkable_tiles

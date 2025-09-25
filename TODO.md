@@ -22,10 +22,11 @@ TODO:
   - weg frei
   - wennn weg frei dann links sonst rechts 
 
-
-- Labyrinth durchgehen mit einem einzigen Code durchlauf
-  - TileMap Labyrinth strecke -> Abgabe
+Labyrinth:
+  - Labyrinth durchgehen mit einem einzigen Code durchlauf
+  
   - evtl kleine Rätsel einbauen
+
    
 - Konstruiere Mauern und Türme mit einem Code einzigen Code durchlaufen
 
