@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://bmhxilkffhqa5"]
+[gd_scene load_steps=21 format=3 uid="uid://bmhxilkffhqa5"]
 
 [ext_resource type="Script" uid="uid://bruqpv3kpycof" path="res://scenes/character/player.gd" id="1_7xvi4"]
 [ext_resource type="Texture2D" uid="uid://cprhhbhqaij5" path="res://assets/characters/bodies/4.png" id="2_s20bt"]
@@ -42,6 +42,21 @@ expand_margin_left = 2.0
 expand_margin_top = 2.0
 expand_margin_right = 2.0
 expand_margin_bottom = 2.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wmtbp"]
+bg_color = Color(0.180392, 0.180392, 0.180392, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+expand_margin_left = 30.0
+expand_margin_top = 30.0
+expand_margin_right = 30.0
+expand_margin_bottom = 30.0
 
 [sub_resource type="Animation" id="Animation_l6e13"]
 resource_name = "punching"
@@ -395,21 +410,21 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 1
 
-[node name="HydrationBar" type="ProgressBar" parent="PlayerStatus"]
+[node name="Bar" type="GridContainer" parent="PlayerStatus"]
+layout_mode = 0
+offset_left = -596.0
+offset_top = -59.0
+offset_right = -496.0
+offset_bottom = -1.0
+
+[node name="HydrationBar" type="ProgressBar" parent="PlayerStatus/Bar"]
 modulate = Color(0, 0.491312, 0.491312, 1)
 self_modulate = Color(0.0216716, 0, 0.829495, 1)
-layout_mode = 1
-anchors_preset = 4
-anchor_top = 0.5
-anchor_bottom = 0.5
-offset_left = -579.0
-offset_top = -285.0
-offset_right = -479.0
-offset_bottom = -258.0
-grow_vertical = 2
+layout_mode = 2
+size_flags_horizontal = 3
 rounded = true
 
-[node name="WasserLabel" type="Label" parent="PlayerStatus/HydrationBar"]
+[node name="WasserLabel" type="Label" parent="PlayerStatus/Bar/HydrationBar"]
 modulate = Color(0.00130165, 0.129496, 0.566333, 1)
 layout_mode = 1
 offset_left = 112.0
@@ -418,20 +433,13 @@ offset_right = 169.0
 offset_bottom = 25.0
 text = "Wasser"
 
-[node name="FoodBar" type="ProgressBar" parent="PlayerStatus"]
+[node name="FoodBar" type="ProgressBar" parent="PlayerStatus/Bar"]
 modulate = Color(0.227451, 0.12549, 0.0588235, 1)
-layout_mode = 1
-anchors_preset = 4
-anchor_top = 0.5
-anchor_bottom = 0.5
-offset_left = -579.0
-offset_top = -252.0
-offset_right = -479.0
-offset_bottom = -225.0
-grow_vertical = 2
+layout_mode = 2
+size_flags_horizontal = 3
 rounded = true
 
-[node name="FoodLabel" type="Label" parent="PlayerStatus/FoodBar"]
+[node name="FoodLabel" type="Label" parent="PlayerStatus/Bar/FoodBar"]
 modulate = Color(0.22673, 0.127422, 0.0601467, 1)
 layout_mode = 1
 offset_left = 112.0
@@ -439,6 +447,36 @@ offset_top = 2.0
 offset_right = 169.0
 offset_bottom = 25.0
 text = "Essen"
+
+[node name="Container" type="PanelContainer" parent="PlayerStatus"]
+layout_mode = 2
+offset_left = -568.0
+offset_top = -240.0
+offset_right = -342.0
+offset_bottom = -140.0
+grow_vertical = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_wmtbp")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PlayerStatus/Container"]
+layout_mode = 2
+size_flags_vertical = 0
+alignment = 1
+
+[node name="Label" type="Label" parent="PlayerStatus/Container/VBoxContainer"]
+layout_mode = 2
+text = "Aufgaben"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="PlayerStatus/Container/VBoxContainer"]
+layout_mode = 2
+
+[node name="workTaskText" type="RichTextLabel" parent="PlayerStatus/Container/VBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+text = "- Gehe zum weissem Feld"
+fit_content = true
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {

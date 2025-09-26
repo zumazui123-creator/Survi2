@@ -170,13 +170,21 @@ func spawnPlayers():
 			spawnPosition = map.laby_map.spawnPosition
 		else :
 			spawnPosition = map.walkable_tiles.pick_random()
+		newPlayer.workTaskText.text = workTask.getWorkTask(self.level)
 		newPlayer.sendPos.rpc(map.tile_map.map_to_local( spawnPosition ))
+
+func rebornPlayer(playerId : String):
+	var players = main.get_node("Players")
+	for player in players.get_children():
+		if player.name == playerId:
+			player.hp = 100
 
 @rpc("any_peer", "call_remote", "reliable")
 func showSpawnUI():
 	var spawnPlayerScene := preload("res://scenes/ui/spawn/spawnPlayer.tscn")
 	var retry = spawnPlayerScene.instantiate()
 	retry.retry = true
+	retry.visible = true
 	get_node("/root/Game/Level/Main/HUD").add_child(retry)
 
 func setMobs(initialSpawnObjects : int , maxObjects : int ,

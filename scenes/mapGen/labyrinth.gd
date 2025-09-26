@@ -2,9 +2,10 @@ extends Node
 
 @onready var map = $".."
 
+
 var walkable_tiles = []
 var spawnPosition = Vector2i(0,0)
-var endPosition = Vector2i(0,0)
+var endPosition = Vector2i(-10,-10)
 var randomDirection = [Vector2i(1,0),Vector2i(-1,0),Vector2i(0,1),Vector2i(0,-1)]
 var atlasCoorWhiteField = Vector2i(11,0)
 

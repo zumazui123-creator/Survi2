@@ -26,7 +26,7 @@ func getNRandomNavigableTileInPlayerRadius(playerId, n, minR, maxR) -> Array:
 	#print("getNRandomNavigableTileInPlayerRadius")
 	var tiles = getNavigableTiles(playerId, minR, maxR)
 	var randomPositions := []
-	if tiles.is_empty():
+	if tiles == null or tiles.is_empty():
 		return []
 	for i in range(n):
 		randomPositions.append(tilemap.map_to_local(tiles.pick_random()))

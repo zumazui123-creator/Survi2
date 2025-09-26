@@ -63,33 +63,63 @@ size_flags_vertical = 3
 script = ExtResource("1_3oxb4")
 metadata/_edit_use_anchors_ = true
 
-[node name="LevelContainer" type="PanelContainer" parent="."]
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -63.0
-offset_top = -14.0
-offset_right = 63.0
-offset_bottom = 143.0
+offset_left = -164.0
+offset_top = -20.0
+offset_right = -10.0
+offset_bottom = 188.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 100
+
+[node name="LevelContainer2" type="PanelContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_wx4k7")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="LevelContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/LevelContainer2"]
 layout_mode = 2
 alignment = 1
 
-[node name="Label" type="Label" parent="LevelContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="HBoxContainer/LevelContainer2/VBoxContainer"]
 layout_mode = 2
-text = "Level"
+text = "Main-Level"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="LevelList" type="ItemList" parent="LevelContainer/VBoxContainer"]
+[node name="MainLevelList" type="ItemList" parent="HBoxContainer/LevelContainer2/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+auto_width = true
+item_count = 3
+item_0/text = "Level 0"
+item_1/text = "Level 1"
+item_2/text = "Level 2"
+
+[node name="LevelContainer" type="PanelContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_wx4k7")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/LevelContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="HBoxContainer/LevelContainer/VBoxContainer"]
+layout_mode = 2
+text = "Labyrinth-Level"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="LabyrinthLevelList" type="ItemList" parent="HBoxContainer/LevelContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 auto_width = true
@@ -136,5 +166,7 @@ libraries = {
 }
 autoplay = "loop"
 
+[connection signal="item_selected" from="HBoxContainer/LevelContainer2/VBoxContainer/MainLevelList" to="." method="_on_main_level_list_item_selected"]
+[connection signal="item_selected" from="HBoxContainer/LevelContainer/VBoxContainer/LabyrinthLevelList" to="." method="_on_labyrinth_level_list_item_selected"]
 [connection signal="pressed" from="PanelContainer/VBoxContainer/Button" to="." method="_on_hostDebugButton_pressed"]
 [connection signal="timeout" from="connectTimer" to="." method="_on_connect_timer_timeout"]

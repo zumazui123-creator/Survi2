@@ -13,6 +13,8 @@ var act : String = ""
 var attackRate : int = 1
 var current_map_position : Vector2i 
 
+@onready var workTaskText = $PlayerStatus/Container/VBoxContainer/workTaskText
+
 # Server: TCP + WebSocket Upgrade
 var _tcp_server := TCPServer.new()
 var _ws_peers 	:= []  # Liste der aktiven WebSocket-Verbindungen
@@ -30,7 +32,7 @@ var time 		:= 0
 		$MovingParts/Sprite2D.texture = load("res://assets/characters/bodies/"+value)
 		
 var inventory : Control
-var completeUI : Control
+var EndUI : Control
 #@onready var inventory2 : Control = $Inventory #TODO ?
 
 var equippedItem : String:
@@ -44,7 +46,7 @@ var equippedItem : String:
 			spawnsProjectile = ""
 
 #stats
-@export var maxHP := 250.0
+@export var maxHP := 1.0
 @export var hp := maxHP:
 	set(value):
 		hp = value
@@ -95,7 +97,7 @@ func _ready():
 		var main = get_parent().get_parent()
 		
 		inventory = main.get_node("HUD/Inventory")
-		completeUI = main.get_node("HUD/Complete")
+		EndUI = main.get_node("HUD/EndUI")
 		inventory.player = self
 		$Camera2D.enabled = true
 		
@@ -152,9 +154,15 @@ func _physics_process(delta: float) -> void:
 	win_condition()
 
 func win_condition():
-	var end_goal_position = Multihelper.map.laby_map.endPosition
-	if current_map_position == end_goal_position:
-		completeUI.visible = true
+	if Multihelper.level > 99:
+		var end_goal_position = Multihelper.map.laby_map.endPosition
+		if current_map_position == end_goal_position:
+			EndUI.setLabel("Level Abgeschlossen!")
+			EndUI.visible = true
+	#if self.hp < 1:
+		#EndUI.setLabel("YOU DIED!")
+		#EndUI.setPlayerStatus(true, self.name)
+		#EndUI.visible = true
 		
 func tile_move(delta : float):
 	if not is_moving():
@@ -346,8 +354,10 @@ func die():
 	#Multihelper._deregister_character.rpc(peerId) # für Server
 	dropInventory()
 	queue_free()
-	if peerId in multiplayer.get_peers():
-		Multihelper.showSpawnUI.rpc_id(peerId)
+	Multihelper.showSpawnUI.rpc_id(peerId)
+	
+	#if peerId in multiplayer.get_peers(): # Multiplayer Server
+		#Multihelper.showSpawnUI.rpc_id(peerId)
 		
 func dropInventory():
 	var inventoryDict = Inventory.inventories

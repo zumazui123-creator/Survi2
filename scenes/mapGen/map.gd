@@ -24,15 +24,16 @@ var walkable_tiles = []
 
 func generateMap(level : int):
 	print("generated:"+str(level))
-	if level == 0: 
+	if level == 100: 
 		walkable_tiles = laby_map.generateLabyrinth(4)
-	if level == 1: 
+	if level == 101: 
 		walkable_tiles = laby_map.generateLabyrinth(14)
-	if level == 2:
-		print("gen. level 1")
+	if level < 99:
+		print("gen. level "+str(level))
 		generate_terrain()
-		set_level_options(1)
+		set_level_options(level)
 		generate_borders()
+
 	
 		
 	

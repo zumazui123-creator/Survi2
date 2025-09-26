@@ -1,8 +1,8 @@
 extends Control
 
 @onready var player = $".."
-@onready var hydrationBar = $HydrationBar
-@onready var foodBar 	  = $FoodBar
+@onready var hydrationBar = $Bar/HydrationBar
+@onready var foodBar 	  = $Bar/FoodBar
 @onready var dayNight 	  = $"../../../dayNight"
 
 var last_time_hydration: int = 0

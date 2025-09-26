@@ -23,11 +23,13 @@ TODO:
   - wennn weg frei dann links sonst rechts 
 
 Labyrinth:
-  - Labyrinth durchgehen mit einem einzigen Code durchlauf
-  - TaskUI: to desrice what to do
+  - Labyrinth Level richtig einornden entweder mit int oder string
   - evtl kleine Rätsel einbauen
+  - zeitliche Fallen ähnlich wie bei Tomb raider z.B.: Tiles mit Stacheln
 
-   
+Power Ups:
+  - Oben recht  zwischen zeit und AufgabenUI kann man wie bei Lineage Power ups icon reinbauen.
+
 - Konstruiere Mauern und Türme mit einem Code einzigen Code durchlaufen
 
 

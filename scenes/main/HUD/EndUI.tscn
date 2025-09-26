@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://xisgglhsre7n"]
 
-[ext_resource type="Script" uid="uid://6pylyyv6snsr" path="res://scenes/main/HUD/complete.gd" id="1_4jwnx"]
+[ext_resource type="Script" uid="uid://6pylyyv6snsr" path="res://scenes/main/HUD/EndUI.gd" id="1_4jwnx"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1jjuw"]
 bg_color = Color(0.180392, 0.180392, 0.180392, 1)
@@ -17,7 +17,7 @@ expand_margin_top = 30.0
 expand_margin_right = 30.0
 expand_margin_bottom = 30.0
 
-[node name="Complete" type="Control"]
+[node name="EndUI" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0

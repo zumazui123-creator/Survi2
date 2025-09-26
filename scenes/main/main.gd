@@ -1,5 +1,5 @@
 extends Node2D
-@onready var completeUI = $HUD/Complete
+
 
 func _ready():
 	if multiplayer.is_server():
@@ -19,13 +19,11 @@ func setMobs(initialSpawnObjects : int , maxObjects : int ,
 			maxEnemiesPerPlayer : int,
 			maxAnimalsPerPlayer : int ):
 	$Objects.initialSpawnObjects = initialSpawnObjects
-	$Objects.maxObjects = maxObjects
+	$Objects.maxObjects 			 = maxObjects
 	$Enemies.maxEnemiesPerPlayer = maxEnemiesPerPlayer
 	$Animals.maxAnimalsPerPlayer = maxAnimalsPerPlayer
 
-func setHideComplete(visible : bool):
-	print("setHideComplete:"+str(visible))
-	completeUI.visible = visible
+
 
 func trySpawnObjectWave():
 	#print("SpawnObjects: "+ str(spawnedObjects)+ " maxObjects: "+str(maxObjects) )
