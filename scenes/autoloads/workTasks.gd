@@ -5,10 +5,9 @@ var workTask := {
 	"MainTask": "- Überlebe so viele Tage wie möglich",
 }
 
-func getWorkTask(level : int) -> String:
-	if level < 99:
+func getWorkTask(level : Dictionary) -> String:
+	if level["type"] == 1:
 		return workTask["MainTask"]
-	if level > 99:
+	if level["type"] == 100:
 		return workTask["LabyrinthTask"]
-	
 	return ""

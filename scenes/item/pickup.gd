@@ -10,4 +10,5 @@ extends Area2D
 func _on_body_entered(body):
 	#if multiplayer.is_server() and body.is_in_group("player"):
 	queue_free()
-	Inventory.addItem(body.name, itemId, stackCount)
+	if body.is_in_group("player"):
+		Inventory.addItem(body.name, itemId, stackCount)

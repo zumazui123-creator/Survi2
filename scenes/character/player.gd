@@ -46,7 +46,7 @@ var equippedItem : String:
 			spawnsProjectile = ""
 
 #stats
-@export var maxHP := 1.0
+@export var maxHP := 250.0
 @export var hp := maxHP:
 	set(value):
 		hp = value
@@ -154,15 +154,13 @@ func _physics_process(delta: float) -> void:
 	win_condition()
 
 func win_condition():
-	if Multihelper.level > 99:
+	if Multihelper.level["type"] == 100:
 		var end_goal_position = Multihelper.map.laby_map.endPosition
 		if current_map_position == end_goal_position:
+			current_map_position = Vector2i()
 			EndUI.setLabel("Level Abgeschlossen!")
 			EndUI.visible = true
-	#if self.hp < 1:
-		#EndUI.setLabel("YOU DIED!")
-		#EndUI.setPlayerStatus(true, self.name)
-		#EndUI.visible = true
+
 		
 func tile_move(delta : float):
 	if not is_moving():
@@ -351,11 +349,10 @@ func die():
 	if !multiplayer.is_server():
 		return
 	var peerId := int(str(name))
-	#Multihelper._deregister_character.rpc(peerId) # für Server
+	Multihelper._deregister_character.rpc(peerId) # für Server
 	dropInventory()
-	queue_free()
 	Multihelper.showSpawnUI.rpc_id(peerId)
-	
+	queue_free()
 	#if peerId in multiplayer.get_peers(): # Multiplayer Server
 		#Multihelper.showSpawnUI.rpc_id(peerId)
 		

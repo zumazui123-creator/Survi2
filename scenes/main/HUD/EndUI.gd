@@ -18,13 +18,14 @@ func _on_next_button_pressed() -> void:
 		print("DIED")
 		Multihelper.rebornPlayer(playerId)
 
-	if	Multihelper.level > 99:
-		Multihelper.level += 1
+	if Multihelper.level["type"] == 100:
+		Multihelper.level = Levels.LabyrinthLevels[Multihelper.level["level"]+1]
 	Multihelper.map.generateMap(Multihelper.level)
 	Multihelper.spawnPlayers()
 
 
 func _on_retry_button_pressed() -> void:
-	self.visible = true
 	Multihelper.spawnPlayers()
+	self.visible = false
+	
 	

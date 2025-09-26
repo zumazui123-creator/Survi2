@@ -98,10 +98,6 @@ vertical_alignment = 1
 layout_mode = 2
 size_flags_vertical = 3
 auto_width = true
-item_count = 3
-item_0/text = "Level 0"
-item_1/text = "Level 1"
-item_2/text = "Level 2"
 
 [node name="LevelContainer" type="PanelContainer" parent="HBoxContainer"]
 layout_mode = 2
@@ -123,10 +119,6 @@ vertical_alignment = 1
 layout_mode = 2
 size_flags_vertical = 3
 auto_width = true
-item_count = 3
-item_0/text = "Level 0"
-item_1/text = "Level 1"
-item_2/text = "Level 2"
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
 custom_minimum_size = Vector2(215, 75)

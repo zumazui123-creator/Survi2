@@ -3,7 +3,7 @@ extends Node
 var playerScenePath = preload("res://scenes/character/player.tscn")
 var isHost = false
 var mapSeed = randi()
-var level :int = 0 
+var level : Dictionary = {"level": 0,"type": 100}
 
 var map: Node2D
 var main: Node2D
@@ -156,7 +156,7 @@ func requestSpawn(playerName, id, characterFile):
 
 @rpc("any_peer", "call_local", "reliable")
 func addPlayer(playerName, id, characterFile):
-	var newPlayer := playerScenePath.instantiate()
+	var newPlayer 		:= playerScenePath.instantiate()
 	newPlayer.playerName = playerName
 	newPlayer.characterFile = characterFile
 	newPlayer.name = str(id)
@@ -173,19 +173,22 @@ func spawnPlayers():
 		newPlayer.workTaskText.text = workTask.getWorkTask(self.level)
 		newPlayer.sendPos.rpc(map.tile_map.map_to_local( spawnPosition ))
 
-func rebornPlayer(playerId : String):
-	var players = main.get_node("Players")
-	for player in players.get_children():
-		if player.name == playerId:
-			player.hp = 100
+#func rebornPlayer(playerId : String):
+	#var players = main.get_node("Players")
+	#for player in players.get_children():
+		#if player.name == playerId:
+			#player.hp = 100
 
-@rpc("any_peer", "call_remote", "reliable")
+#@rpc("any_peer", "call_remote", "reliable") #Server maybe copy method showSpawnUI and make 2 ways local and remote
+@rpc("call_local" ,"any_peer", "reliable")
 func showSpawnUI():
+	print("showSpawnUI")
 	var spawnPlayerScene := preload("res://scenes/ui/spawn/spawnPlayer.tscn")
-	var retry = spawnPlayerScene.instantiate()
-	retry.retry = true
+	var retry 	  = spawnPlayerScene.instantiate()
+	retry.retry   = true
 	retry.visible = true
-	get_node("/root/Game/Level/Main/HUD").add_child(retry)
+	main.get_node("HUD").add_child(retry)
+
 
 func setMobs(initialSpawnObjects : int , maxObjects : int ,
 			maxEnemiesPerPlayer : int,
@@ -194,5 +197,5 @@ func setMobs(initialSpawnObjects : int , maxObjects : int ,
 			 		maxEnemiesPerPlayer,
 			 		maxAnimalsPerPlayer )
 
-func setLevel(level :int):
+func setLevel(level : Dictionary):
 	self.level = level

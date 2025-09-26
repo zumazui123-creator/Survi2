@@ -22,17 +22,21 @@ var walkable_tiles = []
 @onready var laby_map = $Labyrinth
 
 
-func generateMap(level : int):
-	print("generated:"+str(level))
-	if level == 100: 
-		walkable_tiles = laby_map.generateLabyrinth(4)
-	if level == 101: 
-		walkable_tiles = laby_map.generateLabyrinth(14)
-	if level < 99:
-		print("gen. level "+str(level))
-		generate_terrain()
-		set_level_options(level)
-		generate_borders()
+func generateMap(level_dict : Dictionary):
+	print("generated:"+str(level_dict))
+	var level = level_dict["level"]
+	var level_type = level_dict["type"]
+	if level_type == 100:
+		if level == 0: 
+			walkable_tiles = laby_map.generateLabyrinth(4)
+		if level == 1: 
+			walkable_tiles = laby_map.generateLabyrinth(14)
+			
+	if level_type == 1:
+			print("gen. level "+str(level))
+			generate_terrain()
+			set_level_options(level)
+			generate_borders()
 
 	
 		
