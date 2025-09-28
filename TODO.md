@@ -26,12 +26,21 @@ Labyrinth:
   - Labyrinth Level richtig einornden entweder mit int oder string
   - evtl kleine Rätsel einbauen
   - zeitliche Fallen ähnlich wie bei Tomb raider z.B.: Tiles mit Stacheln
+  - Learning:
+    - merken und lernen von coden
+    - einen Algo. bauen, der meisten zum Ziel führt
 
 Power Ups:
   - Oben recht  zwischen zeit und AufgabenUI kann man wie bei Lineage Power ups icon reinbauen.
 
 - Konstruiere Mauern und Türme mit einem Code einzigen Code durchlaufen
 
+KI:
+  - UI links Player Character und recht Code-UI
+  - UI so implementieren das
+    - bei paar Buttons oder eingetippen Code, viel optisches "passiert" sagen wir ähnlich wie bei "pacman -S vim"
+      - KI wird initialsiert, Spiel Umgebung wird Eingeladen etc.
+  - BelohnungsSystem und StrafSys: drag and drop von yellow and red button to a slot or tile??
 
 Beim Realease:
   - dayNight speed 20
