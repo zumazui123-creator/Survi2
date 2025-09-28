@@ -15,8 +15,6 @@ func setPlayerName(newName:String):
 	%nameLabel.text = newName
 	resizeNameToFit()
 	
-
-
 func setHPBarRatio(ratio):
 	%hpBar.value = ratio
 
@@ -30,7 +28,7 @@ func getPlayerStatus():
 		playerStatus = {"hp": %hpBar.value, 
 		"foodBar": foodBar.value,
 		"hydrationBar": hydrationBar.value,
-		"moveSpeed": 3,
+		"moveSpeed": player.move_speed_factor,
 		"attackDmg": player.attackDamage,
 		"attackRate": player.attackRate,
 		"attackRange": player.attackRange,

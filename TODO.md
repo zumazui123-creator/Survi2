@@ -36,6 +36,7 @@ Power Ups:
 - Konstruiere Mauern und Türme mit einem Code einzigen Code durchlaufen
 
 KI:
+  - Umbauen Py script und Godot: wie gpt umsetzten ... main pc arbeiten
   - UI links Player Character und recht Code-UI
   - UI so implementieren das
     - bei paar Buttons oder eingetippen Code, viel optisches "passiert" sagen wir ähnlich wie bei "pacman -S vim"
