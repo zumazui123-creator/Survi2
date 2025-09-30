@@ -12,7 +12,7 @@ var move_speed_factor = 3
 var act : String = ""
 var attackRate : int = 1
 var current_map_position : Vector2i 
-
+@onready var status = $PlayerStatus
 @onready var workTaskText = $PlayerStatus/Container/VBoxContainer/workTaskText
 
 # Server: TCP + WebSocket Upgrade
@@ -212,6 +212,22 @@ func net_commander() -> String:
 				#print("Empfangen: ", packet)
 				var lines = packet.split(",", false) 
 				action = lines[0].strip_edges() 
+				
+				if action == "reset":
+					Multihelper.spawnPlayers()
+					
+					
+					
+				# Status als JSON zurückschicken TODO 
+				if status != null:
+					var tmp_status = status.getPlayerStatus()
+					var obs = {
+						"pos": tmp_status["position"],
+						"reward": 0, # TODO: Reward-Logik
+						"done": false,
+						"status": tmp_status
+					}
+					ws_peer.send_text(JSON.stringify(obs))
 		
 		elif state == WebSocketPeer.STATE_CLOSED:
 			_ws_peers.erase(ws_peer)

@@ -11,6 +11,8 @@ var hydration_rate: int = 2
 var food_rate: int = 5
 var playerStatus := {}
 
+
+
 func setPlayerName(newName:String):
 	%nameLabel.text = newName
 	resizeNameToFit()
@@ -34,7 +36,7 @@ func getPlayerStatus():
 		"attackRange": player.attackRange,
 		"damageType": player.damageType,
 		"name": %nameLabel.text,
-		"position": player.position,
+		"position": [player.position.x, player.position.y],
 		"items": Inventory.getItems(str(player.name)),
 		"time": 3 #TODO
 		}
