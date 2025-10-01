@@ -13,7 +13,7 @@ var act : String = ""
 var attackRate : int = 1
 var current_map_position : Vector2i 
 @onready var status = $PlayerStatus
-@onready var workTaskText = $PlayerStatus/Container/VBoxContainer/workTaskText
+@onready var workTaskText = $PlayerStatus/WorkContainer/VBoxContainer/workTaskText
 
 # Server: TCP + WebSocket Upgrade
 var _tcp_server := TCPServer.new()
@@ -149,7 +149,7 @@ func _physics_process(delta: float) -> void:
 	
 	act = net_commander()
 	press_action(act)
-	input() # manuelle Eingabe
+	#input() # manuelle Eingabe
 	tile_move(delta)
 	win_condition()
 
@@ -160,8 +160,8 @@ func win_condition():
 			current_map_position = Vector2i()
 			EndUI.setLabel("Level Abgeschlossen!")
 			EndUI.visible = true
-
 		
+			
 func tile_move(delta : float):
 	if not is_moving():
 		return
@@ -213,21 +213,23 @@ func net_commander() -> String:
 				var lines = packet.split(",", false) 
 				action = lines[0].strip_edges() 
 				
+				if action == "End Sequenz":
+					Multihelper.spawnPlayers()
+					ws_peer.send_text(action)
+					
+					
 				if action == "reset":
 					Multihelper.spawnPlayers()
-					
-					
-					
 				# Status als JSON zurückschicken TODO 
-				if status != null:
-					var tmp_status = status.getPlayerStatus()
-					var obs = {
-						"pos": tmp_status["position"],
-						"reward": 0, # TODO: Reward-Logik
-						"done": false,
-						"status": tmp_status
-					}
-					ws_peer.send_text(JSON.stringify(obs))
+				#if status != null:
+					#var tmp_status = status.getPlayerStatus()
+					#var obs = {
+						#"pos": tmp_status["position"],
+						#"reward": 0, # TODO: Reward-Logik
+						#"done": false,
+						#"status": tmp_status
+					#}
+					#ws_peer.send_text(JSON.stringify(obs))
 		
 		elif state == WebSocketPeer.STATE_CLOSED:
 			_ws_peers.erase(ws_peer)

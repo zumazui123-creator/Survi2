@@ -27,7 +27,7 @@ func resizeNameToFit():
 		%nameLabel.set("theme_override_font_sizes/font_size", fontSize)
 
 func getPlayerStatus():
-		playerStatus = {"hp": %hpBar.value, 
+	playerStatus = {"hp": %hpBar.value, 
 		"foodBar": foodBar.value,
 		"hydrationBar": hydrationBar.value,
 		"moveSpeed": player.move_speed_factor,
@@ -40,6 +40,7 @@ func getPlayerStatus():
 		"items": Inventory.getItems(str(player.name)),
 		"time": 3 #TODO
 		}
+	return playerStatus
 
 
 func _ready() -> void:

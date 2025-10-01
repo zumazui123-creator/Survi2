@@ -9,5 +9,5 @@ func getWorkTask(level : Dictionary) -> String:
 	if level["type"] == 1:
 		return workTask["MainTask"]
 	if level["type"] == 100:
-		return workTask["LabyrinthTask"]
+		return workTask["LabyrinthTask"] + "\n Labyrinth Level:"+str(level["level"])
 	return ""

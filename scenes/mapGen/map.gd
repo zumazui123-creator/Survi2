@@ -27,10 +27,16 @@ func generateMap(level_dict : Dictionary):
 	var level = level_dict["level"]
 	var level_type = level_dict["type"]
 	if level_type == 100:
-		if level == 0: 
-			walkable_tiles = laby_map.generateLabyrinth(4)
-		if level == 1: 
-			walkable_tiles = laby_map.generateLabyrinth(14)
+		var level_hard_count = level+5
+		var way_size 		 = 5
+		if level > 10:
+			level_hard_count += 10
+			way_size = 7
+		if level > 20:
+			level_hard_count += 15
+			way_size = 10
+		walkable_tiles = laby_map.generateLabyrinth(level_hard_count,way_size)
+		
 			
 	if level_type == 1:
 			print("gen. level "+str(level))

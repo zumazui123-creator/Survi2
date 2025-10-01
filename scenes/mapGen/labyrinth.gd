@@ -9,7 +9,7 @@ var endPosition = Vector2i(-10,-10)
 var randomDirection = [Vector2i(1,0),Vector2i(-1,0),Vector2i(0,1),Vector2i(0,-1)]
 var atlasCoorWhiteField = Vector2i(11,0)
 
-func generateLabyrinth( tilesSize : int): 
+func generateLabyrinth( tilesSize : int, way_size :int): 
 	Multihelper.setMobs(0,0,0,0)
 	map.full_terrain_with_water_fields()
 	walkable_tiles = []
@@ -20,7 +20,7 @@ func generateLabyrinth( tilesSize : int):
 	for tile in range(tilesSize): 
 		
 		randomVec = randomDirection.pick_random()
-		var wide = randi() % 5
+		var wide = randi() % way_size
 		for i in range(wide):
 			walkVec += randomVec
 			#print("tile:"+str(tile)+str(walkVec))
