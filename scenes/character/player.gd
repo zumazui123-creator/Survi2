@@ -160,7 +160,25 @@ func win_condition():
 			current_map_position = Vector2i()
 			EndUI.setLabel("Level Abgeschlossen!")
 			EndUI.visible = true
-		
+
+func get_reward():
+	print("")
+	var reward = 0
+	if Multihelper.level["type"] == 100:
+		var end_goal_position = Multihelper.map.laby_map.endPosition
+		reward = current_map_position.distance_to(end_goal_position)
+	return reward
+			
+func send_ki_obs():
+	print("reward")
+	var tmp_status = status.getPlayerStatus()
+	var obs = {
+			"pos": tmp_status["position"],
+			"reward": get_reward(), # TODO: Reward-Logik
+			"done": false,
+			"status": tmp_status
+			}
+	ws_peer.send_text(JSON.stringify(obs))
 			
 func tile_move(delta : float):
 	if not is_moving():
@@ -175,7 +193,8 @@ func tile_move(delta : float):
 		_pixels_moved = 0
 		current_map_position = Multihelper.map.tile_map.local_to_map( position )
 		snap_to_tiles_position()
-		ws_peer.send_text("Godot: " + act)
+		#ws_peer.send_text("Godot: " + act) TODO nice für Debugen
+		send_ki_obs()
 		act = ""
 	animate_player(direction)
 	
