@@ -1,4 +1,11 @@
 
+Welche KI benutzt ihr zuhause
+
+Was ist eine Kunstliche Intelligenz
+
+Was braucht KI
+
+
 
 1) Was sind Neuronen
 Neuronen sind besondere Zellen in deinem Körper, die Signale weitergeben

@@ -2,7 +2,7 @@ extends Node2D
 
 
 @onready var code_edit = %CodeEdit
-@onready var item_list = $ActionsContainer/HBoxContainer/VBoxContainer3/ItemList
+@onready var item_list = %ItemList
 @onready var player =  "res://scenes/character/player.gd"
 
 func _ready() -> void:
