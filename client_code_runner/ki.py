@@ -15,21 +15,21 @@ class StepLogger(BaseCallback):
 env = GodotEnv()
 logger_callback = StepLogger()
 
-"""
+
 model = PPO( "MlpPolicy", env, verbose=2)
 model.learn(total_timesteps=100, callback=logger_callback)
 obs, info = env.reset()
 print("Initial Obs:", obs) 
-"""
 
 
 
-for _ in range(10):
-    action = env.action_space.sample()  # random
-    obs, reward, terminated, truncated, info = env.step(action)
-    print("Step:", obs, reward)
 
-    if terminated or truncated:
-        break
+# for _ in range(10):
+#     action = env.action_space.sample()  # random
+#     obs, reward, terminated, truncated, info = env.step(action)
+#     print("Step:", obs, reward)
+
+#     if terminated or truncated:
+#         break
 
 env.close()

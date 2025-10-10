@@ -167,6 +167,7 @@ func get_reward():
 	if Multihelper.level["type"] == 100:
 		var end_goal_position = Multihelper.map.laby_map.endPosition
 		reward = current_map_position.distance_to(end_goal_position)
+		reward = 1/reward
 	return reward
 			
 func send_ki_obs():
@@ -191,6 +192,7 @@ func tile_move(delta : float):
 	if _pixels_moved >= TILE_SIZE/move_speed_factor:
 		direction = Vector2.ZERO
 		_pixels_moved = 0
+		
 		current_map_position = Multihelper.map.tile_map.local_to_map( position )
 		snap_to_tiles_position()
 		#ws_peer.send_text("Godot: " + act) TODO nice für Debugen
