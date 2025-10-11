@@ -5,13 +5,17 @@ signal object_destroyed
 signal player_killed
 #signal end_goal_reached
 #move speed
+
+const default_move_speed_factor = 3
+
+
 const TILE_SIZE = 32
 var direction = Vector2.ZERO
 var _pixels_moved: int = 0
-var move_speed_factor = 3
+var move_speed_factor = default_move_speed_factor
 var act : String = ""
 var attackRate : int = 1
-var current_map_position : Vector2i 
+var current_map_position : Vector2i
 @onready var status = $PlayerStatus
 @onready var workTaskText = $PlayerStatus/WorkContainer/VBoxContainer/workTaskText
 
@@ -25,12 +29,12 @@ var time 		:= 0
 	set(value):
 		playerName = value
 		$PlayerStatus.setPlayerName(value)
-		
+
 @export var characterFile : String:
 	set(value):
 		characterFile = value
 		$MovingParts/Sprite2D.texture = load("res://assets/characters/bodies/"+value)
-		
+
 var inventory : Control
 var EndUI : Control
 #@onready var inventory2 : Control = $Inventory #TODO ?
@@ -54,7 +58,7 @@ var equippedItem : String:
 		$PlayerStatus.setHPBarRatio(hp/maxHP)
 		if hp <= 0:
 			die()
-			
+
 
 var spawnsProjectile := ""
 @export var speed := 10
@@ -75,16 +79,16 @@ var attackRange := 1.0:
 		var clampedVal = clampf(value, 1.0, 5.0)
 		attackRange = clampedVal
 		%HitCollision.shape.height = 20 * clampedVal
-		
+
 var ws_peer = WebSocketPeer.new()
 
 var last_angle = 0.0 # für godot server nötig
 
 func _ready():
-	
+
 	_tcp_server.listen(8765)  # Port 8765
 	print("Server gestartet auf ws://localhost:8765")
-	
+
 	if multiplayer.is_server():
 		Inventory.itemRemoved.connect(itemRemoved)
 		mob_killed.connect(mobKilled)
@@ -95,12 +99,12 @@ func _ready():
 	if name == str(multiplayer.get_unique_id()):
 		print("player HUD")
 		var main = get_parent().get_parent()
-		
+
 		inventory = main.get_node("HUD/Inventory")
 		EndUI = main.get_node("HUD/EndUI")
 		inventory.player = self
 		$Camera2D.enabled = true
-		
+
 		#var err = websocket.connect_to_url("ws://localhost:8765")
 		#if err != OK:
 			#print("Failed to connect:", err)
@@ -108,6 +112,9 @@ func _ready():
 			#print("connectin succesfully")
 		#set_process(true)
 	Multihelper.player_disconnected.connect(disconnected)
+
+func send_to_ws_peer(text):
+	ws_peer.send_text(text)
 
 func visibilityFilter(id):
 	if id == int(str(name)):
@@ -125,10 +132,10 @@ func sendMessage(text):
 func disconnected(id):
 	if str(id) == name:
 		die()
-		
+
 func is_moving() -> bool:
 	return direction != Vector2.ZERO
-	
+
 func input():
 	if is_moving(): return
 	if Input.is_action_pressed("walkRight"):
@@ -146,7 +153,7 @@ func input():
 func _physics_process(delta: float) -> void:
 	if str(multiplayer.get_unique_id()) != name:
 		return
-	
+
 	act = net_commander()
 	press_action(act)
 	#input() # manuelle Eingabe
@@ -169,41 +176,44 @@ func get_reward():
 		reward = current_map_position.distance_to(end_goal_position)
 		reward = 1/reward
 	return reward
-			
+
+
+
 func send_ki_obs():
 	print("reward")
 	var tmp_status = status.getPlayerStatus()
-	var obs = {
-			"pos": tmp_status["position"],
+	var endPosition = Multihelper.map.tile_map.map_to_local( Multihelper.map.laby_map.endPosition )
+	var ki_data = {
+			"obs": [tmp_status["position"][0], tmp_status["position"][1], endPosition.x, endPosition.y ],
 			"reward": get_reward(), # TODO: Reward-Logik
 			"done": false,
 			"status": tmp_status
 			}
-	ws_peer.send_text(JSON.stringify(obs))
-			
+	send_to_ws_peer(JSON.stringify(ki_data))
+
 func tile_move(delta : float):
 	if not is_moving():
 		return
-	
+
 	_pixels_moved += 1
 	velocity = direction * move_speed_factor
 	move_and_collide(velocity)
-	
+
 	if _pixels_moved >= TILE_SIZE/move_speed_factor:
 		direction = Vector2.ZERO
 		_pixels_moved = 0
-		
+
 		current_map_position = Multihelper.map.tile_map.local_to_map( position )
 		snap_to_tiles_position()
 		#ws_peer.send_text("Godot: " + act) TODO nice für Debugen
 		send_ki_obs()
 		act = ""
 	animate_player(direction)
-	
+
 func snap_to_tiles_position():
 	var snap_position = Multihelper.map.tile_map.map_to_local( current_map_position )
 	self.position = snap_position
-	
+
 func animate_player(dir: Vector2):
 	if dir != Vector2.ZERO:
 		$MovingParts.rotation = dir.angle()
@@ -214,34 +224,34 @@ func animate_player(dir: Vector2):
 
 func net_commander() -> String:
 	var action : String = ""
-	
+
 	if _tcp_server.is_connection_available():
 		var tcp_peer = _tcp_server.take_connection()
 		ws_peer = WebSocketPeer.new()
 		ws_peer.accept_stream(tcp_peer)  # Upgrade zu WebSocket
 		_ws_peers.append(ws_peer)
 		print("Neuer Client verbunden!")
-		
+
 	for ws_peer in _ws_peers:
 		ws_peer.poll()
 		var state = ws_peer.get_ready_state()
-		
+
 		if state == WebSocketPeer.STATE_OPEN:
 			# Nachrichten empfangen
 			while ws_peer.get_available_packet_count() > 0:
 				var packet = ws_peer.get_packet().get_string_from_utf8()
 				#print("Empfangen: ", packet)
-				var lines = packet.split(",", false) 
-				action = lines[0].strip_edges() 
-				
+				var lines = packet.split(",", false)
+				action = lines[0].strip_edges()
+
 				if action == "End Sequenz":
 					Multihelper.spawnPlayers()
 					ws_peer.send_text(action)
-					
-					
+
+
 				if action == "reset":
 					Multihelper.spawnPlayers()
-				# Status als JSON zurückschicken TODO 
+				# Status als JSON zurückschicken TODO
 				#if status != null:
 					#var tmp_status = status.getPlayerStatus()
 					#var obs = {
@@ -251,10 +261,10 @@ func net_commander() -> String:
 						#"status": tmp_status
 					#}
 					#ws_peer.send_text(JSON.stringify(obs))
-		
+
 		elif state == WebSocketPeer.STATE_CLOSED:
 			_ws_peers.erase(ws_peer)
-			
+
 	return action
 
 func press_action(action : String):
@@ -267,7 +277,7 @@ func press_action(action : String):
 		var text = action.trim_prefix("sage")
 		sendMessage(text)
 		ws_peer.send_text("Godot: " + action)
-		
+
 	if "use item" in action:
 		var item_id_str = action.trim_prefix("use item").strip_edges()
 		print("action: "+action+" item_id_str: "+item_id_str)
@@ -276,9 +286,9 @@ func press_action(action : String):
 			item_id = int(item_id_str)
 			#inventory.itemSelected(item_id)
 			inventory.selectionChanged.emit(item_id)
-			
+
 		ws_peer.send_text("Godot: " + action + ", item: "+str(item_id))
-		
+
 	if "walk" in action:
 		if action == "walkRight":
 			#print("input walkRight")
@@ -315,7 +325,7 @@ func hit(action : String):
 			await get_tree().create_timer(delay).timeout
 			$AnimationPlayer.stop()
 			ws_peer.send_text("Godot: " + action)
-			
+
 #func _on_next_item():
 	#inventory.nextSelection()
 #
@@ -350,12 +360,12 @@ func punchCheckCollision():
 func sendProjectile(towards):
 	Items.spawnProjectile(self, spawnsProjectile, towards, "damageable")
 
-@rpc("authority", "call_local", "reliable")	
+@rpc("authority", "call_local", "reliable")
 func get_heal(heal_hp : float):
 	hp += heal_hp
-	
 
-@rpc("any_peer", "call_local", "reliable")	
+
+@rpc("any_peer", "call_local", "reliable")
 func consumeItem(item, item_prop):
 	if "hp" in item_prop:
 		get_heal.rpc( 100 )#item["hp"])
@@ -394,7 +404,7 @@ func die():
 	queue_free()
 	#if peerId in multiplayer.get_peers(): # Multiplayer Server
 		#Multihelper.showSpawnUI.rpc_id(peerId)
-		
+
 func dropInventory():
 	var inventoryDict = Inventory.inventories
 	for item in inventoryDict.keys():
@@ -429,9 +439,9 @@ func unequipItem():
 	if multiplayer.is_server():
 		for c in %Equipment.get_children():
 			c.queue_free()
-			
 
-	
+
+
 func itemRemoved(id, item):
 	if !multiplayer.is_server():
 		return
@@ -461,7 +471,7 @@ func action(vel, angle, doingAction):
 	}
 	sendInputstwo.rpc_id(1, inputData)
 	sendPos.rpc(position)
-	
+
 @rpc("any_peer", "call_local", "reliable")
 func sendInputstwo(data):
 	moveServer(data["vel"], data["angle"], data["doingAction"])

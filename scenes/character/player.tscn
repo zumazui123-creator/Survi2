@@ -1,10 +1,12 @@
-[gd_scene load_steps=21 format=3 uid="uid://bmhxilkffhqa5"]
+[gd_scene load_steps=23 format=3 uid="uid://bmhxilkffhqa5"]
 
 [ext_resource type="Script" uid="uid://bruqpv3kpycof" path="res://scenes/character/player.gd" id="1_7xvi4"]
-[ext_resource type="Texture2D" uid="uid://cprhhbhqaij5" path="res://assets/characters/bodies/4.png" id="2_s20bt"]
-[ext_resource type="AudioStream" uid="uid://ds8a23j0eg4hy" path="res://assets/sfx/step.ogg" id="4_bflkw"]
-[ext_resource type="Texture2D" uid="uid://bnfqlk3fs5moa" path="res://assets/characters/hands/hands-sheet.png" id="4_yjkcj"]
-[ext_resource type="AudioStream" uid="uid://2kibx8mg1ogv" path="res://assets/sfx/swing.ogg" id="5_xs70q"]
+[ext_resource type="Script" uid="uid://qclfq5k80r20" path="res://scenes/character/player_speed.gd" id="2_5y66v"]
+[ext_resource type="Texture2D" uid="uid://km3sx58r5vwy" path="res://assets/characters/bodies/4.png" id="2_s20bt"]
+[ext_resource type="Script" uid="uid://cyy8e173ylo4" path="res://scenes/character/ki_brain.gd" id="3_uicah"]
+[ext_resource type="AudioStream" uid="uid://cqi2ycda0odwm" path="res://assets/sfx/step.ogg" id="4_bflkw"]
+[ext_resource type="Texture2D" uid="uid://bx7fpakrdnbf3" path="res://assets/characters/hands/hands-sheet.png" id="4_yjkcj"]
+[ext_resource type="AudioStream" uid="uid://70ym6t6pjpde" path="res://assets/sfx/swing.ogg" id="5_xs70q"]
 [ext_resource type="Script" uid="uid://bl0tm663e7r6k" path="res://scenes/character/player_status.gd" id="7_wmtbp"]
 [ext_resource type="Script" uid="uid://dsnm03bgpmori" path="res://scenes/character/code.gd" id="8_5y66v"]
 
@@ -324,6 +326,12 @@ point_count = 2
 [node name="Player" type="CharacterBody2D" groups=["damageable", "player"]]
 script = ExtResource("1_7xvi4")
 
+[node name="PlayerSpeed" type="Node2D" parent="."]
+script = ExtResource("2_5y66v")
+
+[node name="KiBrain" type="Node2D" parent="."]
+script = ExtResource("3_uicah")
+
 [node name="MovingParts" type="Node2D" parent="."]
 
 [node name="Sprite2D" type="Sprite2D" parent="MovingParts"]
@@ -449,7 +457,7 @@ offset_bottom = 25.0
 text = "Essen"
 
 [node name="WorkContainer" type="PanelContainer" parent="PlayerStatus"]
-layout_mode = 2
+layout_mode = 0
 offset_left = -568.0
 offset_top = -240.0
 offset_right = -342.0
@@ -539,11 +547,12 @@ position = Vector2(218, -371)
 script = ExtResource("8_5y66v")
 
 [node name="TabContainer" type="TabContainer" parent="CanvasLayer/Code"]
-offset_left = 48.0
-offset_top = 15.0
-offset_right = 409.0
-offset_bottom = 720.0
+offset_left = 67.0
+offset_top = 14.0
+offset_right = 422.0
+offset_bottom = 724.0
 size_flags_vertical = 3
+tab_alignment = 1
 current_tab = 1
 
 [node name="Code" type="VBoxContainer" parent="CanvasLayer/Code/TabContainer"]
@@ -561,8 +570,11 @@ text = "Haupt-Code"
 
 [node name="CodeEdit" type="CodeEdit" parent="CanvasLayer/Code/TabContainer/Code"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 440)
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_constants/line_spacing = 3
+theme_override_font_sizes/font_size = 14
 scroll_smooth = true
 scroll_past_end_of_file = true
 highlight_current_line = true
@@ -690,59 +702,149 @@ symbol_tooltip_on_hover = true
 gutters_draw_bookmarks = true
 gutters_draw_line_numbers = true
 
-[node name="KI Playground" type="VBoxContainer" parent="CanvasLayer/Code/TabContainer"]
+[node name="KI Playground" type="MarginContainer" parent="CanvasLayer/Code/TabContainer"]
 layout_mode = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 10
 metadata/_tab_index = 1
 
-[node name="KIConfLabel" type="Label" parent="CanvasLayer/Code/TabContainer/KI Playground"]
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Code/TabContainer/KI Playground"]
+layout_mode = 2
+theme_override_constants/separation = 25
+
+[node name="Paramcontainer" type="VBoxContainer" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer"]
+layout_mode = 2
+
+[node name="KIConfLabel" type="Label" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer"]
 layout_mode = 2
 text = "KI Configurationen"
 horizontal_alignment = 1
 
-[node name="KiModelLabel" type="Label" parent="CanvasLayer/Code/TabContainer/KI Playground"]
+[node name="KiModelLabel" type="Label" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer"]
 layout_mode = 2
 text = "Model: PBO"
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="CanvasLayer/Code/TabContainer/KI Playground"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="CanvasLayer/Code/TabContainer/KI Playground/HBoxContainer2"]
+[node name="Label" type="Label" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/HBoxContainer2"]
 layout_mode = 2
 text = "Action-Schritte: "
 
-[node name="LineEdit" type="LineEdit" parent="CanvasLayer/Code/TabContainer/KI Playground/HBoxContainer2"]
+[node name="LineEdit" type="LineEdit" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "100"
 
-[node name="GridContainer" type="GridContainer" parent="CanvasLayer/Code/TabContainer/KI Playground"]
+[node name="GridContainer" type="GridContainer" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer"]
 layout_mode = 2
 theme_override_constants/h_separation = 12
 columns = 3
 
-[node name="Label2" type="Label" parent="CanvasLayer/Code/TabContainer/KI Playground/GridContainer"]
+[node name="Label2" type="Label" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/GridContainer"]
 layout_mode = 2
 text = "Lernrate: 0.004"
 
-[node name="Button2" type="Button" parent="CanvasLayer/Code/TabContainer/KI Playground/GridContainer"]
+[node name="Button2" type="Button" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/GridContainer"]
 layout_mode = 2
 text = "+"
 
-[node name="Button3" type="Button" parent="CanvasLayer/Code/TabContainer/KI Playground/GridContainer"]
+[node name="Button3" type="Button" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/GridContainer"]
 layout_mode = 2
 text = "-"
 
-[node name="Label" type="Label" parent="CanvasLayer/Code/TabContainer/KI Playground/GridContainer"]
+[node name="Label" type="Label" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/GridContainer"]
 layout_mode = 2
 text = "Erforschungrate: 0.004"
 
-[node name="Button" type="Button" parent="CanvasLayer/Code/TabContainer/KI Playground/GridContainer"]
+[node name="Button" type="Button" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/GridContainer"]
 layout_mode = 2
 text = "+"
 
-[node name="Button6" type="Button" parent="CanvasLayer/Code/TabContainer/KI Playground/GridContainer"]
+[node name="Button6" type="Button" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/GridContainer"]
 layout_mode = 2
 text = "-"
+
+[node name="RewardContainer" type="VBoxContainer" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer"]
+layout_mode = 2
+
+[node name="KiModelLabel" type="Label" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/RewardContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Belohnungssystem"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/RewardContainer"]
+layout_mode = 2
+
+[node name="WayLabel" type="Label" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/RewardContainer/HBoxContainer2"]
+layout_mode = 2
+text = "nur moegliche Wege"
+
+[node name="WayCheckBox" type="CheckBox" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/RewardContainer/HBoxContainer2"]
+layout_mode = 2
+button_pressed = true
+
+[node name="Label" type="Label" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/RewardContainer"]
+layout_mode = 2
+text = "Kekse platzieren"
+
+[node name="GameSetContainer" type="VBoxContainer" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer"]
+layout_mode = 2
+
+[node name="GameSetLabel" type="Label" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Game-Settings"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer"]
+layout_mode = 2
+
+[node name="SpeedLabel" type="Label" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2"]
+layout_mode = 2
+text = "Game-Speed: "
+
+[node name="Speed" type="Label" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2"]
+layout_mode = 2
+text = "1"
+
+[node name="SpeedPlus" type="Button" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2"]
+layout_mode = 2
+text = "+"
+
+[node name="SpeedMinus" type="Button" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2"]
+layout_mode = 2
+text = "-"
+
+[node name="FuncContainer" type="VBoxContainer" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer"]
+layout_mode = 2
+
+[node name="FuncLabel" type="Label" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/FuncContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+text = "KI "
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/FuncContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+
+[node name="StartKiButton" type="Button" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/FuncContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+text = "Start"
+
+[node name="StopKiButton" type="Button" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/FuncContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+text = "Stop"
+
+[node name="SaveKiButton" type="Button" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/FuncContainer/HBoxContainer"]
+layout_mode = 2
+text = "Speicher Ki Verhalten"
 
 [connection signal="pressed" from="CanvasLayer/Code/TabContainer/Code/ButtonCotainer/PlayButton" to="." method="_on_play_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/Code/TabContainer/Code/ButtonCotainer/CodeDeleteButton" to="CanvasLayer/Code" method="_on_code_delete_button_pressed"]
@@ -754,3 +856,6 @@ text = "-"
 [connection signal="pressed" from="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer2/sageButton" to="CanvasLayer/Code" method="_on_sage_button_pressed"]
 [connection signal="item_clicked" from="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer3/ItemList" to="CanvasLayer/Code" method="_on_item_list_item_clicked"]
 [connection signal="pressed" from="CanvasLayer/Code/TabContainer/Code/ActionsContainer/createFunction" to="CanvasLayer/Code" method="_on_create_function_pressed"]
+[connection signal="pressed" from="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2/SpeedPlus" to="PlayerSpeed" method="_on_speed_plus_pressed"]
+[connection signal="pressed" from="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2/SpeedMinus" to="PlayerSpeed" method="_on_speed_minus_pressed"]
+[connection signal="pressed" from="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/FuncContainer/HBoxContainer/StartKiButton" to="KiBrain" method="_on_start_ki_button_pressed"]

@@ -6,8 +6,8 @@ end_token : str = "ende"
 class Parser():
     def __init__(self, data = None):
         self.data = data
-        self.functions = {}  
-        
+        self.functions = {}
+
     def movement(self,clean_line: str) -> str:
         if "sage" in clean_line.lower():
             return clean_line
@@ -15,20 +15,20 @@ class Parser():
             return "gehe zurück"
         if "nutze item" in clean_line.lower():
             return "use item " + clean_line.split(" ")[-1]
-            
-        match clean_line.lower(): 
+
+        match clean_line.lower():
             case "links":
                 return "walkLeft"
             case "rechts":
                 return "walkRight"
-            case "hoch" | "oben": 
+            case "hoch" | "oben":
                 return "walkUp"
             case "runter" | "unten":
                 return "walkDown"
             case "attacke":
                 return "leftClickAction"
         return ""
-    
+
     def parse_repeat_recursive(self, lines):
         result = []
         i = 0
@@ -66,7 +66,7 @@ class Parser():
         lines = text.strip().splitlines()
         expanded_lines = self.parse_repeat_recursive(lines)
         return "\n".join(expanded_lines)
-    
+
 
     def parse_func_definitions(self, text):
         """
@@ -101,7 +101,7 @@ class Parser():
 
                 # end_token überspringen
                 if i < len(lines) and lines[i].strip() == end_token:
-                    i += 1  
+                    i += 1
 
                 self.functions[name] = block
                 # print(f"Funktion {name} gespeichert: {block}")
@@ -129,7 +129,7 @@ class Parser():
     #             result.append(clean_line)
 
     #     return "\n".join(result)
-    
+
     def parse_func(self, text: str) -> str:
         """
         Ersetzt Funktionsaufrufe durch deren Code-Blöcke.
@@ -149,7 +149,7 @@ class Parser():
                 result.append(clean_line)
 
         return "\n".join(result)
-    
+
     def compress_sequence(self,seq) -> List[tuple]:
         if not seq:
             return []
@@ -167,9 +167,9 @@ class Parser():
                 count = 1
         compressed.append((current, count))  # letzten Block hinzufügen
         return compressed
-    
+
     def load_functions(self):
-        filepath = "funktionen.txt"
+        filepath = "assets/funktionen.txt"
         try:
             with open(filepath, "r", encoding="utf-8") as f:
                 code = f.read()
@@ -183,11 +183,11 @@ class Parser():
     def parse(self,code : str) -> List[str]:
         if not code:
             return []
-        
+
         # print(f"Parsing code:\n{code}")
         self.load_functions()
         # print(f"Loaded functions: {self.functions}")
-       
+
         code = self.parse_repeat(code)
         # print(f"Code after repeat parsing")
         code = self.parse_func(code)
@@ -201,11 +201,10 @@ class Parser():
             if clean_line == "":
                 continue
             # print(f"Processing line: {clean_line}")
- 
+
             action = self.movement(clean_line)
             if action != "":
                 actions.append(action)
 
         # compressed_actions = self.compress_sequence(actions)
         return actions
-    

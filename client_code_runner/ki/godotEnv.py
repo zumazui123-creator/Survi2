@@ -13,7 +13,7 @@ class GodotEnv(gym.Env):
         super().__init__()
 
         # Action-Space (Beispiel: 4 Bewegungen + Attack)
-        self.action_space = spaces.Discrete(5)  
+        self.action_space = spaces.Discrete(5)
         self.action_map = {
             0: "walkUp",
             1: "walkDown",
@@ -23,7 +23,7 @@ class GodotEnv(gym.Env):
         }
 
         # Observation-Space (Beispiel: Position x,y)
-        self.observation_space = spaces.Box(low=-1000, high=1000, shape=(2,), dtype=float)
+        self.observation_space = spaces.Box(low=-1000, high=1000, shape=(4,), dtype=float)
 
         self.server_url = server_url
         self.ws = None
@@ -71,7 +71,7 @@ class GodotEnv(gym.Env):
         self._send_action("reset")
 
         # Beispiel: initiale Observation
-        obs = [0.0, 0.0]
+        obs = [0.0, 0.0, 10000.0, 10000.0]
         info = {}
         return obs, info
 
@@ -79,7 +79,7 @@ class GodotEnv(gym.Env):
         action_str = self.action_map[action_idx]
         reply = self._send_action(action_str)
 
-        obs = [0.0, 0.0]
+        obs = [0.0, 0.0, 100.0, 100.0]
         reward = 0.0
         terminated = False
         truncated = False
@@ -88,12 +88,14 @@ class GodotEnv(gym.Env):
         if reply:
             try:
                 data = json.loads(reply)
-                obs = data.get("pos", obs)
+                obs = data.get("obs", obs)
                 reward = data.get("reward", 0.0)
                 terminated = data.get("done", False)
                 info = data.get("status", {})  # hier hast du PlayerStatus
             except Exception:
                 pass
+        print("obs")
+        print(obs)
 
         return obs, reward, terminated, truncated, info
 
