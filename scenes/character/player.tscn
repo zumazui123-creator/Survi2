@@ -2,11 +2,11 @@
 
 [ext_resource type="Script" uid="uid://bruqpv3kpycof" path="res://scenes/character/player.gd" id="1_7xvi4"]
 [ext_resource type="Script" uid="uid://qclfq5k80r20" path="res://scenes/character/player_speed.gd" id="2_5y66v"]
-[ext_resource type="Texture2D" uid="uid://km3sx58r5vwy" path="res://assets/characters/bodies/4.png" id="2_s20bt"]
+[ext_resource type="Texture2D" uid="uid://cprhhbhqaij5" path="res://assets/characters/bodies/4.png" id="2_s20bt"]
 [ext_resource type="Script" uid="uid://cyy8e173ylo4" path="res://scenes/character/ki_brain.gd" id="3_uicah"]
-[ext_resource type="AudioStream" uid="uid://cqi2ycda0odwm" path="res://assets/sfx/step.ogg" id="4_bflkw"]
-[ext_resource type="Texture2D" uid="uid://bx7fpakrdnbf3" path="res://assets/characters/hands/hands-sheet.png" id="4_yjkcj"]
-[ext_resource type="AudioStream" uid="uid://70ym6t6pjpde" path="res://assets/sfx/swing.ogg" id="5_xs70q"]
+[ext_resource type="AudioStream" uid="uid://ds8a23j0eg4hy" path="res://assets/sfx/step.ogg" id="4_bflkw"]
+[ext_resource type="Texture2D" uid="uid://bnfqlk3fs5moa" path="res://assets/characters/hands/hands-sheet.png" id="4_yjkcj"]
+[ext_resource type="AudioStream" uid="uid://2kibx8mg1ogv" path="res://assets/sfx/swing.ogg" id="5_xs70q"]
 [ext_resource type="Script" uid="uid://bl0tm663e7r6k" path="res://scenes/character/player_status.gd" id="7_wmtbp"]
 [ext_resource type="Script" uid="uid://dsnm03bgpmori" path="res://scenes/character/code.gd" id="8_5y66v"]
 
@@ -370,6 +370,7 @@ shape = SubResource("CircleShape2D_5y66v")
 enabled = false
 
 [node name="PlayerStatus" type="Control" parent="."]
+unique_name_in_owner = true
 layout_mode = 3
 anchors_preset = 8
 anchor_left = 0.5

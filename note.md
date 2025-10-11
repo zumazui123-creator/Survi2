@@ -23,3 +23,9 @@ Man lernt oder speichert eine Struktur.
 4) Was braucht die KI
 
 Ki kann bzw. wird beeinfluesst von den Erstellern z.B. Bei Fragen zum kauf von Produkten
+
+
+
+
+Eklärung Wie Kern Konzepte in einer lokalen Sackgasse stecken
+Über stab rüber springen mit den rücken zuerst 

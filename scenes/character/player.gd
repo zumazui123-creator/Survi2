@@ -17,6 +17,8 @@ var act : String = ""
 var attackRate : int = 1
 var current_map_position : Vector2i
 @onready var status = $PlayerStatus
+@onready var kiBrain = $KiBrain
+
 @onready var workTaskText = $PlayerStatus/WorkContainer/VBoxContainer/workTaskText
 
 # Server: TCP + WebSocket Upgrade
@@ -179,17 +181,7 @@ func get_reward():
 
 
 
-func send_ki_obs():
-	print("reward")
-	var tmp_status = status.getPlayerStatus()
-	var endPosition = Multihelper.map.tile_map.map_to_local( Multihelper.map.laby_map.endPosition )
-	var ki_data = {
-			"obs": [tmp_status["position"][0], tmp_status["position"][1], endPosition.x, endPosition.y ],
-			"reward": get_reward(), # TODO: Reward-Logik
-			"done": false,
-			"status": tmp_status
-			}
-	send_to_ws_peer(JSON.stringify(ki_data))
+
 
 func tile_move(delta : float):
 	if not is_moving():
@@ -206,7 +198,7 @@ func tile_move(delta : float):
 		current_map_position = Multihelper.map.tile_map.local_to_map( position )
 		snap_to_tiles_position()
 		#ws_peer.send_text("Godot: " + act) TODO nice für Debugen
-		send_ki_obs()
+		kiBrain.send_ki_obs()
 		act = ""
 	animate_player(direction)
 
