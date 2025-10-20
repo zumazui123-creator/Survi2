@@ -38,11 +38,17 @@ func get_walkable_tiles_in_distance(player_tile_pos: Vector2i,
 	var walkable_tiles = []
 	#var visited = {}
 	#var queue = []
+	var x_dist = 100
+	var y_dist = 100
+	
 	
 	for vec in map.walkable_tiles:
-		if vec.x > player_tile_pos.x+min_distance && vec.x < player_tile_pos.x+max_distance:
-			if vec.y > player_tile_pos.y+min_distance && vec.y < player_tile_pos.y+max_distance:
-				walkable_tiles.append(vec)
+		x_dist = abs(player_tile_pos.x-vec.x)
+		y_dist = abs(player_tile_pos.y-vec.y)
+		if   x_dist > min_distance && x_dist <= max_distance && y_dist == min_distance:
+			walkable_tiles.append(vec)
+		elif y_dist > min_distance && y_dist <= max_distance && x_dist == min_distance:
+			walkable_tiles.append(vec)
 				
 	
 	

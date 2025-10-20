@@ -36,7 +36,8 @@ func getPlayerStatus():
 		"attackRange": player.attackRange,
 		"damageType": player.damageType,
 		"name": %nameLabel.text,
-		"position": [player.position.x, player.position.y],
+		"pixel_position": [player.position.x, player.position.y],
+		"tile_position":[player.current_map_position.x, player.current_map_position.y],
 		"items": Inventory.getItems(str(player.name)),
 		"time": 3 #TODO
 		}
@@ -48,12 +49,11 @@ func _ready() -> void:
 	foodBar.value 	   = 100
 
 func _process(delta: float) -> void:
-	if GameTime.get_time() - last_time_hydration > hydration_rate:
-		getPlayerStatus()
-		print(playerStatus)
+	var now = GameTime.get_time() 
+	if now - last_time_hydration > hydration_rate:
 		hydrationBar.value -= 1
-		last_time_hydration = GameTime.get_time()
+		last_time_hydration = now
 		
-	if GameTime.get_time() - last_time_food > food_rate:
+	if now - last_time_food > food_rate:
 		foodBar.value -= 1
-		last_time_food = GameTime.get_time()
+		last_time_food = now

@@ -10,9 +10,8 @@ func setLabel(labelText : String):
 func setPlayerStatus(playerDied: bool, playerId : String):
 	self.playerDied = playerDied
 	self.playerId = playerId
-	
-func _on_next_button_pressed() -> void:
-	print("_on_next_button_pressed")
+
+func next_level():
 	self.visible = false
 	if playerDied:
 		print("DIED")
@@ -22,6 +21,10 @@ func _on_next_button_pressed() -> void:
 		Multihelper.level = Levels.LabyrinthLevels[Multihelper.level["level"]+1]
 	Multihelper.map.generateMap(Multihelper.level)
 	Multihelper.spawnPlayers()
+
+func _on_next_button_pressed() -> void:
+	print("_on_next_button_pressed")
+	next_level()
 
 
 func _on_retry_button_pressed() -> void:

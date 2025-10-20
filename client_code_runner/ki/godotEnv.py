@@ -5,6 +5,7 @@ import threading
 import queue
 import time
 import json
+import numpy as np
 
 class GodotEnv(gym.Env):
     metadata = {"render_modes": []}
@@ -13,17 +14,21 @@ class GodotEnv(gym.Env):
         super().__init__()
 
         # Action-Space (Beispiel: 4 Bewegungen + Attack)
-        self.action_space = spaces.Discrete(5)
+        self.action_space = spaces.Discrete(4)
         self.action_map = {
             0: "walkUp",
             1: "walkDown",
             2: "walkLeft",
             3: "walkRight",
-            4: "attack",
+            #4: "attack",
         }
 
         # Observation-Space (Beispiel: Position x,y)
-        self.observation_space = spaces.Box(low=-1000, high=1000, shape=(4,), dtype=float)
+        self.observation_space = spaces.Box(
+            low=np.array([0, 0, 0, 0, 0, 0, 0, 0], dtype=np.float32),
+            high=np.array([256, 256, 256, 256, 1, 1, 1, 1], dtype=np.float32),
+            dtype=np.float32
+        )
 
         self.server_url = server_url
         self.ws = None
@@ -71,7 +76,7 @@ class GodotEnv(gym.Env):
         self._send_action("reset")
 
         # Beispiel: initiale Observation
-        obs = [0.0, 0.0, 10000.0, 10000.0]
+        obs = [0.0, 0.0, 256, 256, 1, 1, 1, 1]
         info = {}
         return obs, info
 
@@ -79,7 +84,7 @@ class GodotEnv(gym.Env):
         action_str = self.action_map[action_idx]
         reply = self._send_action(action_str)
 
-        obs = [0.0, 0.0, 100.0, 100.0]
+        obs = [0.0, 0.0, 256, 256, 1, 1, 1, 1]
         reward = 0.0
         terminated = False
         truncated = False
@@ -90,12 +95,12 @@ class GodotEnv(gym.Env):
                 data = json.loads(reply)
                 obs = data.get("obs", obs)
                 reward = data.get("reward", 0.0)
-                terminated = data.get("done", False)
+                terminated = False #data.get("done", False)
                 info = data.get("status", {})  # hier hast du PlayerStatus
             except Exception:
                 pass
-        print("obs")
-        print(obs)
+        print(f"obs:{obs}, terminated {terminated}")
+
 
         return obs, reward, terminated, truncated, info
 

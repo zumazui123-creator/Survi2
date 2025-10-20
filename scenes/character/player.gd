@@ -169,19 +169,14 @@ func win_condition():
 			current_map_position = Vector2i()
 			EndUI.setLabel("Level Abgeschlossen!")
 			EndUI.visible = true
+			EndUI.next_level()
 
 func get_reward():
-	print("")
 	var reward = 0
 	if Multihelper.level["type"] == 100:
 		var end_goal_position = Multihelper.map.laby_map.endPosition
-		reward = current_map_position.distance_to(end_goal_position)
-		reward = 1/reward
+		reward = 1/current_map_position.distance_to(end_goal_position)
 	return reward
-
-
-
-
 
 func tile_move(delta : float):
 	if not is_moving():

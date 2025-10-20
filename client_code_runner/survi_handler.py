@@ -21,7 +21,7 @@ conv_action = Parser()
 # --- GUI Setup ---
 root = tk.Tk()
 root.title("Godot WebSocket Client")
-root.geometry("500x400")
+root.geometry("500x500")
 
 log_box = tk.Text(root, state="disabled", wrap="word", height=20)
 log_box.pack(expand=True, fill="both", padx=5, pady=5)
