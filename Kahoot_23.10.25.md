@@ -80,8 +80,9 @@
    - ⭕ Zum Berechnen von Strecken  
 
 14. **Wie ensteht Lernen bei der KI und den Menschen?**  
-    - ⭕ Sie löschen, ohne hinzusehen
     - ✅ Lernen ensteht durch bilden von neuronale Strukturen
+    - ✅ Lernen ensteht durch bilden von Verknüpfungen
+    - ✅ Lernen ensteht durch bilden von Verbindungen 
 
 15. **Ist es wichtig wo und wie man lernt?**  
     - ✅ Ja, weil die Umgebung das Gehirn beeinfluesst
