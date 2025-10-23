@@ -25,8 +25,10 @@ class GodotEnv(gym.Env):
 
         # Observation-Space (Beispiel: Position x,y)
         self.observation_space = spaces.Box(
-            low=np.array([0, 0, 0, 0, 0, 0, 0, 0], dtype=np.float32),
-            high=np.array([256, 256, 256, 256, 1, 1, 1, 1], dtype=np.float32),
+            #low=np.array([0, 0, 0, 0, 0, 0, 0, 0], dtype=np.float32),
+            #high=np.array([256, 256, 256, 256, 1, 1, 1, 1], dtype=np.float32),
+            low=np.array([ 0, 0, 0, 0], dtype=np.float32),
+            high=np.array([1, 1, 1, 1], dtype=np.float32),
             dtype=np.float32
         )
 
@@ -76,7 +78,8 @@ class GodotEnv(gym.Env):
         self._send_action("reset")
 
         # Beispiel: initiale Observation
-        obs = [0.0, 0.0, 256, 256, 1, 1, 1, 1]
+        #obs = [0.0, 0.0, 256, 256, 1, 1, 1, 1]
+        obs = [ 0, 0, 0, 0]
         info = {}
         return obs, info
 
@@ -84,7 +87,8 @@ class GodotEnv(gym.Env):
         action_str = self.action_map[action_idx]
         reply = self._send_action(action_str)
 
-        obs = [0.0, 0.0, 256, 256, 1, 1, 1, 1]
+        #obs = [0.0, 0.0, 256, 256, 1, 1, 1, 1]
+        obs = [0, 0, 0, 0]
         reward = 0.0
         terminated = False
         truncated = False
@@ -93,7 +97,7 @@ class GodotEnv(gym.Env):
         if reply:
             try:
                 data = json.loads(reply)
-                obs = data.get("obs", obs)
+                obs  = data.get("obs", obs)
                 reward = data.get("reward", 0.0)
                 terminated = False #data.get("done", False)
                 info = data.get("status", {})  # hier hast du PlayerStatus

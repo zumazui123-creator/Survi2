@@ -7,6 +7,9 @@ Möglich:
 - Tower u. Hero defense 
 
 TODO:
+- ad stop flag
+- implement "function erstellen"
+- easy and ahrd mode for laby
 - food und water aufüllen
 
 - Animals:

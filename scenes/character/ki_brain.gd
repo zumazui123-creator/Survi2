@@ -9,6 +9,8 @@ var tmp_status
 var navigation: Node2D
 var main: Node2D
 
+var visited_walkable_tiles = []
+
 func _ready() -> void:
 	main 		= get_node("/root/Game/Level/Main")
 	navigation  = main.get_node("NavHelper")
@@ -21,10 +23,18 @@ func punish_stuck_on_tile(reward):
 		reward /= 3
 	return reward
 
+func punish_same_pattern(reward):
+	if tile_position in visited_walkable_tiles:
+		reward /= 3
+	else:
+		visited_walkable_tiles.append(tile_position)
+	return reward
+
+
 func get_walkable_neighbor_tiles():
 	var walkable_tiles = navigation.get_walkable_tiles_in_distance(tile_position,0,1)
 	var walkable_obs = [0,0,0,0]
-	print(walkable_tiles)
+	
 	for wt in walkable_tiles:
 		var tx = tile_position.x - wt.x
 		var ty = tile_position.y - wt.y
@@ -49,6 +59,7 @@ func calculate_reward():
 	
 	var reward = player.get_reward()
 	reward = punish_stuck_on_tile(reward)
+	reward = punish_same_pattern(reward)
 		
 	return reward
 	
@@ -57,10 +68,11 @@ func send_ki_obs():
 	var target_tile_position = Multihelper.map.laby_map.endPosition
 	var walkable_tiles_bool = get_walkable_neighbor_tiles()
 	var ki_data = {
-			"obs": [tmp_status["tile_position"][0], 
-					tmp_status["tile_position"][1], 
-					target_tile_position.x, 
-					target_tile_position.y,
+			"obs": [
+					#tmp_status["tile_position"][0], 
+					#tmp_status["tile_position"][1], 
+					#target_tile_position.x, 
+					#target_tile_position.y,
 					walkable_tiles_bool[0],
 					walkable_tiles_bool[1],
 					walkable_tiles_bool[2],
