@@ -26,3 +26,5 @@ bei GoDot
 gebe ein beispiel wie der Computer das labyrinth sieht. also ohne wege sondern nur wie ein licht beim target
 
 observation erweitern auf 4-tiles benachbarte tiles 0 tile is nicht walkable, 1 tile sit walkable
+
+https://github.com/tekgulburak/FrozenLake-v1
