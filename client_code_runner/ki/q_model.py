@@ -9,14 +9,14 @@ import numpy as np
 
 def init_model():
   env = GodotEnv()
-	
+	n_states = 1000
   Q=np.zeros([n_states,4])
   logger_callback = StepLogger()
   episodes=10000
   alpha=0.5
   gamma=0.9
   G=0 #G is sum of rewards
-	
+
   for episode in range(1,episodes+1):
     state=env.reset()
     done=False

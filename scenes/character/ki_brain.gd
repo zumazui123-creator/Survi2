@@ -30,7 +30,6 @@ func punish_same_pattern(reward):
 		visited_walkable_tiles.append(tile_position)
 	return reward
 
-
 func get_walkable_neighbor_tiles():
 	var walkable_tiles = navigation.get_walkable_tiles_in_distance(tile_position,0,1)
 	var walkable_obs = [0,0,0,0]
@@ -58,8 +57,8 @@ func calculate_reward():
 	tile_position = Vector2i( tmp_status["tile_position"][0], tmp_status["tile_position"][1] )
 	
 	var reward = player.get_reward()
-	reward = punish_stuck_on_tile(reward)
-	reward = punish_same_pattern(reward)
+	#reward = punish_stuck_on_tile(reward)
+	#reward = punish_same_pattern(reward)
 		
 	return reward
 	
@@ -67,17 +66,23 @@ func send_ki_obs():
 	var reward = calculate_reward()
 	var target_tile_position = Multihelper.map.laby_map.endPosition
 	var walkable_tiles_bool = get_walkable_neighbor_tiles()
+	
+	var index = Multihelper.map.walkable_tiles.find(tmp_status["tile_position"])
+	if index != -1:
+		print("Gefunden bei Index:", index)
+		
 	var ki_data = {
-			"obs": [
-					#tmp_status["tile_position"][0], 
-					#tmp_status["tile_position"][1], 
-					#target_tile_position.x, 
-					#target_tile_position.y,
-					walkable_tiles_bool[0],
-					walkable_tiles_bool[1],
-					walkable_tiles_bool[2],
-					walkable_tiles_bool[3],
-					 ],
+			#"obs": [
+					##tmp_status["tile_position"][0], 
+					##tmp_status["tile_position"][1], 
+					##target_tile_position.x, 
+					##target_tile_position.y,
+					#walkable_tiles_bool[0],
+					#walkable_tiles_bool[1],
+					#walkable_tiles_bool[2],
+					#walkable_tiles_bool[3],
+					 #],
+			"obs": index ,
 			"reward": reward,
 			"done": player.EndUI.visible,
 			"status": tmp_status
