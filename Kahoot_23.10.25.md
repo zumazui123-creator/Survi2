@@ -26,11 +26,11 @@
    - ⭕ Ein Sicherheitsupdate  
    - ⭕ Eine echte Aufnahme in schlechter Qualität  
 
-5. **Welche KI-Lern-Methoden gibt es**  
-   - ✅ Supervised Learning (Überwachtes Lernen)  
-   - ✅ Reinforcement Learning (Bestärkendes Lernen)  
-   - ⭕ Cripsies Learning (Auswendiges Lernen)
-   - ⭕ Non-Algorithmus (Benutztes Lernen)
+5. **Was ist das Ziel von Künstlicher Intelligenz (KI)?**  
+   - ✅ Maschinen sollen Aufgaben erledigen, die menschliches Denken erfordern  
+   - ⭕ Computer sollen Gefühle entwickeln  
+   - ⭕ Computer sollen alles automatisch richtig machen  
+   - ⭕ Maschinen sollen Menschen ersetzen  
 
 6. **Warum sollten wir KI-Ergebnisse überprüfen?**  
    - ✅ Weil KI-Ergebnisse falsche Infos enthalten können  
