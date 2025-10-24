@@ -484,8 +484,27 @@ layout_mode = 2
 [node name="workTaskText" type="RichTextLabel" parent="PlayerStatus/WorkContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
-text = "- Gehe zum weissem Feld"
+text = "- Geh zum weißen Feld!"
 fit_content = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PlayerStatus/WorkContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PlayerStatus/WorkContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Schwerigkeitsgrad:"
+
+[node name="DifModeButton" type="OptionButton" parent="PlayerStatus/WorkContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+selected = 0
+item_count = 3
+popup/item_0/text = "Leicht"
+popup/item_0/id = 0
+popup/item_1/text = "Hart"
+popup/item_1/id = 1
+popup/item_2/text = "Horror"
+popup/item_2/id = 2
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
@@ -554,10 +573,9 @@ offset_right = 422.0
 offset_bottom = 724.0
 size_flags_vertical = 3
 tab_alignment = 1
-current_tab = 1
+current_tab = 0
 
 [node name="Code" type="VBoxContainer" parent="CanvasLayer/Code/TabContainer"]
-visible = false
 layout_mode = 2
 size_flags_horizontal = 6
 size_flags_vertical = 3
@@ -704,6 +722,7 @@ gutters_draw_bookmarks = true
 gutters_draw_line_numbers = true
 
 [node name="KI Playground" type="MarginContainer" parent="CanvasLayer/Code/TabContainer"]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 15
 theme_override_constants/margin_top = 5
@@ -848,6 +867,7 @@ layout_mode = 2
 text = "Speicher Ki Verhalten"
 
 [connection signal="pressed" from="CanvasLayer/Code/TabContainer/Code/ButtonCotainer/PlayButton" to="." method="_on_play_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/Code/TabContainer/Code/ButtonCotainer/StopButton" to="." method="_on_stop_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/Code/TabContainer/Code/ButtonCotainer/CodeDeleteButton" to="CanvasLayer/Code" method="_on_code_delete_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer/ObenButton" to="CanvasLayer/Code" method="_on_oben_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer/LinksRechtsContainer/LinksButton" to="CanvasLayer/Code" method="_on_links_button_pressed"]

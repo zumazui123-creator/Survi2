@@ -16,6 +16,7 @@ from myconverter.parser import Parser
 from ki import GodotEnv
 from ki import StepLogger
 from ki import init_model
+import time
 conv_action = Parser()
 
 # --- GUI Setup ---
@@ -35,6 +36,8 @@ ws = None
 receiver_thread = None
 running = False
 
+reconnect_thread = None
+should_reconnect = True  # Steuerflag
 
 def log(msg: str):
     log_box.config(state="normal")
@@ -57,9 +60,8 @@ def receiver_loop():
             log(f"🔄 Converted message: {converted_msg}")
 
             if "start ki" in message:
-            	print("Start Ki")
-            	init_model()
-
+                print("Start Ki")
+                init_model()
 
             if "play_it_now" in message:
                 for msg in converted_msg:
@@ -72,13 +74,15 @@ def receiver_loop():
                     log(f"✅ Received reply: {reply}")
 
                     if "Stop Sequenz" in reply:
-                    	break
-
+                        break
+                
                 ws.send("End Sequenz")
                 reply = ws.recv()
                 log(f"✅ Received End reply: {reply}")
 
         except Exception as e:
+            running = False
+            ws = None
             log(f"⚠️ Error in receiver loop: {e}")
             break
 
@@ -104,6 +108,17 @@ def stop_client():
     except Exception:
         pass
 
+# --- Reconnect-Loop ---
+def reconnect_loop():
+    global ws, running
+    while should_reconnect:
+        if not running:
+            try:
+                start_client()
+            except Exception as e:
+                log(f"⚠️ Connection failed: {e}")
+        time.sleep(3)  # alle 5 Sekunden erneut versuchen
+
 start_btn = tk.Button(button_frame, text="Start", command=start_client, bg="lightgreen")
 start_btn.pack(side="left", padx=10)
 
@@ -113,5 +128,8 @@ stop_btn.pack(side="left", padx=10)
 exit_btn = tk.Button(button_frame, text="Exit", command=root.destroy)
 exit_btn.pack(side="right", padx=10)
 
-# --- Tkinter Loop ---
+
+reconnect_thread = threading.Thread(target=reconnect_loop, daemon=True)
+reconnect_thread.start()
+
 root.mainloop()

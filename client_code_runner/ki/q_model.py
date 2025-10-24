@@ -9,7 +9,7 @@ import numpy as np
 
 def init_model():
   env = GodotEnv()
-	n_states = 1000
+  n_states = 1000
   Q=np.zeros([n_states,4])
   logger_callback = StepLogger()
   episodes=10000

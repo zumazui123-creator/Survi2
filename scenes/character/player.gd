@@ -209,6 +209,11 @@ func animate_player(dir: Vector2):
 	else:
 		$AnimationPlayer.stop()
 
+func resetPlayer():
+	var difLevelMode = %DifModeButton.get_selected_id()
+	if difLevelMode > 0: 
+		Multihelper.spawnPlayers()
+	
 func net_commander() -> String:
 	var action : String = ""
 
@@ -232,7 +237,7 @@ func net_commander() -> String:
 				action = lines[0].strip_edges()
 
 				if action == "End Sequenz":
-					Multihelper.spawnPlayers()
+					resetPlayer()
 					ws_peer.send_text(action)
 
 
@@ -442,6 +447,9 @@ func projectileHit(body):
 func _on_play_button_pressed() -> void:
 	ws_peer.send_text("play_it_now\n"+code_edit.text )
 
+func _on_stop_button_pressed() -> void:
+	ws_peer.send_text("End Sequenz\n")
+	ws_peer.send_text("Stop Sequenz\n")
 
 
 # GODOT Server
