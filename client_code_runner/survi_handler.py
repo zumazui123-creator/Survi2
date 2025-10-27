@@ -6,9 +6,6 @@ import queue
 import gymnasium as gym
 from stable_baselines3 import PPO
 from stable_baselines3.common.callbacks import BaseCallback
-import torch
-import torch as th
-import torch.nn as nn
 import matplotlib.pyplot as plt
 import networkx as nx
 

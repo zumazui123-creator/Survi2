@@ -1,7 +1,3 @@
-
-import torch as th
-
-# from stable_baselines3 import PPO
 import stable_baselines3 as stb
 from ki import GodotEnv
 from ki import StepLogger
