@@ -20,8 +20,9 @@ func _on_start_ki_button_pressed() -> void:
 
 func punish_stuck_on_tile(reward):
 	if last_tile_position == tile_position:
-		reward /= 3
-	return reward
+		#reward /= 3
+		return 0
+	return 1
 
 func punish_same_pattern(reward):
 	if tile_position in visited_walkable_tiles:
@@ -67,10 +68,13 @@ func send_ki_obs():
 	var target_tile_position = Multihelper.map.laby_map.endPosition
 	var walkable_tiles_bool = get_walkable_neighbor_tiles()
 	
-	var index = Multihelper.map.walkable_tiles.find(tmp_status["tile_position"])
-	if index != -1:
-		print("Gefunden bei Index:", index)
-		
+	# Test ob überhaupt gelernt wird in den mögl. Wegen zu gehen
+	var ways_possible = ""+str(walkable_tiles_bool[0])+str(walkable_tiles_bool[1])+str(walkable_tiles_bool[2])+str(walkable_tiles_bool[3])
+	reward = punish_stuck_on_tile(reward)
+	#Zustand für q_model var index = Multihelper.map.walkable_tiles.find(tmp_status["tile_position"])
+	#if index != -1:
+		#print("Gefunden bei Index:", index)
+	
 	var ki_data = {
 			#"obs": [
 					##tmp_status["tile_position"][0], 
@@ -82,7 +86,7 @@ func send_ki_obs():
 					#walkable_tiles_bool[2],
 					#walkable_tiles_bool[3],
 					 #],
-			"obs": index ,
+			"obs": ways_possible ,
 			"reward": reward,
 			"done": player.EndUI.visible,
 			"status": tmp_status

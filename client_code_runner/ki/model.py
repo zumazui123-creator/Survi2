@@ -12,18 +12,18 @@ def init_model():
     "MlpPolicy",  # oder Custom CNN wenn nötig
     env,
     learning_rate=0.0006,
-    n_steps=30,
+    n_steps=100,
     batch_size=25,
-    n_epochs=2,
-    gamma=0.99,
-    gae_lambda=0.95,
-    clip_range=0.2,
-    ent_coef=0.10,
-    vf_coef=0.5,
-    max_grad_norm=0.5,
-    policy_kwargs=dict(
-        net_arch=[512, 512],
-    ),
+    n_epochs=1000,
+    # gamma=0.99,
+    # gae_lambda=0.95,
+    # clip_range=0.2,
+    # ent_coef=0.10,
+    # vf_coef=0.5,
+    # max_grad_norm=0.5,
+    # policy_kwargs=dict(
+    #     net_arch=[512, 512],
+    # ),
     verbose=1,
 )
 
@@ -34,7 +34,7 @@ def init_model():
 		# model.load(model_name+"2")
 		print(f"⚠️ Error in loading trained model: {e}")
 
-	train_model = model.learn(total_timesteps=45, callback=logger_callback, progress_bar=True)
+	train_model = model.learn(total_timesteps=4500, callback=logger_callback, progress_bar=True)
 	obs, info = env.reset()
 	print("Initial Obs:", obs)
 
