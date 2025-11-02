@@ -16,7 +16,7 @@ var playerStatus := {}
 func setPlayerName(newName:String):
 	%nameLabel.text = newName
 	resizeNameToFit()
-	
+
 func setHPBarRatio(ratio):
 	%hpBar.value = ratio
 
@@ -27,7 +27,7 @@ func resizeNameToFit():
 		%nameLabel.set("theme_override_font_sizes/font_size", fontSize)
 
 func getPlayerStatus():
-	playerStatus = {"hp": %hpBar.value, 
+	playerStatus = {"hp": %hpBar.value,
 		"foodBar": foodBar.value,
 		"hydrationBar": hydrationBar.value,
 		"moveSpeed": player.move_speed_factor,
@@ -39,7 +39,8 @@ func getPlayerStatus():
 		"pixel_position": [player.position.x, player.position.y],
 		"tile_position":[player.current_map_position.x, player.current_map_position.y],
 		"items": Inventory.getItems(str(player.name)),
-		"time": 3 #TODO
+		"time": 3, #TODO
+		"terminated": false
 		}
 	return playerStatus
 
@@ -49,11 +50,11 @@ func _ready() -> void:
 	foodBar.value 	   = 100
 
 func _process(delta: float) -> void:
-	var now = GameTime.get_time() 
+	var now = GameTime.get_time()
 	if now - last_time_hydration > hydration_rate:
 		hydrationBar.value -= 1
 		last_time_hydration = now
-		
+
 	if now - last_time_food > food_rate:
 		foodBar.value -= 1
 		last_time_food = now

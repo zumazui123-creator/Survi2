@@ -1,3 +1,5 @@
+
+from typing import override
 import gymnasium as gym
 from gymnasium import spaces
 import websocket
@@ -6,15 +8,26 @@ import queue
 import time
 import json
 import numpy as np
+from collections import defaultdict
 
 class GodotEnv(gym.Env):
     metadata = {"render_modes": []}
 
+    def get_null_obs(self):
+        return np.array([0, 0, 0, 0, -1, -1, 0, 0, 0, 0], dtype=np.float32)
+
+
+    def get_endgoal_obs(self):
+        return np.array([0, 0, 0, 0, 1, 1, 0, 0, 0, 0], dtype=np.float32)
+
+
     def __init__(self, server_url="ws://localhost:8765", timeout=2.0):
         super().__init__()
 
-        # Action-Space (Beispiel: 4 Bewegungen + Attack)
+        # Action-Space als Box für SAC kompatibel
+        # self.action_space = spaces.Box(low=np.array([0.0]), high=np.array([3.0]), dtype=np.float32)
         self.action_space = spaces.Discrete(4)
+
         self.action_map = {
             0: "walkUp",
             1: "walkDown",
@@ -23,21 +36,38 @@ class GodotEnv(gym.Env):
             #4: "attack",
         }
 
-        # Observation-Space (Beispiel: Position x,y)
+        # Observation-Space
+        # self.observation_space = spaces.Dict({
+        #     "observation": spaces.Box(low=np.array([0,0,0,0,0,0,0,0]), high=np.array([256,256,256,256,1,1,1,1]), dtype=np.float32),
+        #     "achieved_goal": spaces.Box(low=np.array([0,0]), high=np.array([256,256]), dtype=np.float32),
+        #     "desired_goal": spaces.Box(low=np.array([0,0]), high=np.array([256,256]), dtype=np.float32)
+        # })
+
+        # self.observation_space = spaces.Box(
+        #     low=np.array([0, 0, 0, 0, 0, 0, 0, 0], dtype=np.float32),
+        #     high=np.array([256, 256, 256, 256, 1, 1, 1, 1], dtype=np.float32),
+        # )
+
         self.observation_space = spaces.Box(
-            #low=np.array([0, 0, 0, 0, 0, 0, 0, 0], dtype=np.float32),
-            #high=np.array([256, 256, 256, 256, 1, 1, 1, 1], dtype=np.float32),
-            low=np.array([ 0, 0, 0, 0], dtype=np.float32),
-            high=np.array([1, 1, 1, 1], dtype=np.float32),
-            dtype=np.float32
-        )
+                    low=np.array([0, 0, 0, 0, -1, -1, 0, 0, 0, 0], dtype=np.float32),
+                    high=np.array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1], dtype=np.float32),
+                )
+
+        # self.observation_space = spaces.Box(
+        #     low=np.array([ 0, 0, 0, 0], dtype=np.int32),
+        #     high=np.array([ 1, 1, 1, 1], dtype=np.int32),
+        # )
 
         self.server_url = server_url
         self.ws = None
         self.running = False
         self.timeout = timeout
-
         self.response_queue = queue.Queue()
+
+        # self.visited_ways = set()
+        self.visited_ways = defaultdict(int)
+
+
 
         self._connect()
 
@@ -64,6 +94,7 @@ class GodotEnv(gym.Env):
         self.ws.send(action)
         try:
             reply = self.response_queue.get(timeout=self.timeout)
+            # print(f"ws reply:{action}")
             return reply
         except queue.Empty:
             return None
@@ -73,38 +104,101 @@ class GodotEnv(gym.Env):
     # -------------------
     def reset(self, seed=None, options=None):
         super().reset(seed=seed)
-
-        # Neustart der Episode im Spiel
         self._send_action("reset")
-
-        # Beispiel: initiale Observation
-        #obs = [0.0, 0.0, 256, 256, 1, 1, 1, 1]
-        obs = [ 0, 0, 0, 0]
+        obs = self.get_null_obs()
         info = {}
+        # self.visited_ways = set()
+        self.visited_ways = defaultdict(int)
+
         return obs, info
 
-    def step(self, action_idx):
-        action_str = self.action_map[action_idx]
-        reply = self._send_action(action_str)
+    def _build_observation(self, obs_list, info,):
 
-        #obs = [0.0, 0.0, 256, 256, 1, 1, 1, 1]
-        obs = [0, 0, 0, 0]
+        player_position = list(info["tile_position"])
+        goal_position   = obs_list["goal"]
+        free_directions = obs_list["free_directions"]
+
+        player = np.array(player_position, dtype=np.float32)
+        goal   = np.array(goal_position, dtype=np.float32)
+        free   = np.array(free_directions, dtype=np.float32)
+
+        # Normalisiere Positionen (0–256 → 0–1)
+        player_norm = player / 256.0
+        goal_norm   = goal / 256.0
+
+        # Relative Distanz
+        rel = abs(goal - player) / 256.0  # Wertebereich ca. [-1, +1]
+        distants = np.linalg.norm(goal - player) / 256.0
+        print(f"distants: {distants}")
+        print(f"player_position: {player_position}")
+
+        # Baue Observation zusammen
+        obs = np.concatenate([player_norm, goal_norm, rel, free])
+
+        # calc reward
+        reward = 0.0
+
+        # visited_move
+        pos = tuple(player)
+        self.visited_ways[pos] += 1  # Zählt Besuche
+
+        # Bestrafung je häufiger der Agent das Feld besucht
+        visits = self.visited_ways[pos]
+        if visits > 1:
+            reward -= 0.25 * (visits - 1)  # -0.25, -0.5, -0.75, ...
+
+        # self.visited_ways.add(tuple(player))
+        # if tuple(player) in self.visited_ways:
+        #    reward -= 0.55
+
+        if distants > 0:
+            reward += 1 / distants
+        else:
+            reward += 10  # e.g. bonus for reaching the goal
+
+
+        return obs, reward
+
+    @override
+    def step(self, action):
+        print(f"action:{action}")
+        action_str = self.action_map[action]
+
+        reply = self._send_action(action_str)
+        obs = self.get_null_obs()
+
+
         reward = 0.0
         terminated = False
         truncated = False
         info = {}
+        obs_list = {}
 
         if reply:
+            # print(f"reply:{reply}")
             try:
                 data = json.loads(reply)
-                obs  = data.get("obs", obs)
+                obs_list = data.get("obs", None)
                 reward = data.get("reward", 0.0)
-                terminated = False #data.get("done", False)
-                info = data.get("status", {})  # hier hast du PlayerStatus
+                terminated = data.get("done", False)
+                info = data.get("status", {})
             except Exception:
                 pass
-        print(f"obs:{obs}, terminated {terminated}")
+        if obs_list is not None:
+            obs, reward2 = self._build_observation(obs_list=obs_list, info=info)
+            reward += reward2
 
+
+            # obs = np.array(obs_list, dtype=np.int32)
+        # if obs.shape !=  obs_shape:
+        #     terminated = True
+        #     obs = np.array(info['tile_position'], dtype=np.int32)
+
+        print(f"obs shape:{obs.shape} obs:{obs}, terminated {terminated}, info: {info["tile_position"]}")
+
+        if terminated:
+            reward += 10
+            self.reset()
 
         return obs, reward, terminated, truncated, info
 

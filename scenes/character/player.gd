@@ -163,13 +163,17 @@ func _physics_process(delta: float) -> void:
 	win_condition()
 
 func win_condition():
+	status.playerStatus["terminated"] = false
+
 	if Multihelper.level["type"] == 100:
 		var end_goal_position = Multihelper.map.laby_map.endPosition
 		if current_map_position == end_goal_position:
 			current_map_position = Vector2i()
 			EndUI.setLabel("Level Abgeschlossen!")
-			EndUI.visible = true
-			EndUI.next_level()
+			# EndUI.visible = true
+			#EndUI.next_level()
+			status.playerStatus["terminated"] = true
+			EndUI.retry()
 
 func get_reward():
 	var reward = 0
@@ -211,9 +215,9 @@ func animate_player(dir: Vector2):
 
 func resetPlayer():
 	var difLevelMode = %DifModeButton.get_selected_id()
-	if difLevelMode > 0: 
+	if difLevelMode > 0:
 		Multihelper.spawnPlayers()
-	
+
 func net_commander() -> String:
 	var action : String = ""
 

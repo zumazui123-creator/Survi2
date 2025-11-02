@@ -12,7 +12,6 @@ func setPlayerStatus(playerDied: bool, playerId : String):
 	self.playerId = playerId
 
 func next_level():
-	self.visible = false
 	if playerDied:
 		print("DIED")
 		Multihelper.rebornPlayer(playerId)
@@ -22,13 +21,17 @@ func next_level():
 	Multihelper.map.generateMap(Multihelper.level)
 	Multihelper.spawnPlayers()
 
+func retry():
+	Multihelper.spawnPlayers()
+	
 func _on_next_button_pressed() -> void:
+	self.visible = false
 	print("_on_next_button_pressed")
 	next_level()
 
 
 func _on_retry_button_pressed() -> void:
-	Multihelper.spawnPlayers()
+	retry()
 	self.visible = false
 	
 	
