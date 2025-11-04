@@ -3,7 +3,7 @@ import websocket
 import time
 import threading
 import tkinter as tk
-from myconverter.parser import Parser 
+from myconverter.parser import Parser
 
 conv_action = Parser()
 
@@ -33,12 +33,12 @@ def log(msg: str):
 # --- WebSocket Callbacks ---
 def on_message(ws, message):
     log(f"Observation from Godot: {message}")
-    converted_msg = conv_action.parse(message)
+    converted_msg = conv_action.translate_to_actions(message)
     log(f"Converted message: {converted_msg}")
     if "play_it_now" in message:
         for msg in converted_msg:
             ws.send(f"{msg[0]} , {msg[1]}")
-            
+
             # time.sleep(1.2)
         log(f"Sent action: {converted_msg}")
 

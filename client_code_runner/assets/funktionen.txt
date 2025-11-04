@@ -1,10 +1,12 @@
-func loopDown =
+func asd =
+    links
+    links
+    
+ende
+
+func asd2 =
     unten
     unten
-unten
-end
-func loopa =
-wiederhole 3 mal
-links
-end
-end
+    
+ende
+

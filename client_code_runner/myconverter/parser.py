@@ -1,14 +1,15 @@
 
 from typing import List
-
+from .function import FunctionHandler
 end_token : str = "ende"
 
 class Parser():
-    def __init__(self, data = None):
-        self.data = data
+    def __init__(self,  funcHandler :FunctionHandler , data = None ):
+        # self.data = data
         self.functions = {}
+        self.funcHandler = funcHandler
 
-    def movement(self,clean_line: str) -> str:
+    def translate_action(self,clean_line: str) -> str:
         if "sage" in clean_line.lower():
             return clean_line
         if "gehe zurück" in clean_line.lower():
@@ -68,67 +69,6 @@ class Parser():
         return "\n".join(expanded_lines)
 
 
-    def parse_func_definitions(self, text):
-        """
-        Liest Funktionsdefinitionen und speichert sie in self.functions.
-        Syntax:
-            func name =
-                ...
-            end
-        """
-        lines = text.strip().splitlines()
-        i = 0
-        while i < len(lines):
-            line = lines[i].strip()
-            # print(f"Processing line for function definition: {line}")
-
-            if line.startswith("func"):
-                parts = line.split()
-                if len(parts) < 2:
-                    print(f"Fehler: Funktionsname fehlt in Zeile: {line}")
-                    i += 1
-                    continue
-
-                name = parts[1].strip()
-                i += 1
-                block = []
-
-                # Block einlesen bis end_token
-                while i < len(lines) and lines[i].strip() != end_token:
-                    block.append(lines[i].strip())
-                    # print(f"Adding line to function {name}: {lines[i]}")
-                    i += 1
-
-                # end_token überspringen
-                if i < len(lines) and lines[i].strip() == end_token:
-                    i += 1
-
-                self.functions[name] = block
-                # print(f"Funktion {name} gespeichert: {block}")
-            else:
-                i += 1
-
-
-
-    # def parse_func(self, text: str) -> str:
-    #     """
-    #     Ersetzt Funktionsaufrufe durch deren Definitionen.
-    #     Funktionsdefinitionen selbst werden NICHT verarbeitet.
-    #     """
-    #     lines = text.strip().splitlines()
-    #     result: list[str] = []
-
-    #     for line in lines:
-    #         clean_line = line.strip()
-
-    #         if clean_line in self.functions:
-    #             # Rekursiv expandieren, falls Funktionen verschachtelt sind
-    #             expanded = self.parse_func("\n".join(self.functions[clean_line]))
-    #             result.append(expanded)
-    #         else:
-    #             result.append(clean_line)
-
-    #     return "\n".join(result)
 
     def parse_func(self, text: str) -> str:
         """
@@ -150,42 +90,13 @@ class Parser():
 
         return "\n".join(result)
 
-    def compress_sequence(self,seq) -> List[tuple]:
-        if not seq:
-            return []
 
-        compressed = []
-        current = seq[0]
-        count = 1
-
-        for item in seq[1:]:
-            if item == current:
-                count += 1
-            else:
-                compressed.append((current, count))
-                current = item
-                count = 1
-        compressed.append((current, count))  # letzten Block hinzufügen
-        return compressed
-
-    def load_functions(self):
-        filepath = "assets/funktionen.txt"
-        try:
-            with open(filepath, "r", encoding="utf-8") as f:
-                code = f.read()
-                # print(f"Lade Funktionen aus {filepath}")
-                self.parse_func_definitions(code)
-
-        except FileNotFoundError:
-            print(f"{filepath} existiert nicht")
-            return
-
-    def parse(self,code : str) -> List[str]:
+    def translate_to_actions(self,code : str) -> List[str]:
         if not code:
             return []
 
         # print(f"Parsing code:\n{code}")
-        self.load_functions()
+        self.functions = self.funcHandler.load_functions()
         # print(f"Loaded functions: {self.functions}")
 
         code = self.parse_repeat(code)
@@ -202,7 +113,7 @@ class Parser():
                 continue
             # print(f"Processing line: {clean_line}")
 
-            action = self.movement(clean_line)
+            action = self.translate_action(clean_line)
             if action != "":
                 actions.append(action)
 

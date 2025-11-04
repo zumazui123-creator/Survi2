@@ -10,11 +10,14 @@ import matplotlib.pyplot as plt
 import networkx as nx
 
 from myconverter.parser import Parser
+from myconverter.function import FunctionHandler
 from ki import GodotEnv
 from ki import StepLogger
 from ki import init_model
 import time
-conv_action = Parser()
+
+functionHandler = FunctionHandler()
+parser = Parser(functionHandler)
 
 # --- GUI Setup ---
 root = tk.Tk()
@@ -53,8 +56,14 @@ def receiver_loop():
 
             log(f"📩 Received: {message}")
 
-            converted_msg = conv_action.parse(message)
+            converted_msg = parser.translate_to_actions(message)
             log(f"🔄 Converted message: {converted_msg}")
+
+            if "create_function" in message:
+                print("create_function")
+                functionHandler.load_functions()
+                functionHandler.parse_func_definitions(message)
+                functionHandler.save_functions()
 
             if "start ki" in message:
                 print("Start Ki")
@@ -72,7 +81,7 @@ def receiver_loop():
 
                     if "Stop Sequenz" in reply:
                         break
-                
+
                 ws.send("End Sequenz")
                 reply = ws.recv()
                 log(f"✅ Received End reply: {reply}")

@@ -2,7 +2,7 @@ import websocket # type: ignore
 import time
 import threading
 import tkinter as tk
-from myconverter.parser import Parser 
+from myconverter.parser import Parser
 
 conv_action = Parser()
 
@@ -40,7 +40,7 @@ def receiver_loop():
 
             log(f"📩 Received: {message}")
 
-            converted_msg = conv_action.parse(message)
+            converted_msg = conv_action.translate_to_actions(message)
             log(f"🔄 Converted message: {converted_msg}")
 
             if "play_it_now" in message:
