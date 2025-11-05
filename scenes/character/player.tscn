@@ -358,9 +358,10 @@ offset_right = 422.0
 offset_bottom = 724.0
 size_flags_vertical = 3
 tab_alignment = 1
-current_tab = 0
+current_tab = 1
 
 [node name="Code" type="VBoxContainer" parent="CanvasLayer/Code/TabContainer"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 6
 size_flags_vertical = 3
@@ -484,7 +485,6 @@ layout_mode = 2
 text = "Funktion Menu"
 
 [node name="KI Playground" type="MarginContainer" parent="CanvasLayer/Code/TabContainer"]
-visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 15
 theme_override_constants/margin_top = 5
@@ -505,16 +505,16 @@ horizontal_alignment = 1
 
 [node name="KiModelLabel" type="Label" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer"]
 layout_mode = 2
-text = "Model: PBO"
+text = "Model: Neural Network"
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/HBoxContainer2"]
+[node name="stepsLabel" type="Label" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/HBoxContainer2"]
 layout_mode = 2
 text = "Action-Schritte: "
 
-[node name="LineEdit" type="LineEdit" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/HBoxContainer2"]
+[node name="stepsEdit" type="LineEdit" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "100"
@@ -524,19 +524,19 @@ layout_mode = 2
 theme_override_constants/h_separation = 12
 columns = 3
 
-[node name="Label2" type="Label" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/GridContainer"]
+[node name="learnRateLabel" type="Label" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/GridContainer"]
 layout_mode = 2
 text = "Lernrate: 0.004"
 
-[node name="Button2" type="Button" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/GridContainer"]
+[node name="learnRateBtnPlus" type="Button" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/GridContainer"]
 layout_mode = 2
 text = "+"
 
-[node name="Button3" type="Button" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/GridContainer"]
+[node name="learnRateBtnMinus" type="Button" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/GridContainer"]
 layout_mode = 2
 text = "-"
 
-[node name="Label" type="Label" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/GridContainer"]
+[node name="exploreRateLabel" type="Label" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/GridContainer"]
 layout_mode = 2
 text = "Erforschungrate: 0.004"
 
@@ -568,6 +568,7 @@ layout_mode = 2
 button_pressed = true
 
 [node name="Label" type="Label" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/RewardContainer"]
+visible = false
 layout_mode = 2
 text = "Kekse platzieren"
 

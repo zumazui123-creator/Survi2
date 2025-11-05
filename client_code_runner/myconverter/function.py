@@ -54,6 +54,7 @@ class FunctionHandler:
                 self.functions[name] = block
             else:
                 i += 1
+            return self.functions
 
 
     def load_functions(self):

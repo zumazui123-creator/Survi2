@@ -64,6 +64,7 @@ def receiver_loop():
                 functionHandler.load_functions()
                 functionHandler.parse_func_definitions(message)
                 functionHandler.save_functions()
+                ws.send(functionHandler.functions)
 
             if "start ki" in message:
                 print("Start Ki")
