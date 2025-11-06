@@ -1,18 +1,22 @@
 extends Control
-@onready var labyrinthLevelList = $HBoxContainer/LevelContainer/VBoxContainer/LabyrinthLevelList
-@onready var mainLevelList = $HBoxContainer/LevelContainer2/VBoxContainer/MainLevelList
-
+@onready var labyrinthLevelList = $HBoxContainer/LabrinthContainer/VBoxContainer/LabyrinthLevelList
+@onready var mainLevelList = $HBoxContainer/MainContainer/VBoxContainer/MainLevelList
+@onready var turnierLevelList = $HBoxContainer/TurnierContainer/VBoxContainer/TunierLevelList
 
 var selcted_level : Dictionary = {"level": 0,"type": 100}
 
 func _ready():
 	if OS.has_feature("dedicated_server"):
 		Multihelper.create_game()
+		
 	for labyLvl in Levels.LabyrinthLevels:
 		labyrinthLevelList.add_item("Level "+str(labyLvl))
 		
 	for mainLvl in Levels.MainLevels:
 		mainLevelList.add_item("Level "+str(mainLvl))	
+		
+	for turnierLvl in Levels.TurnierLevels:
+		turnierLevelList.add_item("Level "+str(turnierLvl))	
 			
 func server_offline():
 	$connectTimer.start()

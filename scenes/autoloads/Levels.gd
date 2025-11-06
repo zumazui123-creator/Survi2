@@ -13,6 +13,11 @@ var MainLevels := {
 	2: {"level": 2,"type": 1},
 	
 }
+
+var TurnierLevels := {
+	0: {"level": 0,"type": 2},
+}
+
 func _ready():
 	for i in range(5,50):
 		LabyrinthLevels.set(i,{"level": i,"type": 100})

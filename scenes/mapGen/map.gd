@@ -21,6 +21,7 @@ var walkable_tiles = []
 @onready var tile_map = $TileMap
 @onready var laby_map = $Labyrinth
 
+ Note: Auslgaern und ordnen in Ein MapGenerator und TerrainGenrator 
 
 func generateMap(level_dict : Dictionary):
 	print("generated:"+str(level_dict))
