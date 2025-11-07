@@ -458,3 +458,24 @@ func handleAnims(vel, doing_action):
 			$AnimationPlayer.play("walking")
 	else:
 		$AnimationPlayer.stop()
+
+
+func _on_back_to_menu_pressed() -> void:
+	# 1. Zerstöre die aktuelle Node
+	#queue_free()
+	
+	# 2. Lade die MainMenu Szene
+	#var menu_scene : PackedScene = load("res://scenes/ui/mainMenu/mainMenu.tscn")  # Pfad anpassen
+	#var menu_node : Node = menu_scene.instantiate()
+	
+	# 2. Lade die Szene für das Menü / Game Node
+	var game_scene: PackedScene = load("res://scenes/game/Game.tscn")  # Pfad anpassen
+	var game_node: Node = game_scene.instantiate()
+	#%Multihelper.setGameNode(game_node)
+	get_tree().change_scene_to_packed(game_scene)
+	#game_node.setMainMenu(menu_node)
+	# Hier binde an den passenden Parent — z. B. die Root-Node oder ein UI-Container
+	#get_tree().get_root().add_child(game_node)
+	
+	# Optional: mache Pause rückgängig, oder setze Status
+	#get_tree().paused = false

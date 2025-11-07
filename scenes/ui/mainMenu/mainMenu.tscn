@@ -78,23 +78,23 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 100
 
-[node name="MainCotainer" type="PanelContainer" parent="HBoxContainer"]
+[node name="MainContainer" type="PanelContainer" parent="HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_wx4k7")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/MainCotainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/MainContainer"]
 layout_mode = 2
 alignment = 1
 
-[node name="Label" type="Label" parent="HBoxContainer/MainCotainer/VBoxContainer"]
+[node name="Label" type="Label" parent="HBoxContainer/MainContainer/VBoxContainer"]
 layout_mode = 2
 text = "Main-Level"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="MainLevelList" type="ItemList" parent="HBoxContainer/MainCotainer/VBoxContainer"]
+[node name="MainLevelList" type="ItemList" parent="HBoxContainer/MainContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 auto_width = true
@@ -179,7 +179,8 @@ libraries = {
 }
 autoplay = "loop"
 
-[connection signal="item_selected" from="HBoxContainer/MainCotainer/VBoxContainer/MainLevelList" to="." method="_on_main_level_list_item_selected"]
+[connection signal="item_selected" from="HBoxContainer/MainContainer/VBoxContainer/MainLevelList" to="." method="_on_main_level_list_item_selected"]
 [connection signal="item_selected" from="HBoxContainer/LabrinthContainer/VBoxContainer/LabyrinthLevelList" to="." method="_on_labyrinth_level_list_item_selected"]
+[connection signal="item_selected" from="HBoxContainer/TurnierContainer/VBoxContainer/TunierLevelList" to="." method="_on_tunier_level_list_item_selected"]
 [connection signal="pressed" from="PanelContainer/VBoxContainer/Button" to="." method="_on_hostDebugButton_pressed"]
 [connection signal="timeout" from="connectTimer" to="." method="_on_connect_timer_timeout"]

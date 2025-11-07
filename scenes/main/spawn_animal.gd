@@ -10,8 +10,16 @@ var spawnedAnimals := {}
 @onready var navHelper : Node2D = $"../NavHelper"
 
 #animal spawn
-func trySpawnAnimals():
+func spawn(postion : Vector2i) -> Node:
+	print("Spawn")
 	var animalScene := preload("res://scenes/animal/animal.tscn")
+	var animal : Node = animalScene.instantiate()
+	animal.position = postion
+	animal.spawner = self
+	animal.animalId = animalTypes.pick_random()
+	return animal 
+	
+func trySpawnAnimals():
 	var players = Multihelper.spawnedPlayers.keys()
 	for player in players:
 		var playerAnimals := getPlayerAnimalCount(player)
@@ -20,12 +28,9 @@ func trySpawnAnimals():
 			var spawnPositions = navHelper.getNRandomNavigableTileInPlayerRadius(
 							player, toSpawn, animalSpawnRadiusMin, animalSpawnRadiusMax)
 			for pos in spawnPositions:
-				var animal = animalScene.instantiate()
-				add_child(animal,true)
-				animal.position = pos
-				animal.spawner = self
+				var animal : Node = spawn(pos)
 				animal.targetPlayerId = player
-				animal.animalId = animalTypes.pick_random()
+				add_child(animal,true)
 				increasePlayerAnimalCount(player)
 
 func getPlayerAnimalCount(pId) -> int:

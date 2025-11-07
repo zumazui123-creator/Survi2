@@ -7,6 +7,7 @@ extends Node2D
 @onready var net_control = %NetControl
 @onready var inputFuncName = %InputFuncName
 @onready var code_func = $"../PopupPanel/HBoxContainer/VBoxContainer/CodeEdit"
+@onready var funcHandler = $"../../FunctionHandler"
 
 func _on_links_button_pressed() -> void:
 	code_edit.insert_text_at_caret("links\n")
@@ -38,6 +39,11 @@ func _on_item_list_item_clicked(index: int, at_position: Vector2, mouse_button_i
 func _on_create_function_pressed() -> void:
 	popup.popup_centered()
 
+func _on_load_function_pressed() -> void:
+	var packet : String  = net_control.send_text("load_functions\n")
+	var check_str = funcHandler.set_func(packet)
+	net_control.send_text(check_str)
+	
 func _on_code_delete_button_pressed() -> void:
 	code_edit.text = ""
 

@@ -29,8 +29,12 @@ var player_info = {"name": ""}
 
 
 
-@onready var game = get_node("/root/Game")
+var game : Node
+func setGameNode(gameNode : Node):
+	game.queue_free()
+	game = gameNode
 func _ready():
+	game = get_node("/root/Game")
 	multiplayer.peer_connected.connect(_on_player_connected)
 	multiplayer.peer_disconnected.connect(_on_player_disconnected)
 	multiplayer.connected_to_server.connect(_on_connected_ok)
@@ -55,6 +59,8 @@ func join_game(address = ""):
 	multiplayer.multiplayer_peer = peer
 
 func create_game():
+	if not game:
+		game = get_node_or_null("/root/Game")
 	print("create_game")
 	var peer = WebSocketMultiplayerPeer.new()
 	var error
@@ -69,6 +75,7 @@ func create_game():
 		return error
 	multiplayer.multiplayer_peer = peer
 	player_connected.emit(1, player_info)
+	
 	game.start_game()
 
 func remove_multiplayer_peer():

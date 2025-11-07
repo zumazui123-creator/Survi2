@@ -1,6 +1,5 @@
 extends Node
 
-
 # Server: TCP + WebSocket Upgrade
 var _tcp_server := TCPServer.new()
 var _ws_peers 	:= [] 
@@ -10,10 +9,11 @@ func _ready():
 	_tcp_server.listen(8765)  # Port 8765
 	print("Server gestartet auf ws://localhost:8765")
 	
-func send_text(text):
+func send_text(text) -> String:
 	ws_peer.send_text(text)
+	var packet = ws_peer.get_packet().get_string_from_utf8()
+	return packet
 	
-
 func net_commander() -> String:
 	var action : String = ""
 

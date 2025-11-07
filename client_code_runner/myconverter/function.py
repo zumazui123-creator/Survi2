@@ -63,9 +63,13 @@ class FunctionHandler:
             with open(filepath, "r", encoding="utf-8") as f:
                 code = f.read()
                 self.parse_func_definitions(code)
+
         except FileNotFoundError:
             print(f"⚠️ {filepath} existiert nicht")
             return
+        except Exception as e:
+             print(f"⚠️ Error in load_functions: {e}")
+             return
         return self.functions
 
     def save_functions(self):

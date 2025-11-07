@@ -3,9 +3,10 @@ extends Control
 @onready var mainLevelList = $HBoxContainer/MainContainer/VBoxContainer/MainLevelList
 @onready var turnierLevelList = $HBoxContainer/TurnierContainer/VBoxContainer/TunierLevelList
 
-var selcted_level : Dictionary = {"level": 0,"type": 100}
+var selcted_level : Dictionary = {}
 
 func _ready():
+	selcted_level = Levels.LabyrinthLevels.get(0)
 	if OS.has_feature("dedicated_server"):
 		Multihelper.create_game()
 		
@@ -36,3 +37,7 @@ func _on_main_level_list_item_selected(index: int) -> void:
 func _on_labyrinth_level_list_item_selected(index: int) -> void:
 	#selcted_level = index + 100 # 100 is a indicator fpr Labyrinth levels
 	selcted_level = Levels.LabyrinthLevels[index]
+
+
+func _on_tunier_level_list_item_selected(index: int) -> void:
+	selcted_level = Levels.TurnierLevels[index]

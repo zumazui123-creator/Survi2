@@ -21,36 +21,29 @@ var walkable_tiles = []
 @onready var tile_map = $TileMap
 @onready var laby_map = $Labyrinth
 
- Note: Auslgaern und ordnen in Ein MapGenerator und TerrainGenrator 
+ 
 
 func generateMap(level_dict : Dictionary):
 	print("generated:"+str(level_dict))
-	var level = level_dict["level"]
+	var level_no = level_dict["level"]
 	var level_type = level_dict["type"]
-	if level_type == 100:
-		var level_hard_count = level+5
-		var way_size 		 = 5
-		if level > 10:
-			level_hard_count += 10
-			way_size = 7
-		if level > 20:
-			level_hard_count += 15
-			way_size = 10
-		walkable_tiles = laby_map.generateLabyrinth(level_hard_count,way_size)
-		
-			
 	if level_type == 1:
-			print("gen. level "+str(level))
-			generate_terrain()
-			set_level_options(level)
-			generate_borders()
-
-	
+		generateMainMap(level_no)
 		
-	
+	if level_type == 2:
+		walkable_tiles = laby_map.generateLabyrinth(level_no)
+		
+	if level_type == 3:
+		walkable_tiles = laby_map.generateLabyrinthWithSeed(level_no,42)
+			
 
 
 
+func generateMainMap(level_no: int):
+	print("gen. level "+str(level_no))
+	generate_terrain()
+	set_level_options(level_no)
+	generate_borders()
 
 	
 func generate_terrain():

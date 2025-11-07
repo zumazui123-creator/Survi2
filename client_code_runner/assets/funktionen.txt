@@ -1,12 +1,5 @@
 func asd =
     links
     links
-    
-ende
-
-func asd2 =
-    unten
-    unten
-    
 ende
 

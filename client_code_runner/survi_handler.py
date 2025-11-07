@@ -60,11 +60,23 @@ def receiver_loop():
             log(f"🔄 Converted message: {converted_msg}")
 
             if "create_function" in message:
-                print("create_function")
+                log("create function")
                 functionHandler.load_functions()
                 functionHandler.parse_func_definitions(message)
                 functionHandler.save_functions()
                 ws.send(functionHandler.functions)
+
+            if "load_fucinction" in message:
+                log("load functions:")
+                functionHandler.load_functions()
+                log(str(functionHandler.functions))
+                ws.send(functionHandler.functions)
+                reply = ws.recv()
+                if "OK" in reply:
+                    log(f"✅ Loading functions: {reply}")
+                else:
+                    log(f"Couldnt load funcitons")
+                continue
 
             if "start ki" in message:
                 print("Start Ki")

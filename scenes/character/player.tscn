@@ -358,10 +358,9 @@ offset_right = 422.0
 offset_bottom = 724.0
 size_flags_vertical = 3
 tab_alignment = 1
-current_tab = 1
+current_tab = 0
 
 [node name="Code" type="VBoxContainer" parent="CanvasLayer/Code/TabContainer"]
-visible = false
 layout_mode = 2
 size_flags_horizontal = 6
 size_flags_vertical = 3
@@ -480,11 +479,21 @@ auto_width = true
 item_count = 1
 item_0/text = "wiederhole 3 mal"
 
-[node name="createFunction" type="Button" parent="CanvasLayer/Code/TabContainer/Code/ActionsContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="CanvasLayer/Code/TabContainer/Code/ActionsContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+alignment = 1
+
+[node name="createFunction" type="Button" parent="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer2"]
 layout_mode = 2
 text = "Funktion Menu"
 
+[node name="loadFunction" type="Button" parent="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer2"]
+layout_mode = 2
+text = "Lade Funktionen"
+
 [node name="KI Playground" type="MarginContainer" parent="CanvasLayer/Code/TabContainer"]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 15
 theme_override_constants/margin_top = 5
@@ -634,16 +643,15 @@ unique_name_in_owner = true
 oversampling_override = 1.0
 title = "Funktionen"
 size = Vector2i(559, 478)
-visible = true
 
 [node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/PopupPanel"]
 anchors_preset = 4
 anchor_top = 0.5
 anchor_bottom = 0.5
 offset_left = 4.0
-offset_top = -235.0
+offset_top = 4.0
 offset_right = 555.0
-offset_bottom = 235.0
+offset_bottom = 474.0
 grow_vertical = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
@@ -883,6 +891,10 @@ popup/item_1/id = 1
 popup/item_2/text = "Horror"
 popup/item_2/id = 2
 
+[node name="backToMenu" type="Button" parent="PlayerStatus/WorkContainer/VBoxContainer"]
+layout_mode = 2
+text = "Zurück zum Menu"
+
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
 &"": SubResource("AnimationLibrary_4vloy")
@@ -943,7 +955,9 @@ grow_vertical = 0
 [connection signal="pressed" from="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer2/attackeButton" to="CanvasLayer/Code" method="_on_attacke_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer2/sageButton" to="CanvasLayer/Code" method="_on_sage_button_pressed"]
 [connection signal="item_clicked" from="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer3/ItemList" to="CanvasLayer/Code" method="_on_item_list_item_clicked"]
-[connection signal="pressed" from="CanvasLayer/Code/TabContainer/Code/ActionsContainer/createFunction" to="CanvasLayer/Code" method="_on_create_function_pressed"]
+[connection signal="pressed" from="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer2/createFunction" to="CanvasLayer/Code" method="_on_create_function_pressed"]
+[connection signal="pressed" from="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer2/loadFunction" to="CanvasLayer/Code" method="_on_load_function_pressed"]
 [connection signal="pressed" from="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2/SpeedPlus" to="PlayerSpeed" method="_on_speed_plus_pressed"]
 [connection signal="pressed" from="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2/SpeedMinus" to="PlayerSpeed" method="_on_speed_minus_pressed"]
 [connection signal="pressed" from="CanvasLayer/PopupPanel/HBoxContainer/VBoxContainer/BtnContainer/CreateBtn" to="CanvasLayer/Code" method="_on_create_btn_pressed"]
+[connection signal="pressed" from="PlayerStatus/WorkContainer/VBoxContainer/backToMenu" to="." method="_on_back_to_menu_pressed"]
