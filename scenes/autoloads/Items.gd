@@ -13,6 +13,7 @@ var consume := {
 	"food": {"hp": 10, "food": 20},
 	"berries": {"hp": 10, "food": 20},
 	"water": {"hp": 5, "hydration": 25},
+	"energy_drink": {"speed": 1.5, "duration": 10},
 }
 
 var objects := {
@@ -24,7 +25,7 @@ var objects := {
 	"ore1": {"id": "ore1", "hp": 120, "tool": "pickaxe", "drops": {"iron": {"min": 1, "max": 3}}},
 	"tree3": {"id": "tree3", "hp": 60, "tool": "axe", "drops": {"wood": {"min": 3, "max": 5}, "sap": {"min": 1, "max": 1}}},
 	"rock3": {"id": "rock3", "hp": 90, "tool": "pickaxe", "drops": {"stone": {"min": 2, "max": 4}, "coal": {"min": 1, "max": 2}}},
-	"magicPlant1": {"id": "magicPlant1", "hp": 30, "tool": "sword", "drops": {"magicHerb": {"min": 1, "max": 2}}},
+	"magicPlant1": {"id": "magicPlant1", "hp": 30, "tool": "sword", "drops": {"magicHerb": {"min": 1, "max": 2}, "energy_drink": {"min": 0, "max": 1}}},
 	"crystal1": {"id": "crystal1", "hp": 150, "tool": "pickaxe", "drops": {"crystalShard": {"min": 1, "max": 2}}},
 	"magicTree1": {"id": "magicTree1", "hp": 70, "tool": "axe", "drops": {"magicWood": {"min": 1, "max": 3}}},
 	"magicRock1": {"id": "magicRock1", "hp": 110, "tool": "pickaxe", "drops": {"magicStone": {"min": 1, "max": 2}}},

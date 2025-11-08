@@ -402,6 +402,28 @@ func itemRemoved(id, item):
 	if id == str(name) and item == equippedItem:
 		unequipItem.rpc()
 
+
+var is_speed_boost_active := false
+
+func apply_speed_boost(multiplier, duration):
+	if is_speed_boost_active:
+		return # Don't stack speed boosts
+
+	is_speed_boost_active = true
+	move_speed_factor = default_move_speed_factor * multiplier
+
+	var timer = Timer.new()
+	timer.wait_time = duration
+	timer.one_shot = true
+	timer.timeout.connect(_on_speed_boost_timeout)
+	add_child(timer)
+	timer.start()
+
+func _on_speed_boost_timeout():
+	move_speed_factor = default_move_speed_factor
+	is_speed_boost_active = false
+
+
 func projectileHit(body):
 	body.getDamage(self, attackDamage, damageType)
 

@@ -60,6 +60,8 @@ func _on_item_consumed(id, effects):
 		foodBar.value = min(100, foodBar.value + effects["food"])
 	if "hydration" in effects:
 		hydrationBar.value = min(100, hydrationBar.value + effects["hydration"])
+	if "speed" in effects and "duration" in effects:
+		player.apply_speed_boost(effects["speed"], effects["duration"])
 
 func _process(delta: float) -> void:
 	var now = GameTime.get_time()
