@@ -29,16 +29,6 @@ class FunctionHandler:
 
                 name = parts[1].strip()
 
-                # Prüfen auf doppelte Funktionsnamen
-                if name in self.functions:
-                    print(f"⚠️ Doppelte Funktion '{name}' gefunden – wird übersprungen.")
-                    # Überspringe den Block
-                    while i < len(lines) and lines[i].strip() != constants.KEYWORD_END:
-                        i += 1
-                    if i < len(lines) and lines[i].strip() == constants.KEYWORD_END:
-                        i += 1
-                    continue
-
                 i += 1
                 block = []
 
