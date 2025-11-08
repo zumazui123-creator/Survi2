@@ -19,6 +19,9 @@ func _on_exit_btn_pressed():
 	popup.hide()
 
 func _on_funcHandler_functions_updated(function_names: Array[String]):
+	print("loading func: ")
+	print(str(function_names))
+	
 	item_list.clear()
 	for func_name in function_names:
 		item_list.add_item(func_name)

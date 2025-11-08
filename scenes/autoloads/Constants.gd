@@ -11,13 +11,18 @@ const PRIVATE_KEY_PATH := ""
 #const MAP_SIZE := Vector2i(128,128) # see map.gd for tileset specific constants
 const MAP_SIZE := Vector2i(256,256)
 var INITAL_OBJECTS := 0
-var MAX_OBJECTS := 0 #520 #180
+var MAX_OBJECTS := 520 #180
 var MAX_ENEMIES_PER_PLAYER : int = 2 # 2 # see main.gd for more object and enemy spawner constants
 var MAX_ANIMALS_PER_PLAYER : int = 20 
+
+# --- Map  Types ---
+const MAP_MAIN : int = 1
+const MAP_LABY  : int = 2
+const MAP_TOURMENT : int = 3
+
+
 #Player
 const MAX_INVENTORY_SLOTS := 12
 const OBJECT_SCORE_GAIN := 1
 const MOB_SCORE_GAIN := 2
 const PK_SCORE_GAIN := 4
-# more player related consts are in player.gd
-# Item, object and equipment data is in "Items" autoload.

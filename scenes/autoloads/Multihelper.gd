@@ -3,7 +3,7 @@ extends Node
 var playerScenePath = preload("res://scenes/character/player.tscn")
 var isHost = false
 var mapSeed = randi()
-var level : Dictionary = {"level": 0,"type": 100}
+var level : Dictionary = {"level": 0,"type": 2}
 
 var map: Node2D
 var main: Node2D

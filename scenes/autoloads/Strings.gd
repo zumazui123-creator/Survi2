@@ -3,6 +3,7 @@ extends Node
 # This file centralizes all user-facing and command strings
 # to facilitate internationalization and prevent hardcoding.
 
+
 # --- Player Actions ---
 const ACTION_WALK_LEFT = "links"
 const ACTION_WALK_RIGHT = "rechts"

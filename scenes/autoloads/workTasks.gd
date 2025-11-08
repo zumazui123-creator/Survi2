@@ -8,6 +8,6 @@ var workTask := {
 func getWorkTask(level : Dictionary) -> String:
 	if level["type"] == 1:
 		return workTask["MainTask"]
-	if level["type"] == 100:
+	if level["type"] == 2:
 		return workTask["LabyrinthTask"] + "\n Labyrinth Level:"+str(level["level"])
 	return ""
