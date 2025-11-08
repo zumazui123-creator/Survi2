@@ -54,8 +54,12 @@ func net_commander() -> String:
 					if parsed.has("result"):
 						print("RPC Response (id: %s): %s" % [parsed.get("id", "N/A"), parsed["result"]])
 						# Special handling for load_functions result
-						if parsed["result"] is Dictionary and parsed["result"].has(Strings.RPC_RESULT_KEY_FUNCTIONS):
-							funcHandler.set_func(packet_string)
+						if parsed["result"] is Dictionary:
+							# The previous code expected `result` to contain a `functions` key.
+							# It seems the backend now sends the function dictionary directly as the result.
+							# We stringify the result dictionary to pass it to set_func,
+							# which expects a JSON string.
+							funcHandler.set_func(JSON.stringify(parsed["result"]))
 					elif parsed.has("error"):
 						printerr("RPC Error (id: %s): %s" % [parsed.get("id", "N/A"), parsed["error"]])
 					continue
