@@ -5,6 +5,7 @@ class FunctionHandler:
     def __init__(self, data=None):
         self.data = data
         self.functions = {}
+        self.assets_filepath = "assets/funktionen.txt"
 
     def parse_func_definitions(self, text: str):
         """
@@ -57,14 +58,13 @@ class FunctionHandler:
 
 
     def load_functions(self):
-        filepath = "/home/ubi/Code/Survi/assets/funktionen.txt"
         try:
-            with open(filepath, "r", encoding="utf-8") as f:
+            with open(self.assets_filepath, "r", encoding="utf-8") as f:
                 code = f.read()
                 self.parse_func_definitions(code)
 
         except FileNotFoundError:
-            print(f"⚠️ {filepath} existiert nicht")
+            print(f"⚠️ {self.assets_filepath} existiert nicht")
             return {}
         except Exception as e:
              print(f"⚠️ Error in load_functions: {e}")
@@ -76,11 +76,10 @@ class FunctionHandler:
         Schreibt alle gespeicherten Funktionen in die Datei assets/funktionen.txt
         im ursprünglichen Format.
         """
-        filepath = "/home/ubi/Code/Survi/assets/funktionen.txt"
-        with open(filepath, "w", encoding="utf-8") as f:
+        with open(self.assets_filepath, "w", encoding="utf-8") as f:
             for name, lines in self.functions.items():
                 f.write(f"{constants.KEYWORD_FUNC} {name} =\n")
                 for line in lines:
                     f.write(f"    {line}\n")
                 f.write(f"{constants.KEYWORD_END}\n\n")
-        print(f"✅ Funktionen erfolgreich in {filepath} gespeichert.")
+        print(f"✅ Funktionen erfolgreich in {self.assets_filepath} gespeichert.")
