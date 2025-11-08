@@ -325,12 +325,6 @@ func get_heal(heal_hp : float):
 	hp += heal_hp
 
 
-@rpc("any_peer", "call_local", "reliable")
-func consumeItem(item, item_prop):
-	if "hp" in item_prop:
-		get_heal.rpc( 100 )#item["hp"])
-	Inventory.removeItem(str(name),item)
-
 @rpc("authority", "call_local", "reliable")
 func increaseScore(by):
 	hp += by * 5

@@ -94,7 +94,7 @@ func itemSelected(id):
 		
 	var consumeList := Items.consume.keys()
 	if id in consumeList:
-		player.consumeItem.rpc_id(1, id, Items.consume[id] ) 
+		Inventory.useItem(str(player.name), id)
 
 func _on_craft_button_pressed():
 	if %craftCont.visible:

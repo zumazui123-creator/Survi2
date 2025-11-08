@@ -104,9 +104,15 @@ func useItemDurability(id, item, durabilityDamage = 1):
 		else:
 			inventoryUpdated.emit(id)
 			
-#func useItemConsume(id, item):
-	#removeItem(id, item)
-		
+signal itemConsumed(id, effects)
+
+func useItem(id, item_name) -> bool:
+	if item_name in Items.consume:
+		var effects = Items.consume[item_name]
+		if removeItem(id, item_name): # Remove one instance of the item
+			itemConsumed.emit(id, effects)
+			return true
+	return false
 		
 			
 @rpc("any_peer", "call_local", "reliable")

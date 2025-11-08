@@ -48,6 +48,18 @@ func getPlayerStatus():
 func _ready() -> void:
 	hydrationBar.value = 100
 	foodBar.value 	   = 100
+	Inventory.itemConsumed.connect(_on_item_consumed)
+
+func _on_item_consumed(id, effects):
+	if str(player.name) != id: # Ensure this is for the current player
+		return
+
+	if "hp" in effects:
+		player.hp = min(player.maxHP, player.hp + effects["hp"])
+	if "food" in effects:
+		foodBar.value = min(100, foodBar.value + effects["food"])
+	if "hydration" in effects:
+		hydrationBar.value = min(100, hydrationBar.value + effects["hydration"])
 
 func _process(delta: float) -> void:
 	var now = GameTime.get_time()
