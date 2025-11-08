@@ -3,3 +3,13 @@ func asd =
     links
 ende
 
+func asdfe =
+    links
+    
+ende
+
+func ae =
+    links
+    
+ende
+

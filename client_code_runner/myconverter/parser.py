@@ -1,7 +1,7 @@
 
 from typing import List
 from .function import FunctionHandler
-end_token : str = "ende"
+from . import constants
 
 class Parser():
     def __init__(self,  funcHandler :FunctionHandler , data = None ):
@@ -10,24 +10,25 @@ class Parser():
         self.funcHandler = funcHandler
 
     def translate_action(self,clean_line: str) -> str:
-        if "sage" in clean_line.lower():
+        lower_line = clean_line.lower()
+        if constants.ACTION_SAY in lower_line:
             return clean_line
-        if "gehe zurück" in clean_line.lower():
-            return "gehe zurück"
-        if "nutze item" in clean_line.lower():
-            return "use item " + clean_line.split(" ")[-1]
+        if constants.ACTION_GO_BACK in lower_line:
+            return constants.ACTION_GO_BACK
+        if constants.ACTION_USE_ITEM in lower_line:
+            return constants.MAPPED_USE_ITEM + clean_line.split(" ")[-1]
 
-        match clean_line.lower():
-            case "links":
-                return "walkLeft"
-            case "rechts":
-                return "walkRight"
-            case "hoch" | "oben":
-                return "walkUp"
-            case "runter" | "unten":
-                return "walkDown"
-            case "attacke":
-                return "leftClickAction"
+        match lower_line:
+            case constants.ACTION_WALK_LEFT:
+                return constants.MAPPED_WALK_LEFT
+            case constants.ACTION_WALK_RIGHT:
+                return constants.MAPPED_WALK_RIGHT
+            case constants.ACTION_WALK_UP_1 | constants.ACTION_WALK_UP_2:
+                return constants.MAPPED_WALK_UP
+            case constants.ACTION_WALK_DOWN_1 | constants.ACTION_WALK_DOWN_2:
+                return constants.MAPPED_WALK_DOWN
+            case constants.ACTION_ATTACK:
+                return constants.MAPPED_ATTACK
         return ""
 
     def parse_repeat_recursive(self, lines):
@@ -35,7 +36,7 @@ class Parser():
         i = 0
         while i < len(lines):
             line = lines[i].strip()
-            if line.startswith("wiederhole"):
+            if line.startswith(constants.KEYWORD_REPEAT):
                 # Zahl der Wiederholungen extrahieren
                 parts = line.split()
                 count = int(parts[1])
@@ -45,9 +46,9 @@ class Parser():
                 depth = 1
                 while i < len(lines) and depth > 0:
                     current = lines[i].strip()
-                    if current.startswith("wiederhole"):
+                    if current.startswith(constants.KEYWORD_REPEAT):
                         depth += 1
-                    elif current == end_token:
+                    elif current == constants.KEYWORD_END:
                         depth -= 1
                         if depth == 0:
                             i += 1

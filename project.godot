@@ -25,6 +25,7 @@ Map="*res://scenes/mapGen/map.gd"
 GameTime="*res://scenes/main/dayNightCycle.gd"
 workTask="*res://scenes/autoloads/workTasks.gd"
 Levels="*res://scenes/autoloads/Levels.gd"
+Strings="*res://scenes/autoloads/Strings.gd"
 
 [display]
 

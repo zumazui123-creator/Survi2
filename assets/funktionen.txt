@@ -1,0 +1,15 @@
+func func2 =
+    links
+    
+ende
+
+func func1 =
+    unten
+    
+ende
+
+func dfg =
+    links
+    
+ende
+

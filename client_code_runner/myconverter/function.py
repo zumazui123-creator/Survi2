@@ -1,6 +1,5 @@
 from typing import List
-
-end_token: str = "ende"
+from . import constants
 
 class FunctionHandler:
     def __init__(self, data=None):
@@ -20,7 +19,7 @@ class FunctionHandler:
         while i < len(lines):
             line = lines[i].strip()
 
-            if line.startswith("func"):
+            if line.startswith(constants.KEYWORD_FUNC + " "):
                 parts = line.split()
                 if len(parts) < 2:
                     print(f"⚠️ Fehler: Funktionsname fehlt in Zeile: {line}")
@@ -33,9 +32,9 @@ class FunctionHandler:
                 if name in self.functions:
                     print(f"⚠️ Doppelte Funktion '{name}' gefunden – wird übersprungen.")
                     # Überspringe den Block
-                    while i < len(lines) and lines[i].strip() != end_token:
+                    while i < len(lines) and lines[i].strip() != constants.KEYWORD_END:
                         i += 1
-                    if i < len(lines) and lines[i].strip() == end_token:
+                    if i < len(lines) and lines[i].strip() == constants.KEYWORD_END:
                         i += 1
                     continue
 
@@ -43,22 +42,22 @@ class FunctionHandler:
                 block = []
 
                 # Block einlesen bis end_token
-                while i < len(lines) and lines[i].strip() != end_token:
+                while i < len(lines) and lines[i].strip() != constants.KEYWORD_END:
                     block.append(lines[i].strip())
                     i += 1
 
                 # end_token überspringen
-                if i < len(lines) and lines[i].strip() == end_token:
+                if i < len(lines) and lines[i].strip() == constants.KEYWORD_END:
                     i += 1
 
                 self.functions[name] = block
             else:
                 i += 1
-            return self.functions
+        return self.functions
 
 
     def load_functions(self):
-        filepath = "assets/funktionen.txt"
+        filepath = "/home/ubi/Code/Survi/assets/funktionen.txt"
         try:
             with open(filepath, "r", encoding="utf-8") as f:
                 code = f.read()
@@ -66,10 +65,10 @@ class FunctionHandler:
 
         except FileNotFoundError:
             print(f"⚠️ {filepath} existiert nicht")
-            return
+            return {}
         except Exception as e:
              print(f"⚠️ Error in load_functions: {e}")
-             return
+             return {}
         return self.functions
 
     def save_functions(self):
@@ -77,11 +76,11 @@ class FunctionHandler:
         Schreibt alle gespeicherten Funktionen in die Datei assets/funktionen.txt
         im ursprünglichen Format.
         """
-        filepath = "assets/funktionen.txt"
+        filepath = "/home/ubi/Code/Survi/assets/funktionen.txt"
         with open(filepath, "w", encoding="utf-8") as f:
             for name, lines in self.functions.items():
-                f.write(f"func {name} =\n")
+                f.write(f"{constants.KEYWORD_FUNC} {name} =\n")
                 for line in lines:
                     f.write(f"    {line}\n")
-                f.write(f"{end_token}\n\n")
+                f.write(f"{constants.KEYWORD_END}\n\n")
         print(f"✅ Funktionen erfolgreich in {filepath} gespeichert.")
