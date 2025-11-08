@@ -1,7 +1,6 @@
 Welche KI benutzt ihr zuhause
 
 Was ist eine Kunstliche Intelligenz
-
 Was braucht KI
 
 1. Was sind Neuronen
