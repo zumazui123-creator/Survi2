@@ -961,4 +961,5 @@ grow_vertical = 0
 [connection signal="pressed" from="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2/SpeedPlus" to="PlayerSpeed" method="_on_speed_plus_pressed"]
 [connection signal="pressed" from="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2/SpeedMinus" to="PlayerSpeed" method="_on_speed_minus_pressed"]
 [connection signal="pressed" from="CanvasLayer/PopupPanel/HBoxContainer/VBoxContainer/BtnContainer/CreateBtn" to="CanvasLayer/Code" method="_on_create_btn_pressed"]
+[connection signal="item_activated" from="CanvasLayer/PopupPanel/HBoxContainer/VBoxContainer2/FuncList" to="FunctionHandler" method="_on_func_list_item_activated"]
 [connection signal="pressed" from="PlayerStatus/WorkContainer/VBoxContainer/backToMenu" to="." method="_on_back_to_menu_pressed"]

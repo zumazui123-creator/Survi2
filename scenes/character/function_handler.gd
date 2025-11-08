@@ -1,6 +1,9 @@
 extends Node
 
 @onready var item_list = %ItemList
+@onready var func_list = %FuncList
+@onready var code_edit = $"../CanvasLayer/PopupPanel/HBoxContainer/VBoxContainer/CodeEdit"
+@onready var input_func_name = %InputFuncName
 
 var functions: Dictionary = {}
 
@@ -9,9 +12,13 @@ func add_func(function_names: Array):
 	print(str(function_names))
 	
 	item_list.clear()
+	func_list.clear()
+	
+	item_list.add_item(Strings.KEYWORD_REPEAT)
 	for func_name in function_names:
 		item_list.add_item(func_name)
-	item_list.add_item(Strings.KEYWORD_REPEAT)
+		func_list.add_item(func_name)
+	
 
 ## Receives a JSON string from the backend, parses it, and stores the functions.
 func set_func(packets: String) -> bool:
@@ -45,6 +52,12 @@ func get_function_body(func_name: String) -> PackedStringArray:
 		printerr("Function '" + func_name + "' not found.")
 		return []
 
-## Returns a list of all available function names.
-func get_function_list() -> Array[String]:
-	return functions.keys()
+func _on_func_list_item_activated(index: int) -> void:
+	print("_on_func_list_item_activated")
+	input_func_name.text = func_list.get_item_text(index)
+	if functions.has(input_func_name.text):
+		code_edit.text = ""
+		for action in functions[input_func_name.text]:
+			code_edit.text += action +"\n"
+	else:
+		printerr("Function '" + input_func_name.text + "' not found.")

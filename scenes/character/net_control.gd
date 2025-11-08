@@ -31,12 +31,10 @@ func send_rpc_request(method: String, params: Dictionary):
 	send_text(json_string)
 
 func load_functions(parsed):
-	print("load functions")
 	if typeof(parsed) == TYPE_DICTIONARY:
 		if parsed.has(Strings.RPC_METHOD_LOAD_FUNCTIONS):
 			if parsed.has("result"):
 				print("RPC Response (id: %s): %s" % [parsed.get("id", "N/A"), parsed["result"]])
-				# Special handling for load_functions result
 				if parsed["result"] is Dictionary:
 					funcHandler.set_func(JSON.stringify(parsed["result"]))
 			elif parsed.has("error"):

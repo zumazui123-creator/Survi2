@@ -4,8 +4,7 @@ func func2 =
 ende
 
 func func1 =
-    unten
-    
+    sage asdf
 ende
 
 func dfg =
@@ -15,5 +14,11 @@ ende
 
 func asdfasef =
     asdf
+ende
+
+func a =
+    links
+    rechts
+    unten
 ende
 
