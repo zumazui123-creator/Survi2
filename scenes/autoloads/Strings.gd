@@ -28,6 +28,7 @@ const RPC_METHOD_PLAY_SEQUENCE = "play_sequence"
 # Sent from Python to Godot (or used internally)
 const CMD_STOP_SEQUENCE = "Stop Sequenz"
 const CMD_END_SEQUENCE = "End Sequenz"
+const CMD_RESET = "reset"
 
 # --- RPC Result Keys ---
 const RPC_RESULT_KEY_FUNCTIONS = "functions"

@@ -116,7 +116,7 @@ class WebsocketClient:
             except websocket.WebSocketTimeoutException:
                 # This is not a critical error. It just means no message was received within the timeout.
                 # We can just continue listening.
-                self.log("Receiver loop timed out. Continuing to listen...")
+                # self.log("Receiver loop timed out. Continuing to listen...")
                 continue
             except websocket.WebSocketConnectionClosedException:
                 self.log("ℹ️ Server closed the connection.")
@@ -177,7 +177,7 @@ class WebsocketClient:
             except websocket.WebSocketConnectionClosedException:
                 self.log("⚠️ Connection lost while waiting for final reply.")
                 return {"status": "error", "message": "Connection lost"}
-        
+
         return {"status": "ok"}
 
     def _handle_message(self, message):
@@ -197,7 +197,7 @@ class WebsocketClient:
             else:
                 self.log(f"⚠️ Method not found: {method_name}")
                 response = {"jsonrpc": "2.0", "error": {"code": -32601, "message": "Method not found"}, "id": request_id}
-            
+
             self._safe_send(json.dumps(response))
 
         except json.JSONDecodeError:

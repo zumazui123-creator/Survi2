@@ -210,6 +210,7 @@ func animate_player(dir: Vector2):
 	else:
 		$AnimationPlayer.stop()
 
+
 func resetPlayer():
 	var difLevelMode = %DifModeButton.get_selected_id()
 	if difLevelMode > 0:
@@ -221,6 +222,7 @@ func press_action(inp_action : String):
 		return
 	inp_action = inp_action.strip_edges()
 	hit(inp_action)
+	
 	if Strings.ACTION_SAY in inp_action:
 		print("sage:"+inp_action)
 		var text = inp_action.trim_prefix(Strings.ACTION_SAY)
@@ -251,15 +253,14 @@ func press_action(inp_action : String):
 		elif inp_action == "walkDown":
 			#print("input walkDown")
 			direction = Vector2(0, 1)
-
-		elif Multihelper.level in range(0,2) and Strings.CMD_END_SEQUENCE in inp_action:
-			code_edit.text = ""
-			var end = Multihelper.map.laby_map.spawnPosition
-			var start = Multihelper.map.tile_map.map_to_local( end )
-			position = start
+	
+	if Multihelper.level in range(0,2) and "End Sequenz" in inp_action:
+		code_edit.text = ""
+		var end = Multihelper.map.laby_map.spawnPosition
+		var start = Multihelper.map.tile_map.map_to_local( end )
+		position = start
 		net_control.send_text("Godot: " + inp_action)
 		print("End Sequenz")
-
 
 
 func hit(inp_action : String):
