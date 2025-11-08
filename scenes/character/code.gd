@@ -60,13 +60,13 @@ func _on_create_function_pressed() -> void:
 	popup.popup_centered()
 
 func _on_load_function_pressed() -> void:
-	net_control.send_text(Strings.CMD_LOAD_FUNCTIONS)
+	net_control.send_rpc_request(Strings.RPC_METHOD_LOAD_FUNCTIONS, {})
 	
 func _on_code_delete_button_pressed() -> void:
 	code_edit.text = ""
 
 func _on_play_button_pressed() -> void:
-	net_control.send_text(Strings.CMD_PLAY_SEQUENCE + "\n" + code_edit.text)
+	net_control.send_rpc_request(Strings.RPC_METHOD_PLAY_SEQUENCE, {"message": code_edit.text})
 
 func _on_stop_button_pressed() -> void:
 	net_control.send_text(Strings.CMD_END_SEQUENCE + "\n")
@@ -77,7 +77,15 @@ func checkInputFuncName():
 	print("checkInputFuncName")
 
 func _on_create_btn_pressed() -> void:
-	var prefixCreateFunc = Strings.CMD_CREATE_FUNCTION + "\n"
-	var funcName = Strings.KEYWORD_FUNC + " " + inputFuncName.text + "\n"
-	var codeStr = code_func.text + "\n"
-	net_control.send_text(prefixCreateFunc + funcName + codeStr + "\n" + Strings.KEYWORD_END)
+	var message = (
+		Strings.CMD_CREATE_FUNCTION
+		+ "\n"
+		+ Strings.KEYWORD_FUNC
+		+ " "
+		+ inputFuncName.text
+		+ "\n"
+		+ code_func.text
+		+ "\n"
+		+ Strings.KEYWORD_END
+	)
+	net_control.send_rpc_request(Strings.RPC_METHOD_CREATE_FUNCTION, {"message": message})

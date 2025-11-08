@@ -17,6 +17,19 @@ func send_text(text: String):
 	else:
 		printerr("WebSocket not connected, cannot send text.")
 
+var _request_id_counter := 0
+
+func send_rpc_request(method: String, params: Dictionary):
+	var request = {
+		"jsonrpc": "2.0",
+		"method": method,
+		"params": params,
+		"id": _request_id_counter
+	}
+	_request_id_counter += 1
+	var json_string = JSON.stringify(request)
+	send_text(json_string)
+
 func net_commander() -> String:
 	var action : String = ""
 
@@ -33,17 +46,22 @@ func net_commander() -> String:
 
 		if state == WebSocketPeer.STATE_OPEN:
 			while current_peer.get_available_packet_count() > 0:
-				var packet = current_peer.get_packet().get_string_from_utf8()
-
-				# Check if the packet is a JSON dictionary for functions
-				if packet.begins_with("{") and packet.ends_with("}"):
-					funcHandler.set_func(packet)
-					# After handling, we can either continue or see if there's an action too.
-					# For now, assume function packets are standalone.
-					continue
+				var packet_string = current_peer.get_packet().get_string_from_utf8()
 				
-				# Original action processing
-				var lines = packet.split(",", false)
+				var parsed = JSON.parse_string(packet_string)
+				if typeof(parsed) == TYPE_DICTIONARY:
+					# It's a JSON-RPC response
+					if parsed.has("result"):
+						print("RPC Response (id: %s): %s" % [parsed.get("id", "N/A"), parsed["result"]])
+						# Special handling for load_functions result
+						if parsed["result"] is Dictionary and parsed["result"].has(Strings.RPC_RESULT_KEY_FUNCTIONS):
+							funcHandler.set_func(packet_string)
+					elif parsed.has("error"):
+						printerr("RPC Error (id: %s): %s" % [parsed.get("id", "N/A"), parsed["error"]])
+					continue
+
+				# Fallback for original action processing
+				var lines = packet_string.split(",", false)
 				action = lines[0].strip_edges()
 
 		elif state == WebSocketPeer.STATE_CLOSED:

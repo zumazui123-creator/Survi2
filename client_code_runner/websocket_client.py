@@ -3,6 +3,8 @@ import threading
 import time
 import queue
 import json
+import socket
+import config
 
 from myconverter import constants
 from myconverter.parser import Parser
@@ -21,6 +23,12 @@ class WebsocketClient:
         self.reconnect_thread = None
         self.running = False
         self.should_reconnect = True
+        self.method_map = {
+            "load_functions": self._handle_load_functions,
+            "create_function": self._handle_create_function,
+            "start_ki": self._handle_start_ki,
+            "play_sequence": self._handle_play_sequence,
+        }
 
     def log(self, msg):
         self.log_queue.put(msg)
@@ -29,15 +37,18 @@ class WebsocketClient:
         """Safely send data to the websocket, handling potential connection errors."""
         if not self.ws or not self.running:
             self.log("⚠️ Cannot send: WebSocket is not connected.")
-            return
+            return False
         try:
             self.ws.send(data)
             return True
         except websocket.WebSocketConnectionClosedException:
             self.log("⚠️ Send failed: Connection is closed.")
             self.stop()
+        except websocket.WebSocketException as e:
+            self.log(f"⚠️ A WebSocket error occurred during send: {e}")
+            self.stop()
         except Exception as e:
-            self.log(f"⚠️ An unexpected error occurred during send: {e}")
+            self.log(f"⚠️ An unexpected error occurred during send: {type(e).__name__} - {e}")
             self.stop()
         return False
 
@@ -46,17 +57,21 @@ class WebsocketClient:
             self.log("Client is already running.")
             return
         try:
-            self.ws = websocket.create_connection(self.server_url, timeout=5)
+            self.ws = websocket.create_connection(self.server_url, timeout=config.CONNECTION_TIMEOUT)
             self.log(f"✅ Connected to {self.server_url}")
             self.running = True
             self.receiver_thread = threading.Thread(target=self._receiver_loop, daemon=True)
             self.receiver_thread.start()
         except websocket.WebSocketTimeoutException:
-            self.log("⚠️ Connection timed out.")
+            self.log("⚠️ Connection timed out. Is the server URL correct and the server running?")
         except ConnectionRefusedError:
-            self.log("⚠️ Connection refused. Is the Godot server running?")
+            self.log("⚠️ Connection refused. Is the Godot server running and listening on the correct port?")
+        except (websocket.WebSocketBadStatusException, websocket.WebSocketAddressException) as e:
+            self.log(f"⚠️ Connection failed due to a WebSocket-specific error: {e}")
+        except socket.gaierror:
+            self.log(f"⚠️ Hostname could not be resolved. Check the server URL: {self.server_url}")
         except Exception as e:
-            self.log(f"⚠️ An unexpected connection error occurred: {e}")
+            self.log(f"⚠️ An unexpected connection error occurred: {type(e).__name__} - {e}")
 
     def stop(self):
         if not self.running and self.ws is None:
@@ -86,7 +101,7 @@ class WebsocketClient:
             if not self.running:
                 self.log("Attempting to reconnect...")
                 self.start()
-            time.sleep(3)
+            time.sleep(config.RECONNECT_DELAY)
 
     def _receiver_loop(self):
         while self.running:
@@ -95,12 +110,9 @@ class WebsocketClient:
                 if not message:
                     continue
                 self.log(f"📩 Received: {message}")
-                # Handle each message in its own try-except block
-                # to prevent one bad message from killing the client.
-                try:
-                    self._handle_message(message)
-                except Exception as e:
-                    self.log(f"CRITICAL: Unhandled error while processing message: {e}")
+                # The _handle_message function has its own robust error handling,
+                # so we don't need a generic try/except around it anymore.
+                self._handle_message(message)
             except websocket.WebSocketTimeoutException:
                 # This is not a critical error. It just means no message was received within the timeout.
                 # We can just continue listening.
@@ -110,72 +122,85 @@ class WebsocketClient:
                 self.log("ℹ️ Server closed the connection.")
                 self.stop()
                 break
+            except websocket.WebSocketException as e:
+                self.log(f"⚠️ A WebSocket error occurred in receiver loop: {e}")
+                self.stop()
+                break
             except Exception as e:
-                self.log(f"⚠️ A critical error occurred in receiver loop: {e}")
+                self.log(f"⚠️ A critical unexpected error occurred in receiver loop: {type(e).__name__} - {e}")
                 self.stop()
                 break
 
+    def _handle_load_functions(self, params):
+        self.log("Executing 'load_functions' handler.")
+        functions = self.functionHandler.load_functions()
+        self.log(f"Loaded {len(functions)} functions.")
+        return functions
+
+    def _handle_create_function(self, params):
+        self.log("Executing 'create_function' handler.")
+        message = params.get("message", "")
+        self.functionHandler.load_functions()
+        self.functionHandler.parse_func_definitions(message)
+        self.functionHandler.save_functions()
+        return self.functionHandler.functions
+
+    def _handle_start_ki(self, params):
+        self.log("Executing 'start_ki' handler.")
+        init_model()
+        return {"status": "ok"}
+
+    def _handle_play_sequence(self, params):
+        self.log("Executing 'play_sequence' handler.")
+        message = params.get("message", "")
+        converted_msg = self.parser.translate_to_actions(message)
+        self.log(f"🔄 Converted message: {converted_msg}")
+
+        for msg in converted_msg:
+            if not self._safe_send(msg):
+                self.log("Aborting sequence due to send failure.")
+                break
+            self.log(f"➡️ Sent action: {msg}")
+
+            try:
+                reply = self.ws.recv()
+                self.log(f"✅ Received reply: {reply}")
+                if constants.CMD_STOP_SEQUENCE in reply:
+                    break
+            except websocket.WebSocketConnectionClosedException:
+                self.log("⚠️ Connection lost while waiting for action reply. Aborting sequence.")
+                return {"status": "error", "message": "Connection lost"}
+
+        if self._safe_send(constants.CMD_END_SEQUENCE):
+            try:
+                self.ws.recv()
+            except websocket.WebSocketConnectionClosedException:
+                self.log("⚠️ Connection lost while waiting for final reply.")
+                return {"status": "error", "message": "Connection lost"}
+        
+        return {"status": "ok"}
+
     def _handle_message(self, message):
         try:
-            if constants.CMD_CREATE_FUNCTION in message:
+            data = json.loads(message)
+            method_name = data.get("method")
+            params = data.get("params", {})
+            request_id = data.get("id")
+
+            if method_name in self.method_map:
                 try:
-                    self.log("Executing 'create_function' block.")
-                    self.functionHandler.load_functions()
-                    self.functionHandler.parse_func_definitions(message)
-                    self.functionHandler.save_functions()
-                    self._safe_send(json.dumps(self.functionHandler.functions))
+                    result = self.method_map[method_name](params)
+                    response = {"jsonrpc": "2.0", "result": result, "id": request_id}
                 except Exception as e:
-                    self.log(f"⚠️ Error in 'create_function' block: {e}")
-
-            elif constants.CMD_LOAD_FUNCTIONS in message:
-                try:
-                    self.log("Executing 'load_functions' block.")
-                    functions = self.functionHandler.load_functions()
-                    self.log(f"Loaded {len(functions)} functions.")
-                    self._safe_send(json.dumps(functions))
-                except Exception as e:
-                    self.log(f"⚠️ Error in 'load_functions' block: {e}")
-
-            elif constants.CMD_START_KI in message:
-                try:
-                    self.log("Executing 'start_ki' block.")
-                    init_model()
-                except Exception as e:
-                    self.log(f"⚠️ Error in 'start_ki' block: {e}")
-
-            elif constants.CMD_PLAY_SEQUENCE in message:
-                try:
-                    self.log("Executing 'play_it_now' block.")
-                    converted_msg = self.parser.translate_to_actions(message)
-                    self.log(f"🔄 Converted message: {converted_msg}")
-
-                    for msg in converted_msg:
-                        if not self._safe_send(msg):
-                            self.log("Aborting sequence due to send failure.")
-                            break
-                        self.log(f"➡️ Sent action: {msg}")
-
-                        try:
-                            reply = self.ws.recv()
-                            self.log(f"✅ Received reply: {reply}")
-                            if constants.CMD_STOP_SEQUENCE in reply:
-                                break
-                        except websocket.WebSocketConnectionClosedException:
-                            self.log("⚠️ Connection lost while waiting for action reply. Aborting sequence.")
-                            return
-
-                    if self._safe_send(constants.CMD_END_SEQUENCE):
-                        try:
-                            self.ws.recv()
-                        except websocket.WebSocketConnectionClosedException:
-                            self.log("⚠️ Connection lost while waiting for final reply.")
-                            return
-                except Exception as e:
-                    self.log(f"⚠️ Error in 'play_it_now' block: {e}")
-
+                    self.log(f"⚠️ Error executing method '{method_name}': {type(e).__name__} - {e}")
+                    response = {"jsonrpc": "2.0", "error": {"code": -32000, "message": f"Server error: {e}"}, "id": request_id}
             else:
-                self.log(f"⚠️ Received unknown message type: {message}")
+                self.log(f"⚠️ Method not found: {method_name}")
+                response = {"jsonrpc": "2.0", "error": {"code": -32601, "message": "Method not found"}, "id": request_id}
+            
+            self._safe_send(json.dumps(response))
 
+        except json.JSONDecodeError:
+            self.log(f"⚠️ Received non-JSON message. Message must be valid JSON: {message}")
         except Exception as e:
-            # This outer block is a fallback for any truly unexpected errors.
-            self.log(f"A critical, unexpected error occurred in _handle_message: {e}")
+            self.log(f"CRITICAL: Unhandled error in _handle_message: {type(e).__name__} - {e}")

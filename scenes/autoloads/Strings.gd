@@ -20,14 +20,17 @@ const KEYWORD_REPEAT_FULL = "wiederhole 3 mal\n\nende"
 
 # --- Network Commands ---
 # Sent from Godot to Python
-const CMD_LOAD_FUNCTIONS = "load_functions"
-const CMD_PLAY_SEQUENCE = "play_it_now"
-const CMD_CREATE_FUNCTION = "create_function"
-const CMD_RESET = "reset"
+const RPC_METHOD_LOAD_FUNCTIONS = "load_functions"
+const RPC_METHOD_CREATE_FUNCTION = "create_function"
+const RPC_METHOD_START_KI = "start_ki"
+const RPC_METHOD_PLAY_SEQUENCE = "play_sequence"
 
 # Sent from Python to Godot (or used internally)
 const CMD_STOP_SEQUENCE = "Stop Sequenz"
 const CMD_END_SEQUENCE = "End Sequenz"
+
+# --- RPC Result Keys ---
+const RPC_RESULT_KEY_FUNCTIONS = "functions"
 
 # --- Player Actions (extended) ---
 const ACTION_USE_ITEM = "use item"

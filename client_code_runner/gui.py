@@ -1,6 +1,7 @@
 import tkinter as tk
 import queue
 from websocket_client import WebsocketClient
+import config
 
 class App(tk.Tk):
     def __init__(self):
@@ -9,7 +10,7 @@ class App(tk.Tk):
         self.geometry("500x500")
 
         self.log_queue = queue.Queue()
-        self.ws_client = WebsocketClient("ws://localhost:8765", self.log_queue)
+        self.ws_client = WebsocketClient(config.WEBSOCKET_URL, self.log_queue)
 
         self._setup_ui()
         self._process_log_queue()
