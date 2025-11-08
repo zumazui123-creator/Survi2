@@ -259,14 +259,15 @@ func press_action(inp_action : String):
 		elif inp_action == "walkUp":
 			#print("input walkUp")
 			direction = Vector2(0, -1)
-		        elif inp_action == "walkDown":
-		            #print("input walkDown")
-		            direction = Vector2(0, 1)
+		elif inp_action == "walkDown":
+			#print("input walkDown")
+			direction = Vector2(0, 1)
 		
-		    if Multihelper.level in range(0,2) and Strings.CMD_END_SEQUENCE in inp_action:
-		        code_edit.text = ""
-		        var end = Multihelper.map.laby_map.spawnPosition		var start = Multihelper.map.tile_map.map_to_local( end )
-		position = start
+		elif Multihelper.level in range(0,2) and Strings.CMD_END_SEQUENCE in inp_action:
+			code_edit.text = ""
+			var end = Multihelper.map.laby_map.spawnPosition		
+			var start = Multihelper.map.tile_map.map_to_local( end )
+			position = start
 		net_control.send_text("Godot: " + inp_action)
 		print("End Sequenz")
 
