@@ -1,6 +1,6 @@
 extends Node
 
-@onready var funcHandler = get_node("../FunctionHandler")
+@onready var funcHandler = $"../FunctionHandler"
 
 # Server: TCP + WebSocket Upgrade
 var _tcp_server := TCPServer.new()
