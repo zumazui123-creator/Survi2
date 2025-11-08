@@ -35,7 +35,7 @@ var time 		:= 0
 @export var characterFile : String:
 	set(value):
 		characterFile = value
-		$MovingParts/Sprite2D.texture = load("res://assets/characters/bodies/"+value)
+		$MovingParts/Sprite2D.texture = load(Constants.PATH_CHARACTER_BODIES+value)
 
 var inventory : Control
 var EndUI : Control
@@ -126,7 +126,7 @@ func visibilityFilter(id):
 @rpc("any_peer", "call_local", "reliable")
 func sendMessage(text):
 	if multiplayer.is_server():
-		var messageBoxScene := preload("res://scenes/ui/chat/message_box.tscn")
+		var messageBoxScene := preload(Constants.PATH_CHAT_MESSAGE_SCENE)
 		var messageBox := messageBoxScene.instantiate()
 		%PlayerMessages.add_child(messageBox, true)
 		messageBox.text = str(text)
@@ -153,10 +153,10 @@ func input():
 
 func net_commander(): 
 	var net_action = net_control.net_commander()
-	if net_action == "End Sequenz":
+	if net_action == Strings.CMD_END_SEQUENCE:
 		resetPlayer()
 		net_control.send_text(net_action)
-	if net_action == "reset":
+	if net_action == Strings.CMD_RESET:
 		Multihelper.spawnPlayers()
 	return net_action
 	
@@ -216,8 +216,8 @@ func snap_to_tiles_position():
 func animate_player(dir: Vector2):
 	if dir != Vector2.ZERO:
 		$MovingParts.rotation = dir.angle()
-		if !$AnimationPlayer.is_playing() or $AnimationPlayer.current_animation != "walking":
-			$AnimationPlayer.play("walking")
+		if !$AnimationPlayer.is_playing() or $AnimationPlayer.current_animation != Strings.ANIM_WALKING:
+			$AnimationPlayer.play(Strings.ANIM_WALKING)
 	else:
 		$AnimationPlayer.stop()
 
@@ -232,14 +232,14 @@ func press_action(inp_action : String):
 		return
 	inp_action = inp_action.strip_edges()
 	hit(inp_action)
-	if "sage" in inp_action:
+	if Strings.ACTION_SAY in inp_action:
 		print("sage:"+inp_action)
-		var text = inp_action.trim_prefix("sage")
+		var text = inp_action.trim_prefix(Strings.ACTION_SAY)
 		sendMessage(text)
 		net_control.send_text("Godot: " + inp_action)
 
-	if "use item" in inp_action:
-		var item_id_str = inp_action.trim_prefix("use item").strip_edges()
+	if Strings.ACTION_USE_ITEM in inp_action:
+		var item_id_str = inp_action.trim_prefix(Strings.ACTION_USE_ITEM).strip_edges()
 		print("action: "+inp_action+" item_id_str: "+item_id_str)
 		var item_id : int = -1
 		if item_id_str.is_valid_int():
@@ -259,14 +259,13 @@ func press_action(inp_action : String):
 		elif inp_action == "walkUp":
 			#print("input walkUp")
 			direction = Vector2(0, -1)
-		elif inp_action == "walkDown":
-			#print("input walkDown")
-			direction = Vector2(0, 1)
-
-	if Multihelper.level in range(0,2) and "End Sequenz" in inp_action:
-		code_edit.text = ""
-		var end = Multihelper.map.laby_map.spawnPosition
-		var start = Multihelper.map.tile_map.map_to_local( end )
+		        elif inp_action == "walkDown":
+		            #print("input walkDown")
+		            direction = Vector2(0, 1)
+		
+		    if Multihelper.level in range(0,2) and Strings.CMD_END_SEQUENCE in inp_action:
+		        code_edit.text = ""
+		        var end = Multihelper.map.laby_map.spawnPosition		var start = Multihelper.map.tile_map.map_to_local( end )
 		position = start
 		net_control.send_text("Godot: " + inp_action)
 		print("End Sequenz")
@@ -277,7 +276,7 @@ func hit(inp_action : String):
 	#print("hit")
 	if "leftClickAction" == inp_action:
 		$AnimationPlayer.speed_scale = attackRate
-		var action_anim = Items.equips[equippedItem]["attack"] if equippedItem else "punching"
+		var action_anim = Items.equips[equippedItem]["attack"] if equippedItem else Strings.ANIM_PUNCHING
 		if !$AnimationPlayer.is_playing() or $AnimationPlayer.current_animation != action_anim:
 			$AnimationPlayer.play(action_anim)
 			#print("Play Animation")
@@ -313,12 +312,12 @@ func punchCheckCollision():
 	if equippedItem:
 		Inventory.useItemDurability(str(name), equippedItem)
 	for body in %HitArea.get_overlapping_bodies():
-		if body != self and body.is_in_group("damageable"):
+		if body != self and body.is_in_group(Strings.GROUP_DAMAGEABLE):
 			body.getDamage(self, attackDamage, damageType)
 
 @rpc("any_peer", "reliable")
 func sendProjectile(towards):
-	Items.spawnProjectile(self, spawnsProjectile, towards, "damageable")
+	Items.spawnProjectile(self, spawnsProjectile, towards, Strings.GROUP_DAMAGEABLE)
 
 @rpc("authority", "call_local", "reliable")
 func get_heal(heal_hp : float):
@@ -345,7 +344,7 @@ func enemyPlayerKilled():
 
 func getDamage(causer, amount, _type):
 	hp -= amount
-	if (hp - amount) <= 0 and causer.is_in_group("player"):
+	if (hp - amount) <= 0 and causer.is_in_group(Strings.GROUP_PLAYER):
 		causer.player_killed.emit()
 
 func die():
@@ -376,11 +375,11 @@ func tryEquipItem(id):
 func equipItem(id):
 	equippedItem = id
 	%Hands.visible = false
-	%HeldItem.texture = load("res://assets/items/"+id+".png")
+	%HeldItem.texture = load(Constants.PATH_ITEMS+id+".png")
 	if multiplayer.is_server() and "scene" in Items.equips[id]:
 		for c in %Equipment.get_children():
 			c.queue_free()
-		var itemScene := load("res://scenes/character/equipments/"+Items.equips[id]["scene"]+".tscn")
+		var itemScene := load(Constants.PATH_EQUIPMENT_SCENES+Items.equips[id]["scene"]+".tscn")
 		var item = itemScene.instantiate()
 		%Equipment.add_child(item)
 		item.data = {"player": str(name), "item": id}
@@ -466,12 +465,12 @@ func moveProcess(vel, angle, doingAction):
 
 func handleAnims(vel, doing_action):
 	if doing_action:
-		var action_anim = Items.equips[equippedItem]["attack"] if equippedItem else "punching"
+		var action_anim = Items.equips[equippedItem]["attack"] if equippedItem else Strings.ANIM_PUNCHING
 		if !$AnimationPlayer.is_playing() or $AnimationPlayer.current_animation != action_anim:
 			$AnimationPlayer.play(action_anim)
 	elif vel != Vector2.ZERO:
-		if !$AnimationPlayer.is_playing() or $AnimationPlayer.current_animation != "walking":
-			$AnimationPlayer.play("walking")
+		if !$AnimationPlayer.is_playing() or $AnimationPlayer.current_animation != Strings.ANIM_WALKING:
+			$AnimationPlayer.play(Strings.ANIM_WALKING)
 	else:
 		$AnimationPlayer.stop()
 
@@ -485,7 +484,7 @@ func _on_back_to_menu_pressed() -> void:
 	#var menu_node : Node = menu_scene.instantiate()
 	
 	# 2. Lade die Szene für das Menü / Game Node
-	var game_scene: PackedScene = load("res://scenes/game/Game.tscn")  # Pfad anpassen
+	var game_scene: PackedScene = load(Constants.PATH_GAME_SCENE)  # Pfad anpassen
 	var game_node: Node = game_scene.instantiate()
 	#%Multihelper.setGameNode(game_node)
 	get_tree().change_scene_to_packed(game_scene)

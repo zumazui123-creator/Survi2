@@ -23,7 +23,32 @@ const KEYWORD_REPEAT_FULL = "wiederhole 3 mal\n\nende"
 const CMD_LOAD_FUNCTIONS = "load_functions"
 const CMD_PLAY_SEQUENCE = "play_it_now"
 const CMD_CREATE_FUNCTION = "create_function"
+const CMD_RESET = "reset"
 
 # Sent from Python to Godot (or used internally)
 const CMD_STOP_SEQUENCE = "Stop Sequenz"
 const CMD_END_SEQUENCE = "End Sequenz"
+
+# --- Player Actions (extended) ---
+const ACTION_USE_ITEM = "use item"
+
+# --- Animation Names ---
+const ANIM_WALKING = "walking"
+const ANIM_PUNCHING = "punching"
+const ANIM_SWING = "swing"
+const ANIM_STAB = "stab"
+
+# --- Group Names ---
+const GROUP_DAMAGEABLE = "damageable"
+const GROUP_PLAYER = "player"
+
+# --- Tool Types ---
+const TOOL_AXE = "axe"
+const TOOL_PICKAXE = "pickaxe"
+const TOOL_SWORD = "sword"
+
+# --- Damage Types ---
+const DAMAGE_NORMAL = "normal"
+const DAMAGE_AXE = "axe"
+const DAMAGE_PICKAXE = "pickaxe"
+const DAMAGE_MAGIC = "magic"

@@ -27,13 +27,13 @@ func generateMap(level_dict : Dictionary):
 	print("generated:"+str(level_dict))
 	var level_no = level_dict["level"]
 	var level_type = level_dict["type"]
-	if level_type == 1:
+	if level_type == Constants.MAP_MAIN:
 		generateMainMap(level_no)
 		
-	if level_type == 2:
+	if level_type == Constants.MAP_LABY:
 		walkable_tiles = laby_map.generateLabyrinth(level_no)
 		
-	if level_type == 3:
+	if level_type == Constants.MAP_TOURMENT:
 		walkable_tiles = laby_map.generateLabyrinthWithSeed(level_no,42)
 			
 

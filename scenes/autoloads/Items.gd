@@ -1,12 +1,12 @@
 extends Node
 
 var mobs := {
-	"zombie": {"maxhp": 40, "speed": 50, "attack": "slash_attack", "attackDamage": 4, "attackRange": 50, "drops": {"wood": {"min": 1, "max": 2}}},
-	"spider": {"maxhp": 80, "speed": 100, "attack": "projectile_attack", "attackDamage": 6, "attackRange": 300, "drops": {"stone": {"min": 1, "max": 2}}},
+	"zombie": {"maxhp": 40, "speed": 50, "attack": Strings.ANIM_SWING, "attackDamage": 4, "attackRange": 50, "drops": {"wood": {"min": 1, "max": 2}}},
+	"spider": {"maxhp": 80, "speed": 100, "attack": Strings.ANIM_STAB, "attackDamage": 6, "attackRange": 300, "drops": {"stone": {"min": 1, "max": 2}}},
 }
 
 var animals := {
-	"pig": {"maxhp": 23, "speed": 50, "attack": "slash_attack", "attackDamage": 1, "attackRange": 50, "drops": {"food": {"min": 1, "max": 2}}},
+	"pig": {"maxhp": 23, "speed": 50, "attack": Strings.ANIM_SWING, "attackDamage": 1, "attackRange": 50, "drops": {"food": {"min": 1, "max": 2}}},
 	#"spider": {"maxhp": 80, "speed": 100, "attack": "projectile_attack", "attackDamage": 6, "attackRange": 300, "drops": {"stone": {"min": 1, "max": 2}}},
 }
 var consume := {
@@ -17,33 +17,33 @@ var consume := {
 }
 
 var objects := {
-	"tree1": {"id": "tree1", "hp": 40, "tool": "axe", "drops": {"wood": {"min": 1, "max": 2}}},
-	"rock1": {"id": "rock1", "hp": 70, "tool": "pickaxe", "drops": {"stone": {"min": 1, "max": 3}}},
-	"tree2": {"id": "tree2", "hp": 50, "tool": "axe", "drops": {"wood": {"min": 2, "max": 4}}},
-	"rock2": {"id": "rock2", "hp": 100, "tool": "pickaxe", "drops": {"stone": {"min": 2, "max": 5}}},
-	"bush1": {"id": "bush1", "hp": 20, "tool": "sword", "drops": {"berries": {"min": 1, "max": 3}}},
-	"ore1": {"id": "ore1", "hp": 120, "tool": "pickaxe", "drops": {"iron": {"min": 1, "max": 3}}},
-	"tree3": {"id": "tree3", "hp": 60, "tool": "axe", "drops": {"wood": {"min": 3, "max": 5}, "sap": {"min": 1, "max": 1}}},
-	"rock3": {"id": "rock3", "hp": 90, "tool": "pickaxe", "drops": {"stone": {"min": 2, "max": 4}, "coal": {"min": 1, "max": 2}}},
-	"magicPlant1": {"id": "magicPlant1", "hp": 30, "tool": "sword", "drops": {"magicHerb": {"min": 1, "max": 2}, "energy_drink": {"min": 0, "max": 1}}},
-	"crystal1": {"id": "crystal1", "hp": 150, "tool": "pickaxe", "drops": {"crystalShard": {"min": 1, "max": 2}}},
-	"magicTree1": {"id": "magicTree1", "hp": 70, "tool": "axe", "drops": {"magicWood": {"min": 1, "max": 3}}},
-	"magicRock1": {"id": "magicRock1", "hp": 110, "tool": "pickaxe", "drops": {"magicStone": {"min": 1, "max": 2}}},
+	"tree1": {"id": "tree1", "hp": 40, "tool": Strings.TOOL_AXE, "drops": {"wood": {"min": 1, "max": 2}}},
+	"rock1": {"id": "rock1", "hp": 70, "tool": Strings.TOOL_PICKAXE, "drops": {"stone": {"min": 1, "max": 3}}},
+	"tree2": {"id": "tree2", "hp": 50, "tool": Strings.TOOL_AXE, "drops": {"wood": {"min": 2, "max": 4}}},
+	"rock2": {"id": "rock2", "hp": 100, "tool": Strings.TOOL_PICKAXE, "drops": {"stone": {"min": 2, "max": 5}}},
+	"bush1": {"id": "bush1", "hp": 20, "tool": Strings.TOOL_SWORD, "drops": {"berries": {"min": 1, "max": 3}}},
+	"ore1": {"id": "ore1", "hp": 120, "tool": Strings.TOOL_PICKAXE, "drops": {"iron": {"min": 1, "max": 3}}},
+	"tree3": {"id": "tree3", "hp": 60, "tool": Strings.TOOL_AXE, "drops": {"wood": {"min": 3, "max": 5}, "sap": {"min": 1, "max": 1}}},
+	"rock3": {"id": "rock3", "hp": 90, "tool": Strings.TOOL_PICKAXE, "drops": {"stone": {"min": 2, "max": 4}, "coal": {"min": 1, "max": 2}}},
+	"magicPlant1": {"id": "magicPlant1", "hp": 30, "tool": Strings.TOOL_SWORD, "drops": {"magicHerb": {"min": 1, "max": 2}, "energy_drink": {"min": 0, "max": 1}}},
+	"crystal1": {"id": "crystal1", "hp": 150, "tool": Strings.TOOL_PICKAXE, "drops": {"crystalShard": {"min": 1, "max": 2}}},
+	"magicTree1": {"id": "magicTree1", "hp": 70, "tool": Strings.TOOL_AXE, "drops": {"magicWood": {"min": 1, "max": 3}}},
+	"magicRock1": {"id": "magicRock1", "hp": 110, "tool": Strings.TOOL_PICKAXE, "drops": {"magicStone": {"min": 1, "max": 2}}},
 }
 
 var equips := {
-	"torch": {"attack": "swing", "damage": 20, "damageType": "normal", "durability": 40.0, "scene": "torch"},
-	"sword1": {"attack": "swing", "damage": 30, "damageType": "normal", "durability": 5.0},
-	"axe1": {"attack": "swing", "damage": 30, "damageType": "axe", "durability": 20.0},
-	"pickaxe1": {"attack": "swing", "damage": 30, "damageType": "pickaxe", "durability": 20.0},
-	"spear1": {"attack": "stab", "damage": 20, "damageType": "normal", "durability": 20.0, "projectile": "fireshuriken"},
-	"dagger1": {"attack": "stab", "damage": 15, "damageType": "normal", "durability": 10.0},
-	"axe2": {"attack": "swing", "damage": 40, "damageType": "axe", "durability": 30.0},
-	"pickaxe2": {"attack": "swing", "damage": 40, "damageType": "pickaxe", "durability": 30.0},
-	"magicSword1": {"attack": "swing", "damage": 35, "damageType": "magic", "durability": 10.0, "projectile": "magicBolt"},
-	"magicAxe1": {"attack": "swing", "damage": 45, "damageType": "magic", "durability": 25.0, "projectile": "fireball"},
-	"magicDagger1": {"attack": "stab", "damage": 25, "damageType": "magic", "durability": 15.0, "projectile": "iceShard"},
-	"magicSpear1": {"attack": "stab", "damage": 30, "damageType": "magic", "durability": 20.0, "projectile": "lightningBolt"},
+	"torch": {"attack": "swing", "damage": 20, "damageType": Strings.DAMAGE_NORMAL, "durability": 40.0, "scene": "torch"},
+	"sword1": {"attack": "swing", "damage": 30, "damageType": Strings.DAMAGE_NORMAL, "durability": 5.0},
+	"axe1": {"attack": "swing", "damage": 30, "damageType": Strings.DAMAGE_AXE, "durability": 20.0},
+	"pickaxe1": {"attack": "swing", "damage": 30, "damageType": Strings.DAMAGE_PICKAXE, "durability": 20.0},
+	"spear1": {"attack": "stab", "damage": 20, "damageType": Strings.DAMAGE_NORMAL, "durability": 20.0, "projectile": "fireshuriken"},
+	"dagger1": {"attack": "stab", "damage": 15, "damageType": Strings.DAMAGE_NORMAL, "durability": 10.0},
+	"axe2": {"attack": "swing", "damage": 40, "damageType": Strings.DAMAGE_AXE, "durability": 30.0},
+	"pickaxe2": {"attack": "swing", "damage": 40, "damageType": Strings.DAMAGE_PICKAXE, "durability": 30.0},
+	"magicSword1": {"attack": "swing", "damage": 35, "damageType": Strings.DAMAGE_MAGIC, "durability": 10.0, "projectile": "magicBolt"},
+	"magicAxe1": {"attack": "swing", "damage": 45, "damageType": Strings.DAMAGE_MAGIC, "durability": 25.0, "projectile": "fireball"},
+	"magicDagger1": {"attack": "stab", "damage": 25, "damageType": Strings.DAMAGE_MAGIC, "durability": 15.0, "projectile": "iceShard"},
+	"magicSpear1": {"attack": "stab", "damage": 30, "damageType": Strings.DAMAGE_MAGIC, "durability": 20.0, "projectile": "lightningBolt"},
 }
 
 var recipes := {
@@ -73,7 +73,7 @@ var projectiles := {
 func spawnPickups(id, at, amount):
 	var pickups := get_node("/root/Game/Level/Main/Pickups")
 	for i in range(amount):
-		var pickupScene := preload("res://scenes/item/pickup.tscn")
+		var pickupScene := preload(Constants.PATH_PICKUP_SCENE)
 		var pickup := pickupScene.instantiate()
 		pickups.call_deferred("add_child", pickup, true)
 		pickup.itemId = id
@@ -81,7 +81,7 @@ func spawnPickups(id, at, amount):
 
 func spawnProjectile(spawner, pId, towardsPos, canTarget):
 	var projectilesNode := get_node("/root/Game/Level/Main/Projectiles")
-	var projectileScene := load("res://scenes/attacks/projectile_attack.tscn")
+	var projectileScene := load(Constants.PATH_PROJECTILE_ATTACK_SCENE)
 	var projectile = projectileScene.instantiate()
 	projectilesNode.add_child(projectile,true)
 	projectile.projectileId = pId
