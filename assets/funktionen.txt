@@ -13,3 +13,7 @@ func dfg =
     
 ende
 
+func asdfasef =
+    asdf
+ende
+

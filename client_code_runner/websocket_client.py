@@ -11,7 +11,6 @@ from myconverter.parser import Parser
 from myconverter.function import FunctionHandler
 from ki.model import init_model
 
-
 class WebsocketClient:
     def __init__(self, server_url, log_queue):
         self.server_url = server_url
@@ -24,10 +23,10 @@ class WebsocketClient:
         self.running = False
         self.should_reconnect = True
         self.method_map = {
-            "load_functions": self._handle_load_functions,
-            "create_function": self._handle_create_function,
-            "start_ki": self._handle_start_ki,
-            "play_sequence": self._handle_play_sequence,
+            constants.RPC_METHOD_LOAD_FUNCTIONS : self._handle_load_functions,
+            constants.RPC_METHOD_CREATE_FUNCTION: self._handle_create_function,
+            constants.RPC_METHOD_START_KI       : self._handle_start_ki,
+            constants.RPC_METHOD_PLAY_SEQUENCE  : self._handle_play_sequence,
         }
 
     def log(self, msg):
@@ -190,13 +189,13 @@ class WebsocketClient:
             if method_name in self.method_map:
                 try:
                     result = self.method_map[method_name](params)
-                    response = {"jsonrpc": "2.0", "result": result, "id": request_id}
+                    response = {"result": result, method_name : request_id }
                 except Exception as e:
                     self.log(f"⚠️ Error executing method '{method_name}': {type(e).__name__} - {e}")
-                    response = {"jsonrpc": "2.0", "error": {"code": -32000, "message": f"Server error: {e}"}, "id": request_id}
+                    response = {"error": {"code": -32000, "message": f"Server error: {e}"}, "id": request_id}
             else:
                 self.log(f"⚠️ Method not found: {method_name}")
-                response = {"jsonrpc": "2.0", "error": {"code": -32601, "message": "Method not found"}, "id": request_id}
+                response = {"error": {"code": -32601, "message": "Method not found"}, "id": request_id}
 
             self._safe_send(json.dumps(response))
 

@@ -27,10 +27,10 @@ MAPPED_USE_ITEM = "use item "
 
 # --- Network Commands ---
 # Received from Godot
-CMD_LOAD_FUNCTIONS = "load_functions"
-CMD_PLAY_SEQUENCE = "play_it_now"
-CMD_CREATE_FUNCTION = "create_function"
-CMD_START_KI = "start ki"
+RPC_METHOD_LOAD_FUNCTIONS = "load_functions"
+RPC_METHOD_CREATE_FUNCTION = "create_function"
+RPC_METHOD_START_KI = "start_ki"
+RPC_METHOD_PLAY_SEQUENCE = "play_sequence"
 
 # Sent to Godot (or used internally)
 CMD_STOP_SEQUENCE = "Stop Sequenz"

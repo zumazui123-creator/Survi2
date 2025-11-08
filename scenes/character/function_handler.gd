@@ -1,12 +1,17 @@
 extends Node
 
-## Stores custom functions sent from the Python backend.
+@onready var item_list = %ItemList
 
-signal functions_updated(function_names: Array[String])
-
-# A dictionary where keys are function names (String) and values are
-# the code blocks (PackedStringArray).
 var functions: Dictionary = {}
+
+func add_func(function_names: Array):
+	print("loading func: ")
+	print(str(function_names))
+	
+	item_list.clear()
+	for func_name in function_names:
+		item_list.add_item(func_name)
+	item_list.add_item(Strings.KEYWORD_REPEAT)
 
 ## Receives a JSON string from the backend, parses it, and stores the functions.
 func set_func(packets: String) -> bool:
@@ -25,7 +30,8 @@ func set_func(packets: String) -> bool:
 		functions = result
 		print("Successfully parsed and stored functions.")
 		print(str(functions))
-		functions_updated.emit(functions.keys()) # Emit the signal with the new function names
+		add_func(functions.keys())
+		
 		return true
 	else:
 		printerr("Parsed JSON is not a dictionary.")

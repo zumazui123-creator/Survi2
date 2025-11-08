@@ -361,6 +361,7 @@ tab_alignment = 1
 current_tab = 0
 
 [node name="Code" type="VBoxContainer" parent="CanvasLayer/Code/TabContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 6
 size_flags_vertical = 3
@@ -954,7 +955,7 @@ grow_vertical = 0
 [connection signal="pressed" from="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer/UntenButton" to="CanvasLayer/Code" method="_on_unten_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer2/attackeButton" to="CanvasLayer/Code" method="_on_attacke_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer2/sageButton" to="CanvasLayer/Code" method="_on_sage_button_pressed"]
-[connection signal="item_clicked" from="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer3/ItemList" to="CanvasLayer/Code" method="_on_item_list_item_clicked"]
+[connection signal="item_activated" from="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer3/ItemList" to="CanvasLayer/Code" method="_on_item_list_item_activated"]
 [connection signal="pressed" from="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer2/createFunction" to="CanvasLayer/Code" method="_on_create_function_pressed"]
 [connection signal="pressed" from="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer2/loadFunction" to="CanvasLayer/Code" method="_on_load_function_pressed"]
 [connection signal="pressed" from="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2/SpeedPlus" to="PlayerSpeed" method="_on_speed_plus_pressed"]

@@ -30,6 +30,18 @@ func send_rpc_request(method: String, params: Dictionary):
 	var json_string = JSON.stringify(request)
 	send_text(json_string)
 
+func load_functions(parsed):
+	print("load functions")
+	if typeof(parsed) == TYPE_DICTIONARY:
+		if parsed.has(Strings.RPC_METHOD_LOAD_FUNCTIONS):
+			if parsed.has("result"):
+				print("RPC Response (id: %s): %s" % [parsed.get("id", "N/A"), parsed["result"]])
+				# Special handling for load_functions result
+				if parsed["result"] is Dictionary:
+					funcHandler.set_func(JSON.stringify(parsed["result"]))
+			elif parsed.has("error"):
+				printerr("RPC Error (id: %s): %s" % [parsed.get("id", "N/A"), parsed["error"]])
+
 func net_commander() -> String:
 	var action : String = ""
 
@@ -47,22 +59,9 @@ func net_commander() -> String:
 		if state == WebSocketPeer.STATE_OPEN:
 			while current_peer.get_available_packet_count() > 0:
 				var packet_string = current_peer.get_packet().get_string_from_utf8()
-				
+
 				var parsed = JSON.parse_string(packet_string)
-				if typeof(parsed) == TYPE_DICTIONARY:
-					# It's a JSON-RPC response
-					if parsed.has("result"):
-						print("RPC Response (id: %s): %s" % [parsed.get("id", "N/A"), parsed["result"]])
-						# Special handling for load_functions result
-						if parsed["result"] is Dictionary:
-							# The previous code expected `result` to contain a `functions` key.
-							# It seems the backend now sends the function dictionary directly as the result.
-							# We stringify the result dictionary to pass it to set_func,
-							# which expects a JSON string.
-							funcHandler.set_func(JSON.stringify(parsed["result"]))
-					elif parsed.has("error"):
-						printerr("RPC Error (id: %s): %s" % [parsed.get("id", "N/A"), parsed["error"]])
-					continue
+				load_functions(parsed)
 
 				# Fallback for original action processing
 				var lines = packet_string.split(",", false)

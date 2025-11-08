@@ -1,4 +1,4 @@
-extends Node2D
+extends Node
 
 
 @onready var code_edit = %CodeEdit
@@ -12,21 +12,11 @@ extends Node2D
 @onready var exit_btn = $"../PopupPanel/HBoxContainer/VBoxContainer/BtnContainer/ExitBtn"
 
 func _ready():
-	funcHandler.functions_updated.connect(_on_funcHandler_functions_updated)
 	exit_btn.pressed.connect(_on_exit_btn_pressed)
 
 func _on_exit_btn_pressed():
 	popup.hide()
-
-func _on_funcHandler_functions_updated(function_names: Array[String]):
-	print("loading func: ")
-	print(str(function_names))
 	
-	item_list.clear()
-	for func_name in function_names:
-		item_list.add_item(func_name)
-	# Optionally, add other default items back if needed
-	item_list.add_item(Strings.KEYWORD_REPEAT)
 
 
 func _on_links_button_pressed() -> void:
@@ -46,13 +36,19 @@ func _on_attacke_button_pressed() -> void:
 
 func _on_sage_button_pressed() -> void:
 	code_edit.insert_text_at_caret(Strings.ACTION_SAY + "\n")
-	
-func _on_item_list_item_clicked(index: int, at_position: Vector2, mouse_button_index: int) -> void:
+
+func _on_item_list_item_activated(index: int) -> void:
 	var item_text = item_list.get_item_text(index)
 	if item_text == Strings.KEYWORD_REPEAT:
 		item_text = Strings.KEYWORD_REPEAT_FULL
 	
 	code_edit.insert_text_at_caret(item_text+"\n")
+#func _on_item_list_item_clicked(index: int, at_position: Vector2, mouse_button_index: int) -> void:
+	#var item_text = item_list.get_item_text(index)
+	#if item_text == Strings.KEYWORD_REPEAT:
+		#item_text = Strings.KEYWORD_REPEAT_FULL
+	#
+	#code_edit.insert_text_at_caret(item_text+"\n")
 	
 
 
@@ -78,7 +74,7 @@ func checkInputFuncName():
 
 func _on_create_btn_pressed() -> void:
 	var message = (
-		Strings.CMD_CREATE_FUNCTION
+		Strings.RPC_METHOD_CREATE_FUNCTION
 		+ "\n"
 		+ Strings.KEYWORD_FUNC
 		+ " "
