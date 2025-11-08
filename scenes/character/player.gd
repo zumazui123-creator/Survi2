@@ -3,27 +3,21 @@ extends CharacterBody2D
 signal mob_killed
 signal object_destroyed
 signal player_killed
-#signal end_goal_reached
-#move speed
 
 const default_move_speed_factor = 3
 
-
-const TILE_SIZE = 32
 var direction = Vector2.ZERO
 var _pixels_moved: int = 0
 var move_speed_factor = default_move_speed_factor
 var act : String = ""
 var attackRate : int = 1
 var current_map_position : Vector2i
+
 @onready var status = $PlayerStatus
 @onready var kiBrain = $AIControl
-
 @onready var workTaskText = $PlayerStatus/WorkContainer/VBoxContainer/workTaskText
 @onready var net_control = $NetControl
-## Server: TCP + WebSocket Upgrade
-#var _tcp_server := TCPServer.new()
-#var _ws_peers 	:= []  # Liste der aktiven WebSocket-Verbindungen
+
 var time 		:= 0
 
 @onready var code_edit = %CodeEdit
@@ -38,8 +32,7 @@ var time 		:= 0
 		$MovingParts/Sprite2D.texture = load(Constants.PATH_CHARACTER_BODIES+value)
 
 var inventory : Control
-var EndUI : Control
-#@onready var inventory2 : Control = $Inventory #TODO ?
+var EndUI     : Control
 
 var equippedItem : String:
 	set(value):
@@ -82,21 +75,17 @@ var attackRange := 1.0:
 		attackRange = clampedVal
 		%HitCollision.shape.height = 20 * clampedVal
 
-#var ws_peer = WebSocketPeer.new()
 
 var last_angle = 0.0 # für godot server nötig
 
 func _ready():
-
-	#_tcp_server.listen(8765)  # Port 8765
-	#print("Server gestartet auf ws://localhost:8765")
 
 	if multiplayer.is_server():
 		Inventory.itemRemoved.connect(itemRemoved)
 		mob_killed.connect(mobKilled)
 		player_killed.connect(enemyPlayerKilled)
 		object_destroyed.connect(objectDestroyed)
-		#end_goal_reached.connect()
+
 
 	if name == str(multiplayer.get_unique_id()):
 		print("player HUD")
@@ -151,7 +140,7 @@ func input():
 	elif Input.is_action_pressed("leftClickAction"):
 		hit("leftClickAction")
 
-func net_commander(): 
+func net_commander():
 	var net_action = net_control.net_commander()
 	if net_action == Strings.CMD_END_SEQUENCE:
 		resetPlayer()
@@ -159,7 +148,7 @@ func net_commander():
 	if net_action == Strings.CMD_RESET:
 		Multihelper.spawnPlayers()
 	return net_action
-	
+
 func _physics_process(delta: float) -> void:
 	if str(multiplayer.get_unique_id()) != name:
 		return
@@ -198,7 +187,7 @@ func tile_move():
 	velocity = direction * move_speed_factor
 	move_and_collide(velocity)
 
-	if _pixels_moved >= TILE_SIZE/move_speed_factor:
+	if _pixels_moved >= Constants.TILE_SIZE/move_speed_factor:
 		direction = Vector2.ZERO
 		_pixels_moved = 0
 
@@ -262,10 +251,10 @@ func press_action(inp_action : String):
 		elif inp_action == "walkDown":
 			#print("input walkDown")
 			direction = Vector2(0, 1)
-		
+
 		elif Multihelper.level in range(0,2) and Strings.CMD_END_SEQUENCE in inp_action:
 			code_edit.text = ""
-			var end = Multihelper.map.laby_map.spawnPosition		
+			var end = Multihelper.map.laby_map.spawnPosition
 			var start = Multihelper.map.tile_map.map_to_local( end )
 			position = start
 		net_control.send_text("Godot: " + inp_action)
@@ -479,11 +468,11 @@ func handleAnims(vel, doing_action):
 func _on_back_to_menu_pressed() -> void:
 	# 1. Zerstöre die aktuelle Node
 	#queue_free()
-	
+
 	# 2. Lade die MainMenu Szene
 	#var menu_scene : PackedScene = load("res://scenes/ui/mainMenu/mainMenu.tscn")  # Pfad anpassen
 	#var menu_node : Node = menu_scene.instantiate()
-	
+
 	# 2. Lade die Szene für das Menü / Game Node
 	var game_scene: PackedScene = load(Constants.PATH_GAME_SCENE)  # Pfad anpassen
 	var game_node: Node = game_scene.instantiate()
@@ -492,6 +481,6 @@ func _on_back_to_menu_pressed() -> void:
 	#game_node.setMainMenu(menu_node)
 	# Hier binde an den passenden Parent — z. B. die Root-Node oder ein UI-Container
 	#get_tree().get_root().add_child(game_node)
-	
+
 	# Optional: mache Pause rückgängig, oder setze Status
 	#get_tree().paused = false
