@@ -6,19 +6,16 @@ signal player_killed
 
 const default_move_speed_factor = 3
 
-var direction = Vector2.ZERO
-var _pixels_moved: int = 0
-var move_speed_factor = default_move_speed_factor
 var act : String = ""
-var attackRate : int = 1
 var current_map_position : Vector2i
 
 @onready var status = $PlayerStatus
 @onready var kiBrain = $AIControl
 @onready var workTaskText = $PlayerStatus/WorkContainer/VBoxContainer/workTaskText
 @onready var net_control = $NetControl
-
-var time 		:= 0
+@onready var player_movement = $PlayerMovement
+@onready var player_animation = $PlayerAnimation
+@onready var player_combat = $PlayerCombat
 
 @onready var code_edit = %CodeEdit
 @export var playerName : String:
@@ -34,58 +31,14 @@ var time 		:= 0
 var inventory : Control
 var EndUI     : Control
 
-var equippedItem : String:
-	set(value):
-		equippedItem = value
-		if value in Items.equips:
-			var itemData = Items.equips[value]
-			if "projectile" in itemData:
-				spawnsProjectile = itemData["projectile"]
-		else:
-			spawnsProjectile = ""
-
-#stats
-@export var maxHP := 250.0
-@export var hp := maxHP:
-	set(value):
-		hp = value
-		$bloodParticles.emitting = true
-		$PlayerStatus.setHPBarRatio(hp/maxHP)
-		if hp <= 0:
-			die()
-
-
-var spawnsProjectile := ""
-@export var speed := 10
-@export var attackDamage := 10:
-	get:
-		if equippedItem:
-			return Items.equips[equippedItem]["damage"] + attackDamage
-		else:
-			return attackDamage
-var damageType := "normal":
-	get:
-		if equippedItem:
-			return Items.equips[equippedItem]["damageType"]
-		else:
-			return damageType
-var attackRange := 1.0:
-	set(value):
-		var clampedVal = clampf(value, 1.0, 5.0)
-		attackRange = clampedVal
-		%HitCollision.shape.height = 20 * clampedVal
-
-
-var last_angle = 0.0 # für godot server nötig
-
 func _ready():
-
 	if multiplayer.is_server():
-		Inventory.itemRemoved.connect(itemRemoved)
-		mob_killed.connect(mobKilled)
-		player_killed.connect(enemyPlayerKilled)
-		object_destroyed.connect(objectDestroyed)
-
+		var player_combat_node = get_node("PlayerCombat")
+		if player_combat_node:
+			Inventory.itemRemoved.connect(player_combat_node.itemRemoved)
+			mob_killed.connect(player_combat_node.mobKilled)
+			player_killed.connect(player_combat_node.enemyPlayerKilled)
+			object_destroyed.connect(player_combat_node.objectDestroyed)
 
 	if name == str(multiplayer.get_unique_id()):
 		print("player HUD")
@@ -95,17 +48,7 @@ func _ready():
 		EndUI = main.get_node("HUD/EndUI")
 		inventory.player = self
 		$Camera2D.enabled = true
-
-		#var err = websocket.connect_to_url("ws://localhost:8765")
-		#if err != OK:
-			#print("Failed to connect:", err)
-		#if err == OK:
-			#print("connectin succesfully")
-		#set_process(true)
 	Multihelper.player_disconnected.connect(disconnected)
-
-#func send_to_ws_peer(text):
-	#ws_peer.send_text(text)
 
 func visibilityFilter(id):
 	if id == int(str(name)):
@@ -122,23 +65,9 @@ func sendMessage(text):
 
 func disconnected(id):
 	if str(id) == name:
-		die()
-
-func is_moving() -> bool:
-	return direction != Vector2.ZERO
-
-func input():
-	if is_moving(): return
-	if Input.is_action_pressed("walkRight"):
-		direction = Vector2(1, 0)
-	elif Input.is_action_pressed("walkLeft"):
-		direction = Vector2(-1, 0)
-	elif Input.is_action_pressed("walkUp"):
-		direction = Vector2(0, -1)
-	elif Input.is_action_pressed("walkDown"):
-		direction = Vector2(0, 1)
-	elif Input.is_action_pressed("leftClickAction"):
-		hit("leftClickAction")
+		var player_combat_node = get_node("PlayerCombat")
+		if player_combat_node:
+			player_combat_node.die()
 
 func net_commander():
 	var net_action = net_control.net_commander()
@@ -155,8 +84,11 @@ func _physics_process(delta: float) -> void:
 
 	act = net_commander()
 	press_action(act)
-	#input() # manuelle Eingabe
-	tile_move()
+	
+	var player_movement_node = get_node("PlayerMovement")
+	if player_movement_node:
+		player_movement_node.tile_move()
+		
 	win_condition()
 
 func win_condition():
@@ -167,8 +99,6 @@ func win_condition():
 		if current_map_position == end_goal_position:
 			current_map_position = Vector2i()
 			EndUI.setLabel("Level Abgeschlossen!")
-			# EndUI.visible = true
-			#EndUI.next_level()
 			status.playerStatus["terminated"] = true
 			EndUI.retry()
 
@@ -178,38 +108,6 @@ func get_reward():
 		var end_goal_position = Multihelper.map.laby_map.endPosition
 		reward = 1/current_map_position.distance_to(end_goal_position)
 	return reward
-
-func tile_move():
-	if not is_moving():
-		return
-
-	_pixels_moved += 1
-	velocity = direction * move_speed_factor
-	move_and_collide(velocity)
-
-	if _pixels_moved >= Constants.TILE_SIZE/move_speed_factor:
-		direction = Vector2.ZERO
-		_pixels_moved = 0
-
-		current_map_position = Multihelper.map.tile_map.local_to_map( position )
-		snap_to_tiles_position()
-		#ws_peer.send_text("Godot: " + act) TODO nice für Debugen
-		kiBrain.send_ki_obs()
-		act = ""
-	animate_player(direction)
-
-func snap_to_tiles_position():
-	var snap_position = Multihelper.map.tile_map.map_to_local( current_map_position )
-	self.position = snap_position
-
-func animate_player(dir: Vector2):
-	if dir != Vector2.ZERO:
-		$MovingParts.rotation = dir.angle()
-		if !$AnimationPlayer.is_playing() or $AnimationPlayer.current_animation != Strings.ANIM_WALKING:
-			$AnimationPlayer.play(Strings.ANIM_WALKING)
-	else:
-		$AnimationPlayer.stop()
-
 
 func resetPlayer():
 	var difLevelMode = %DifModeButton.get_selected_id()
@@ -221,7 +119,10 @@ func press_action(inp_action : String):
 	if inp_action == "":
 		return
 	inp_action = inp_action.strip_edges()
-	hit(inp_action)
+	
+	var player_combat_node = get_node("PlayerCombat")
+	if player_combat_node:
+		player_combat_node.hit(inp_action)
 	
 	if Strings.ACTION_SAY in inp_action:
 		print("sage:"+inp_action)
@@ -235,24 +136,13 @@ func press_action(inp_action : String):
 		var item_id : int = -1
 		if item_id_str.is_valid_int():
 			item_id = int(item_id_str)
-			#inventory.itemSelected(item_id)
 			inventory.selectionChanged.emit(item_id)
 
 		net_control.send_text("Godot: " + inp_action + ", item: "+str(item_id))
 
-	if "walk" in inp_action:
-		if inp_action == "walkRight":
-			#print("input walkRight")
-			direction = Vector2(1, 0)
-		elif inp_action == "walkLeft":
-			#print("input walkLeft")
-			direction = Vector2(-1, 0)
-		elif inp_action == "walkUp":
-			#print("input walkUp")
-			direction = Vector2(0, -1)
-		elif inp_action == "walkDown":
-			#print("input walkDown")
-			direction = Vector2(0, 1)
+	var player_movement_node = get_node("PlayerMovement")
+	if player_movement_node:
+		player_movement_node.press_action(inp_action)
 	
 	if Multihelper.level in range(0,2) and "End Sequenz" in inp_action:
 		code_edit.text = ""
@@ -262,226 +152,22 @@ func press_action(inp_action : String):
 		net_control.send_text("Godot: " + inp_action)
 		print("End Sequenz")
 
-
-func hit(inp_action : String):
-	#print("hit")
-	if "leftClickAction" == inp_action:
-		$AnimationPlayer.speed_scale = attackRate
-		var action_anim = Items.equips[equippedItem]["attack"] if equippedItem else Strings.ANIM_PUNCHING
-		if !$AnimationPlayer.is_playing() or $AnimationPlayer.current_animation != action_anim:
-			$AnimationPlayer.play(action_anim)
-			#print("Play Animation")
-			var delay : float = 0.8 / attackRate
-			await get_tree().create_timer(delay).timeout
-			$AnimationPlayer.stop()
-			net_control.send_text("Godot: " + inp_action)
-
-#func _on_next_item():
-	#inventory.nextSelection()
-#
-## Define what happens when previousItem is triggered
-#func _on_previous_item():
-	#inventory.prevSelection()
-
-# Handle input events
-#func _unhandled_input(event):
-	#if name != str(multiplayer.get_unique_id()):
-		#return
-	#if event.is_action_pressed("nextItem"):
-		#_on_next_item()
-	#elif event.is_action_pressed("previousItem"):
-		#_on_previous_item()
-
-func punchCheckCollision():
-	var id = multiplayer.get_unique_id()
-	if spawnsProjectile:
-		if str(id) == name:
-			var mousePos := get_global_mouse_position()
-			sendProjectile.rpc_id(1, mousePos)
-	if !is_multiplayer_authority():
-		return
-	if equippedItem:
-		Inventory.useItemDurability(str(name), equippedItem)
-	for body in %HitArea.get_overlapping_bodies():
-		if body != self and body.is_in_group(Strings.GROUP_DAMAGEABLE):
-			body.getDamage(self, attackDamage, damageType)
-
-@rpc("any_peer", "reliable")
-func sendProjectile(towards):
-	Items.spawnProjectile(self, spawnsProjectile, towards, Strings.GROUP_DAMAGEABLE)
-
-@rpc("authority", "call_local", "reliable")
-func get_heal(heal_hp : float):
-	hp += heal_hp
-
-
-@rpc("authority", "call_local", "reliable")
-func increaseScore(by):
-	hp += by * 5
-	maxHP += by * 5
-	attackDamage += by
-	speed += by
-	Multihelper.spawnedPlayers[int(str(name))]["score"] += by
-	Multihelper.player_score_updated.emit()
-
-func objectDestroyed():
-	increaseScore.rpc(Constants.OBJECT_SCORE_GAIN)
-
-func mobKilled():
-	increaseScore.rpc(Constants.MOB_SCORE_GAIN)
-
-func enemyPlayerKilled():
-	increaseScore.rpc(Constants.PK_SCORE_GAIN)
-
-func getDamage(causer, amount, _type):
-	hp -= amount
-	if (hp - amount) <= 0 and causer.is_in_group(Strings.GROUP_PLAYER):
-		causer.player_killed.emit()
-
-func die():
-	if !multiplayer.is_server():
-		return
-	var peerId := int(str(name))
-	Multihelper._deregister_character.rpc(peerId) # für Server
-	dropInventory()
-	Multihelper.showSpawnUI.rpc_id(peerId)
-	queue_free()
-	#if peerId in multiplayer.get_peers(): # Multiplayer Server
-		#Multihelper.showSpawnUI.rpc_id(peerId)
-
-func dropInventory():
-	var inventoryDict = Inventory.inventories
-	for item in inventoryDict.keys():
-		Items.spawnPickups(item, position, inventoryDict[item].size() )
-	Inventory.inventories[name] = {}
-	Inventory.inventoryUpdated.emit(name)
-	Inventory.inventories.erase(name)
-
-@rpc("any_peer", "call_local", "reliable")
-func tryEquipItem(id):
-	if id in Inventory.inventories[name].keys():
-		equipItem.rpc(id)
-
-@rpc("any_peer", "call_local", "reliable")
-func equipItem(id):
-	equippedItem = id
-	%Hands.visible = false
-	%HeldItem.texture = load(Constants.PATH_ITEMS+id+".png")
-	if multiplayer.is_server() and "scene" in Items.equips[id]:
-		for c in %Equipment.get_children():
-			c.queue_free()
-		var itemScene := load(Constants.PATH_EQUIPMENT_SCENES+Items.equips[id]["scene"]+".tscn")
-		var item = itemScene.instantiate()
-		%Equipment.add_child(item)
-		item.data = {"player": str(name), "item": id}
-
-@rpc("any_peer", "call_local", "reliable")
-func unequipItem():
-	equippedItem = ""
-	%Hands.visible = true
-	%HeldItem.texture = null
-	if multiplayer.is_server():
-		for c in %Equipment.get_children():
-			c.queue_free()
-
-
-
-func itemRemoved(id, item):
-	if !multiplayer.is_server():
-		return
-	if id == str(name) and item == equippedItem:
-		unequipItem.rpc()
-
-
-var is_speed_boost_active := false
-
-func apply_speed_boost(multiplier, duration):
-	if is_speed_boost_active:
-		return # Don't stack speed boosts
-
-	is_speed_boost_active = true
-	move_speed_factor = default_move_speed_factor * multiplier
-
-	var timer = Timer.new()
-	timer.wait_time = duration
-	timer.one_shot = true
-	timer.timeout.connect(_on_speed_boost_timeout)
-	add_child(timer)
-	timer.start()
-
-func _on_speed_boost_timeout():
-	move_speed_factor = default_move_speed_factor
-	is_speed_boost_active = false
-
-
-func projectileHit(body):
-	body.getDamage(self, attackDamage, damageType)
-
-
 # GODOT Server
 func action(vel, angle, doingAction):
-	if vel != Vector2.ZERO:
-		last_angle = vel.angle()
-	angle = last_angle
-	moveProcess(vel, angle, doingAction)
-
-	var inputData = {
-		"vel": vel,
-		"angle": angle,
-		"doingAction": doingAction
-	}
-	sendInputstwo.rpc_id(1, inputData)
-	sendPos.rpc(position)
+	var player_movement_node = get_node("PlayerMovement")
+	if player_movement_node:
+		player_movement_node.action(vel, angle, doingAction)
 
 @rpc("any_peer", "call_local", "reliable")
 func sendInputstwo(data):
-	moveServer(data["vel"], data["angle"], data["doingAction"])
-
-@rpc("any_peer", "call_local", "reliable")
-func moveServer(vel, angle, doingAction):
-	$MovingParts.rotation = angle
-	handleAnims(vel,doingAction)
+	var player_movement_node = get_node("PlayerMovement")
+	if player_movement_node:
+		player_movement_node.moveServer(data["vel"], data["angle"], data["doingAction"])
 
 @rpc("any_peer", "call_local", "reliable")
 func sendPos(pos):
-	#print("position"+str(position))
 	position = pos
 
-func moveProcess(vel, angle, doingAction):
-	velocity = vel
-	if velocity != Vector2.ZERO:
-		move_and_slide()
-	$MovingParts.rotation = angle
-	handleAnims(vel,doingAction)
-
-func handleAnims(vel, doing_action):
-	if doing_action:
-		var action_anim = Items.equips[equippedItem]["attack"] if equippedItem else Strings.ANIM_PUNCHING
-		if !$AnimationPlayer.is_playing() or $AnimationPlayer.current_animation != action_anim:
-			$AnimationPlayer.play(action_anim)
-	elif vel != Vector2.ZERO:
-		if !$AnimationPlayer.is_playing() or $AnimationPlayer.current_animation != Strings.ANIM_WALKING:
-			$AnimationPlayer.play(Strings.ANIM_WALKING)
-	else:
-		$AnimationPlayer.stop()
-
-
 func _on_back_to_menu_pressed() -> void:
-	# 1. Zerstöre die aktuelle Node
-	#queue_free()
-
-	# 2. Lade die MainMenu Szene
-	#var menu_scene : PackedScene = load("res://scenes/ui/mainMenu/mainMenu.tscn")  # Pfad anpassen
-	#var menu_node : Node = menu_scene.instantiate()
-
-	# 2. Lade die Szene für das Menü / Game Node
-	var game_scene: PackedScene = load(Constants.PATH_GAME_SCENE)  # Pfad anpassen
-	var game_node: Node = game_scene.instantiate()
-	#%Multihelper.setGameNode(game_node)
+	var game_scene: PackedScene = load(Constants.PATH_GAME_SCENE)
 	get_tree().change_scene_to_packed(game_scene)
-	#game_node.setMainMenu(menu_node)
-	# Hier binde an den passenden Parent — z. B. die Root-Node oder ein UI-Container
-	#get_tree().get_root().add_child(game_node)
-
-	# Optional: mache Pause rückgängig, oder setze Status
-	#get_tree().paused = false
