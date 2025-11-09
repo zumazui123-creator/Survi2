@@ -341,6 +341,12 @@ script = ExtResource("2_xub24")
 [node name="PlayerSpeed" type="Node2D" parent="."]
 script = ExtResource("2_5y66v")
 
+[node name="PlayerMovement" type="Node" parent="."]
+
+[node name="PlayerAnimation" type="Node" parent="."]
+
+[node name="PlayerCombat" type="Node" parent="."]
+
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 offset = Vector2(640, 360)
 transform = Transform2D(1, 0, 0, 1, 640, 360)
