@@ -44,7 +44,7 @@ func populateSlots():
 		var slot := slotScene.instantiate()
 		slot.index = i
 		selectionChanged.connect(slot.selectionChanged)
-		slot.itemSelected.connect(itemSelected)
+		slot.itemSelected.connect(player.player_combat.handle_item_selection)
 		%Slots.add_child(slot)
 
 func populateItems():
@@ -84,17 +84,6 @@ func populateRecipes():
 	#if selectedSlot < 0:
 		#selectedSlot = slotCount - 1
 	#selectionChanged.emit(selectedSlot)
-
-func itemSelected(id):
-	var equipList := Items.equips.keys()
-	if id in equipList:
-		player.tryEquipItem.rpc_id(1, id)
-	elif player.equippedItem:
-		player.unequipItem.rpc()
-		
-	var consumeList := Items.consume.keys()
-	if id in consumeList:
-		Inventory.useItem(str(player.name), id)
 
 func _on_craft_button_pressed():
 	if %craftCont.visible:

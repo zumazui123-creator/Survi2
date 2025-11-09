@@ -1,5 +1,9 @@
 extends Node
 
+signal mob_killed
+signal object_destroyed
+signal player_killed
+
 var player: CharacterBody2D
 
 @onready var hands = get_parent().get_node("%Hands")
@@ -113,7 +117,7 @@ func enemyPlayerKilled():
 func getDamage(causer, amount, _type):
 	hp -= amount
 	if (hp - amount) <= 0 and causer.is_in_group(Strings.GROUP_PLAYER):
-		causer.player_killed.emit()
+		causer.get_node("PlayerCombat").player_killed.emit()
 
 func die():
 	if not multiplayer.is_server():
@@ -167,3 +171,14 @@ func itemRemoved(id, item):
 
 func projectileHit(body):
 	body.getDamage(player, attackDamage, damageType)
+
+func handle_item_selection(id):
+	var equipList := Items.equips.keys()
+	if id in equipList:
+		tryEquipItem.rpc_id(1, id)
+	elif equippedItem:
+		unequipItem.rpc()
+		
+	var consumeList := Items.consume.keys()
+	if id in consumeList:
+		Inventory.useItem(str(player.name), id)

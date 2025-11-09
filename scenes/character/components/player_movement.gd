@@ -2,6 +2,9 @@ extends Node
 
 var player: CharacterBody2D
 
+const default_move_speed_factor = 3
+var current_map_position : Vector2i
+
 var direction = Vector2.ZERO
 var _pixels_moved: int = 0
 var move_speed_factor = 3
@@ -35,7 +38,7 @@ func tile_move():
 		direction = Vector2.ZERO
 		_pixels_moved = 0
 
-		player.current_map_position = Multihelper.map.tile_map.local_to_map( player.position )
+		current_map_position = Multihelper.map.tile_map.local_to_map( player.position )
 		snap_to_tiles_position()
 		player.kiBrain.send_ki_obs()
 		player.act = ""
@@ -46,7 +49,7 @@ func tile_move():
 
 
 func snap_to_tiles_position():
-	var snap_position = Multihelper.map.tile_map.map_to_local( player.current_map_position )
+	var snap_position = Multihelper.map.tile_map.map_to_local( current_map_position )
 	player.position = snap_position
 
 var is_speed_boost_active := false
@@ -56,7 +59,7 @@ func apply_speed_boost(multiplier, duration):
 		return # Don't stack speed boosts
 
 	is_speed_boost_active = true
-	move_speed_factor = player.default_move_speed_factor * multiplier
+	move_speed_factor = default_move_speed_factor * multiplier
 
 	var timer = Timer.new()
 	timer.wait_time = duration
@@ -66,7 +69,7 @@ func apply_speed_boost(multiplier, duration):
 	timer.start()
 
 func _on_speed_boost_timeout():
-	move_speed_factor = player.default_move_speed_factor
+	move_speed_factor = default_move_speed_factor
 	is_speed_boost_active = false
 
 # GODOT Server
@@ -104,3 +107,23 @@ func press_action(inp_action : String):
 			direction = Vector2(0, -1)
 		elif inp_action == "walkDown":
 			direction = Vector2(0, 1)
+
+signal level_completed
+
+func win_condition():
+	player.status.playerStatus["terminated"] = false
+
+	if Multihelper.level["type"] == 100:
+		var end_goal_position = Multihelper.map.laby_map.endPosition
+		if current_map_position == end_goal_position:
+			current_map_position = Vector2i()
+			level_completed.emit("Level Abgeschlossen!")
+			player.status.playerStatus["terminated"] = true
+
+
+func get_reward():
+	var reward = 0
+	if Multihelper.level["type"] == 100:
+		var end_goal_position = Multihelper.map.laby_map.endPosition
+		reward = 1/current_map_position.distance_to(end_goal_position)
+	return reward

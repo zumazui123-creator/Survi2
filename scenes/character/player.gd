@@ -1,13 +1,6 @@
 extends CharacterBody2D
 
-signal mob_killed
-signal object_destroyed
-signal player_killed
-
-const default_move_speed_factor = 3
-
 var act : String = ""
-var current_map_position : Vector2i
 
 @onready var status = $PlayerStatus
 @onready var kiBrain = $AIControl
@@ -26,7 +19,8 @@ var current_map_position : Vector2i
 @export var characterFile : String:
 	set(value):
 		characterFile = value
-		$MovingParts/Sprite2D.texture = load(Constants.PATH_CHARACTER_BODIES+value)
+		if player_animation:
+			player_animation.set_character_sprite(value)
 
 var inventory : Control
 var EndUI     : Control
@@ -36,9 +30,9 @@ func _ready():
 		var player_combat_node = get_node("PlayerCombat")
 		if player_combat_node:
 			Inventory.itemRemoved.connect(player_combat_node.itemRemoved)
-			mob_killed.connect(player_combat_node.mobKilled)
-			player_killed.connect(player_combat_node.enemyPlayerKilled)
-			object_destroyed.connect(player_combat_node.objectDestroyed)
+			player_combat_node.mob_killed.connect(player_combat_node.mobKilled)
+			player_combat_node.player_killed.connect(player_combat_node.enemyPlayerKilled)
+			player_combat_node.object_destroyed.connect(player_combat_node.objectDestroyed)
 
 	if name == str(multiplayer.get_unique_id()):
 		print("player HUD")
@@ -48,6 +42,9 @@ func _ready():
 		EndUI = main.get_node("HUD/EndUI")
 		inventory.player = self
 		$Camera2D.enabled = true
+		var player_movement_node = get_node("PlayerMovement")
+		if player_movement_node:
+			player_movement_node.level_completed.connect(on_level_completed)
 	Multihelper.player_disconnected.connect(disconnected)
 
 func visibilityFilter(id):
@@ -88,19 +85,7 @@ func _physics_process(delta: float) -> void:
 	var player_movement_node = get_node("PlayerMovement")
 	if player_movement_node:
 		player_movement_node.tile_move()
-		
-	win_condition()
-
-func win_condition():
-	status.playerStatus["terminated"] = false
-
-	if Multihelper.level["type"] == 100:
-		var end_goal_position = Multihelper.map.laby_map.endPosition
-		if current_map_position == end_goal_position:
-			current_map_position = Vector2i()
-			EndUI.setLabel("Level Abgeschlossen!")
-			status.playerStatus["terminated"] = true
-			EndUI.retry()
+		player_movement_node.win_condition()
 
 func get_reward():
 	var reward = 0
@@ -171,3 +156,7 @@ func sendPos(pos):
 func _on_back_to_menu_pressed() -> void:
 	var game_scene: PackedScene = load(Constants.PATH_GAME_SCENE)
 	get_tree().change_scene_to_packed(game_scene)
+
+func on_level_completed(message):
+	EndUI.setLabel(message)
+	EndUI.retry()

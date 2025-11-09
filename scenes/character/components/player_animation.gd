@@ -7,6 +7,11 @@ var player: CharacterBody2D
 func _ready():
 	player = get_parent()
 
+func set_character_sprite(file_path):
+	var sprite = moving_parts.get_node("Sprite2D")
+	if sprite:
+		sprite.texture = load(Constants.PATH_CHARACTER_BODIES+file_path)
+
 func animate_player(dir: Vector2):
 	if dir != Vector2.ZERO:
 		moving_parts.rotation = dir.angle()
