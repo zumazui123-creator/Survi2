@@ -14,11 +14,6 @@
 [ext_resource type="Script" uid="uid://bjrh8avfky7c7" path="res://scenes/character/components/player_combat.gd" id="8_ba010"]
 [ext_resource type="Script" uid="uid://fac0m1pdvo7" path="res://scenes/character/player_items.gd" id="9_e5n5u"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_wmtbp"]
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_5y66v"]
-radius = 15.0
-
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5y66v"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uicah"]
@@ -63,6 +58,11 @@ expand_margin_left = 30.0
 expand_margin_top = 30.0
 expand_margin_right = 30.0
 expand_margin_bottom = 30.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_wmtbp"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_5y66v"]
+radius = 15.0
 
 [sub_resource type="Animation" id="Animation_l6e13"]
 resource_name = "punching"
@@ -351,6 +351,147 @@ script = ExtResource("8_ba010")
 
 [node name="PlayerItems" type="Node" parent="."]
 script = ExtResource("9_e5n5u")
+
+[node name="PlayerStatus" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -32.0
+offset_top = -40.0
+offset_right = 32.0
+offset_bottom = 24.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 10
+script = ExtResource("7_wmtbp")
+
+[node name="NameTag" type="PanelContainer" parent="PlayerStatus"]
+layout_direction = 1
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -50.0
+offset_right = 50.0
+offset_bottom = 20.0
+grow_horizontal = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_5y66v")
+
+[node name="hpBar" type="ProgressBar" parent="PlayerStatus/NameTag"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_styles/background = SubResource("StyleBoxFlat_uicah")
+theme_override_styles/fill = SubResource("StyleBoxFlat_g2qfr")
+max_value = 1.0
+value = 1.0
+show_percentage = false
+
+[node name="nameLabel" type="Label" parent="PlayerStatus/NameTag"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 10)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 14
+text = "playerName"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 1
+
+[node name="Bar" type="GridContainer" parent="PlayerStatus"]
+layout_mode = 0
+offset_left = -596.0
+offset_top = -59.0
+offset_right = -496.0
+offset_bottom = -1.0
+
+[node name="HydrationBar" type="ProgressBar" parent="PlayerStatus/Bar"]
+modulate = Color(0, 0.491312, 0.491312, 1)
+self_modulate = Color(0.0216716, 0, 0.829495, 1)
+layout_mode = 2
+size_flags_horizontal = 3
+rounded = true
+
+[node name="WasserLabel" type="Label" parent="PlayerStatus/Bar/HydrationBar"]
+modulate = Color(0.00130165, 0.129496, 0.566333, 1)
+layout_mode = 1
+offset_left = 112.0
+offset_top = 2.0
+offset_right = 169.0
+offset_bottom = 25.0
+text = "Wasser"
+
+[node name="FoodBar" type="ProgressBar" parent="PlayerStatus/Bar"]
+modulate = Color(0.227451, 0.12549, 0.0588235, 1)
+layout_mode = 2
+size_flags_horizontal = 3
+rounded = true
+
+[node name="FoodLabel" type="Label" parent="PlayerStatus/Bar/FoodBar"]
+modulate = Color(0.22673, 0.127422, 0.0601467, 1)
+layout_mode = 1
+offset_left = 112.0
+offset_top = 2.0
+offset_right = 169.0
+offset_bottom = 25.0
+text = "Essen"
+
+[node name="WorkContainer" type="PanelContainer" parent="PlayerStatus"]
+layout_mode = 0
+offset_left = -568.0
+offset_top = -240.0
+offset_right = -342.0
+offset_bottom = -140.0
+grow_vertical = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_wmtbp")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PlayerStatus/WorkContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+alignment = 1
+
+[node name="Label" type="Label" parent="PlayerStatus/WorkContainer/VBoxContainer"]
+layout_mode = 2
+text = "Aufgaben"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="PlayerStatus/WorkContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="workTaskText" type="RichTextLabel" parent="PlayerStatus/WorkContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+text = "- Geh zum weißen Feld!"
+fit_content = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PlayerStatus/WorkContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PlayerStatus/WorkContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Schwerigkeitsgrad:"
+
+[node name="DifModeButton" type="OptionButton" parent="PlayerStatus/WorkContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+selected = 0
+item_count = 3
+popup/item_0/text = "Leicht"
+popup/item_0/id = 0
+popup/item_1/text = "Hart"
+popup/item_1/id = 1
+popup/item_2/text = "Horror"
+popup/item_2/id = 2
+
+[node name="backToMenu" type="Button" parent="PlayerStatus/WorkContainer/VBoxContainer"]
+layout_mode = 2
+text = "Zurück zum Menu"
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 offset = Vector2(640, 360)
@@ -765,147 +906,6 @@ shape = SubResource("CircleShape2D_5y66v")
 [node name="Camera2D" type="Camera2D" parent="."]
 enabled = false
 
-[node name="PlayerStatus" type="Control" parent="."]
-unique_name_in_owner = true
-layout_mode = 3
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -32.0
-offset_top = -40.0
-offset_right = 32.0
-offset_bottom = 24.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 10
-script = ExtResource("7_wmtbp")
-
-[node name="NameTag" type="PanelContainer" parent="PlayerStatus"]
-layout_direction = 1
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -50.0
-offset_right = 50.0
-offset_bottom = 20.0
-grow_horizontal = 2
-theme_override_styles/panel = SubResource("StyleBoxEmpty_5y66v")
-
-[node name="hpBar" type="ProgressBar" parent="PlayerStatus/NameTag"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_vertical = 1
-theme_override_styles/background = SubResource("StyleBoxFlat_uicah")
-theme_override_styles/fill = SubResource("StyleBoxFlat_g2qfr")
-max_value = 1.0
-value = 1.0
-show_percentage = false
-
-[node name="nameLabel" type="Label" parent="PlayerStatus/NameTag"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(100, 10)
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_font_sizes/font_size = 14
-text = "playerName"
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 1
-
-[node name="Bar" type="GridContainer" parent="PlayerStatus"]
-layout_mode = 0
-offset_left = -596.0
-offset_top = -59.0
-offset_right = -496.0
-offset_bottom = -1.0
-
-[node name="HydrationBar" type="ProgressBar" parent="PlayerStatus/Bar"]
-modulate = Color(0, 0.491312, 0.491312, 1)
-self_modulate = Color(0.0216716, 0, 0.829495, 1)
-layout_mode = 2
-size_flags_horizontal = 3
-rounded = true
-
-[node name="WasserLabel" type="Label" parent="PlayerStatus/Bar/HydrationBar"]
-modulate = Color(0.00130165, 0.129496, 0.566333, 1)
-layout_mode = 1
-offset_left = 112.0
-offset_top = 2.0
-offset_right = 169.0
-offset_bottom = 25.0
-text = "Wasser"
-
-[node name="FoodBar" type="ProgressBar" parent="PlayerStatus/Bar"]
-modulate = Color(0.227451, 0.12549, 0.0588235, 1)
-layout_mode = 2
-size_flags_horizontal = 3
-rounded = true
-
-[node name="FoodLabel" type="Label" parent="PlayerStatus/Bar/FoodBar"]
-modulate = Color(0.22673, 0.127422, 0.0601467, 1)
-layout_mode = 1
-offset_left = 112.0
-offset_top = 2.0
-offset_right = 169.0
-offset_bottom = 25.0
-text = "Essen"
-
-[node name="WorkContainer" type="PanelContainer" parent="PlayerStatus"]
-layout_mode = 0
-offset_left = -568.0
-offset_top = -240.0
-offset_right = -342.0
-offset_bottom = -140.0
-grow_vertical = 2
-size_flags_vertical = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_wmtbp")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="PlayerStatus/WorkContainer"]
-layout_mode = 2
-size_flags_vertical = 0
-alignment = 1
-
-[node name="Label" type="Label" parent="PlayerStatus/WorkContainer/VBoxContainer"]
-layout_mode = 2
-text = "Aufgaben"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="HSeparator" type="HSeparator" parent="PlayerStatus/WorkContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="workTaskText" type="RichTextLabel" parent="PlayerStatus/WorkContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 20)
-layout_mode = 2
-text = "- Geh zum weißen Feld!"
-fit_content = true
-
-[node name="HBoxContainer" type="HBoxContainer" parent="PlayerStatus/WorkContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="PlayerStatus/WorkContainer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-text = "Schwerigkeitsgrad:"
-
-[node name="DifModeButton" type="OptionButton" parent="PlayerStatus/WorkContainer/VBoxContainer/HBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-selected = 0
-item_count = 3
-popup/item_0/text = "Leicht"
-popup/item_0/id = 0
-popup/item_1/text = "Hart"
-popup/item_1/id = 1
-popup/item_2/text = "Horror"
-popup/item_2/id = 2
-
-[node name="backToMenu" type="Button" parent="PlayerStatus/WorkContainer/VBoxContainer"]
-layout_mode = 2
-text = "Zurück zum Menu"
-
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
 &"": SubResource("AnimationLibrary_4vloy")
@@ -956,6 +956,7 @@ offset_bottom = -50.0
 grow_horizontal = 2
 grow_vertical = 0
 
+[connection signal="pressed" from="PlayerStatus/WorkContainer/VBoxContainer/backToMenu" to="." method="_on_back_to_menu_pressed"]
 [connection signal="pressed" from="CanvasLayer/Code/TabContainer/Code/ButtonCotainer/PlayButton" to="CanvasLayer/Code" method="_on_play_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/Code/TabContainer/Code/ButtonCotainer/StopButton" to="CanvasLayer/Code" method="_on_stop_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/Code/TabContainer/Code/ButtonCotainer/CodeDeleteButton" to="CanvasLayer/Code" method="_on_code_delete_button_pressed"]
@@ -970,4 +971,3 @@ grow_vertical = 0
 [connection signal="pressed" from="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer2/loadFunction" to="CanvasLayer/Code" method="_on_load_function_pressed"]
 [connection signal="pressed" from="CanvasLayer/PopupPanel/HBoxContainer/VBoxContainer/BtnContainer/CreateBtn" to="CanvasLayer/Code" method="_on_create_btn_pressed"]
 [connection signal="item_activated" from="CanvasLayer/PopupPanel/HBoxContainer/VBoxContainer2/FuncList" to="FunctionHandler" method="_on_func_list_item_activated"]
-[connection signal="pressed" from="PlayerStatus/WorkContainer/VBoxContainer/backToMenu" to="." method="_on_back_to_menu_pressed"]

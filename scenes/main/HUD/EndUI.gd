@@ -11,13 +11,18 @@ func setPlayerLiveStatus(is_playerDied: bool, set_playerId : String):
 	self.playerDied = is_playerDied
 	self.playerId = set_playerId
 
+
 func next_level():
 	if playerDied:
 		print("DIED")
 		Multihelper.rebornPlayer(playerId)
 
-	if Multihelper.level["type"] == 100:
+	if Multihelper.level["type"] == Constants.MAP_LABY and Multihelper.level["level"] < Levels.max_laby_level:
 		Multihelper.level = Levels.LabyrinthLevels[Multihelper.level["level"]+1]
+		
+	if Multihelper.level["type"] == Constants.MAP_TOURMENT and Multihelper.level["level"] < Levels.max_tourment_level:
+		Multihelper.level = Levels.TurnierLevels[Multihelper.level["level"]+1]
+		
 	Multihelper.map.generateMap(Multihelper.level)
 	Multihelper.spawnPlayers()
 

@@ -87,11 +87,14 @@ func populateRecipes():
 	#selectionChanged.emit(selectedSlot)
 	
 func itemSelected(id):
-	var equipList := Items.equips.keys()
-	if id in equipList:
-		player.tryEquipItem.rpc_id(1, id)
-	elif player.equippedItem:
-		player.unequipItem.rpc()
+	if id in Items.equips.keys():
+		player.player_items.tryEquipItem.rpc_id(1, id)
+	elif player.player_items.equippedItem:
+		player.player_items.unequipItem.rpc()
+		
+	var consumeList := Items.consume.keys()
+	if id in consumeList:
+		player.player_items.consumeItem.rpc_id(1, id, Items.consume[id] ) 
 		
 func _on_craft_button_pressed():
 	if %craftCont.visible:

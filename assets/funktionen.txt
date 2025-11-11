@@ -1,23 +1,22 @@
 func func2 =
-	links
-	
+    links
+    
 ende
 
 func func1 =
-	sage asdf
+    sage asdf
 ende
 
 func dfg =
-	links
-	
+    links
+    
 ende
 
 func asdfasef =
-	asdf
+    asdf
 ende
 
 func a =
-	links
-	rechts
-	unten
+    rechts
 ende
+

@@ -20,7 +20,8 @@ var MAX_ANIMALS_PER_PLAYER : int = 20
 const MAP_MAIN : int = 1
 const MAP_LABY  : int = 2
 const MAP_TOURMENT : int = 3
-
+const END_LABY : int = 4
+const END_MAIN : int = 5
 
 #Player
 const MAX_INVENTORY_SLOTS := 12

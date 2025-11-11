@@ -10,18 +10,10 @@ var player: CharacterBody2D
 @onready var hit_area = %HitArea
 @onready var blood_particles = get_parent().get_node("bloodParticles")
 @onready var animation_player = get_parent().get_node("AnimationPlayer")
-
+@onready var player_items =  $"../PlayerItems"
 
 var attackRate : int = 1
-var equippedItem : String:
-	set(value):
-		equippedItem = value
-		if value in Items.equips:
-			var itemData = Items.equips[value]
-			if "projectile" in itemData:
-				spawnsProjectile = itemData["projectile"]
-		else:
-			spawnsProjectile = ""
+
 
 #stats
 @export var maxHP := 250.0
@@ -38,16 +30,18 @@ var spawnsProjectile := ""
 @export var speed := 10
 @export var attackDamage := 10:
 	get:
-		if equippedItem:
-			return Items.equips[equippedItem]["damage"] + attackDamage
+		if player.player_items.equippedItem:
+			return Items.equips[player_items.equippedItem]["damage"] + attackDamage
 		else:
 			return attackDamage
+			
 var damageType := "normal":
 	get:
-		if equippedItem:
-			return Items.equips[equippedItem]["damageType"]
+		if player.player_items.equippedItem:
+			return Items.equips[player_items.equippedItem]["damageType"]
 		else:
 			return damageType
+			
 var attackRange := 1.0: 
 	set(value):
 		var clampedVal = clampf(value, 1.0, 5.0)
@@ -59,14 +53,15 @@ var attackRange := 1.0:
 
 func _ready():
 	player = get_parent()
-	mob_killed.connect(mobKilled)
-	player_killed.connect(enemyPlayerKilled)
-	object_destroyed.connect(objectDestroyed)
+	if multiplayer.is_server():
+		mob_killed.connect(mobKilled)
+		player_killed.connect(enemyPlayerKilled)
+		object_destroyed.connect(objectDestroyed)
 
 func hit(inp_action : String):
 	if "leftClickAction" == inp_action or Input.is_action_pressed("leftClickAction"):
 		animation_player.speed_scale = attackRate
-		var action_anim = Items.equips[equippedItem]["attack"] if equippedItem else Strings.ANIM_PUNCHING
+		var action_anim = Items.equips[player_items.equippedItem]["attack"] if player_items.equippedItem else Strings.ANIM_PUNCHING
 		if not animation_player.is_playing() or animation_player.current_animation != action_anim:
 			animation_player.play(action_anim)
 			var delay : float = 0.8 / attackRate
@@ -82,8 +77,8 @@ func punchCheckCollision():
 			sendProjectile.rpc_id(1, mousePos)
 	if not player.is_multiplayer_authority():
 		return
-	if equippedItem:
-		Inventory.useItemDurability(str(player.name), equippedItem)
+	if player_items.equippedItem:
+		Inventory.useItemDurability(str(player.name), player_items.equippedItem)
 	for body in hit_area.get_overlapping_bodies():
 		if body != player and body.is_in_group(Strings.GROUP_DAMAGEABLE):
 			body.getDamage(self, attackDamage, damageType)
@@ -91,10 +86,6 @@ func punchCheckCollision():
 @rpc("any_peer", "reliable")
 func sendProjectile(towards):
 	Items.spawnProjectile(player, spawnsProjectile, towards, Strings.GROUP_DAMAGEABLE)
-
-@rpc("authority", "call_local", "reliable")
-func get_heal(heal_hp : float):
-	hp += heal_hp
 
 
 @rpc("authority", "call_local", "reliable")

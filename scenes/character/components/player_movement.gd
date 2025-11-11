@@ -1,4 +1,5 @@
 extends Node
+signal level_completed
 
 var player: CharacterBody2D
 @onready var speedLabel = $"../CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2/Speed"
@@ -42,12 +43,11 @@ func tile_move():
 
 		current_map_position = Multihelper.map.tile_map.local_to_map( player.position )
 		snap_to_tiles_position()
+		player.net_control.send_text("Godot: " + player.act )
 		#player.kiBrain.send_ki_obs() TODO 
 		player.act = ""
 	
-	var player_animation = player.get_node("PlayerAnimation")
-	if player_animation:
-		player_animation.animate_player(direction)
+	player.player_animation.animate_player(direction)
 
 
 func snap_to_tiles_position():
@@ -110,17 +110,18 @@ func press_action(inp_action : String):
 		elif inp_action == "walkDown":
 			direction = Vector2(0, 1)
 
-signal level_completed
 
 func win_condition():
-	player.status.playerStatus["terminated"] = false
-
-	if Multihelper.level["type"] == 100:
+	player.player_status.status["terminated"] = false
+	
+	if Multihelper.level["end"] == Constants.END_LABY:
 		var end_goal_position = Multihelper.map.laby_map.endPosition
 		if current_map_position == end_goal_position:
 			current_map_position = Vector2i()
-			level_completed.emit("Level Abgeschlossen!")
-			player.status.playerStatus["terminated"] = true
+			player.EndUI.setLabel("Level Abgeschlossen!")
+			player.player_status.status["terminated"] = true
+			player.EndUI.visible = true
+
 
 
 func get_reward():
