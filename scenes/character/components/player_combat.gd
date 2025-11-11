@@ -7,9 +7,7 @@ signal player_killed
 var player: CharacterBody2D
 
 @onready var hands = get_parent().get_node("%Hands")
-@onready var held_item = get_parent().get_node("%HeldItem")
-@onready var equipment = get_parent().get_node("%Equipment")
-@onready var hit_area = get_parent().get_node("%HitArea")
+@onready var hit_area = %HitArea
 @onready var blood_particles = get_parent().get_node("bloodParticles")
 @onready var animation_player = get_parent().get_node("AnimationPlayer")
 
@@ -50,20 +48,23 @@ var damageType := "normal":
 			return Items.equips[equippedItem]["damageType"]
 		else:
 			return damageType
-var attackRange := 1.0:
+var attackRange := 1.0: 
 	set(value):
 		var clampedVal = clampf(value, 1.0, 5.0)
 		attackRange = clampedVal
-		var hit_collision = get_parent().get_node("%HitCollision")
+		var hit_collision = %HitCollision
 		if hit_collision:
 			hit_collision.shape.height = 20 * clampedVal
 
 
 func _ready():
 	player = get_parent()
+	mob_killed.connect(mobKilled)
+	player_killed.connect(enemyPlayerKilled)
+	object_destroyed.connect(objectDestroyed)
 
 func hit(inp_action : String):
-	if "leftClickAction" == inp_action:
+	if "leftClickAction" == inp_action or Input.is_action_pressed("leftClickAction"):
 		animation_player.speed_scale = attackRate
 		var action_anim = Items.equips[equippedItem]["attack"] if equippedItem else Strings.ANIM_PUNCHING
 		if not animation_player.is_playing() or animation_player.current_animation != action_anim:
@@ -85,7 +86,7 @@ func punchCheckCollision():
 		Inventory.useItemDurability(str(player.name), equippedItem)
 	for body in hit_area.get_overlapping_bodies():
 		if body != player and body.is_in_group(Strings.GROUP_DAMAGEABLE):
-			body.getDamage(player, attackDamage, damageType)
+			body.getDamage(self, attackDamage, damageType)
 
 @rpc("any_peer", "reliable")
 func sendProjectile(towards):
@@ -124,61 +125,10 @@ func die():
 		return
 	var peerId := int(str(player.name))
 	Multihelper._deregister_character.rpc(peerId) # für Server
-	dropInventory()
+	player.player_items.dropInventory()
 	Multihelper.showSpawnUI.rpc_id(peerId)
 	player.queue_free()
 
-func dropInventory():
-	var inventoryDict = Inventory.inventories
-	for item in inventoryDict.keys():
-		Items.spawnPickups(item, player.position, inventoryDict[item].size() )
-	Inventory.inventories[player.name] = {}
-	Inventory.inventoryUpdated.emit(player.name)
-	Inventory.inventories.erase(player.name)
-
-@rpc("any_peer", "call_local", "reliable")
-func tryEquipItem(id):
-	if id in Inventory.inventories[player.name].keys():
-		equipItem.rpc(id)
-
-@rpc("any_peer", "call_local", "reliable")
-func equipItem(id):
-	equippedItem = id
-	hands.visible = false
-	held_item.texture = load(Constants.PATH_ITEMS+id+".png")
-	if multiplayer.is_server() and "scene" in Items.equips[id]:
-		for c in equipment.get_children():
-			c.queue_free()
-		var itemScene := load(Constants.PATH_EQUIPMENT_SCENES+Items.equips[id]["scene"]+".tscn")
-		var item = itemScene.instantiate()
-		equipment.add_child(item)
-		item.data = {"player": str(player.name), "item": id}
-
-@rpc("any_peer", "call_local", "reliable")
-func unequipItem():
-	equippedItem = ""
-	hands.visible = true
-	held_item.texture = null
-	if multiplayer.is_server():
-		for c in equipment.get_children():
-			c.queue_free()
-
-func itemRemoved(id, item):
-	if not multiplayer.is_server():
-		return
-	if id == str(player.name) and item == equippedItem:
-		unequipItem.rpc()
 
 func projectileHit(body):
 	body.getDamage(player, attackDamage, damageType)
-
-func handle_item_selection(id):
-	var equipList := Items.equips.keys()
-	if id in equipList:
-		tryEquipItem.rpc_id(1, id)
-	elif equippedItem:
-		unequipItem.rpc()
-		
-	var consumeList := Items.consume.keys()
-	if id in consumeList:
-		Inventory.useItem(str(player.name), id)

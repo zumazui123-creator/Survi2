@@ -30,7 +30,6 @@ func _on_hostDebugButton_pressed():
 func _on_connect_timer_timeout():
 	Multihelper.join_game()
 
-
 func _on_main_level_list_item_selected(index: int) -> void:
 	selcted_level = Levels.MainLevels[index]
 

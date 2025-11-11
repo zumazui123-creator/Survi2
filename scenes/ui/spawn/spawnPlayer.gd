@@ -4,7 +4,7 @@ var retry = false
 var charactersFolder = "res://assets/characters/bodies/"
 var selectedCharacterIndex = 0
 var charactersLen = 9
-@onready var levelList = $VBoxContainer2/LevelContainer/VBoxContainer/LevelList
+#@onready var levelList = $VBoxContainer2/LevelContainer/VBoxContainer/LevelList
 
 func _ready():
 	if retry:
@@ -14,7 +14,7 @@ func _ready():
 func _on_button_pressed():
 	if %nameInput.text == "":
 		%nameInput.text = "Unknow"
-	
+	print("_on_button_pressed selceted char:"+str(selectedCharacterIndex))
 	Multihelper.requestSpawn(%nameInput.text, 
 		multiplayer.get_unique_id(), 
 		str(selectedCharacterIndex)+".png",

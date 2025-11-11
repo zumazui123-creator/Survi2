@@ -16,28 +16,27 @@ var act : String = ""
 		playerName = value
 		$PlayerStatus.setPlayerName(value)
 
-@export var characterFile : String:
-	set(value):
-		characterFile = value
-		if player_animation:
-			player_animation.set_character_sprite(value)
+var characterFile : String
 
 var inventory : Control
 var EndUI     : Control
 
 func _ready():
+	print("Player : "+str(characterFile))
+	player_animation.set_character_sprite(characterFile)
 	if multiplayer.is_server():
 		var player_combat_node = get_node("PlayerCombat")
+		var player_items 	   = get_node("PlayerItems")
 		if player_combat_node:
-			Inventory.itemRemoved.connect(player_combat_node.itemRemoved)
-			player_combat_node.mob_killed.connect(player_combat_node.mobKilled)
-			player_combat_node.player_killed.connect(player_combat_node.enemyPlayerKilled)
-			player_combat_node.object_destroyed.connect(player_combat_node.objectDestroyed)
+			Inventory.itemRemoved.connect(player_items.itemRemoved)
+			#player_combat_node.mob_killed.connect(player_combat_node.mobKilled)
+			#player_combat_node.player_killed.connect(player_combat_node.enemyPlayerKilled)
+			#player_combat_node.object_destroyed.connect(player_combat_node.objectDestroyed)
 
 	if name == str(multiplayer.get_unique_id()):
 		print("player HUD")
+		
 		var main = get_parent().get_parent()
-
 		inventory = main.get_node("HUD/Inventory")
 		EndUI = main.get_node("HUD/EndUI")
 		inventory.player = self
@@ -75,24 +74,19 @@ func net_commander():
 		Multihelper.spawnPlayers()
 	return net_action
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	if str(multiplayer.get_unique_id()) != name:
 		return
 
 	act = net_commander()
 	press_action(act)
+	player_movement.input()
+	player_combat.hit(act)
 	
 	var player_movement_node = get_node("PlayerMovement")
 	if player_movement_node:
 		player_movement_node.tile_move()
 		player_movement_node.win_condition()
-
-func get_reward():
-	var reward = 0
-	if Multihelper.level["type"] == 100:
-		var end_goal_position = Multihelper.map.laby_map.endPosition
-		reward = 1/current_map_position.distance_to(end_goal_position)
-	return reward
 
 func resetPlayer():
 	var difLevelMode = %DifModeButton.get_selected_id()

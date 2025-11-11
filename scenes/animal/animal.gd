@@ -50,10 +50,10 @@ func randomWalk():
 	move_and_slide()
 
 
-func move_towards(target_position : Vector2 ):
-	var direction = (target_position - position).normalized()
-	velocity = direction * speed
-	move_and_slide()
+#func move_towards(target_position : Vector2 ):
+	##var direction = (target_position - position).normalized()
+	#velocity = direction * speed
+	#move_and_slide()
 
 func tryAttack():
 	if multiplayer.is_server() and $AttackCooldown.is_stopped():

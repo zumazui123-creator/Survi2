@@ -1,13 +1,14 @@
 extends Node
 
 var player: CharacterBody2D
-@onready var animation_player = get_parent().get_node("AnimationPlayer")
-@onready var moving_parts = get_parent().get_node("MovingParts")
+@onready var animation_player = $"../AnimationPlayer"
+@onready var moving_parts = $"../MovingParts"
 
 func _ready():
 	player = get_parent()
 
 func set_character_sprite(file_path):
+	print("set_character_sprite: "+str(file_path))
 	var sprite = moving_parts.get_node("Sprite2D")
 	if sprite:
 		sprite.texture = load(Constants.PATH_CHARACTER_BODIES+file_path)

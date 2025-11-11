@@ -1,9 +1,7 @@
-[gd_scene load_steps=28 format=3 uid="uid://bmhxilkffhqa5"]
+[gd_scene load_steps=27 format=3 uid="uid://bmhxilkffhqa5"]
 
 [ext_resource type="Script" uid="uid://bruqpv3kpycof" path="res://scenes/character/player.gd" id="1_7xvi4"]
-[ext_resource type="Script" uid="uid://qclfq5k80r20" path="res://scenes/character/components/player_speed.gd" id="2_5y66v"]
 [ext_resource type="Script" uid="uid://bp5wvye18xpkn" path="res://scenes/character/components/ai_control.gd" id="2_iinkm"]
-[ext_resource type="Texture2D" uid="uid://km3sx58r5vwy" path="res://assets/characters/bodies/4.png" id="2_s20bt"]
 [ext_resource type="Script" uid="uid://46q7eheiak5y" path="res://scenes/character/components/net_control.gd" id="2_xub24"]
 [ext_resource type="Script" uid="uid://ddrqxuc43a4rn" path="res://scenes/character/components/function_handler.gd" id="3_vreni"]
 [ext_resource type="AudioStream" uid="uid://cqi2ycda0odwm" path="res://assets/sfx/step.ogg" id="4_bflkw"]
@@ -14,6 +12,7 @@
 [ext_resource type="Script" uid="uid://bl0tm663e7r6k" path="res://scenes/character/components/player_status.gd" id="7_wmtbp"]
 [ext_resource type="Script" uid="uid://dsnm03bgpmori" path="res://scenes/character/components/code.gd" id="8_5y66v"]
 [ext_resource type="Script" uid="uid://bjrh8avfky7c7" path="res://scenes/character/components/player_combat.gd" id="8_ba010"]
+[ext_resource type="Script" uid="uid://fac0m1pdvo7" path="res://scenes/character/player_items.gd" id="9_e5n5u"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_wmtbp"]
 
@@ -103,11 +102,11 @@ tracks/1/use_blend = true
 tracks/2/type = "method"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath(".")
+tracks/2/path = NodePath("PlayerCombat")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0.2, 0.6),
+"times": PackedFloat32Array(0.16666667, 0.5666666),
 "transitions": PackedFloat32Array(1, 1),
 "values": [{
 "args": [],
@@ -341,9 +340,6 @@ script = ExtResource("3_vreni")
 unique_name_in_owner = true
 script = ExtResource("2_xub24")
 
-[node name="PlayerSpeed" type="Node2D" parent="."]
-script = ExtResource("2_5y66v")
-
 [node name="PlayerMovement" type="Node" parent="."]
 script = ExtResource("6_7r6u0")
 
@@ -352,6 +348,9 @@ script = ExtResource("7_e5n5u")
 
 [node name="PlayerCombat" type="Node" parent="."]
 script = ExtResource("8_ba010")
+
+[node name="PlayerItems" type="Node" parent="."]
+script = ExtResource("9_e5n5u")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 offset = Vector2(640, 360)
@@ -734,7 +733,6 @@ item_0/text = "Test2"
 
 [node name="Sprite2D" type="Sprite2D" parent="MovingParts"]
 scale = Vector2(0.833333, 0.825581)
-texture = ExtResource("2_s20bt")
 
 [node name="Hands" type="Sprite2D" parent="MovingParts"]
 unique_name_in_owner = true
@@ -970,8 +968,6 @@ grow_vertical = 0
 [connection signal="item_activated" from="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer3/ItemList" to="CanvasLayer/Code" method="_on_item_list_item_activated"]
 [connection signal="pressed" from="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer2/createFunction" to="CanvasLayer/Code" method="_on_create_function_pressed"]
 [connection signal="pressed" from="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer2/loadFunction" to="CanvasLayer/Code" method="_on_load_function_pressed"]
-[connection signal="pressed" from="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2/SpeedPlus" to="PlayerSpeed" method="_on_speed_plus_pressed"]
-[connection signal="pressed" from="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2/SpeedMinus" to="PlayerSpeed" method="_on_speed_minus_pressed"]
 [connection signal="pressed" from="CanvasLayer/PopupPanel/HBoxContainer/VBoxContainer/BtnContainer/CreateBtn" to="CanvasLayer/Code" method="_on_create_btn_pressed"]
 [connection signal="item_activated" from="CanvasLayer/PopupPanel/HBoxContainer/VBoxContainer2/FuncList" to="FunctionHandler" method="_on_func_list_item_activated"]
 [connection signal="pressed" from="PlayerStatus/WorkContainer/VBoxContainer/backToMenu" to="." method="_on_back_to_menu_pressed"]

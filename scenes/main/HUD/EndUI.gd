@@ -7,9 +7,9 @@ var playerId : String
 func setLabel(labelText : String):
 	label.text = labelText
 	
-func setPlayerStatus(playerDied: bool, playerId : String):
-	self.playerDied = playerDied
-	self.playerId = playerId
+func setPlayerLiveStatus(is_playerDied: bool, set_playerId : String):
+	self.playerDied = is_playerDied
+	self.playerId = set_playerId
 
 func next_level():
 	if playerDied:

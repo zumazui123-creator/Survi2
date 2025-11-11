@@ -5,10 +5,10 @@ extends Control
 @onready var foodBar 	  = $Bar/FoodBar
 @onready var dayNight 	  = $"../../../dayNight"
 
-var last_time_hydration: int = 0
-var last_time_food: int = 0
-var hydration_rate: int = 2
-var food_rate: int = 5
+var last_time_hydration: float = 0
+var last_time_food: float = 0
+var hydration_rate: float = 2
+var food_rate: float = 5
 var playerStatus := {}
 
 
@@ -63,7 +63,7 @@ func _on_item_consumed(id, effects):
 	if "speed" in effects and "duration" in effects:
 		player.apply_speed_boost(effects["speed"], effects["duration"])
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	var now = GameTime.get_time()
 	if now - last_time_hydration > hydration_rate:
 		hydrationBar.value -= 1

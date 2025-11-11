@@ -19,7 +19,7 @@ func setMobs(initialSpawnObjects : int , maxObjects : int ,
 			maxEnemiesPerPlayer : int,
 			maxAnimalsPerPlayer : int ):
 	$Objects.initialSpawnObjects = initialSpawnObjects
-	$Objects.maxObjects 			 = maxObjects
+	$Objects.maxObjects 		 = maxObjects
 	$Enemies.maxEnemiesPerPlayer = maxEnemiesPerPlayer
 	$Animals.maxAnimalsPerPlayer = maxAnimalsPerPlayer
 

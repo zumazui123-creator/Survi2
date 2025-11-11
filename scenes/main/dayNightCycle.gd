@@ -67,14 +67,12 @@ func _recalculate_time() -> void:
 	var current_day_minutes = total_minutes % int(MINUTES_PER_DAY)
 
 	hour = int(current_day_minutes / MINUTES_PER_HOUR)
-	var my_hour = int(current_day_minutes / MINUTES_PER_HOUR)
 	var minute = int(current_day_minutes % int(MINUTES_PER_HOUR))
 	
 	
-	var value = (sin(1 - PI / 2.0) + 1.0) / 2.0
+	#var value = (sin(1 - PI / 2.0) + 1.0) / 2.0
 	self.color = gradient_texture.gradient.sample(1)
 	
 	if past_minute != minute:
 		past_minute = minute
-		#print("hour"+str(my_hour))
 		time_tick.emit(day, hour, minute)

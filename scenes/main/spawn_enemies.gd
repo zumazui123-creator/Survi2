@@ -10,6 +10,10 @@ var spawnedEnemies := {}
 
 @onready var navHelper : Node2D = $"../NavHelper"
 
+
+func _ready() -> void:
+	pass
+
 #enemy spawn
 func trySpawnEnemies():
 	if not GameTime.isNightTime():

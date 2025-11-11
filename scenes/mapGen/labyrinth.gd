@@ -41,8 +41,8 @@ func generateLabyrinth( level_no : int) -> Array[Vector2i] :
 	map.set_field(endPosition, atlasCoorWhiteField)
 	return walkable_tiles
 	
-func generateLabyrinthWithSeed( level_no : int, seed : int)-> Array[Vector2i]: 
-	seed(seed)
+func generateLabyrinthWithSeed( level_no : int, rnd_seed : int)-> Array[Vector2i]: 
+	seed(rnd_seed)
 	var way_size = 5
 	var level_hard_count = level_no+5
 	if level_no > 10:
@@ -73,6 +73,4 @@ func generateLabyrinthWithSeed( level_no : int, seed : int)-> Array[Vector2i]:
 	return walkable_tiles
 	
 
-func set_random_mobs(free_tiles: Array[Vector2i]):
-	print("set mob rand")
 	

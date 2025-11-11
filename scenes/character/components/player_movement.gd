@@ -1,16 +1,18 @@
 extends Node
 
 var player: CharacterBody2D
+@onready var speedLabel = $"../CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2/Speed"
 
 const default_move_speed_factor = 3
 var current_map_position : Vector2i
 
 var direction = Vector2.ZERO
 var _pixels_moved: int = 0
-var move_speed_factor = 3
+var move_speed_factor : float = 3
 
 func _ready():
 	player = get_parent()
+	speedLabel.text = str(move_speed_factor)
 
 func is_moving() -> bool:
 	return direction != Vector2.ZERO
@@ -40,7 +42,7 @@ func tile_move():
 
 		current_map_position = Multihelper.map.tile_map.local_to_map( player.position )
 		snap_to_tiles_position()
-		player.kiBrain.send_ki_obs()
+		#player.kiBrain.send_ki_obs() TODO 
 		player.act = ""
 	
 	var player_animation = player.get_node("PlayerAnimation")
@@ -127,3 +129,13 @@ func get_reward():
 		var end_goal_position = Multihelper.map.laby_map.endPosition
 		reward = 1/current_map_position.distance_to(end_goal_position)
 	return reward
+	
+func set_speed( player_speed : float):
+	move_speed_factor += player_speed
+	speedLabel.text = str(player.move_speed_factor)
+
+func _on_speed_plus_pressed() -> void:
+	set_speed(0.2)
+
+func _on_speed_minus_pressed() -> void:
+	set_speed(-0.2)

@@ -153,6 +153,7 @@ func get_map_position(coords : Vector2i):
 	return map.tile_map.local_to_map(coords)
 	
 func requestSpawn(playerName, id, characterFile):
+	print("requestSpawn: "+str(characterFile))
 	player_info["name"] = playerName
 	player_info["body"] = characterFile
 	player_info["score"] = 0
@@ -163,6 +164,7 @@ func requestSpawn(playerName, id, characterFile):
 
 @rpc("any_peer", "call_local", "reliable")
 func addPlayer(playerName, id, characterFile):
+	print("addPlayer: "+str(characterFile))
 	var newPlayer 		:= playerScenePath.instantiate()
 	newPlayer.playerName = playerName
 	newPlayer.characterFile = characterFile
@@ -204,5 +206,5 @@ func setMobs(initialSpawnObjects : int , maxObjects : int ,
 			 		maxEnemiesPerPlayer,
 			 		maxAnimalsPerPlayer )
 
-func setLevel(level : Dictionary):
-	self.level = level
+func setLevel(set_level : Dictionary):
+	self.level = set_level
