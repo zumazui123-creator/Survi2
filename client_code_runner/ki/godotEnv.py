@@ -166,6 +166,7 @@ class GodotEnv(gym.Env):
 
         reply = self._send_action(action_str)
         obs = self.get_null_obs()
+        print(reply)
 
 
         reward = 0.0
@@ -185,6 +186,9 @@ class GodotEnv(gym.Env):
             except Exception:
                 pass
         if obs_list is not None:
+            print(info)
+            print(f"obs shape:{obs.shape} obs:{obs}, terminated {terminated}, info: {info["tile_position"]}")
+
             obs, reward2 = self._build_observation(obs_list=obs_list, info=info)
             reward += reward2
 

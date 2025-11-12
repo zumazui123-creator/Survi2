@@ -2,6 +2,7 @@
 
 # --- Language Keywords ---
 KEYWORD_END = "ende"
+KEYWORD_END_FUNC = "end_func"
 KEYWORD_FUNC = "func"
 KEYWORD_REPEAT = "wiederhole"
 

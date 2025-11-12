@@ -163,7 +163,7 @@ tracks/2/use_blend = true
 tracks/3/type = "method"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath(".")
+tracks/3/path = NodePath("PlayerCombat")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
@@ -221,7 +221,7 @@ tracks/2/use_blend = true
 tracks/3/type = "method"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath(".")
+tracks/3/path = NodePath("PlayerCombat")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
@@ -510,10 +510,11 @@ offset_right = 422.0
 offset_bottom = 724.0
 size_flags_vertical = 3
 tab_alignment = 1
-current_tab = 0
+current_tab = 1
 
 [node name="Code" type="VBoxContainer" parent="CanvasLayer/Code/TabContainer"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 size_flags_horizontal = 6
 size_flags_vertical = 3
@@ -646,7 +647,6 @@ layout_mode = 2
 text = "Lade Funktionen"
 
 [node name="KI Playground" type="MarginContainer" parent="CanvasLayer/Code/TabContainer"]
-visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 15
 theme_override_constants/margin_top = 5
@@ -881,7 +881,6 @@ scale = Vector2(0.9, 0.848837)
 texture = ExtResource("4_yjkcj")
 offset = Vector2(6, 0)
 hframes = 12
-frame = 4
 
 [node name="HeldItem" type="Sprite2D" parent="MovingParts"]
 unique_name_in_owner = true
@@ -969,5 +968,6 @@ grow_vertical = 0
 [connection signal="item_activated" from="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer3/ItemList" to="CanvasLayer/Code" method="_on_item_list_item_activated"]
 [connection signal="pressed" from="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer2/createFunction" to="CanvasLayer/Code" method="_on_create_function_pressed"]
 [connection signal="pressed" from="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer2/loadFunction" to="CanvasLayer/Code" method="_on_load_function_pressed"]
+[connection signal="pressed" from="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/FuncContainer/HBoxContainer/StartKiButton" to="AIControl" method="_on_start_ki_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/PopupPanel/HBoxContainer/VBoxContainer/BtnContainer/CreateBtn" to="CanvasLayer/Code" method="_on_create_btn_pressed"]
 [connection signal="item_activated" from="CanvasLayer/PopupPanel/HBoxContainer/VBoxContainer2/FuncList" to="FunctionHandler" method="_on_func_list_item_activated"]

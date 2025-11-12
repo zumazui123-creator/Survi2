@@ -13,7 +13,7 @@ class FunctionHandler:
         Syntax:
             func name =
                 ...
-            ende
+            end_func
         """
         lines = text.strip().splitlines()
         i = 0
@@ -33,12 +33,12 @@ class FunctionHandler:
                 block = []
 
                 # Block einlesen bis end_token
-                while i < len(lines) and lines[i].strip() != constants.KEYWORD_END:
+                while i < len(lines) and lines[i].strip() != constants.KEYWORD_END_FUNC:
                     block.append(lines[i].strip())
                     i += 1
 
                 # end_token überspringen
-                if i < len(lines) and lines[i].strip() == constants.KEYWORD_END:
+                if i < len(lines) and lines[i].strip() == constants.KEYWORD_END_FUNC:
                     i += 1
 
                 self.functions[name] = block
@@ -71,5 +71,5 @@ class FunctionHandler:
                 f.write(f"{constants.KEYWORD_FUNC} {name} =\n")
                 for line in lines:
                     f.write(f"    {line}\n")
-                f.write(f"{constants.KEYWORD_END}\n\n")
+                f.write(f"{constants.KEYWORD_END_FUNC}\n\n")
         print(f"✅ Funktionen erfolgreich in {self.assets_filepath} gespeichert.")

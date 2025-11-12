@@ -82,6 +82,6 @@ func _on_create_btn_pressed() -> void:
 		+ "\n"
 		+ code_func.text
 		+ "\n"
-		+ Strings.KEYWORD_END
+		+ Strings.KEYWORD_END_FUNC
 	)
 	net_control.send_rpc_request(Strings.RPC_METHOD_CREATE_FUNCTION, {"message": message})

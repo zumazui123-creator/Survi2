@@ -18,8 +18,7 @@ func _ready() -> void:
 	navigation  = main.get_node("NavHelper")
 
 func _on_start_ki_button_pressed() -> void:
-	player.send_to_ws_peer("start ki")
-
+	net_control.send_rpc_request(Strings.RPC_METHOD_START_KI, {"message": ""})
 
 
 func get_walkable_neighbor_tiles():
@@ -57,7 +56,7 @@ func calculate_reward():
 func send_ki_obs():
 	var target_tile_position = Multihelper.map.laby_map.endPosition
 	var walkable_tiles_bool = get_walkable_neighbor_tiles()
-
+	tmp_status = status.getPlayerStatus()
 	var ki_data = {
 			"obs": {
 					"goal": [ target_tile_position.x, target_tile_position.y ],

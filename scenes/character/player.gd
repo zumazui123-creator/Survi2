@@ -3,7 +3,7 @@ extends CharacterBody2D
 var act : String = ""
 
 @onready var status = $PlayerStatus
-@onready var kiBrain = $AIControl
+@onready var ai_control = $AIControl
 @onready var workTaskText = $PlayerStatus/WorkContainer/VBoxContainer/workTaskText
 @onready var net_control = $NetControl
 @onready var player_movement = $PlayerMovement
@@ -38,7 +38,7 @@ func _ready():
 		var main = get_parent().get_parent()
 		EndUI = main.get_node("HUD/EndUI")
 		$Camera2D.enabled = true
-		player_movement.level_completed.connect(on_level_completed)
+		
 	Multihelper.player_disconnected.connect(disconnected)
 
 func visibilityFilter(id):
@@ -129,7 +129,3 @@ func sendPos(pos):
 func _on_back_to_menu_pressed() -> void:
 	var game_scene: PackedScene = load(Constants.PATH_GAME_SCENE)
 	get_tree().change_scene_to_packed(game_scene)
-
-func on_level_completed(message):
-	EndUI.setLabel(message)
-	EndUI.retry()

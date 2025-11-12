@@ -41,7 +41,7 @@ func tryEquipItem(id):
 
 @rpc("any_peer", "call_local", "reliable")
 func equipItem(id):
-	player.player_combat.equippedItem = id
+	equippedItem = id
 	player.player_combat.hands.visible = false
 	held_item.texture = load(Constants.PATH_ITEMS+id+".png")
 	if multiplayer.is_server() and "scene" in Items.equips[id]:
@@ -54,7 +54,7 @@ func equipItem(id):
 
 @rpc("any_peer", "call_local", "reliable")
 func unequipItem():
-	player.player_combat.equippedItem = ""
+	equippedItem = ""
 	player.player_combat.hands.visible = true
 	held_item.texture = null
 	if multiplayer.is_server():

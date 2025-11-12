@@ -1,22 +1,11 @@
 func func2 =
-    links
-    
-ende
-
-func func1 =
-    sage asdf
-ende
-
-func dfg =
-    links
-    
-ende
-
-func asdfasef =
-    asdf
-ende
-
-func a =
+    wiederhole 13 mal
+    oben
+    attacke
     rechts
-ende
+    attacke
+    ende
+    
+    
+end_func
 

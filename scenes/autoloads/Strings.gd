@@ -15,6 +15,7 @@ const ACTION_SAY = "sage"
 # --- Code Keywords ---
 const KEYWORD_FUNC = "func"
 const KEYWORD_END = "ende"
+const KEYWORD_END_FUNC = "end_func"
 const KEYWORD_REPEAT = "wiederhole 3 mal"
 const KEYWORD_REPEAT_FULL = "wiederhole 3 mal\n\nende"
 

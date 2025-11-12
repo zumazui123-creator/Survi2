@@ -4,7 +4,8 @@ extends Control
 @onready var hydrationBar = $Bar/HydrationBar
 @onready var foodBar 	  = $Bar/FoodBar
 @onready var dayNight 	  = $"../../../dayNight"
-
+@onready var player_movement = $"../PlayerMovement"
+@onready var player_combat = $"../PlayerCombat"
 
 var last_time_hydration: float = 0
 var last_time_food: float = 0
@@ -51,17 +52,17 @@ func resizeNameToFit():
 		%nameLabel.set("theme_override_font_sizes/font_size", fontSize)
 
 func getPlayerStatus():
-	status = {"hp": %hpBar.value,
+	status = {"hp": hp,
 		"foodBar": foodBar.value,
 		"hydrationBar": hydrationBar.value,
-		"moveSpeed": player.move_speed_factor,
-		"attackDmg": player.attackDamage,
-		"attackRate": player.attackRate,
-		"attackRange": player.attackRange,
-		"damageType": player.damageType,
-		"name": %nameLabel.text,
+		"moveSpeed": player_movement.move_speed_factor,
+		"attackDmg": player_combat.attackDamage,
+		"attackRate": player_combat.attackRate,
+		"attackRange": player_combat.attackRange,
+		"damageType": player_combat.damageType,
+		"name": player.name,
 		"pixel_position": [player.position.x, player.position.y],
-		"tile_position":[player.current_map_position.x, player.current_map_position.y],
+		"tile_position":[player_movement.current_map_position.x, player_movement.current_map_position.y],
 		"items": Inventory.getItems(str(player.name)),
 		"time": 3, #TODO
 		"terminated": false
@@ -72,7 +73,7 @@ func getPlayerStatus():
 func _ready() -> void:
 	hydrationBar.value = 100
 	foodBar.value 	   = 100
-	
+	getPlayerStatus()
 
 
 @rpc("authority", "call_local", "reliable")

@@ -66,7 +66,7 @@ def init_model_ppo():
 	# 	# model.load(model_name+"2")
 	# 	print(f"⚠️ Error in loading trained model: {e}")
 
-	for i in range(0,500):
+	for i in range(0,2):
 		print(i)
 		train_model = model.learn(total_timesteps=256, callback=logger_callback, progress_bar=True)
 		# obs, info = env.reset()

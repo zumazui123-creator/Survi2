@@ -1,19 +1,20 @@
 extends Node
-signal level_completed
+
 
 var player: CharacterBody2D
 @onready var speedLabel = $"../CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2/Speed"
 
-const default_move_speed_factor = 3
+const default_move_speed_factor : float = 2.5
+var move_speed_factor : float = default_move_speed_factor
 var current_map_position : Vector2i
-
 var direction = Vector2.ZERO
 var _pixels_moved: int = 0
-var move_speed_factor : float = 3
+
 
 func _ready():
 	player = get_parent()
 	speedLabel.text = str(move_speed_factor)
+	
 
 func is_moving() -> bool:
 	return direction != Vector2.ZERO
@@ -43,8 +44,8 @@ func tile_move():
 
 		current_map_position = Multihelper.map.tile_map.local_to_map( player.position )
 		snap_to_tiles_position()
-		player.net_control.send_text("Godot: " + player.act )
-		#player.kiBrain.send_ki_obs() TODO 
+		#player.net_control.send_text("Godot: " + player.act )
+		player.ai_control.send_ki_obs() #TODO 
 		player.act = ""
 	
 	player.player_animation.animate_player(direction)

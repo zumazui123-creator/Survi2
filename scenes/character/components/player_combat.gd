@@ -30,14 +30,14 @@ var spawnsProjectile := ""
 @export var speed := 10
 @export var attackDamage := 10:
 	get:
-		if player.player_items.equippedItem:
+		if player_items.equippedItem:
 			return Items.equips[player_items.equippedItem]["damage"] + attackDamage
 		else:
 			return attackDamage
 			
 var damageType := "normal":
 	get:
-		if player.player_items.equippedItem:
+		if player_items.equippedItem:
 			return Items.equips[player_items.equippedItem]["damageType"]
 		else:
 			return damageType
@@ -73,8 +73,7 @@ func punchCheckCollision():
 	var id = multiplayer.get_unique_id()
 	if spawnsProjectile:
 		if str(id) == player.name:
-			var mousePos := player.get_global_mouse_position()
-			sendProjectile.rpc_id(1, mousePos)
+			sendProjectile.rpc_id(1, player.player_movement.direction)
 	if not player.is_multiplayer_authority():
 		return
 	if player_items.equippedItem:

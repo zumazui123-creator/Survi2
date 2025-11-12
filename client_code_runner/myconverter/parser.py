@@ -100,10 +100,10 @@ class Parser():
         self.functions = self.funcHandler.load_functions()
         # print(f"Loaded functions: {self.functions}")
 
-        code = self.parse_repeat(code)
-        # print(f"Code after repeat parsing")
         code = self.parse_func(code)
         # print(f"Code after function parsing:\n{code}")
+        code = self.parse_repeat(code)
+        # print(f"Code after repeat parsing")
 
         actions : List[str] = []
         code_lines = code.strip().splitlines()
