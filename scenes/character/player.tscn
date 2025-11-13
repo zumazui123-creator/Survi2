@@ -441,6 +441,7 @@ offset_bottom = 25.0
 text = "Essen"
 
 [node name="WorkContainer" type="PanelContainer" parent="PlayerStatus"]
+z_index = 100
 layout_mode = 0
 offset_left = -568.0
 offset_top = -240.0

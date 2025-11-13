@@ -14,7 +14,8 @@ class GodotEnv(gym.Env):
     metadata = {"render_modes": []}
 
     def get_null_obs(self):
-        return np.array([0, 0, 0, 0, -1, -1, 0, 0, 0, 0], dtype=np.float32)
+       return np.array([ 0, 0, 0, 0], dtype=np.int32)
+        # return np.array([0, 0, 0, 0, -1, -1, 0, 0, 0, 0], dtype=np.float32)
 
 
     def get_endgoal_obs(self):
@@ -48,15 +49,15 @@ class GodotEnv(gym.Env):
         #     high=np.array([256, 256, 256, 256, 1, 1, 1, 1], dtype=np.float32),
         # )
 
-        self.observation_space = spaces.Box(
-                    low=np.array([0, 0, 0, 0, -1, -1, 0, 0, 0, 0], dtype=np.float32),
-                    high=np.array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1], dtype=np.float32),
-                )
-
         # self.observation_space = spaces.Box(
-        #     low=np.array([ 0, 0, 0, 0], dtype=np.int32),
-        #     high=np.array([ 1, 1, 1, 1], dtype=np.int32),
-        # )
+        #             low=np.array([0, 0, 0, 0, -1, -1, 0, 0, 0, 0], dtype=np.float32),
+        #             high=np.array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1], dtype=np.float32),
+        #         )
+
+        self.observation_space = spaces.Box(
+            low=np.array([ 0, 0, 0, 0], dtype=np.int32),
+            high=np.array([ 1, 1, 1, 1], dtype=np.int32),
+        )
 
         self.server_url = server_url
         self.ws = None
@@ -120,7 +121,7 @@ class GodotEnv(gym.Env):
 
         player = np.array(player_position, dtype=np.float32)
         goal   = np.array(goal_position, dtype=np.float32)
-        free   = np.array(free_directions, dtype=np.float32)
+        free   = np.array(free_directions, dtype=np.int32)
 
         # Normalisiere Positionen (0–256 → 0–1)
         player_norm = player / 256.0
@@ -133,7 +134,8 @@ class GodotEnv(gym.Env):
         print(f"player_position: {player_position}")
 
         # Baue Observation zusammen
-        obs = np.concatenate([player_norm, goal_norm, rel, free])
+        # obs = np.concatenate([player_norm, goal_norm, rel, free])
+        obs = free
 
         # calc reward
         reward = 0.0
