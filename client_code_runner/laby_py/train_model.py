@@ -42,7 +42,7 @@ class CustomCnnExtractor(BaseFeaturesExtractor):
 if __name__ == "__main__":
     # 1. Umgebung erstellen
     env = MazeEnv(maze_width=37, maze_height=19, render_mode=None)
-    
+
     # 2. Umgebung überprüfen
     print("Überprüfe die Umgebung...")
     check_env(env)
@@ -56,10 +56,10 @@ if __name__ == "__main__":
 
     # 3. Modell erstellen
     model = DQN(
-        "CnnPolicy", 
-        env, 
+        "CnnPolicy",
+        env,
         policy_kwargs=policy_kwargs,
-        verbose=1, 
+        verbose=1,
         tensorboard_log="./maze_tensorboard/",
         learning_rate=0.0005,
         buffer_size=50000,
@@ -73,7 +73,7 @@ if __name__ == "__main__":
     )
 
     # 4. Modell trainieren
-    TRAIN_STEPS = 300000
+    TRAIN_STEPS = 30000
     print(f"\n--- Beginne Training für {TRAIN_STEPS} Schritte... ---")
     model.learn(total_timesteps=TRAIN_STEPS, log_interval=4)
     print("--- Training abgeschlossen. ---")
@@ -85,21 +85,21 @@ if __name__ == "__main__":
 
     # --- Evaluierung des trainierten Modells ---
     print("\n--- Beginne Evaluierung des trainierten Modells... ---")
-    
+
     eval_env = MazeEnv(maze_width=37, maze_height=19, render_mode='human')
 
     del model
     model = DQN.load(MODEL_PATH)
 
     obs, info = eval_env.reset()
-    
+
     import os
     os.system('cls' if os.name == 'nt' else 'clear')
 
     for i in range(eval_env._max_steps):
         action, _states = model.predict(obs, deterministic=True)
         obs, reward, terminated, truncated, info = eval_env.step(action)
-        
+
         time.sleep(0.1)
 
         if terminated or truncated:
@@ -108,6 +108,6 @@ if __name__ == "__main__":
             else:
                 print("\nMaximale Anzahl an Schritten erreicht.")
             break
-            
+
     eval_env.close()
     print("--- Evaluierung abgeschlossen. ---")

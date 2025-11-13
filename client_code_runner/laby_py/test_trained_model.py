@@ -25,10 +25,10 @@ if __name__ == "__main__":
 
     # 3. Evaluierung starten
     obs, info = eval_env.reset()
-    
+
     # Liste zum Speichern des vom Agenten gegangenen Pfades
     agent_path = [(info['agent_pos']['x'], info['agent_pos']['y'])]
-    
+
     # Terminal für eine saubere Anzeige leeren
     os.system('cls' if os.name == 'nt' else 'clear')
     print("Starte Vorhersage... Der Agent bewegt sich durch das Labyrinth.")
@@ -36,10 +36,10 @@ if __name__ == "__main__":
     for i in range(eval_env._max_steps):
         # Aktion vom Modell vorhersagen lassen
         action, _states = model.predict(obs, deterministic=True)
-        
+
         # Aktion in der Umgebung ausführen
         obs, reward, terminated, truncated, info = eval_env.step(action)
-        
+
         # Position als Tupel zum Pfad hinzufügen
         pos_tuple = (info['agent_pos']['x'], info['agent_pos']['y'])
         if agent_path[-1] != pos_tuple:
@@ -55,16 +55,16 @@ if __name__ == "__main__":
             else:
                 print("Status: Maximale Anzahl an Schritten erreicht.")
             break
-            
+
     eval_env.close()
 
     # 4. Finalen Pfad visualisieren
     print("\n--- Visuelle Darstellung des vom Agenten gegangenen Pfades ---")
-    
+
     # Die Methode aus unserem Labyrinth-Generator wiederverwenden
     final_maze_vis = eval_env._generator.visuell_darstellen(pfad=agent_path)
-    
+
     for line in final_maze_vis:
         print(line)
-        
+
     print(f"\nDer Agent hat {len(agent_path) - 1} Schritte gemacht.")
