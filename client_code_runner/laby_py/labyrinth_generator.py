@@ -20,7 +20,10 @@ class LabyrinthGenerator:
         self.start_x, self.start_y = -1, -1
         self.ziel_x, self.ziel_y = -1, -1
 
-    def generieren(self):
+    def generieren(self, seed=None):
+        if seed is not None:
+            random.seed(seed)
+        self.labyrinth = [[0 for _ in range(self.breite)] for _ in range(self.hoehe)]
         self.start_x = random.randrange(1, self.breite, 2)
         self.start_y = random.randrange(1, self.hoehe, 2)
         self.labyrinth[self.start_y][self.start_x] = 1

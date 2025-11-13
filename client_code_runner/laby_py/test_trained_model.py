@@ -1,6 +1,7 @@
 import gymnasium as gym
 import time
 import os
+import random
 from stable_baselines3 import DQN
 from maze_env import MazeEnv
 
@@ -8,9 +9,11 @@ from maze_env import MazeEnv
 MODEL_PATH = "dqn_maze_model.zip"
 MAZE_WIDTH = 37
 MAZE_HEIGHT = 19
+SEED = 42
 
 # --- Haupt-Skript zur Evaluierung ---
 if __name__ == "__main__":
+    random.seed(SEED)
     # 1. Prüfen, ob das trainierte Modell existiert
     if not os.path.exists(MODEL_PATH):
         print(f"Fehler: Modelldatei nicht gefunden unter '{MODEL_PATH}'")
@@ -24,7 +27,7 @@ if __name__ == "__main__":
     model = DQN.load(MODEL_PATH)
 
     # 3. Evaluierung starten
-    obs, info = eval_env.reset()
+    obs, info = eval_env.reset(seed=SEED)
 
     # Liste zum Speichern des vom Agenten gegangenen Pfades
     agent_path = [(info['agent_pos']['x'], info['agent_pos']['y'])]

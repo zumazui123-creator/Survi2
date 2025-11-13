@@ -73,7 +73,7 @@ if __name__ == "__main__":
     )
 
     # 4. Modell trainieren
-    TRAIN_STEPS = 30000
+    TRAIN_STEPS = 3000
     print(f"\n--- Beginne Training für {TRAIN_STEPS} Schritte... ---")
     model.learn(total_timesteps=TRAIN_STEPS, log_interval=4)
     print("--- Training abgeschlossen. ---")

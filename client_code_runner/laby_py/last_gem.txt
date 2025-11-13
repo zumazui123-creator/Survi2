@@ -1,0 +1,101 @@
+│    Status: Maximale Anzahl an Schritten erreicht.                                                          │
+│                                                                                                            │
+│                                                                                                            │
+│                                                                                                            │
+│    --- Visuelle Darstellung des vom Agenten gegangenen Pfades ---                                          │
+│                                                                                                            │
+│    ██████████████████████████████████████████████████████████████████████████                              │
+│                                                                                                            │
+│    ██             S██              ██      ██              ██     G        ██                              │
+│                                                                                                            │
+│    ██  ██████████████  ██████████  ██  ██  ██  ██████████  ██████████  ██  ██                              │
+│                                                                                                            │
+│    ██      ██      ██          ██      ██  ██  ██                  ██  ██  ██                              │
+│                                                                                                            │
+│    ██████  ██  ██████  ██████  ██████████  ██  ██████████████████  ██  ██  ██                              │
+│                                                                                                            │
+│    ██  ██  ██          ██  ██          ██  ██  ██      ██      ██  ██  ██  ██                              │
+│                                                                                                            │
+│    ██  ██  ██████  ██████  ██████████  ██  ██  ██  ██  ██  ██  ██  ██████  ██                              │
+│                                                                                                            │
+│    ██  ██      ██          ██  ██      ██  ██  ██  ██  ██  ██  ██          ██                              │
+│                                                                                                            │
+│    ██  ██████  ██████████  ██  ██  ██████  ██  ██  ██  ██████  ██████████  ██                              │
+│                                                                                                            │
+│    ██      ██          ██  ██  ██  ██  ██  ██      ██      ██          ██  ██                              │
+│                                                                                                            │
+│    ██  ██  ██████████  ██  ██  ██  ██  ██  ██████████  ██  ██  ██  ██████  ██                              │
+│                                                                                                            │
+│    ██  ██  ██          ██  ██  ██  ██  ██          ██  ██  ██  ██      ██  ██                              │
+│                                                                                                            │
+│    ██  ██  ██  ██████████  ██  ██  ██  ██████████  ██████  ██  ██████  ██  ██                              │
+│                                                                                                            │
+│    ██  ██      ██      ██  ██  ██  ██          ██          ██      ██      ██                              │
+│                                                                                                            │
+│    ██  ██████████  ██  ██  ██  ██  ██  ██  ██  ██████████████████  ██████████                              │
+│                                                                                                            │
+│    ██              ██  ██      ██  ██  ██  ██          ██          ██      ██                              │
+│                                                                                                            │
+│    ██████████████████  ██████████  ██  ██  ██████████████  ██████████  ██  ██                              │
+│                                                                                                            │
+│    ██                              ██  ██                              ██  ██                              │
+│                                                                                                            │
+│    ██████████████████████████████████████████████████████████████████████████                              │
+│                                                                                                            │
+│                                                                                                            │
+│                                                                                                            │
+│    Der Agent hat 0 Schritte gemacht.                                                                       │
+│                                                                                                            │
+│    --- Evaluierung abgeschlossen. ---                                                                      │
+╰────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+✦ Das ist das bisher aufschlussreichste Ergebnis.
+
+  Das Skript train_model2.py, das jetzt die exakt gleiche Auswertungslogik wie test_trained_model.py enthält,
+  meldet ebenfalls:
+  Der Agent hat 0 Schritte gemacht.
+
+  Das bedeutet, meine frühere Beobachtung von Bewegung war falsch. Ich muss die Ausgabe der render()-Funktion
+  in der Auswertungsphase des train_model.py-Skripts falsch interpretiert haben.
+
+  Jetzt zeigen beide Skripte konsistent, dass der Agent auch nach 100.000 Trainingsschritten mit
+  deterministischem Seeding keine Schritte macht.
+
+  Das eliminiert die "Diskrepanz"-Theorie. Das Problem ist fundamentaler. Der Agent lernt einfach nicht, sich
+  vom Start wegzubewegen.
+
+  Warum?
+   1. Tiefes lokales Minimum: Der Agent könnte in einem Zustand sein, in dem jede Aktion zu einer Wand führt, und
+      die negative Belohnung für das Treffen einer Wand verstärkt das Verhalten, sich nicht zu bewegen. Das ist
+      ein häufiges Problem beim Reinforcement Learning.
+   2. Exploration vs. Exploitation: Die Explorationsparameter (exploration_fraction, exploration_final_eps) sind
+      möglicherweise nicht geeignet. Der Agent könnte zu früh zur Exploitation übergehen und entschieden haben,
+      dass Nichtbewegen die beste Strategie ist.
+   3. Hyperparameter: Die Lernrate, Gamma oder andere Hyperparameter könnten ein effektives Lernen verhindern.
+   4. Belohnungsfunktion: Die Belohnung von -0.01 für jeden Schritt und -0.5 für das Treffen einer Wand könnte zu
+      bestrafend sein.
+
+  Ich werde versuchen, das Explorationsproblem anzugehen. Ich erhöhe die exploration_fraction auf 0.9, damit
+  der Agent länger exploriert. Außerdem erhöhe ich learning_starts auf 5000, um sicherzustellen, dass der
+  Replay-Puffer vor Lernbeginn gut gefüllt ist.
+
+  Ich werde train_model2.py mit diesen neuen Hyperparametern anpassen.
+╭────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ ✓  Edit train_model2.py:         learning_rate=0.0005,... =>         learning_rate=0.0005,...              │
+│                                                                                                            │
+│    67   tensorboard_log="./maze_tensorboard/",                                                             │
+│    68   learning_rate=0.0005,                                                                              │
+│    69   buffer_size=50000,                                                                                 │
+│    70 - learning_starts=1000,                                                                              │
+│    70 + learning_starts=5000,                                                                              │
+│    71   batch_size=64, # Größere Batch-Größe kann stabilisieren                                            │
+│    72   gamma=0.99,                                                                                        │
+│    73 - exploration_fraction=0.8, # Länger explorieren                                                     │
+│    73 + exploration_fraction=0.9, # Länger explorieren                                                     │
+│    74   exploration_final_eps=0.05,                                                                        │
+│    75   train_freq=(4, "step"), # Seltener trainieren                                                      │
+│    76   gradient_steps=1,                                                                                  │
+╰────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+✦ Die Hyperparameter in train_model2.py sind angepasst, um die Exploration zu fördern. Ich starte jetzt das
+  Training erneut, was dauern wird. Danach führe ich test_trained_model.py aus, um zu sehen, ob der Agent
+  gelernt hat, sich zu bewegen.
+

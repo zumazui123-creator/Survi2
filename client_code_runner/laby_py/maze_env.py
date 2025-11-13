@@ -3,6 +3,7 @@ import numpy as np
 from gymnasium import spaces
 from labyrinth_generator import LabyrinthGenerator
 import os
+import random
 
 class MazeEnv(gym.Env):
     """
@@ -53,9 +54,11 @@ class MazeEnv(gym.Env):
 
     def reset(self, seed=None, options=None):
         super().reset(seed=seed)
+        if seed is not None:
+            random.seed(seed)
 
         # Neues Labyrinth generieren
-        self._generator.generieren()
+        self._generator.generieren(seed=seed)
 
         # Agentenposition auf den Startpunkt setzen
         self._agent_pos = {'x': self._generator.start_x, 'y': self._generator.start_y}
@@ -82,12 +85,12 @@ class MazeEnv(gym.Env):
         print("action"+str(action))
 
         # Belohnung initialisieren
-        reward = -0.01  # Kleine Strafe für jeden Schritt, um Effizienz zu fördern
+        reward = 0  # Keine Strafe für jeden Schritt, um Exploration zu fördern
 
         # Prüfen, ob der Zug gültig ist
         target_cell = self._generator.labyrinth[new_pos['y']][new_pos['x']]
         if target_cell == 0: # Wand getroffen
-            reward = -0.5
+            reward = -0.1 # Reduzierte Strafe für das Treffen einer Wand
             # Position zurücksetzen
             new_pos = old_pos
         else:
