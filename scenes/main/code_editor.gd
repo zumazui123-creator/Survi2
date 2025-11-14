@@ -3,12 +3,10 @@ extends Node2D
 @onready var code_edit = $CodeEdit
 @onready var item_list = $HBoxContainer/VBoxContainer3/ItemList
 @onready var player =  "res://scenes/character/player.gd"
+var SyntaxHighlighter = load("res://scenes/main/SyntaxHighLight.gd")
 
 func _ready() -> void:
-	var syntax_highlighter = CodeSyntaxHighlighter.new()
-	syntax_highlighter.add_keyword_color("wiederhole", Color.YELLOW)
-	syntax_highlighter.add_keyword_color("ende", Color.YELLOW)
-	code_edit.syntax_highlighter = syntax_highlighter
+	code_edit.syntax_highlighter = SyntaxHighlighter.new()
 	
 	code_edit.code_completion_enabled = true
 	code_edit.code_completion_prefixes = ["links","ob"]
