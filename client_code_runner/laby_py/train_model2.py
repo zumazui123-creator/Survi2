@@ -8,6 +8,7 @@ from stable_baselines3.common.torch_layers import BaseFeaturesExtractor
 from stable_baselines3.common.env_checker import check_env
 from maze_env import MazeEnv
 
+# Eine einfachere CNN-Architektur für schnelleres Lernen in kurzen Trainingsläufen
 class CustomCnnExtractor(BaseFeaturesExtractor):
     """
     :param observation_space: The observation space of the environment
@@ -15,15 +16,11 @@ class CustomCnnExtractor(BaseFeaturesExtractor):
     """
     def __init__(self, observation_space: gym.spaces.Box, features_dim: int = 128):
         super().__init__(observation_space, features_dim)
-        # Wir nehmen an, dass die Eingabe die Form (Kanäle, Höhe, Breite) hat.
-        # Der VecTransposeImage Wrapper von SB3 kümmert sich darum.
         n_input_channels = observation_space.shape[0]
         self.cnn = nn.Sequential(
             nn.Conv2d(n_input_channels, 16, kernel_size=3, stride=1, padding=1),
             nn.ReLU(),
-            nn.Conv2d(16, 32, kernel_size=3, stride=2, padding=1), # Stride 2 reduziert die Größe
-            nn.ReLU(),
-            nn.Conv2d(32, 64, kernel_size=3, stride=2, padding=1), # Stride 2 reduziert die Größe
+            nn.Conv2d(16, 32, kernel_size=3, stride=2, padding=1),
             nn.ReLU(),
             nn.Flatten(),
         )
@@ -45,46 +42,48 @@ if __name__ == "__main__":
     SEED = 42
     random.seed(SEED)
     env = MazeEnv(maze_width=37, maze_height=19, render_mode=None)
-    env.reset(seed=SEED)
+    env.reset()
 
     # 2. Umgebung überprüfen
     print("Überprüfe die Umgebung...")
     check_env(env)
     print("Umgebungs-Check erfolgreich!")
 
-    # Policy-Argumente mit unserem benutzerdefinierten Netzwerk
+    # Neue, einfachere Policy-Argumente
     policy_kwargs = dict(
         features_extractor_class=CustomCnnExtractor,
-        features_extractor_kwargs=dict(features_dim=128), # Dimension des Feature-Vektors
+        features_extractor_kwargs=dict(features_dim=128),
+        net_arch=[128] # Einfacherer Q-Network-Kopf
     )
 
-    # 3. Modell erstellen
+    # 3. Modell mit aggressiven Hyperparametern für sehr kurzes Training
     model = DQN(
         "CnnPolicy",
         env,
         policy_kwargs=policy_kwargs,
         verbose=1,
         tensorboard_log="./maze_tensorboard/",
-        learning_rate=0.0005,
-        buffer_size=50000,
-        learning_starts=5000,
-        batch_size=64, # Größere Batch-Größe kann stabilisieren
+        learning_rate=0.001,            # Höhere Lernrate für schnellen Fortschritt
+        buffer_size=20000,              # Kleinerer Buffer
+        learning_starts=1000,           # Sehr früher Lernstart
+        batch_size=64,
         gamma=0.99,
-        exploration_fraction=0.9, # Länger explorieren
-        exploration_final_eps=0.05,
-        train_freq=(4, "step"), # Seltener trainieren
+        exploration_fraction=0.8,       # Extrem hohe Exploration
+        exploration_final_eps=0.1,      # Höherer finaler Epsilon-Wert
+        train_freq=(4, "step"),
         gradient_steps=1,
-        seed=SEED # Setzt den Seed für das Modell
+        target_update_interval=250,     # Sehr häufiges Update des Target-Netzwerks
+        seed=SEED
     )
 
-    # 4. Modell trainieren
-    TRAIN_STEPS = 500000
+    # 4. Modell trainieren mit 15000 Schritten
+    TRAIN_STEPS = 15000
     print(f"\n--- Beginne Training für {TRAIN_STEPS} Schritte... ---")
-    model.learn(total_timesteps=TRAIN_STEPS, log_interval=4)
+    model.learn(total_timesteps=TRAIN_STEPS, log_interval=10)
     print("--- Training abgeschlossen. ---")
 
     # 5. Modell speichern
-    MODEL_PATH = "dqn_maze_model.zip"
+    MODEL_PATH = "dqn_maze_model_v4.zip" # Neuer Name für das neue Modell
     model.save(MODEL_PATH)
     print(f"Modell gespeichert unter: {MODEL_PATH}")
 
@@ -98,27 +97,21 @@ if __name__ == "__main__":
 
     obs, info = eval_env.reset(seed=SEED)
     
-    # Liste zum Speichern des vom Agenten gegangenen Pfades
     agent_path = [(info['agent_pos']['x'], info['agent_pos']['y'])]
     
-    # Terminal für eine saubere Anzeige leeren
     import os
     os.system('cls' if os.name == 'nt' else 'clear')
     print("Starte Vorhersage... Der Agent bewegt sich durch das Labyrinth.")
 
     for i in range(eval_env._max_steps):
-        # Aktion vom Modell vorhersagen lassen
         action, _states = model.predict(obs, deterministic=True)
         
-        # Aktion in der Umgebung ausführen
         obs, reward, terminated, truncated, info = eval_env.step(action)
         
-        # Position als Tupel zum Pfad hinzufügen
         pos_tuple = (info['agent_pos']['x'], info['agent_pos']['y'])
         if agent_path[-1] != pos_tuple:
             agent_path.append(pos_tuple)
 
-        # Kurze Pause, um die Bewegung sichtbar zu machen
         time.sleep(0.05)
 
         if terminated or truncated:
@@ -128,13 +121,11 @@ if __name__ == "__main__":
             else:
                 print("Status: Maximale Anzahl an Schritten erreicht.")
             break
-            
+    
     eval_env.close()
 
-    # Finalen Pfad visualisieren
     print("\n--- Visuelle Darstellung des vom Agenten gegangenen Pfades ---")
     
-    # Die Methode aus unserem Labyrinth-Generator wiederverwenden
     final_maze_vis = eval_env._generator.visuell_darstellen(pfad=agent_path)
     
     for line in final_maze_vis:

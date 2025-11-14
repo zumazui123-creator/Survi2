@@ -74,27 +74,29 @@ class MazeEnv(gym.Env):
         old_pos = self._agent_pos.copy()
         new_pos = self._agent_pos.copy()
 
-        if action == 0: # Hoch
+        if action == 0:  # Hoch
             new_pos['y'] -= 1
-        elif action == 1: # Runter
+        elif action == 1:  # Runter
             new_pos['y'] += 1
-        elif action == 2: # Links
+        elif action == 2:  # Links
             new_pos['x'] -= 1
-        elif action == 3: # Rechts
+        elif action == 3:  # Rechts
             new_pos['x'] += 1
-        print("action"+str(action))
 
-        # Belohnung initialisieren
-        reward = 0  # Keine Strafe für jeden Schritt, um Exploration zu fördern
+        # Distanz vor dem Zug berechnen
+        old_dist = abs(old_pos['x'] - self._generator.ziel_x) + abs(old_pos['y'] - self._generator.ziel_y)
 
         # Prüfen, ob der Zug gültig ist
         target_cell = self._generator.labyrinth[new_pos['y']][new_pos['x']]
-        if target_cell == 0: # Wand getroffen
-            reward = -0.1 # Reduzierte Strafe für das Treffen einer Wand
-            # Position zurücksetzen
-            new_pos = old_pos
+        if target_cell == 0:  # Wand getroffen
+            reward = -0.1  # Strafe für das Treffen einer Wand
         else:
             self._agent_pos = new_pos
+            # Distanz nach dem Zug berechnen
+            new_dist = abs(self._agent_pos['x'] - self._generator.ziel_x) + abs(
+                self._agent_pos['y'] - self._generator.ziel_y)
+            # Belohnung basierend auf der Distanzänderung
+            reward = (old_dist - new_dist) * 0.01
 
         self._current_step += 1
 
