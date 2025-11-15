@@ -1,7 +1,8 @@
 Welche KI benutzt ihr zuhause
 Was ist eine Kunstliche Intelligenz
 Was braucht KI
-
+player.tsnc bei CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/SpawnContainer/HBoxContainer/TextureRect
+/home/qubi/Code/Survi2/scenes/character/builder.gd
 1. Was sind Neuronen
    Neuronen sind besondere Zellen in deinem Körper, die Signale weitergeben
 
