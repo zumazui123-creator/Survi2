@@ -13,7 +13,7 @@ extends Node
 @onready var tab_containerki = $TabContainerKI
 @onready var tab_container = $TabContainerKI
 
-var highlighter := MyCodeHighLighter.new()
+#var highlighter := MyCodeHighLighter.new()
 
 func init_tab_container() -> void:
 	if Multihelper.level["type"] == Constants.MAP_KI:
@@ -25,7 +25,7 @@ func init_tab_container() -> void:
 		
 func _ready():
 	exit_btn.pressed.connect(_on_exit_btn_pressed)
-	highlighter.setup_custom_highlighter(code_edit)
+	#highlighter.setup_custom_highlighter(code_edit)
 	init_tab_container()
 
 func _on_exit_btn_pressed():

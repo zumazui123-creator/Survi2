@@ -1,7 +1,7 @@
 [gd_scene load_steps=30 format=3 uid="uid://bmhxilkffhqa5"]
 
 [ext_resource type="Script" uid="uid://bruqpv3kpycof" path="res://scenes/character/player.gd" id="1_7xvi4"]
-[ext_resource type="Script" uid="uid://dukylmcbt25lk" path="res://scenes/character/builder.gd" id="2_7r6u0"]
+[ext_resource type="Script" path="res://scenes/character/builder.gd" id="2_7r6u0"]
 [ext_resource type="Script" uid="uid://bp5wvye18xpkn" path="res://scenes/character/components/ai_control.gd" id="2_iinkm"]
 [ext_resource type="Script" uid="uid://46q7eheiak5y" path="res://scenes/character/components/net_control.gd" id="2_xub24"]
 [ext_resource type="Script" uid="uid://ddrqxuc43a4rn" path="res://scenes/character/components/function_handler.gd" id="3_vreni"]
@@ -550,7 +550,6 @@ syntax_highlighter = SubResource("CodeHighlighter_vreni")
 highlight_current_line = true
 symbol_tooltip_on_hover = true
 gutters_draw_line_numbers = true
-delimiter_strings = Array[String](["\" \"", "' '"])
 
 [node name="ButtonCotainer" type="HBoxContainer" parent="CanvasLayer/Code/TabContainer/Code"]
 layout_mode = 2
@@ -838,7 +837,6 @@ syntax_highlighter = SubResource("CodeHighlighter_7r6u0")
 highlight_current_line = true
 symbol_tooltip_on_hover = true
 gutters_draw_line_numbers = true
-delimiter_strings = Array[String](["\" \"", "' '"])
 
 [node name="ButtonCotainer" type="HBoxContainer" parent="CanvasLayer/Code/TabContainerKI/Code"]
 layout_mode = 2
