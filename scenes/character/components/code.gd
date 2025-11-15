@@ -10,15 +10,27 @@ extends Node
 @onready var funcHandler = $"../../FunctionHandler"
 @onready var popup = %PopupPanel
 @onready var exit_btn = $"../PopupPanel/HBoxContainer/VBoxContainer/BtnContainer/ExitBtn"
+@onready var tab_containerki = $TabContainerKI
+@onready var tab_container = $TabContainerKI
 
+var highlighter := MyCodeHighLighter.new()
+
+func init_tab_container() -> void:
+	if Multihelper.level["type"] == Constants.MAP_KI:
+		tab_container.visible = false
+		tab_containerki.visible = true
+	else:
+		tab_container.visible = true
+		tab_containerki.visible = false
+		
 func _ready():
 	exit_btn.pressed.connect(_on_exit_btn_pressed)
+	highlighter.setup_custom_highlighter(code_edit)
+	init_tab_container()
 
 func _on_exit_btn_pressed():
 	popup.hide()
 	
-
-
 func _on_links_button_pressed() -> void:
 	code_edit.insert_text_at_caret(Strings.ACTION_WALK_LEFT + "\n")
 
@@ -43,14 +55,6 @@ func _on_item_list_item_activated(index: int) -> void:
 		item_text = Strings.KEYWORD_REPEAT_FULL
 	
 	code_edit.insert_text_at_caret(item_text+"\n")
-#func _on_item_list_item_clicked(index: int, at_position: Vector2, mouse_button_index: int) -> void:
-	#var item_text = item_list.get_item_text(index)
-	#if item_text == Strings.KEYWORD_REPEAT:
-		#item_text = Strings.KEYWORD_REPEAT_FULL
-	#
-	#code_edit.insert_text_at_caret(item_text+"\n")
-	
-
 
 func _on_create_function_pressed() -> void:
 	popup.popup_centered()
@@ -67,7 +71,6 @@ func _on_play_button_pressed() -> void:
 func _on_stop_button_pressed() -> void:
 	net_control.send_text(Strings.CMD_END_SEQUENCE + "\n")
 	net_control.send_text(Strings.CMD_STOP_SEQUENCE + "\n")
-
 
 func checkInputFuncName():
 	print("checkInputFuncName")

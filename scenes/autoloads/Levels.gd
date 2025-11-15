@@ -17,6 +17,11 @@ var TurnierLevels := {
 }
 const max_tourment_level = 5
 
+var KiLevels := {
+	0: {"level": 0,"type": Constants.MAP_KI, "end": Constants.END_MAIN},
+}
+
+
 func _ready():
 	for i in range(1,max_laby_level+1):
 		LabyrinthLevels.set(i,{"level": i,"type": Constants.MAP_LABY, "end": Constants.END_LABY})

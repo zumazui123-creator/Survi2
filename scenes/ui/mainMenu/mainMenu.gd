@@ -2,6 +2,7 @@ extends Control
 @onready var labyrinthLevelList = $HBoxContainer/LabrinthContainer/VBoxContainer/LabyrinthLevelList
 @onready var mainLevelList = $HBoxContainer/MainContainer/VBoxContainer/MainLevelList
 @onready var turnierLevelList = $HBoxContainer/TurnierContainer/VBoxContainer/TunierLevelList
+@onready var kiList =  $HBoxContainer/KI_PLaygroundMap/VBoxContainer/KI_PLaygroundList
 
 var selcted_level : Dictionary = {}
 
@@ -18,7 +19,10 @@ func _ready():
 		
 	for turnierLvl in Levels.TurnierLevels:
 		turnierLevelList.add_item("Level "+str(turnierLvl))	
-			
+		
+	for kiLvl in Levels.KiLevels:
+		kiList.add_item("Level "+str(kiLvl))	
+		
 func server_offline():
 	$connectTimer.start()
 
@@ -37,6 +41,8 @@ func _on_labyrinth_level_list_item_selected(index: int) -> void:
 	#selcted_level = index + 100 # 100 is a indicator fpr Labyrinth levels
 	selcted_level = Levels.LabyrinthLevels[index]
 
-
 func _on_tunier_level_list_item_selected(index: int) -> void:
 	selcted_level = Levels.TurnierLevels[index]
+
+func _on_ki_p_layground_list_item_selected(index: int) -> void:
+	selcted_level = Levels.KiLevels[index]

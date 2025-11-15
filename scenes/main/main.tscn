@@ -1,9 +1,8 @@
-[gd_scene load_steps=17 format=3 uid="uid://ccrctrojuyiel"]
+[gd_scene load_steps=16 format=3 uid="uid://ccrctrojuyiel"]
 
 [ext_resource type="Script" uid="uid://c4h0ahffrs4to" path="res://scenes/main/main.gd" id="1_5kenc"]
 [ext_resource type="PackedScene" uid="uid://bf074ibcy5o0" path="res://scenes/mapGen/map.tscn" id="1_vj1jr"]
 [ext_resource type="PackedScene" uid="uid://do5frseoo8sxj" path="res://scenes/ui/spawn/spawnPlayer.tscn" id="2_ajc02"]
-[ext_resource type="PackedScene" uid="uid://becibolw633ar" path="res://code_editor.tscn" id="3_blune"]
 [ext_resource type="Script" uid="uid://dhjwv3aq1c8ed" path="res://scenes/main/spawn_enemies.gd" id="3_th5th"]
 [ext_resource type="Script" uid="uid://dl6e2xb030n8p" path="res://scenes/main/spawn_animal.gd" id="4_th5th"]
 [ext_resource type="Script" uid="uid://cddr76mw3uc08" path="res://scenes/main/objects.gd" id="5_7smn1"]
@@ -45,10 +44,6 @@ script = ExtResource("5_7smn1")
 script = ExtResource("10_40gnc")
 
 [node name="HUD" type="CanvasLayer" parent="."]
-
-[node name="CodeEditor" parent="HUD" instance=ExtResource("3_blune")]
-visible = false
-position = Vector2(866, 0)
 
 [node name="PlayerList" parent="HUD" instance=ExtResource("5_th5th")]
 visible = false

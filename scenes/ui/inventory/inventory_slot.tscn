@@ -1,8 +1,8 @@
 [gd_scene load_steps=8 format=3 uid="uid://dvf1rqy0jirrg"]
 
 [ext_resource type="Script" uid="uid://dvntf65byaupx" path="res://scenes/ui/inventory/inventory_slot.gd" id="1_1nyx0"]
-[ext_resource type="Texture2D" uid="uid://bri7f11ume0me" path="res://assets/ui/itemSlotSelected.png" id="1_bellk"]
-[ext_resource type="Texture2D" uid="uid://cbcj2m16khw80" path="res://assets/ui/itemSlot.png" id="1_fc2bw"]
+[ext_resource type="Texture2D" path="res://assets/ui/itemSlotSelected.png" id="1_bellk"]
+[ext_resource type="Texture2D"  path="res://assets/ui/itemSlot.png" id="1_fc2bw"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nl13p"]
 

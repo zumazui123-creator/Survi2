@@ -17,11 +17,12 @@ var MAX_ENEMIES_PER_PLAYER : int = 2 # 2 # see main.gd for more object and enemy
 var MAX_ANIMALS_PER_PLAYER : int = 20
 
 # --- Map  Types ---
-const MAP_MAIN : int = 1
-const MAP_LABY  : int = 2
-const MAP_TOURMENT : int = 3
-const END_LABY : int = 4
-const END_MAIN : int = 5
+const MAP_MAIN : int 		= 1
+const MAP_LABY  : int 		= 2
+const MAP_TOURMENT : int 	= 3
+const MAP_KI : int 			= 4
+const END_LABY : int = 101
+const END_MAIN : int = 102
 
 #Player
 const MAX_INVENTORY_SLOTS := 12

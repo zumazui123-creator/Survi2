@@ -38,7 +38,9 @@ func generateMap(level_dict : Dictionary):
 		
 	if level_type == Constants.MAP_TOURMENT:
 		walkable_tiles = laby_map.generateLabyrinthWithSeed(level_no+15,42+level_no)
-			
+		
+	if level_type == Constants.MAP_KI:
+		generateMainMap(0)
 
 
 

@@ -1,6 +1,7 @@
-[gd_scene load_steps=27 format=3 uid="uid://bmhxilkffhqa5"]
+[gd_scene load_steps=30 format=3 uid="uid://bmhxilkffhqa5"]
 
 [ext_resource type="Script" uid="uid://bruqpv3kpycof" path="res://scenes/character/player.gd" id="1_7xvi4"]
+[ext_resource type="Script" uid="uid://dukylmcbt25lk" path="res://scenes/character/builder.gd" id="2_7r6u0"]
 [ext_resource type="Script" uid="uid://bp5wvye18xpkn" path="res://scenes/character/components/ai_control.gd" id="2_iinkm"]
 [ext_resource type="Script" uid="uid://46q7eheiak5y" path="res://scenes/character/components/net_control.gd" id="2_xub24"]
 [ext_resource type="Script" uid="uid://ddrqxuc43a4rn" path="res://scenes/character/components/function_handler.gd" id="3_vreni"]
@@ -58,6 +59,12 @@ expand_margin_left = 30.0
 expand_margin_top = 30.0
 expand_margin_right = 30.0
 expand_margin_bottom = 30.0
+
+[sub_resource type="CodeHighlighter" id="CodeHighlighter_vreni"]
+number_color = Color(0.16078432, 0.5294118, 0.36862746, 1)
+
+[sub_resource type="CodeHighlighter" id="CodeHighlighter_7r6u0"]
+number_color = Color(0.16078432, 0.5294118, 0.36862746, 1)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_wmtbp"]
 
@@ -330,6 +337,9 @@ point_count = 2
 [node name="Player" type="CharacterBody2D" groups=["damageable", "player"]]
 script = ExtResource("1_7xvi4")
 
+[node name="Builder" type="Node" parent="."]
+script = ExtResource("2_7r6u0")
+
 [node name="AIControl" type="Node" parent="."]
 script = ExtResource("2_iinkm")
 
@@ -505,17 +515,17 @@ position = Vector2(218, -371)
 script = ExtResource("8_5y66v")
 
 [node name="TabContainer" type="TabContainer" parent="CanvasLayer/Code"]
+visible = false
 offset_left = 67.0
 offset_top = 14.0
 offset_right = 422.0
 offset_bottom = 724.0
 size_flags_vertical = 3
 tab_alignment = 1
-current_tab = 1
+current_tab = 0
 
 [node name="Code" type="VBoxContainer" parent="CanvasLayer/Code/TabContainer"]
 unique_name_in_owner = true
-visible = false
 layout_mode = 2
 size_flags_horizontal = 6
 size_flags_vertical = 3
@@ -536,10 +546,11 @@ theme_override_constants/line_spacing = 3
 theme_override_font_sizes/font_size = 14
 scroll_smooth = true
 scroll_past_end_of_file = true
+syntax_highlighter = SubResource("CodeHighlighter_vreni")
 highlight_current_line = true
 symbol_tooltip_on_hover = true
-gutters_draw_bookmarks = true
 gutters_draw_line_numbers = true
+delimiter_strings = Array[String](["\" \"", "' '"])
 
 [node name="ButtonCotainer" type="HBoxContainer" parent="CanvasLayer/Code/TabContainer/Code"]
 layout_mode = 2
@@ -648,6 +659,7 @@ layout_mode = 2
 text = "Lade Funktionen"
 
 [node name="KI Playground" type="MarginContainer" parent="CanvasLayer/Code/TabContainer"]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 15
 theme_override_constants/margin_top = 5
@@ -789,6 +801,314 @@ size_flags_vertical = 4
 text = "Stop"
 
 [node name="SaveKiButton" type="Button" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/FuncContainer/HBoxContainer"]
+layout_mode = 2
+text = "Speicher Ki Verhalten"
+
+[node name="TabContainerKI" type="TabContainer" parent="CanvasLayer/Code"]
+offset_left = 67.0
+offset_top = 14.0
+offset_right = 422.0
+offset_bottom = 724.0
+size_flags_vertical = 3
+tab_alignment = 1
+current_tab = 1
+
+[node name="Code" type="VBoxContainer" parent="CanvasLayer/Code/TabContainerKI"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 3
+metadata/_tab_index = 0
+
+[node name="HauptCodeLabel" type="Label" parent="CanvasLayer/Code/TabContainerKI/Code"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+text = "Haupt-Code"
+
+[node name="CodeEdit" type="CodeEdit" parent="CanvasLayer/Code/TabContainerKI/Code"]
+custom_minimum_size = Vector2(0, 440)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/line_spacing = 3
+theme_override_font_sizes/font_size = 14
+scroll_smooth = true
+scroll_past_end_of_file = true
+syntax_highlighter = SubResource("CodeHighlighter_7r6u0")
+highlight_current_line = true
+symbol_tooltip_on_hover = true
+gutters_draw_line_numbers = true
+delimiter_strings = Array[String](["\" \"", "' '"])
+
+[node name="ButtonCotainer" type="HBoxContainer" parent="CanvasLayer/Code/TabContainerKI/Code"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 15
+
+[node name="PlayButton" type="Button" parent="CanvasLayer/Code/TabContainerKI/Code/ButtonCotainer"]
+layout_mode = 2
+text = "Play"
+
+[node name="StopButton" type="Button" parent="CanvasLayer/Code/TabContainerKI/Code/ButtonCotainer"]
+layout_mode = 2
+text = "Stop"
+
+[node name="CodeDeleteButton" type="Button" parent="CanvasLayer/Code/TabContainerKI/Code/ButtonCotainer"]
+layout_mode = 2
+text = "Code löschen"
+
+[node name="ActionsContainer" type="VBoxContainer" parent="CanvasLayer/Code/TabContainerKI/Code"]
+modulate = Color(1, 1, 1, 0.984314)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Code/TabContainerKI/Code/ActionsContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="BewegContainer" type="VBoxContainer" parent="CanvasLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="BewegeLabel" type="Label" parent="CanvasLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer/BewegContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Bewege"
+
+[node name="ObenButton" type="Button" parent="CanvasLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer/BewegContainer"]
+layout_mode = 2
+text = "oben"
+
+[node name="LinksRechtsContainer" type="HBoxContainer" parent="CanvasLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer/BewegContainer"]
+layout_mode = 2
+theme_override_constants/separation = 9
+
+[node name="LinksButton" type="Button" parent="CanvasLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer/BewegContainer/LinksRechtsContainer"]
+layout_mode = 2
+text = "links"
+
+[node name="rechtsButton" type="Button" parent="CanvasLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer/BewegContainer/LinksRechtsContainer"]
+layout_mode = 2
+text = "rechts"
+
+[node name="UntenButton" type="Button" parent="CanvasLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer/BewegContainer"]
+layout_mode = 2
+text = "unten"
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="CanvasLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="Label" type="Label" parent="CanvasLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+text = "Action"
+
+[node name="attackeButton" type="Button" parent="CanvasLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+text = "attacke"
+
+[node name="sageButton" type="Button" parent="CanvasLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+text = "sage"
+
+[node name="VBoxContainer3" type="VBoxContainer" parent="CanvasLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="CanvasLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer/VBoxContainer3"]
+layout_mode = 2
+text = "Funktion"
+
+[node name="ItemList" type="ItemList" parent="CanvasLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer/VBoxContainer3"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+select_mode = 1
+auto_width = true
+item_count = 1
+item_0/text = "wiederhole 3 mal"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="CanvasLayer/Code/TabContainerKI/Code/ActionsContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+alignment = 1
+
+[node name="createFunction" type="Button" parent="CanvasLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer2"]
+layout_mode = 2
+text = "Funktion Menu"
+
+[node name="loadFunction" type="Button" parent="CanvasLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer2"]
+layout_mode = 2
+text = "Lade Funktionen"
+
+[node name="KI Playground" type="MarginContainer" parent="CanvasLayer/Code/TabContainerKI"]
+layout_mode = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 10
+metadata/_tab_index = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Code/TabContainerKI/KI Playground"]
+layout_mode = 2
+theme_override_constants/separation = 25
+
+[node name="Paramcontainer" type="VBoxContainer" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer"]
+layout_mode = 2
+
+[node name="KIConfLabel" type="Label" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/Paramcontainer"]
+layout_mode = 2
+text = "KI Configurationen"
+horizontal_alignment = 1
+
+[node name="KiModelLabel" type="Label" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/Paramcontainer"]
+layout_mode = 2
+text = "Model: Neural Network"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/Paramcontainer"]
+layout_mode = 2
+
+[node name="stepsLabel" type="Label" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/Paramcontainer/HBoxContainer2"]
+layout_mode = 2
+text = "Action-Schritte: "
+
+[node name="stepsEdit" type="LineEdit" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/Paramcontainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "100"
+
+[node name="GridContainer" type="GridContainer" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/Paramcontainer"]
+layout_mode = 2
+theme_override_constants/h_separation = 12
+columns = 3
+
+[node name="learnRateLabel" type="Label" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/Paramcontainer/GridContainer"]
+layout_mode = 2
+text = "Lernrate: 0.004"
+
+[node name="learnRateBtnPlus" type="Button" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/Paramcontainer/GridContainer"]
+layout_mode = 2
+text = "+"
+
+[node name="learnRateBtnMinus" type="Button" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/Paramcontainer/GridContainer"]
+layout_mode = 2
+text = "-"
+
+[node name="exploreRateLabel" type="Label" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/Paramcontainer/GridContainer"]
+layout_mode = 2
+text = "Erforschungrate: 0.004"
+
+[node name="Button" type="Button" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/Paramcontainer/GridContainer"]
+layout_mode = 2
+text = "+"
+
+[node name="Button6" type="Button" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/Paramcontainer/GridContainer"]
+layout_mode = 2
+text = "-"
+
+[node name="RewardContainer" type="VBoxContainer" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer"]
+layout_mode = 2
+
+[node name="KiModelLabel" type="Label" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/RewardContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Belohnungssystem"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/RewardContainer"]
+layout_mode = 2
+
+[node name="WayLabel" type="Label" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/RewardContainer/HBoxContainer2"]
+layout_mode = 2
+text = "nur moegliche Wege"
+
+[node name="WayCheckBox" type="CheckBox" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/RewardContainer/HBoxContainer2"]
+layout_mode = 2
+button_pressed = true
+
+[node name="Label" type="Label" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/RewardContainer"]
+visible = false
+layout_mode = 2
+text = "Kekse platzieren"
+
+[node name="GameSetContainer" type="VBoxContainer" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer"]
+layout_mode = 2
+
+[node name="GameSetLabel" type="Label" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/GameSetContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Game-Settings"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/GameSetContainer"]
+layout_mode = 2
+
+[node name="SpeedLabel" type="Label" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2"]
+layout_mode = 2
+text = "Game-Speed: "
+
+[node name="Speed" type="Label" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2"]
+layout_mode = 2
+text = "1"
+
+[node name="SpeedPlus" type="Button" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2"]
+layout_mode = 2
+text = "+"
+
+[node name="SpeedMinus" type="Button" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2"]
+layout_mode = 2
+text = "-"
+
+[node name="SpawnContainer" type="VBoxContainer" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer"]
+layout_mode = 2
+
+[node name="SpawnTitle" type="Label" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/SpawnContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Spawn-Settings"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/SpawnContainer"]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/SpawnContainer/HBoxContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/SpawnContainer/HBoxContainer"]
+layout_mode = 2
+text = "Spawn Mob: "
+
+[node name="OptionButton" type="OptionButton" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/SpawnContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="FuncContainer" type="VBoxContainer" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer"]
+layout_mode = 2
+
+[node name="FuncLabel" type="Label" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/FuncContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+text = "KI "
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/FuncContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+
+[node name="StartKiButton" type="Button" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/FuncContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+text = "Start"
+
+[node name="StopKiButton" type="Button" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/FuncContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+text = "Stop"
+
+[node name="SaveKiButton" type="Button" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/FuncContainer/HBoxContainer"]
 layout_mode = 2
 text = "Speicher Ki Verhalten"
 
@@ -970,5 +1290,6 @@ grow_vertical = 0
 [connection signal="pressed" from="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer2/createFunction" to="CanvasLayer/Code" method="_on_create_function_pressed"]
 [connection signal="pressed" from="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer2/loadFunction" to="CanvasLayer/Code" method="_on_load_function_pressed"]
 [connection signal="pressed" from="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/FuncContainer/HBoxContainer/StartKiButton" to="AIControl" method="_on_start_ki_button_pressed"]
+[connection signal="item_selected" from="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/SpawnContainer/HBoxContainer/OptionButton" to="Builder" method="_on_option_button_item_selected"]
 [connection signal="pressed" from="CanvasLayer/PopupPanel/HBoxContainer/VBoxContainer/BtnContainer/CreateBtn" to="CanvasLayer/Code" method="_on_create_btn_pressed"]
 [connection signal="item_activated" from="CanvasLayer/PopupPanel/HBoxContainer/VBoxContainer2/FuncList" to="FunctionHandler" method="_on_func_list_item_activated"]

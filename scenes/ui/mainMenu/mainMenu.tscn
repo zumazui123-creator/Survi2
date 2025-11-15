@@ -203,5 +203,6 @@ autoplay = "loop"
 [connection signal="item_selected" from="HBoxContainer/MainContainer/VBoxContainer/MainLevelList" to="." method="_on_main_level_list_item_selected"]
 [connection signal="item_selected" from="HBoxContainer/LabrinthContainer/VBoxContainer/LabyrinthLevelList" to="." method="_on_labyrinth_level_list_item_selected"]
 [connection signal="item_selected" from="HBoxContainer/TurnierContainer/VBoxContainer/TunierLevelList" to="." method="_on_tunier_level_list_item_selected"]
+[connection signal="item_selected" from="HBoxContainer/KI_PLaygroundMap/VBoxContainer/KI_PLaygroundList" to="." method="_on_ki_p_layground_list_item_selected"]
 [connection signal="pressed" from="PanelContainer/VBoxContainer/Button" to="." method="_on_hostDebugButton_pressed"]
 [connection signal="timeout" from="connectTimer" to="." method="_on_connect_timer_timeout"]
