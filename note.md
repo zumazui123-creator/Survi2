@@ -5,7 +5,7 @@ Game.gd:12 @ start_game(): res://scenes/ui/inventory/recipe_slot.tscn:4 - ext_re
 
 Game.gd:12 @ start_game(): res://scenes/ui/daynight/daynightcycle_ui.tscn:5 - ext_resource, invalid UID: uid://dsjhotujq71gm - using text path instead: res://assets/fonts/pixelmix.ttf
 
-
+do not delete the uid find 
 
 
 

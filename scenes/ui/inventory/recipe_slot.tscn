@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://bukf3lu3lo286"]
 
 [ext_resource type="Script" uid="uid://dyt6ua8288h0w" path="res://scenes/ui/inventory/recipe_slot.gd" id="1_6d5xg"]
-[ext_resource type="Texture2D" uid="uid://kyndhbypy2ta" path="res://assets/items/sword1.png" id="1_rvmcx"]
+[ext_resource type="Texture2D" uid="uid://c5itej3rb3eni" path="res://assets/items/sword1.png" id="1_rvmcx"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_be0f4"]
 bg_color = Color(0.839216, 0.988235, 0.4, 0.87451)

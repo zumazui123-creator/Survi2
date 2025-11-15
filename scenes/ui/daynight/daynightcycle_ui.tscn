@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" uid="uid://ca43f1tfmpcoy" path="res://scenes/ui/daynight/daynightcycle_ui.gd" id="1_altij"]
 [ext_resource type="Shader" uid="uid://i8ybdijowxgf" path="res://assets/daynight/pixelperfect.gdshader" id="1_x3jdy"]
-[ext_resource type="FontFile" uid="uid://dsjhotujq71gm" path="res://assets/fonts/pixelmix.ttf" id="3_6qa0r"]
-[ext_resource type="Texture2D" uid="uid://csgddlqk48405" path="res://assets/daynight/daynightcycle-ui.png" id="3_so0y8"]
+[ext_resource type="FontFile" uid="uid://pqowcapwmd0j" path="res://assets/fonts/pixelmix.ttf" id="3_6qa0r"]
+[ext_resource type="Texture2D" uid="uid://bhp5mni1l8nd7" path="res://assets/daynight/daynightcycle-ui.png" id="3_so0y8"]
 [ext_resource type="Script" uid="uid://bp5lisjisa3jq" path="res://scenes/ui/daynight/control.gd" id="5_glvrs"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_qhbnj"]
