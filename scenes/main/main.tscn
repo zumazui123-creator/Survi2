@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://bf074ibcy5o0" path="res://scenes/mapGen/map.tscn" id="1_vj1jr"]
 [ext_resource type="PackedScene" uid="uid://do5frseoo8sxj" path="res://scenes/ui/spawn/spawnPlayer.tscn" id="2_ajc02"]
 [ext_resource type="Script" uid="uid://di16mip16jhcr" path="res://scenes/main/spawn_object.gd" id="2_raeie"]
-[ext_resource type="Script" uid="uid://dhjwv3aq1c8ed" path="res://scenes/main/spawn_enemies.gd" id="3_th5th"]
+[ext_resource type="Script" path="res://scenes/main/spawn_enemies.gd" id="3_th5th"]
 [ext_resource type="Script" uid="uid://dl6e2xb030n8p" path="res://scenes/main/spawn_animal.gd" id="4_th5th"]
 [ext_resource type="Script" uid="uid://cddr76mw3uc08" path="res://scenes/main/objects.gd" id="5_7smn1"]
 [ext_resource type="PackedScene" uid="uid://c0gaxwlt4ajax" path="res://scenes/ui/playersList/generalHud.tscn" id="5_th5th"]
@@ -41,7 +41,7 @@ script = ExtResource("4_th5th")
 
 [node name="Projectiles" type="Node2D" parent="."]
 
-[node name="Objects" type="Node2D" parent="."]
+[node name="Breakables" type="Node2D" parent="."]
 script = ExtResource("5_7smn1")
 
 [node name="NavHelper" type="Node2D" parent="."]
@@ -86,7 +86,7 @@ spawn_path = NodePath("../Projectiles")
 
 [node name="ObjectSpawner" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("uid://dagsu16arm3mv")
-spawn_path = NodePath("../Objects")
+spawn_path = NodePath("../Breakables")
 
 [node name="PickupSpawner" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("uid://bfq4kkw8jhqay")

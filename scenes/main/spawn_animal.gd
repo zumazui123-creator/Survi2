@@ -10,7 +10,7 @@ var spawnedAnimals := {}
 @onready var navHelper : Node2D = $"../NavHelper"
 
 func _ready() -> void:
-	print("Map Enemies")
+	print("ready  Enemies")
 
 #animal spawn
 func spawn(postion : Vector2i) -> Node:

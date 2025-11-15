@@ -4,6 +4,8 @@ var maxObjects 	  		:= Constants.MAX_OBJECTS
 var objectWaveCount 		:= 10
 var spawnedObjects 	  	:= 0
 
+func _ready() -> void:
+	print("ready  Breakables")
 
 func spawnObjects(amount):
 	var breakableScene := preload("res://scenes/spawn/object/breakable.tscn")

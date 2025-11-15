@@ -1,11 +1,12 @@
 extends Node2D
 
+@onready var breakables = $Breakables
 
 func _ready():
 	if multiplayer.is_server():
 		print(Multihelper.level)
 		Multihelper.loadMap()
-		$Objects.spawnObjects($Objects.initialSpawnObjects)
+		breakables.spawnObjects(breakables.initialSpawnObjects)
 		#$HUD.queue_free()
 	$dayNight.time_tick.connect(%DayNightCycleUI.set_daytime)
 	#createHUD()
@@ -18,8 +19,8 @@ func _ready():
 func setMobs(initialSpawnObjects : int , maxObjects : int ,
 			maxEnemiesPerPlayer : int,
 			maxAnimalsPerPlayer : int ):
-	$Objects.initialSpawnObjects = initialSpawnObjects
-	$Objects.maxObjects 		 = maxObjects
+	breakables.initialSpawnObjects = initialSpawnObjects
+	breakables.maxObjects 		 = maxObjects
 	$Enemies.maxEnemiesPerPlayer = maxEnemiesPerPlayer
 	$Animals.maxAnimalsPerPlayer = maxAnimalsPerPlayer
 
@@ -27,9 +28,9 @@ func setMobs(initialSpawnObjects : int , maxObjects : int ,
 
 func trySpawnObjectWave():
 	#print("SpawnObjects: "+ str(spawnedObjects)+ " maxObjects: "+str(maxObjects) )
-	if $Objects.spawnedObjects < $Objects.maxObjects:
-		var toMax = $Objects.maxObjects - $Objects.spawnedObjects
-		$Objects.spawnObjects(min($Objects.objectWaveCount, toMax))
+	if breakables.spawnedObjects < breakables.maxObjects:
+		var toMax = breakables.maxObjects - breakables.spawnedObjects
+		breakables.spawnObjects(min(breakables.objectWaveCount, toMax))
 
 func _on_object_spawn_timer_timeout():
 	if multiplayer.is_server():

@@ -1,8 +1,17 @@
-Welche KI benutzt ihr zuhause
-Was ist eine Kunstliche Intelligenz
-Was braucht KI
-player.tsnc bei CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/SpawnContainer/HBoxContainer/TextureRect
-/home/qubi/Code/Survi2/scenes/character/builder.gd
+Game.gd:12 @ start_game(): res://scenes/ui/daynight/daynightcycle_ui.tscn:6 - ext_resource, invalid UID: uid://csgddlqk48405 - using text path instead: res://assets/daynight/daynightcycle-ui.png
+
+
+Game.gd:12 @ start_game(): res://scenes/ui/inventory/recipe_slot.tscn:4 - ext_resource, invalid UID: uid://kyndhbypy2ta - using text path instead: res://assets/items/sword1.png
+
+Game.gd:12 @ start_game(): res://scenes/ui/daynight/daynightcycle_ui.tscn:5 - ext_resource, invalid UID: uid://dsjhotujq71gm - using text path instead: res://assets/fonts/pixelmix.ttf
+
+
+
+
+
+
+
+
 1. Was sind Neuronen
    Neuronen sind besondere Zellen in deinem Körper, die Signale weitergeben
 

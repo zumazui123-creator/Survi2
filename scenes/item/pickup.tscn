@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://bfq4kkw8jhqay"]
 
 [ext_resource type="Script" uid="uid://b0rb0bsiboxj1" path="res://scenes/item/pickup.gd" id="1_4sb31"]
-[ext_resource type="Texture2D" uid="uid://b6fqm7bmr51f6" path="res://assets/items/wood.png" id="1_d0dnh"]
+[ext_resource type="Texture2D" uid="uid://dygjuft04c3qw" path="res://assets/items/wood.png" id="1_d0dnh"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_xjrky"]
 radius = 17.0

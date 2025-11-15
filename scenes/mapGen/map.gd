@@ -6,17 +6,15 @@ var waterCoors = [Vector2i(18,0), Vector2i(19,0)]
 var noise = FastNoiseLite.new()
 var tileset_source = 1
 
-
-
 # Noise parameters
 #var tile_size = 64
 var map_width = Constants.MAP_SIZE.x
 var map_height = Constants.MAP_SIZE.y
 
-var enemies : Node2D 
+@onready var enemies : Node2D  = $"../Enemies"
 @onready var animals : Node2D = $"../Animals"
-@onready var tile_map : Node2D = $TileMap
-@onready var laby_map : Node = $Labyrinth 
+@onready var tile_map : TileMapLayer = %TileMap
+@onready var laby_map : Node =  $Labyrinth
 
 var walkable_tiles = []
 
@@ -24,7 +22,6 @@ var walkable_tiles = []
  
 func _ready():
 	print("Map ready")
-	enemies= $"../Enemies"
 
 func generateMap(level_dict : Dictionary):
 	print("generated:"+str(level_dict))
@@ -84,26 +81,26 @@ func generate_borders():
 	var tile_coord = Vector2i()
 	for y in range(-1,map_height+1):
 		tile_coord = waterCoors.pick_random()
-		tile_map.set_cell(Vector2i(edge_x, y), tileset_source, tile_coord, 0)
-		tile_map.set_cell(Vector2i(edge_x2, y), tileset_source, tile_coord, 0)
+		tile_map.set_cell( Vector2i(edge_x, y), tileset_source, tile_coord, 0)
+		tile_map.set_cell( Vector2i(edge_x2, y), tileset_source, tile_coord, 0)
 		
 	var edge_y = -1
 	var edge_y2 = map_width
 	for x2 in range(-1,map_width+1):
 		tile_coord = waterCoors.pick_random()
-		tile_map.set_cell(Vector2i(x2, edge_y), tileset_source, tile_coord, 0)
-		tile_map.set_cell(Vector2i(x2, edge_y2), tileset_source, tile_coord, 0)
+		tile_map.set_cell( Vector2i(x2, edge_y), tileset_source, tile_coord, 0)
+		tile_map.set_cell( Vector2i(x2, edge_y2), tileset_source, tile_coord, 0)
 
 
 
 func set_grass_field(tile_place : Vector2i ):
 	var tile_coord = grassAtlasCoords.pick_random()
 	tile_coord = Vector2i(0,0)
-	tile_map.set_cell(tile_place, tileset_source, tile_coord, 0)
+	tile_map.set_cell( tile_place, tileset_source, tile_coord, 0)
 
 	
 func set_field(tile_place : Vector2i, atlasCoor : Vector2i ):
-	tile_map.set_cell(tile_place, tileset_source, atlasCoor, 0)
+	tile_map.set_cell( tile_place, tileset_source, atlasCoor, 0)
 
 
 

@@ -10,6 +10,8 @@ var randomDirection : Array[Vector2i] = [Vector2i(1,0),Vector2i(-1,0),Vector2i(0
 var moduleNumber = [2,3,5,7,11,13]
 var atlasCoorWhiteField = Vector2i(11,0)
 
+func _ready():
+	print("Laby ready")
 
 func generateLabyrinth( level_no : int) -> Array[Vector2i] : 
 	var way_size = 5
