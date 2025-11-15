@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://do5frseoo8sxj"]
 
 [ext_resource type="Script" uid="uid://ckvxoflf7pw3c" path="res://scenes/ui/spawn/spawnPlayer.gd" id="1_buuas"]
-[ext_resource type="Texture2D" uid="uid://cp8a6sj0jvcqo" path="res://assets/characters/bodies/0.png" id="2_3xo70"]
+[ext_resource type="Texture2D" uid="uid://blsumxlwuly6d" path="res://assets/characters/bodies/0.png" id="2_3xo70"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qdlud"]
 bg_color = Color(0.180392, 0.180392, 0.180392, 1)

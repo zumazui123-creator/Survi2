@@ -9,7 +9,7 @@ var spawnedEnemies := {}
 
 
 @onready var navHelper : Node2D = $"../NavHelper"
-
+@onready var creator : Node = $"../Creator"
 
 func _ready() -> void:
 	pass
@@ -37,7 +37,11 @@ func trySpawnEnemies():
 				enemy.targetPlayerId = player
 				enemy.enemyId = enemyTypes.pick_random()
 				increasePlayerEnemyCount(player)
-		
+
+
+
+
+
 func getPlayerEnemyCount(pId) -> int:
 	if pId in spawnedEnemies:
 		return spawnedEnemies[pId]

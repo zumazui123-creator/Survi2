@@ -11,18 +11,21 @@ var tileset_source = 1
 var map_width = Constants.MAP_SIZE.x
 var map_height = Constants.MAP_SIZE.y
 
-@onready var enemies : Node2D  = $"../Enemies"
-@onready var animals : Node2D = $"../Animals"
-@onready var tile_map : TileMapLayer = %TileMap
-@onready var laby_map : Node =  $Labyrinth
+
+@onready var enemies : Node2D  
+@onready var animals : Node2D 
+@onready var tile_map : TileMapLayer 
+@onready var laby_map : Node 
 
 var walkable_tiles = []
-
-
  
 func _ready():
 	print("Map ready")
-
+	enemies = get_node_or_null("../Enemies")
+	animals  = get_node_or_null("../Animals" )
+	tile_map  = get_node_or_null("TileMap")
+	laby_map  =  get_node_or_null("Labyrinth")
+	
 func generateMap(level_dict : Dictionary):
 	print("generated:"+str(level_dict))
 	var level_no = level_dict["level"]
