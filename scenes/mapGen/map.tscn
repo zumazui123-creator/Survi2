@@ -4,7 +4,9 @@
 [ext_resource type="TileSet" uid="uid://cny45owea8lcj" path="res://assets/tileset/tileset.tres" id="2_c3hbg"]
 [ext_resource type="Script" uid="uid://bqqq0ujqgl6ln" path="res://scenes/mapGen/labyrinth.gd" id="3_qpycp"]
 
-[node name="Map" type="Node2D"]
+[node name="Map" type="Control"]
+layout_mode = 3
+anchors_preset = 0
 script = ExtResource("1_gggpt")
 
 [node name="TileMap" type="TileMapLayer" parent="."]

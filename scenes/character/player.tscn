@@ -1,7 +1,7 @@
-[gd_scene load_steps=30 format=3 uid="uid://bmhxilkffhqa5"]
+[gd_scene load_steps=31 format=3 uid="uid://bmhxilkffhqa5"]
 
 [ext_resource type="Script" uid="uid://bruqpv3kpycof" path="res://scenes/character/player.gd" id="1_7xvi4"]
-[ext_resource type="Script" path="res://scenes/character/builder.gd" id="2_7r6u0"]
+[ext_resource type="Script" uid="uid://dukylmcbt25lk" path="res://scenes/character/builder.gd" id="2_7r6u0"]
 [ext_resource type="Script" uid="uid://bp5wvye18xpkn" path="res://scenes/character/components/ai_control.gd" id="2_iinkm"]
 [ext_resource type="Script" uid="uid://46q7eheiak5y" path="res://scenes/character/components/net_control.gd" id="2_xub24"]
 [ext_resource type="Script" uid="uid://ddrqxuc43a4rn" path="res://scenes/character/components/function_handler.gd" id="3_vreni"]
@@ -14,6 +14,7 @@
 [ext_resource type="Script" uid="uid://dsnm03bgpmori" path="res://scenes/character/components/code.gd" id="8_5y66v"]
 [ext_resource type="Script" uid="uid://bjrh8avfky7c7" path="res://scenes/character/components/player_combat.gd" id="8_ba010"]
 [ext_resource type="Script" uid="uid://fac0m1pdvo7" path="res://scenes/character/player_items.gd" id="9_e5n5u"]
+[ext_resource type="Script" uid="uid://cgqh4whq45khp" path="res://scenes/character/camera_2d.gd" id="13_e5n5u"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5y66v"]
 
@@ -337,6 +338,10 @@ point_count = 2
 [node name="Player" type="CharacterBody2D" groups=["damageable", "player"]]
 script = ExtResource("1_7xvi4")
 
+[node name="Camera2D" type="Camera2D" parent="."]
+enabled = false
+script = ExtResource("13_e5n5u")
+
 [node name="Builder" type="Node" parent="."]
 script = ExtResource("2_7r6u0")
 
@@ -357,6 +362,7 @@ script = ExtResource("6_7r6u0")
 script = ExtResource("7_e5n5u")
 
 [node name="PlayerCombat" type="Node" parent="."]
+unique_name_in_owner = true
 script = ExtResource("8_ba010")
 
 [node name="PlayerItems" type="Node" parent="."]
@@ -1220,9 +1226,6 @@ unique_name_in_owner = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_5y66v")
-
-[node name="Camera2D" type="Camera2D" parent="."]
-enabled = false
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {

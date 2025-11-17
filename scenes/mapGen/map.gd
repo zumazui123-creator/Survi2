@@ -1,4 +1,4 @@
-extends Node2D
+extends Control
 
 var grassAtlasCoords = [Vector2i(0,0),Vector2i(1,0),Vector2i(2,0),Vector2i(3,0),Vector2i(16,0),Vector2i(17,0)]
 var waterCoors = [Vector2i(18,0), Vector2i(19,0)]
@@ -122,3 +122,10 @@ func set_level_options(level : int):
 	if level == 2:
 		enemies.maxEnemiesPerPlayer = 25
 		animals.maxAnimalsPerPlayer  = 6
+
+func _can_drop_data(at_pos, data):
+	print("can data")
+	return typeof(data) == TYPE_DICTIONARY and data.get("type") == "spawn_enemy"
+
+func _drop_data(at_pos, data):
+	print("dop data")

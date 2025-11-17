@@ -6,7 +6,7 @@ const MAX_DISTANCE = 9  # Maximum distance in tiles
 
 @onready var tilemap = $"../Map/TileMap"
 #@onready var map = $"../Map"
-var map: Node2D
+var map
 var main: Node2D
 
 func _ready() -> void:

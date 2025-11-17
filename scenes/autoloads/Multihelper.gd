@@ -5,7 +5,7 @@ var isHost = false
 var mapSeed = randi()
 var level : Dictionary = {"level": 0,"type": 2}
 
-var map: Node2D
+var map
 var main: Node2D
 
 signal player_connected(peer_id)
