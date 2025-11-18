@@ -1,4 +1,4 @@
-extends Control
+extends Node2D
 
 var retry = false
 var charactersFolder = "res://assets/characters/bodies/"

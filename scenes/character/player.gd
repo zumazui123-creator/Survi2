@@ -41,6 +41,9 @@ func _ready():
 		
 	Multihelper.player_disconnected.connect(disconnected)
 
+func getDamage(causer, amount, _type):
+	player_combat.getDamage(causer, amount, _type)
+		
 func visibilityFilter(id):
 	if id == int(str(name)):
 		return false

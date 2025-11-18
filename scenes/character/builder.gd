@@ -27,6 +27,7 @@ func init_spawn_list() -> void:
 func update_incon(text : String):
 	print("update icon")
 	spawn_texture.texture = load("res://assets/characters/enemy/"+text+".png")
+	spawn_texture.tooltip_text = text
 	
 func _ready() -> void:
 	var enemy_folder := "res://assets/characters/enemy/"

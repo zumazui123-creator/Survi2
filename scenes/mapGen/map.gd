@@ -18,18 +18,19 @@ var map_height = Constants.MAP_SIZE.y
 @onready var laby_map : Node 
 
 var walkable_tiles = []
- 
+var level_type = -1
+
 func _ready():
 	print("Map ready")
-	enemies = get_node_or_null("../Enemies")
-	animals  = get_node_or_null("../Animals" )
+	enemies = get_node_or_null("%Enemies")
+	animals  = get_node_or_null("%Animals" )
 	tile_map  = get_node_or_null("TileMap")
 	laby_map  =  get_node_or_null("Labyrinth")
 	
 func generateMap(level_dict : Dictionary):
 	print("generated:"+str(level_dict))
 	var level_no = level_dict["level"]
-	var level_type = level_dict["type"]
+	level_type = level_dict["type"]
 	if level_type == Constants.MAP_MAIN:
 		generateMainMap(level_no)
 		
@@ -49,6 +50,7 @@ func generateMainMap(level_no: int):
 	generate_terrain()
 	set_level_options(level_no)
 	generate_borders()
+	
 
 	
 func generate_terrain():
@@ -122,10 +124,4 @@ func set_level_options(level : int):
 	if level == 2:
 		enemies.maxEnemiesPerPlayer = 25
 		animals.maxAnimalsPerPlayer  = 6
-
-func _can_drop_data(at_pos, data):
-	print("can data")
-	return typeof(data) == TYPE_DICTIONARY and data.get("type") == "spawn_enemy"
-
-func _drop_data(at_pos, data):
-	print("dop data")
+		

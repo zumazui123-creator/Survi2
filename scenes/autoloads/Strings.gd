@@ -40,8 +40,8 @@ const ACTION_USE_ITEM = "use item"
 # --- Animation Names ---
 const ANIM_WALKING = "walking"
 const ANIM_PUNCHING = "punching"
-const ANIM_SWING = "swing"
-const ANIM_STAB = "stab"
+const ANIM_SWING = "slash"
+const ANIM_STAB = "projectile"
 
 # --- Group Names ---
 const GROUP_DAMAGEABLE = "damageable"

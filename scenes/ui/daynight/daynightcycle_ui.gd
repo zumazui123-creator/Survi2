@@ -42,3 +42,14 @@ func _am_pm(hour:int) -> String:
 
 func _remap_rangef(input:float, minInput:float, maxInput:float, minOutput:float, maxOutput:float):
 	return float(input - minInput) / float(maxInput - minInput) * float(maxOutput - minOutput) + minOutput
+
+
+
+
+
+#func _can_drop_data(at_pos, data):
+	#print("can data")
+	#return typeof(data) == TYPE_DICTIONARY and data.get("type") == "spawn_enemy"
+#
+#func _drop_data(at_pos, data):
+	#print("dop data")

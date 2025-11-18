@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://bmhxilkffhqa5"]
+[gd_scene load_steps=35 format=3 uid="uid://bmhxilkffhqa5"]
 
 [ext_resource type="Script" uid="uid://bruqpv3kpycof" path="res://scenes/character/player.gd" id="1_7xvi4"]
 [ext_resource type="Script" uid="uid://dukylmcbt25lk" path="res://scenes/character/builder.gd" id="2_7r6u0"]
@@ -14,7 +14,11 @@
 [ext_resource type="Script" uid="uid://dsnm03bgpmori" path="res://scenes/character/components/code.gd" id="8_5y66v"]
 [ext_resource type="Script" uid="uid://bjrh8avfky7c7" path="res://scenes/character/components/player_combat.gd" id="8_ba010"]
 [ext_resource type="Script" uid="uid://fac0m1pdvo7" path="res://scenes/character/player_items.gd" id="9_e5n5u"]
+[ext_resource type="Script" uid="uid://dngrh67x5tj38" path="res://scenes/character/components/texture_rect.gd" id="13_ba010"]
 [ext_resource type="Script" uid="uid://cgqh4whq45khp" path="res://scenes/character/camera_2d.gd" id="13_e5n5u"]
+[ext_resource type="Texture2D" uid="uid://bvjipxot1udu8" path="res://assets/ui/itemSlotSelected.png" id="14_ux0ro"]
+[ext_resource type="Script" uid="uid://jwr2prr58xmw" path="res://scenes/character/goal_texture_rect.gd" id="15_vhx6d"]
+[ext_resource type="Script" uid="uid://covi850vpbbri" path="res://scenes/character/components/spawn_area.gd" id="17_jb4us"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5y66v"]
 
@@ -521,6 +525,7 @@ position = Vector2(218, -371)
 script = ExtResource("8_5y66v")
 
 [node name="TabContainer" type="TabContainer" parent="CanvasLayer/Code"]
+visible = false
 offset_left = 67.0
 offset_top = 14.0
 offset_right = 422.0
@@ -809,7 +814,6 @@ layout_mode = 2
 text = "Speicher Ki Verhalten"
 
 [node name="TabContainerKI" type="TabContainer" parent="CanvasLayer/Code"]
-visible = false
 offset_left = 67.0
 offset_top = 14.0
 offset_right = 422.0
@@ -1078,6 +1082,7 @@ layout_mode = 2
 [node name="TextureRect" type="TextureRect" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/SpawnContainer/HBoxContainer"]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
+script = ExtResource("13_ba010")
 
 [node name="Label" type="Label" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/SpawnContainer/HBoxContainer"]
 layout_mode = 2
@@ -1085,6 +1090,28 @@ text = "Spawn Mob: "
 
 [node name="OptionButton" type="OptionButton" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/SpawnContainer/HBoxContainer"]
 layout_mode = 2
+
+[node name="MoveContainer" type="VBoxContainer" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/MoveContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Move-Settings"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/MoveContainer"]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/MoveContainer/HBoxContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+tooltip_text = "goal_tile"
+texture = ExtResource("14_ux0ro")
+script = ExtResource("15_vhx6d")
+
+[node name="Label" type="Label" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/MoveContainer/HBoxContainer"]
+layout_mode = 2
+text = "   Bewegung Ziel "
 
 [node name="FuncContainer" type="VBoxContainer" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer"]
 layout_mode = 2
@@ -1115,6 +1142,36 @@ text = "Stop"
 [node name="SaveKiButton" type="Button" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/FuncContainer/HBoxContainer"]
 layout_mode = 2
 text = "Speicher Ki Verhalten"
+
+[node name="Belohnung" type="MarginContainer" parent="CanvasLayer/Code/TabContainerKI"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 2
+
+[node name="MoveContainer" type="VBoxContainer" parent="CanvasLayer/Code/TabContainerKI/Belohnung"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="CanvasLayer/Code/TabContainerKI/Belohnung/MoveContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Belohnung-Settings"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Code/TabContainerKI/Belohnung/MoveContainer"]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer/Code/TabContainerKI/Belohnung/MoveContainer/HBoxContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+texture = ExtResource("14_ux0ro")
+script = ExtResource("13_ba010")
+
+[node name="Label" type="Label" parent="CanvasLayer/Code/TabContainerKI/Belohnung/MoveContainer/HBoxContainer"]
+layout_mode = 2
+text = "Bewegung Ziel Belohnung : "
+
+[node name="LineEdit" type="LineEdit" parent="CanvasLayer/Code/TabContainerKI/Belohnung/MoveContainer/HBoxContainer"]
+layout_mode = 2
+text = "0.7"
 
 [node name="PopupPanel" type="PopupPanel" parent="CanvasLayer"]
 unique_name_in_owner = true
@@ -1276,6 +1333,15 @@ offset_right = 70.0
 offset_bottom = -50.0
 grow_horizontal = 2
 grow_vertical = 0
+
+[node name="SpawnArea" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = -340.0
+offset_top = -358.0
+offset_right = 381.0
+offset_bottom = 364.0
+script = ExtResource("17_jb4us")
 
 [connection signal="pressed" from="PlayerStatus/WorkContainer/VBoxContainer/backToMenu" to="." method="_on_back_to_menu_pressed"]
 [connection signal="pressed" from="CanvasLayer/Code/TabContainer/Code/ButtonCotainer/PlayButton" to="CanvasLayer/Code" method="_on_play_button_pressed"]

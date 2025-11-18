@@ -54,7 +54,7 @@ func calculate_reward():
 	return reward
 
 func send_ki_obs():
-	var target_tile_position = Multihelper.map.laby_map.endPosition
+	var target_tile_position = Multihelper.get_goal()
 	var walkable_tiles_bool = get_walkable_neighbor_tiles()
 	tmp_status = status.getPlayerStatus()
 	var ki_data = {

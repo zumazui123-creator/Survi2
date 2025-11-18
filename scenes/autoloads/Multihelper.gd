@@ -26,7 +26,7 @@ var connectedPlayers = []
 var syncedPlayers = []
 
 var player_info = {"name": ""}
-
+var goal_tile 
 
 
 var game : Node
@@ -145,7 +145,7 @@ func _on_server_disconnected():
 
 func loadMap():
 	main = get_node("/root/Game/Level/Main")
-	map  = main.get_node("Map")
+	map  = main.get_node("%Map")
 	map.generateMap(level)
 
 func get_map_position(coords : Vector2i):
@@ -198,7 +198,15 @@ func showSpawnUI():
 	retry.visible = true
 	main.get_node("HUD").add_child(retry)
 
-
+func set_goal(tile):
+	goal_tile = tile
+	
+func get_goal():
+	if map.level_type == Constants.MAP_KI:
+		goal_tile
+	else: 
+		map.laby_map.endPosition
+		
 func setMobs(initialSpawnObjects : int , maxObjects : int ,
 			maxEnemiesPerPlayer : int,
 			maxAnimalsPerPlayer : int ):

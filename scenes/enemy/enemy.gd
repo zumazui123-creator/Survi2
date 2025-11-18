@@ -57,7 +57,7 @@ func move_towards_position():
 func tryAttack():
 	if multiplayer.is_server() and $AttackCooldown.is_stopped():
 		$AttackCooldown.start()
-		var projectileScene := load("res://scenes/attacks/"+attack+".tscn")
+		var projectileScene := load("res://scenes/attacks/"+attack+"_attack.tscn")
 		var projectile = projectileScene.instantiate()
 		spawner.get_node("../Projectiles").add_child(projectile,true)
 		projectile.position = position
@@ -68,7 +68,7 @@ func tryAttack():
 func hitPlayer(body):
 	if multiplayer.is_server():
 		body.getDamage(self, attackDamage, "normal")
-	
+			
 func getDamage(causer, amount, _type):
 	hp -= amount
 	$bloodParticles.emitting = true

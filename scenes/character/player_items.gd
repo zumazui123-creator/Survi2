@@ -4,7 +4,7 @@ var player: CharacterBody2D
 
 @onready var held_item = get_parent().get_node("%HeldItem")
 @onready var equipment = get_parent().get_node("%Equipment")
-var inventory : Control
+var inventory 
 
 var equippedItem : String:
 	set(value):

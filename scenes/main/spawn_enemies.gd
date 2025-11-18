@@ -12,7 +12,7 @@ var spawnedEnemies := {}
 @onready var creator : Node = $"../Creator"
 
 func _ready() -> void:
-	pass
+	print("enemies rdy" )
 
 #enemy spawn
 func trySpawnEnemies():
@@ -38,7 +38,15 @@ func trySpawnEnemies():
 				enemy.enemyId = enemyTypes.pick_random()
 				increasePlayerEnemyCount(player)
 
-
+func spawn(pos,text):
+	var enemyScene := preload("res://scenes/enemy/enemy.tscn")
+	print("add Enemy position:"+str(pos))
+	var enemy = enemyScene.instantiate()
+	add_child(enemy,true)
+	enemy.position = pos
+	enemy.spawner = self
+	enemy.targetPlayerId = 1
+	enemy.enemyId = text
 
 
 
