@@ -12,32 +12,32 @@ def init_model_ppo():
 	env = DummyVecEnv([lambda: GodotEnv()])
 	logger_callback = StepLogger()
 
-	model = DQN(
-        "MlpPolicy",
-        env,
-        # learning_rate=1e-4,
-        learning_rate=0.6,
-        buffer_size=1000,
-        learning_starts=100,
-        batch_size=32,      # Wichtiger: kleine Batches
-        target_update_interval=200,
-        train_freq=4,
-        gradient_steps=1,
-        exploration_fraction=0.1,
-        verbose=2
-    )
-	# model = stb.PPO(
+	# model = DQN(
  #        "MlpPolicy",
  #        env,
- #        learning_rate=3e-4,
- #        n_steps=256,        # Sollte durch batch_size teilbar sein
- #        batch_size=64,      # VIEL kleiner - für Mini-Batches
- #        n_epochs=1000,        # Mehr Epochen für bessere Updates
- #        gamma=0.99,
- #        clip_range=0.2,
- #        ent_coef=0.01,      # Leichtes Exploration-Encouragement
- #        verbose=1,
+ #        # learning_rate=1e-4,
+ #        learning_rate=0.6,
+ #        buffer_size=1000,
+ #        learning_starts=100,
+ #        batch_size=32,      # Wichtiger: kleine Batches
+ #        target_update_interval=200,
+ #        train_freq=4,
+ #        gradient_steps=1,
+ #        exploration_fraction=0.1,
+ #        verbose=2
  #    )
+	model = stb.PPO(
+        "MlpPolicy",
+        env,
+        learning_rate=3e-4,
+        n_steps=256,        # Sollte durch batch_size teilbar sein
+        batch_size=64,      # VIEL kleiner - für Mini-Batches
+        n_epochs=1000,        # Mehr Epochen für bessere Updates
+        gamma=0.99,
+        clip_range=0.2,
+        ent_coef=0.01,      # Leichtes Exploration-Encouragement
+        verbose=1,
+    )
 # 	model = stb.PPO(
 #     "MlpPolicy",  # oder Custom CNN wenn nötig
 #     env,

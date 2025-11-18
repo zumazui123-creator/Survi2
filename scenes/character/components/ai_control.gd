@@ -59,7 +59,7 @@ func send_ki_obs():
 	tmp_status = status.getPlayerStatus()
 	var ki_data = {
 			"obs": {
-					"goal": [ target_tile_position.x, target_tile_position.y ],
+					"goal": [ target_tile_position[0], target_tile_position[1] ],
 					"free_directions" : walkable_tiles_bool,
 					 },
 			"done"	: tmp_status["terminated"],

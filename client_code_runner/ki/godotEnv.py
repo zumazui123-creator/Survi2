@@ -14,7 +14,7 @@ class GodotEnv(gym.Env):
     metadata = {"render_modes": []}
 
     def get_null_obs(self):
-       return np.array([ 0, 0, 0, 0], dtype=np.int32)
+       return np.array([ 0, 0 ], dtype=np.int32)
         # return np.array([0, 0, 0, 0, -1, -1, 0, 0, 0, 0], dtype=np.float32)
 
 
@@ -55,8 +55,8 @@ class GodotEnv(gym.Env):
         #         )
 
         self.observation_space = spaces.Box(
-            low=np.array([ 0, 0, 0, 0], dtype=np.int32),
-            high=np.array([ 1, 1, 1, 1], dtype=np.int32),
+            low=np.array([ 0, 0], dtype=np.int32),
+            high=np.array([ 256, 256], dtype=np.int32),
         )
 
         self.server_url = server_url
@@ -105,7 +105,7 @@ class GodotEnv(gym.Env):
     # -------------------
     def reset(self, seed=None, options=None):
         super().reset(seed=seed)
-        self._send_action("reset")
+        #self._send_action("reset")
         obs = self.get_null_obs()
         info = {}
         # self.visited_ways = set()
@@ -117,11 +117,11 @@ class GodotEnv(gym.Env):
 
         player_position = list(info["tile_position"])
         goal_position   = obs_list["goal"]
-        free_directions = obs_list["free_directions"]
+        #free_directions = obs_list["free_directions"]
 
-        player = np.array(player_position, dtype=np.float32)
-        goal   = np.array(goal_position, dtype=np.float32)
-        free   = np.array(free_directions, dtype=np.int32)
+        player = np.array(player_position, dtype=np.int32)
+        goal   = np.array(goal_position, dtype=np.int32)
+        #free   = np.array(free_directions, dtype=np.int32)
 
         # Normalisiere Positionen (0–256 → 0–1)
         player_norm = player / 256.0
@@ -135,7 +135,7 @@ class GodotEnv(gym.Env):
 
         # Baue Observation zusammen
         # obs = np.concatenate([player_norm, goal_norm, rel, free])
-        obs = free
+        obs = player
 
         # calc reward
         reward = 0.0
