@@ -60,11 +60,12 @@ def init_model_ppo():
 
 
 	model_name = "trained_model_ppo"
-	# try:
-	# 	model.load(model_name)
-	# except Exception as e:
-	# 	# model.load(model_name+"2")
-	# 	print(f"⚠️ Error in loading trained model: {e}")
+	try:
+		model.load(model_name+".zip")
+		print(f"⚠️  loading trained model: {model_name}")
+	except Exception as e:
+		# model.load(model_name+"2")
+		print(f"⚠️ Error in loading trained model: {e}")
 
 	for i in range(0,20):
 		print(i)

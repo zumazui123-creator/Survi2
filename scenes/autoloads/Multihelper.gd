@@ -26,7 +26,7 @@ var connectedPlayers = []
 var syncedPlayers = []
 
 var player_info = {"name": ""}
-var goal_tile 
+var goal_tile = Vector2i(0,0)
 
 
 var game : Node

@@ -120,7 +120,7 @@ class GodotEnv(gym.Env):
         #free_directions = obs_list["free_directions"]
 
         player = np.array(player_position, dtype=np.int32)
-        goal   = np.array(goal_position, dtype=np.int32)
+        goal   = np.array(goal_position, dtype=np.float32)
         #free   = np.array(free_directions, dtype=np.int32)
 
         # Normalisiere Positionen (0–256 → 0–1)

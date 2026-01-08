@@ -31,13 +31,13 @@ func get_walkable_neighbor_tiles():
 		if abs(tx) + abs(ty) == 2:
 			continue
 		if tx == 1:
-			walkable_obs[0]   = 1
+			walkable_obs[0] = 1
 		if tx == -1:
-			walkable_obs[3]  = 1
+			walkable_obs[3] = 1
 		if ty == 1:
-			walkable_obs[1]   = 1
+			walkable_obs[1] = 1
 		if ty == -1:
-			walkable_obs[2]   = 1
+			walkable_obs[2] = 1
 
 	return walkable_obs
 
