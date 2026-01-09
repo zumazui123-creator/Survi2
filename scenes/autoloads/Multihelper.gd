@@ -8,6 +8,8 @@ var level : Dictionary = {"level": 0,"type": Constants.MAP_MAIN}
 var map
 var main: Node2D
 
+@onready var my_map = %Map
+
 signal player_connected(peer_id)
 signal player_disconnected(peer_id)
 signal server_disconnected
@@ -121,6 +123,12 @@ func sendGameData(playerData, mapData):
 	spawnedPlayers = playerData
 	mapSeed = mapData["seed"]
 	level 	= mapData["level"]
+	
+	if not is_multiplayer_authority():
+		var lvl = game.get_node("Level")
+		var m	= game.get_node("/root/Map")
+		print(my_map)
+		
 	main = game.get_node("Level/Main")
 	loadMap()
 	data_loaded.emit()
