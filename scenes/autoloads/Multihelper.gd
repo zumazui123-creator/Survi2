@@ -3,7 +3,7 @@ extends Node
 var playerScenePath = preload("res://scenes/character/player.tscn")
 var isHost = false
 var mapSeed = randi()
-var level : Dictionary = {"level": 0,"type": 2}
+var level : Dictionary = {"level": 0,"type": Constants.MAP_MAIN}
 
 var map
 var main: Node2D
@@ -110,7 +110,7 @@ func player_loaded():
 	main = game.get_node("Level/Main")
 	var mapData := {
 		"seed": mapSeed,
-		#"level": level,
+		"level": level,
 	}
 	sendGameData.rpc_id(sender_id, spawnedPlayers, mapData)
 	#print(connectedPlayers)
@@ -120,6 +120,7 @@ func player_loaded():
 func sendGameData(playerData, mapData):
 	spawnedPlayers = playerData
 	mapSeed = mapData["seed"]
+	level 	= mapData["level"]
 	main = game.get_node("Level/Main")
 	loadMap()
 	data_loaded.emit()
@@ -134,7 +135,7 @@ func _on_server_disconnected():
 
 func loadMap():
 	main = get_node("/root/Game/Level/Main")
-	map  = main.get_node("%Map")
+	map  = main.get_node("Map")
 	map.generateMap(level)
 
 func get_map_position(coords : Vector2i):
