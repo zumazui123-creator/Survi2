@@ -145,9 +145,10 @@ func _on_server_disconnected():
 func loadMap():
 	if is_multiplayer_authority():
 		main = get_node("/root/Game/Level/Main")
+		map  = main.get_node("Map")
 	else:
 		main = get_node("/root/Game/Main")
-	map  = game.get_node("Map")
+		map  = game.get_node("Map")
 	map.generateMap(level)
 
 func get_map_position(coords : Vector2i):
