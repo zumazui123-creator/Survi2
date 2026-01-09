@@ -78,6 +78,7 @@ func _on_player_connected(id):
 
 @rpc("call_local" ,"any_peer", "reliable")
 func _register_character(new_player_info):
+	print("player register:"+str(new_player_info))
 	var new_player_id = multiplayer.get_remote_sender_id()
 	spawnedPlayers[new_player_id] = new_player_info
 	player_spawned.emit(new_player_id, new_player_info)
