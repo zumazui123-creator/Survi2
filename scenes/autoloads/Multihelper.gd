@@ -120,8 +120,9 @@ func player_loaded():
 func sendGameData(playerData, mapData):
 	spawnedPlayers = playerData
 	mapSeed = mapData["seed"]
-	main = game.get_node("Level/Main")
-	loadMap()
+	if is_multiplayer_authority():
+		main = game.get_node("Level/Main")
+		loadMap()
 	data_loaded.emit()
 	set_process(true)
 

@@ -29,8 +29,8 @@ func sendToPeer(id):
 		setInventory.rpc_id(int(str(id)), id, inventories[id], durabilityData)
 	
 
-#@rpc("any_peer", "call_remote", "reliable") #Für MultiPlayer-Server 
-@rpc("any_peer", "call_local", "reliable")
+#@rpc("any_peer", "call_local", "reliable")
+@rpc("any_peer", "call_remote", "reliable") #Für MultiPlayer-Server 
 func setInventory(id, data, durabilityData):
 	print("setInventory")
 	inventories[id] = data
