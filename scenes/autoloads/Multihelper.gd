@@ -86,12 +86,12 @@ func _register_character(new_player_info):
 	
 @rpc("call_local" ,"any_peer", "reliable")
 func _deregister_character(id):
-	print("_deregister_character:"+id)
+	print("_deregister_character:"+str(id))
 	spawnedPlayers.erase(id)
 	player_despawned.emit()
 
 func _on_player_disconnected(id):
-	print("_on_player_disconnected:"+id)
+	print("_on_player_disconnected:"+str(id))
 	connectedPlayers.erase(id)
 	spawnedPlayers.erase(id)
 	syncedPlayers.erase(id)
@@ -129,13 +129,6 @@ func sendGameData(playerData, mapData):
 	spawnedPlayers = playerData
 	mapSeed = mapData["seed"]
 	level 	= mapData["level"]
-	
-	if not is_multiplayer_authority():
-		var lvl = game.get_node("Level")
-		var lvl2 = lvl.get_node("Map")
-		
-		print(my_map)
-		
 	main = game.get_node("Level/Main")
 	loadMap()
 	data_loaded.emit()
@@ -150,12 +143,8 @@ func _on_server_disconnected():
 
 func loadMap():
 	print("loadMap()")
-	if is_multiplayer_authority():
-		main = get_node("/root/Game/Level/Main")
-		map  = main.get_node("Map")
-	else:
-		main = get_node("/root/Game/Main")
-		map  = game.get_node("/root/Map")
+	main = get_node("/root/Game/Level/Main")
+	map  = main.get_node("Map")
 	map.generateMap(level)
 
 func get_map_position(coords : Vector2i):
