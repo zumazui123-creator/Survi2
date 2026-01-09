@@ -112,7 +112,7 @@ func player_loaded():
 	print("player_loaded")
 	var sender_id = multiplayer.get_remote_sender_id()
 	print("remote sender:"+str(sender_id))
-	main = game.get_node("Main")
+	main = game.get_node("Level/Main")
 	var mapData := {
 		"seed": mapSeed,
 		"level": level,
