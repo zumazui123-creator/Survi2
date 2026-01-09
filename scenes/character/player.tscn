@@ -33,24 +33,21 @@ properties/2/replication_mode = 2
 properties/3/path = NodePath(".:characterFile")
 properties/3/spawn = true
 properties/3/replication_mode = 2
-properties/4/path = NodePath(".:maxHP")
+properties/4/path = NodePath("PlayerStatus:hp")
 properties/4/spawn = true
-properties/4/replication_mode = 2
-properties/5/path = NodePath("PlayerStatus:hp")
+properties/4/replication_mode = 1
+properties/5/path = NodePath("PlayerStatus:rotation")
 properties/5/spawn = true
 properties/5/replication_mode = 1
-properties/6/path = NodePath("PlayerStatus:rotation")
+properties/6/path = NodePath("PlayerStatus:maxHP")
 properties/6/spawn = true
 properties/6/replication_mode = 1
-properties/7/path = NodePath("PlayerStatus:maxHP")
+properties/7/path = NodePath("PlayerCombat:speed")
 properties/7/spawn = true
 properties/7/replication_mode = 1
-properties/8/path = NodePath("PlayerCombat:speed")
+properties/8/path = NodePath("PlayerCombat:attackDamage")
 properties/8/spawn = true
 properties/8/replication_mode = 1
-properties/9/path = NodePath("PlayerCombat:attackDamage")
-properties/9/spawn = true
-properties/9/replication_mode = 1
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5y66v"]
 
