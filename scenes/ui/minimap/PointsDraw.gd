@@ -9,7 +9,7 @@ const PLAYER_COLOR := Color(1.0, 0.0, 0.0)   # Red color for player
 func _ready():
 	var main_root = get_tree().root 
 	var map = get_node("/root/Map")
-	map.get_node("TileMap")
+	#map.get_node("TileMap")
 	tilemap = get_node("../../../../../Map/TileMap")
 
 func _process(_delta):
