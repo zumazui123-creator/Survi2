@@ -120,9 +120,8 @@ func player_loaded():
 func sendGameData(playerData, mapData):
 	spawnedPlayers = playerData
 	mapSeed = mapData["seed"]
-	if is_multiplayer_authority():
-		main = game.get_node("Level/Main")
-		loadMap()
+	main = game.get_node("Level/Main")
+	loadMap()
 	data_loaded.emit()
 	set_process(true)
 
@@ -150,7 +149,7 @@ func requestSpawn(playerName, id, characterFile):
 	spawnedPlayers[id] = player_info
 	_register_character.rpc(player_info)
 	addPlayer.rpc_id(1, playerName, id, characterFile)
-	spawnPlayers()
+	
 
 @rpc("any_peer", "call_local", "reliable")
 func addPlayer(playerName, id, characterFile):
@@ -160,17 +159,18 @@ func addPlayer(playerName, id, characterFile):
 	newPlayer.characterFile = characterFile
 	newPlayer.name = str(id)
 	main.get_node("Players").add_child(newPlayer)
+	spawnPlayer(newPlayer)
 	
-func spawnPlayers():
-	var players = main.get_node("Players")
-	for newPlayer in players.get_children():
-		var spawnPosition = Vector2i(0,0)
-		if map.laby_map.spawnPosition > Vector2i(0,0):
-			spawnPosition = map.laby_map.spawnPosition
-		else :
-			spawnPosition = map.walkable_tiles.pick_random()
-		newPlayer.workTaskText.text = workTask.getWorkTask(self.level)
-		newPlayer.sendPos.rpc(map.tile_map.map_to_local( spawnPosition ))
+func spawnPlayer(newPlayer):
+	#var players = main.get_node("Players")
+	#for newPlayer in players.get_children():
+	var spawnPosition = Vector2i(0,0)
+	if map.laby_map.spawnPosition > Vector2i(0,0):
+		spawnPosition = map.laby_map.spawnPosition
+	else :
+		spawnPosition = map.walkable_tiles.pick_random()
+	newPlayer.workTaskText.text = workTask.getWorkTask(self.level)
+	newPlayer.sendPos.rpc(map.tile_map.map_to_local( spawnPosition ))
 
 #func rebornPlayer(playerId : String):
 	#var players = main.get_node("Players")
