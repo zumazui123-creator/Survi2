@@ -107,7 +107,7 @@ func player_loaded():
 	print("player_loaded")
 	var sender_id = multiplayer.get_remote_sender_id()
 	print("remote sender:"+str(sender_id))
-	main = game.get_node("Level/Main")
+	main = game.get_node("Main")
 	var mapData := {
 		"seed": mapSeed,
 		"level": level,
@@ -134,7 +134,10 @@ func _on_server_disconnected():
 	server_disconnected.emit()
 
 func loadMap():
-	main = get_node("/root/Game/Level/Main")
+	if is_multiplayer_authority():
+		main = get_node("/root/Game/Level/Main")
+	else:
+		main = get_node("/root/Game/Main")
 	map  = main.get_node("Map")
 	map.generateMap(level)
 
