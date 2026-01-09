@@ -8,7 +8,6 @@ var level : Dictionary = {"level": 0,"type": Constants.MAP_MAIN}
 var map
 var main: Node2D
 
-@onready var my_map = %Map
 
 signal player_connected(peer_id)
 signal player_disconnected(peer_id)

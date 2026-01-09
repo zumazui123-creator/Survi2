@@ -10,6 +10,7 @@ script = ExtResource("1_gg5nw")
 unique_name_in_owner = true
 
 [node name="LevelSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("uid://ccrctrojuyiel")
 spawn_path = NodePath("../Level")
 
 [node name="UI" type="CanvasLayer" parent="."]
