@@ -103,13 +103,10 @@ func set_grass_field(tile_place : Vector2i ):
 	tile_coord = Vector2i(0,0)
 	tile_map.set_cell( tile_place, tileset_source, tile_coord, 0)
 
-	
 func set_field(tile_place : Vector2i, atlasCoor : Vector2i ):
 	tile_map.set_cell( tile_place, tileset_source, atlasCoor, 0)
 
 
-
-	
 func set_level_options(level : int):
 	#print("set level options:"+str(level))
 	

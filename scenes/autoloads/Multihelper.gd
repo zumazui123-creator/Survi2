@@ -66,7 +66,6 @@ func create_game():
 		return error
 	multiplayer.multiplayer_peer = peer
 	player_connected.emit(1, player_info)
-	
 	game.start_game()
 
 func remove_multiplayer_peer():
