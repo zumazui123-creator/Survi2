@@ -57,6 +57,8 @@ func join_game(address = ""):
 	if error:
 		return error
 	multiplayer.multiplayer_peer = peer
+	print("peer:")
+	print(peer)
 
 func create_game():
 	if not game:
@@ -187,9 +189,9 @@ func spawnPlayers():
 	#for player in players.get_children():
 		#if player.name == playerId:
 			#player.hp = 100
-
-#@rpc("any_peer", "call_remote", "reliable") #Server maybe copy method showSpawnUI and make 2 ways local and remote
-@rpc("call_local" ,"any_peer", "reliable")
+			
+#@rpc("call_local" ,"any_peer", "reliable")
+@rpc("any_peer", "call_remote", "reliable") #Server maybe copy method showSpawnUI and make 2 ways local and remote
 func showSpawnUI():
 	print("showSpawnUI")
 	var spawnPlayerScene := preload("res://scenes/ui/spawn/spawnPlayer.tscn")
