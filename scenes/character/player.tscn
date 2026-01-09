@@ -20,6 +20,38 @@
 [ext_resource type="Script" uid="uid://jwr2prr58xmw" path="res://scenes/character/goal_texture_rect.gd" id="15_vhx6d"]
 [ext_resource type="Script" uid="uid://covi850vpbbri" path="res://scenes/character/components/spawn_area.gd" id="17_jb4us"]
 
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_1pknd"]
+properties/0/path = NodePath("AnimationPlayer:current_animation")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+properties/1/path = NodePath("MovingParts:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 2
+properties/2/path = NodePath(".:playerName")
+properties/2/spawn = true
+properties/2/replication_mode = 2
+properties/3/path = NodePath(".:characterFile")
+properties/3/spawn = true
+properties/3/replication_mode = 2
+properties/4/path = NodePath(".:maxHP")
+properties/4/spawn = true
+properties/4/replication_mode = 2
+properties/5/path = NodePath("PlayerStatus:hp")
+properties/5/spawn = true
+properties/5/replication_mode = 1
+properties/6/path = NodePath("PlayerStatus:rotation")
+properties/6/spawn = true
+properties/6/replication_mode = 1
+properties/7/path = NodePath("PlayerStatus:maxHP")
+properties/7/spawn = true
+properties/7/replication_mode = 1
+properties/8/path = NodePath("PlayerCombat:speed")
+properties/8/spawn = true
+properties/8/replication_mode = 1
+properties/9/path = NodePath("PlayerCombat:attackDamage")
+properties/9/spawn = true
+properties/9/replication_mode = 1
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5y66v"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uicah"]
@@ -309,38 +341,16 @@ _data = {
 &"walking": SubResource("Animation_1ejc1")
 }
 
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_1pknd"]
-properties/0/path = NodePath("AnimationPlayer:current_animation")
-properties/0/spawn = true
-properties/0/replication_mode = 2
-properties/1/path = NodePath("MovingParts:rotation")
-properties/1/spawn = true
-properties/1/replication_mode = 2
-properties/2/path = NodePath(".:hp")
-properties/2/spawn = true
-properties/2/replication_mode = 2
-properties/3/path = NodePath(".:playerName")
-properties/3/spawn = true
-properties/3/replication_mode = 2
-properties/4/path = NodePath(".:characterFile")
-properties/4/spawn = true
-properties/4/replication_mode = 2
-properties/5/path = NodePath(".:speed")
-properties/5/spawn = true
-properties/5/replication_mode = 2
-properties/6/path = NodePath(".:maxHP")
-properties/6/spawn = true
-properties/6/replication_mode = 2
-properties/7/path = NodePath(".:attackDamage")
-properties/7/spawn = true
-properties/7/replication_mode = 2
-
 [sub_resource type="Curve" id="Curve_s5j1r"]
 _data = [Vector2(0.00279329, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 2
 
 [node name="Player" type="CharacterBody2D" groups=["damageable", "player"]]
 script = ExtResource("1_7xvi4")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_1pknd")
+visibility_update_mode = 2
 
 [node name="Camera2D" type="Camera2D" parent="."]
 enabled = false
@@ -1262,6 +1272,7 @@ scale = Vector2(0.9, 0.848837)
 texture = ExtResource("4_yjkcj")
 offset = Vector2(6, 0)
 hframes = 12
+frame = 4
 
 [node name="HeldItem" type="Sprite2D" parent="MovingParts"]
 unique_name_in_owner = true
@@ -1287,10 +1298,6 @@ shape = SubResource("CircleShape2D_5y66v")
 libraries = {
 &"": SubResource("AnimationLibrary_4vloy")
 }
-
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
-replication_config = SubResource("SceneReplicationConfig_1pknd")
-visibility_update_mode = 2
 
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
 
