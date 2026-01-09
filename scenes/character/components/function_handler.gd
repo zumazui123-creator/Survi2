@@ -1,6 +1,6 @@
 extends Node
 
-@onready var item_list = %ItemList
+@onready var item_list = %ItemLi
 @onready var func_list = %FuncList
 @onready var code_edit = $"../CanvasLayer/PopupPanel/HBoxContainer/VBoxContainer/CodeEdit"
 @onready var input_func_name = %InputFuncName

@@ -3,6 +3,7 @@ extends Control
 @onready var mainLevelList = $HBoxContainer/MainContainer/VBoxContainer/MainLevelList
 @onready var turnierLevelList = $HBoxContainer/TurnierContainer/VBoxContainer/TunierLevelList
 @onready var kiList =  $HBoxContainer/KI_PLaygroundMap/VBoxContainer/KI_PLaygroundList
+@onready var ipInputLine = %IpInputLine
 
 var selcted_level : Dictionary = {}
 
@@ -26,14 +27,6 @@ func _ready():
 func server_offline():
 	$connectTimer.start()
 
-func _on_hostDebugButton_pressed():
-	print("selec level"+str(selcted_level))
-	Multihelper.setLevel(selcted_level)
-	Multihelper.create_game()
-
-func _on_connect_timer_timeout():
-	Multihelper.join_game()
-
 func _on_main_level_list_item_selected(index: int) -> void:
 	selcted_level = Levels.MainLevels[index]
 
@@ -46,3 +39,11 @@ func _on_tunier_level_list_item_selected(index: int) -> void:
 
 func _on_ki_p_layground_list_item_selected(index: int) -> void:
 	selcted_level = Levels.KiLevels[index]
+
+func _on_start_btn_pressed() -> void:
+	print("selec level"+str(selcted_level))
+	Multihelper.setLevel(selcted_level)
+	Multihelper.create_game()
+
+func _on_join_btn_pressed() -> void:
+	Multihelper.join_game(ipInputLine.text)
