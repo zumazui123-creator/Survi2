@@ -206,7 +206,8 @@ text = "Join Server IP-Address:"
 unique_name_in_owner = true
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
-placeholder_text = "127.0.0.1"
+text = "192.168.178.72"
+placeholder_text = "192.168.178.72"
 max_length = 30
 
 [connection signal="item_selected" from="HBoxContainer/MainContainer/VBoxContainer/MainLevelList" to="." method="_on_main_level_list_item_selected"]
