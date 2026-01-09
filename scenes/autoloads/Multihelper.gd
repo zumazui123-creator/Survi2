@@ -46,14 +46,8 @@ func join_game(address = ""):
 	if address.is_empty():
 		address = DEFAULT_SERVER_IP
 	multiplayer.multiplayer_peer = null
-	var peer = WebSocketMultiplayerPeer.new()
-	var error
-	if Constants.USE_SSL:
-		var cert := load(Constants.TRUSTED_CHAIN_PATH)
-		var tlsOptions = TLSOptions.client(cert)
-		error = peer.create_client("wss://" + address + ":" + str(PORT), tlsOptions)
-	else:
-		error = peer.create_client("ws://" + address + ":" + str(PORT))
+	var peer = ENetMultiplayerPeer.new()
+	var error = peer.create_client(address, PORT)
 	if error:
 		return error
 	multiplayer.multiplayer_peer = peer
@@ -62,15 +56,8 @@ func create_game():
 	if not game:
 		game = get_node_or_null("/root/Game")
 	print("create_game")
-	var peer = WebSocketMultiplayerPeer.new()
-	var error
-	if Constants.USE_SSL:
-		var priv := load(Constants.PRIVATE_KEY_PATH)
-		var cert := load(Constants.TRUSTED_CHAIN_PATH)
-		var tlsOptions = TLSOptions.server(priv, cert)
-		error = peer.create_server(PORT, "*", tlsOptions)
-	else:
-		error = peer.create_server(PORT, "*")
+	var peer = ENetMultiplayerPeer.new()
+	var error = peer.create_server(PORT)
 	if error:
 		return error
 	multiplayer.multiplayer_peer = peer
