@@ -126,6 +126,7 @@ func sendGameData(playerData, mapData):
 	
 	if not is_multiplayer_authority():
 		var lvl = game.get_node("Level")
+		var lvl2 = game.get_node("Map")
 		var m	= game.get_node("/root/Map")
 		print(my_map)
 		
@@ -146,7 +147,7 @@ func loadMap():
 		main = get_node("/root/Game/Level/Main")
 	else:
 		main = get_node("/root/Game/Main")
-	map  = main.get_node("Map")
+	map  = game.get_node("Map")
 	map.generateMap(level)
 
 func get_map_position(coords : Vector2i):
