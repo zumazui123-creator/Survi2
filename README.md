@@ -33,6 +33,7 @@ You can compile the Python script into a standalone executable using **PyInstall
 pyinstaller --onefile gui.py
 ```
 
+
 Alternatively, use the provided batch file:
 
 ```bash
@@ -45,3 +46,9 @@ Usage
 Start the Python backend executable.
 Launch the Godot game.
 The game automatically connects to the Python service via WebSocket and exchanges commands in real time.
+
+
+## How is looks like
+<img width="3278" height="1822" alt="image" src="https://github.com/user-attachments/assets/731fdfaf-b6f9-4d1d-b018-51aed1cb435a" />
+
+
