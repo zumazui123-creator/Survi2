@@ -14,6 +14,9 @@ func _ready():
 	print("Laby ready")
 
 func generateLabyrinth( level_no : int) -> Array[Vector2i] : 
+	var rng = RandomNumberGenerator.new()
+	rng.seed = Multihelper.mapSeed
+	
 	var way_size = 5
 	var level_hard_count = level_no+5
 	if level_no > 10:
@@ -30,8 +33,8 @@ func generateLabyrinth( level_no : int) -> Array[Vector2i] :
 	var randomVec = Vector2i()
 	for tile in range(level_hard_count): 
 		
-		randomVec = randomDirection.pick_random()
-		var wide = randi() % way_size
+		randomVec = randomDirection[rng.randi() % randomDirection.size()]
+		var wide = rng.randi() % way_size
 		for i in range(wide):
 			walkVec += randomVec
 			#print("tile:"+str(tile)+str(walkVec))
@@ -44,7 +47,8 @@ func generateLabyrinth( level_no : int) -> Array[Vector2i] :
 	return walkable_tiles
 	
 func generateLabyrinthWithSeed( level_no : int, rnd_seed : int)-> Array[Vector2i]: 
-	seed(rnd_seed)
+	var rng = RandomNumberGenerator.new()
+	rng.seed = rnd_seed
 	var way_size = 5
 	var level_hard_count = level_no+5
 	if level_no > 10:
@@ -60,8 +64,8 @@ func generateLabyrinthWithSeed( level_no : int, rnd_seed : int)-> Array[Vector2i
 	var walkVec = Vector2i(int(map.map_height/2),int(map.map_width/2)) 
 	var randomVec = Vector2i()
 	for tile in range(level_hard_count): 
-		randomVec = randomDirection.pick_random()
-		var wide = randi() % way_size
+		randomVec = randomDirection[rng.randi() % randomDirection.size()]
+		var wide = rng.randi() % way_size
 		for i in range(wide):
 			walkVec += randomVec
 			map.set_grass_field(walkVec)

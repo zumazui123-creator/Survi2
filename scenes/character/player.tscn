@@ -32,10 +32,10 @@ properties/1/spawn = true
 properties/1/replication_mode = 2
 properties/2/path = NodePath(".:playerName")
 properties/2/spawn = true
-properties/2/replication_mode = 2
+properties/2/replication_mode = 0
 properties/3/path = NodePath(".:characterFile")
 properties/3/spawn = true
-properties/3/replication_mode = 2
+properties/3/replication_mode = 0
 properties/4/path = NodePath("PlayerStatus:hp")
 properties/4/spawn = true
 properties/4/replication_mode = 1
@@ -51,6 +51,9 @@ properties/7/replication_mode = 1
 properties/8/path = NodePath("PlayerCombat:attackDamage")
 properties/8/spawn = true
 properties/8/replication_mode = 1
+properties/9/path = NodePath(".:position")
+properties/9/spawn = true
+properties/9/replication_mode = 1
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5y66v"]
 
@@ -346,6 +349,7 @@ _data = [Vector2(0.00279329, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 2
 
 [node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("player_building") groups=["damageable", "player"]]
+collision_layer = 0
 script = ExtResource("1_7xvi4")
 player_building = NodePath("PlayerBuilding")
 

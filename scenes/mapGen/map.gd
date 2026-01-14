@@ -54,6 +54,10 @@ func generateMainMap(level_no: int):
 
 	
 func generate_terrain():
+	print("generate_terrain with seed: ", Multihelper.mapSeed)
+	var rng = RandomNumberGenerator.new()
+	rng.seed = Multihelper.mapSeed
+	
 	noise.seed = Multihelper.mapSeed
 	noise.noise_type = FastNoiseLite.TYPE_PERLIN
 	noise.fractal_octaves = 1.1
@@ -65,41 +69,47 @@ func generate_terrain():
 			var noise_value = noise.get_noise_2d(x, y)
 			var tile_coord = Vector2i()
 			if noise_value < 0.13:
-				tile_coord = grassAtlasCoords.pick_random()
+				tile_coord = grassAtlasCoords[rng.randi() % grassAtlasCoords.size()]
 				tile_map.set_cell(Vector2i(x, y), tileset_source, tile_coord, 0)
 				walkable_tiles.append(Vector2i(x,y))
 				
 			else:
-				tile_coord = waterCoors.pick_random()
+				tile_coord = waterCoors[rng.randi() % waterCoors.size()]
 				tile_map.set_cell(Vector2i(x, y), tileset_source, tile_coord, 0)
 
 func full_terrain_with_water_fields():
+	var rng = RandomNumberGenerator.new()
+	rng.seed = Multihelper.mapSeed 
 	var tile_coord = Vector2i()
 	for y in range(map_height):
 		for x in range(map_width):
-			tile_coord = waterCoors.pick_random()
+			tile_coord = waterCoors[rng.randi() % waterCoors.size()]
 			tile_map.set_cell(Vector2i(x, y), tileset_source, tile_coord, 0)
 
 func generate_borders():
+	var rng = RandomNumberGenerator.new()
+	rng.seed = Multihelper.mapSeed
 	var edge_x = -1
 	var edge_x2 = map_height
 	var tile_coord = Vector2i()
 	for y in range(-1,map_height+1):
-		tile_coord = waterCoors.pick_random()
+		tile_coord = waterCoors[rng.randi() % waterCoors.size()]
 		tile_map.set_cell( Vector2i(edge_x, y), tileset_source, tile_coord, 0)
 		tile_map.set_cell( Vector2i(edge_x2, y), tileset_source, tile_coord, 0)
 		
 	var edge_y = -1
 	var edge_y2 = map_width
 	for x2 in range(-1,map_width+1):
-		tile_coord = waterCoors.pick_random()
+		tile_coord = waterCoors[rng.randi() % waterCoors.size()]
 		tile_map.set_cell( Vector2i(x2, edge_y), tileset_source, tile_coord, 0)
 		tile_map.set_cell( Vector2i(x2, edge_y2), tileset_source, tile_coord, 0)
 
 
 
 func set_grass_field(tile_place : Vector2i ):
-	var tile_coord = grassAtlasCoords.pick_random()
+	var rng = RandomNumberGenerator.new()
+	rng.seed = Multihelper.mapSeed + tile_place.x + tile_place.y # Deterministic but varies by position
+	var tile_coord = grassAtlasCoords[rng.randi() % grassAtlasCoords.size()]
 	tile_coord = Vector2i(0,0)
 	tile_map.set_cell( tile_place, tileset_source, tile_coord, 0)
 

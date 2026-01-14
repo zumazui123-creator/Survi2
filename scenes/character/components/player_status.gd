@@ -1,4 +1,5 @@
 extends Control
+class_name PlayerStatus
 
 @onready var player = $".."
 @onready var hydrationBar = $Bar/HydrationBar
@@ -39,8 +40,10 @@ var status := {"hp": 1,
 		}
 		
 func setPlayerName(newName:String):
-	%nameLabel.text = newName
-	resizeNameToFit()
+	status["name"] = newName
+	if is_node_ready():
+		%nameLabel.text = newName
+		resizeNameToFit()
 
 func setHPBarRatio(ratio):
 	%hpBar.value = ratio
@@ -60,7 +63,7 @@ func getPlayerStatus():
 		"attackRate": player_combat.attackRate,
 		"attackRange": player_combat.attackRange,
 		"damageType": player_combat.damageType,
-		"name": player.name,
+		"name": player.playerName,
 		"pixel_position": [player.position.x, player.position.y],
 		"tile_position":[player_movement.current_map_position.x, player_movement.current_map_position.y],
 		"items": Inventory.getItems(str(player.name)),
@@ -71,6 +74,13 @@ func getPlayerStatus():
 
 
 func _ready() -> void:
+	if player.name != str(multiplayer.get_unique_id()):
+		$Bar.visible = false
+		$WorkContainer.visible = false
+		
+	if status.has("name"):
+		%nameLabel.text = status["name"]
+		resizeNameToFit()
 	hydrationBar.value = 100
 	foodBar.value 	   = 100
 	getPlayerStatus()

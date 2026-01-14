@@ -152,11 +152,12 @@ func get_map_position(coords : Vector2i):
 	
 func requestSpawn(playerName, id, characterFile):
 	print("requestSpawn: "+str(characterFile))
-	player_info["name"] = playerName
-	player_info["body"] = characterFile
-	player_info["score"] = 0
-	spawnedPlayers[id] = player_info
-	_register_character.rpc(player_info)
+	var new_player_info = player_info.duplicate()
+	new_player_info["name"] = playerName
+	new_player_info["body"] = characterFile
+	new_player_info["score"] = 0
+	spawnedPlayers[id] = new_player_info
+	_register_character.rpc(new_player_info)
 	addPlayer.rpc_id(1, playerName, id, characterFile)
 	
 
@@ -169,6 +170,13 @@ func addPlayer(playerName, id, characterFile):
 	newPlayer.name = str(id)
 	main.get_node("Players").add_child(newPlayer)
 	spawnPlayer(newPlayer)
+
+func spawnPlayers():
+	if not main: return
+	var players = main.get_node("Players")
+	if players:
+		for newPlayer in players.get_children():
+			spawnPlayer(newPlayer)
 	
 func spawnPlayer(newPlayer):
 	#var players = main.get_node("Players")

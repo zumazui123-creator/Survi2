@@ -19,15 +19,54 @@ var act : String = ""
 		playerName = value
 		$PlayerStatus.setPlayerName(value)
 
-var characterFile : String
-
+var characterFile : String:
+	set(value):
+		characterFile = value
+		if is_node_ready() and characterFile != "":
+			player_animation.set_character_sprite(characterFile)
 
 var EndUI     : Control
 
+func _enter_tree():
+	set_multiplayer_authority(name.to_int())
+	if str(multiplayer.get_unique_id()) != name:
+		$CanvasLayer.hide()
+		$CanvasLayer.process_mode = Node.PROCESS_MODE_DISABLED
+
 func _ready():
 	print("Player : "+str(characterFile))
-	player_animation.set_character_sprite(characterFile)
+	
+	Multihelper.data_loaded.connect(_on_multidata_received)
+	Multihelper.player_spawned.connect(_on_player_spawned_info)
+	
+	if characterFile == "":
+		try_recover_body()
+				
+	if characterFile != "":
+		player_animation.set_character_sprite(characterFile)
+	
 	#if multiplayer.is_server():
+
+func _on_multidata_received():
+	try_recover_body()
+
+func _on_player_spawned_info(id, info):
+	if str(id) == name:
+		try_recover_body()
+
+func try_recover_body():
+	var pid = name.to_int()
+	if not Multihelper.spawnedPlayers.has(pid):
+		return
+		
+	var info = Multihelper.spawnedPlayers[pid]
+	
+	if playerName == "" and info.has("name"):
+		self.playerName = info["name"]
+		
+	if characterFile == "" and info.has("body"):
+		print("Recovered body from Multihelper: " + str(info["body"]))
+		self.characterFile = info["body"]
 		#var player_combat_node = get_node("PlayerCombat")
 		#if player_combat_node:
 			#Inventory.itemRemoved.connect(player_items.itemRemoved)
