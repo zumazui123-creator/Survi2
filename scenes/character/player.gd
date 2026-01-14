@@ -26,7 +26,6 @@ var EndUI     : Control
 
 func _ready():
 	print("Player : "+str(characterFile))
-	player_movement.current_map_position = Multihelper.map.tile_map.local_to_map( position )
 	player_animation.set_character_sprite(characterFile)
 	#if multiplayer.is_server():
 		#var player_combat_node = get_node("PlayerCombat")
