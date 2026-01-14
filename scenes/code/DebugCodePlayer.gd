@@ -11,6 +11,13 @@ var command_map = {
 	Strings.ACTION_WALK_DOWN: "walkDown"
 }
 
+var direction_map = {
+	Strings.ACTION_WALK_LEFT: Vector2i.LEFT,
+	Strings.ACTION_WALK_RIGHT: Vector2i.RIGHT,
+	Strings.ACTION_WALK_UP: Vector2i.UP,
+	Strings.ACTION_WALK_DOWN: Vector2i.DOWN
+}
+
 func play(code: String) -> void:
 	if not player:
 		push_error("DebugCodePlayer: Player node not assigned")
@@ -22,27 +29,56 @@ func play(code: String) -> void:
 		if line == "" or line.begins_with("#"):
 			continue
 		
-		# Parse command and optional count
+		# Parse command and args
 		var parts = line.split(" ", false)
-		var cmd = parts[0]
-		var count = 1
-		
-		if parts.size() > 1:
-			if parts[1].is_valid_int():
-				count = parts[1].to_int()
-		
-		await execute_command(cmd, count)
+		await execute_command(parts)
 	
 	print("Code execution finished")
 
-func execute_command(cmd: String, count: int) -> void:
+func execute_command(parts: PackedStringArray) -> void:
+	if parts.is_empty():
+		return
+		
+	var cmd = parts[0]
+
 	if cmd in command_map:
+		var count = 1
+		if parts.size() > 1 and parts[1].is_valid_int():
+			count = parts[1].to_int()
+			
 		var movement_action = command_map[cmd]
 		for i in range(count):
 			await move_step(movement_action)
+			
 	elif cmd == Strings.ACTION_ATTACK:
 		if player.player_combat:
 			player.player_combat.hit(Strings.ACTION_ATTACK)
+			
+	elif cmd == Strings.ACTION_BUILD or cmd == Strings.ACTION_PAINT:
+		if parts.size() < 3:
+			print("Command missing arguments: ", parts)
+			return
+			
+		var type = parts[1]
+		var dir_str = parts[2]
+		
+		if dir_str in direction_map:
+			var dir = direction_map[dir_str]
+			var current_map_pos = player.player_movement.current_map_position
+			var target_map_pos = current_map_pos + dir
+			
+			if cmd == Strings.ACTION_BUILD:
+				# Convert to world position for building placement
+				var target_pos = Multihelper.map.tile_map.map_to_local(target_map_pos)
+				if player.player_building:
+					player.player_building.build(type, target_pos)
+					
+			elif cmd == Strings.ACTION_PAINT:
+				if player.player_building:
+					player.player_building.paint(type, target_map_pos)
+		else:
+			print("Unknown direction: ", dir_str)
+			
 	else:
 		print("Unknown command: ", cmd)
 
