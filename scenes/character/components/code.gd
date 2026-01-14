@@ -1,5 +1,6 @@
 extends Node
 
+@export var debug_code_player : DebugCodePlayer
 
 @onready var code_edit = %CodeEdit
 @onready var item_list = %ItemList
@@ -66,6 +67,8 @@ func _on_code_delete_button_pressed() -> void:
 	code_edit.text = ""
 
 func _on_play_button_pressed() -> void:
+	if debug_code_player != null:
+		debug_code_player.play(code_edit.text)
 	net_control.send_rpc_request(Strings.RPC_METHOD_PLAY_SEQUENCE, {"message": code_edit.text})
 
 func _on_stop_button_pressed() -> void:

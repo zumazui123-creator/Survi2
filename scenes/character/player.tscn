@@ -820,6 +820,7 @@ layout_mode = 2
 text = "Speicher Ki Verhalten"
 
 [node name="TabContainerKI" type="TabContainer" parent="CanvasLayer/Code"]
+visible = false
 offset_left = 67.0
 offset_top = 14.0
 offset_right = 422.0
