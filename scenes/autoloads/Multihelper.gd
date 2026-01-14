@@ -5,7 +5,7 @@ var isHost = false
 var mapSeed = randi()
 var level : Dictionary = {"level": 0,"type": Constants.MAP_MAIN}
 
-var map
+var map: Map
 var main: Node2D
 
 
@@ -28,6 +28,7 @@ var syncedPlayers = []
 
 var player_info = {"name": ""}
 var goal_tile = Vector2i(0,0)
+var debug_parser_enabled = true
 
 
 var game : Node

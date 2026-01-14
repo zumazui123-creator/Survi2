@@ -25,7 +25,7 @@ func init_tab_container() -> void:
 		tab_containerki.visible = false
 		
 func _ready():
-	if debug_code_player != null:
+	if Multihelper.debug_parser_enabled:
 		print("Debug Code Playing enabled.")
 	exit_btn.pressed.connect(_on_exit_btn_pressed)
 	#highlighter.setup_custom_highlighter(code_edit)
@@ -69,7 +69,7 @@ func _on_code_delete_button_pressed() -> void:
 	code_edit.text = ""
 
 func _on_play_button_pressed() -> void:
-	if debug_code_player != null:
+	if debug_code_player != null && Multihelper.debug_parser_enabled:
 		debug_code_player.play(code_edit.text)
 		return
 	net_control.send_rpc_request(Strings.RPC_METHOD_PLAY_SEQUENCE, {"message": code_edit.text})

@@ -1,11 +1,11 @@
 extends Control
+class_name Map
 
 var grassAtlasCoords = [Vector2i(0,0),Vector2i(1,0),Vector2i(2,0),Vector2i(3,0),Vector2i(16,0),Vector2i(17,0)]
 var waterCoors = [Vector2i(18,0), Vector2i(19,0)]
 #var blockStoneCoors = [Vector2i(6,0),Vector2i(7,0),Vector2i(8,0),Vector2i(9,0), Vector2i(10,0)]
 var noise = FastNoiseLite.new()
 var tileset_source = 1
-
 # Noise parameters
 #var tile_size = 64
 var map_width = Constants.MAP_SIZE.x
@@ -14,8 +14,9 @@ var map_height = Constants.MAP_SIZE.y
 
 @onready var enemies : Node2D  
 @onready var animals : Node2D 
-@onready var tile_map : TileMapLayer 
-@onready var laby_map : Node 
+@export var tile_map : TileMapLayer 
+@onready var laby_map : Node
+@export var buildings : MapBuildings
 
 var walkable_tiles = []
 var level_type = -1
@@ -23,8 +24,7 @@ var level_type = -1
 func _ready():
 	print("Map ready")
 	enemies = get_node_or_null("%Enemies")
-	animals  = get_node_or_null("%Animals" )
-	tile_map  = get_node_or_null("TileMap")
+	animals  = get_node_or_null("%Animals")
 	laby_map  =  get_node_or_null("Labyrinth")
 	
 func generateMap(level_dict : Dictionary):

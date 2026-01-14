@@ -37,7 +37,7 @@ func generateLabyrinth( level_no : int) -> Array[Vector2i] :
 			#print("tile:"+str(tile)+str(walkVec))
 			map.set_grass_field(walkVec)
 			walkable_tiles.append(walkVec)
-		
+	# TODO : walkable tiles come empty sometimes
 	spawnPosition = walkable_tiles[0]
 	endPosition = walkable_tiles[-1]
 	map.set_field(endPosition, atlasCoorWhiteField)

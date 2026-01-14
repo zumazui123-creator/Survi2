@@ -69,9 +69,8 @@ func execute_command(parts: PackedStringArray) -> void:
 			
 			if cmd == Strings.ACTION_BUILD:
 				# Convert to world position for building placement
-				var target_pos = Multihelper.map.tile_map.map_to_local(target_map_pos)
 				if player.player_building:
-					player.player_building.build(type, target_pos)
+					player.player_building.build(type, target_map_pos)
 					
 			elif cmd == Strings.ACTION_PAINT:
 				if player.player_building:

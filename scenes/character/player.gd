@@ -26,6 +26,7 @@ var EndUI     : Control
 
 func _ready():
 	print("Player : "+str(characterFile))
+	player_movement.current_map_position = Multihelper.map.tile_map.local_to_map( position )
 	player_animation.set_character_sprite(characterFile)
 	#if multiplayer.is_server():
 		#var player_combat_node = get_node("PlayerCombat")
@@ -34,7 +35,7 @@ func _ready():
 			#player_combat_node.mob_killed.connect(player_combat_node.mobKilled)
 			#player_combat_node.player_killed.connect(player_combat_node.enemyPlayerKilled)
 			#player_combat_node.object_destroyed.connect(player_combat_node.objectDestroyed)
-
+	
 	if name == str(multiplayer.get_unique_id()):
 		print("player HUD")
 		var main = get_parent().get_parent()
@@ -130,6 +131,7 @@ func sendInputstwo(data):
 @rpc("any_peer", "call_local", "reliable")
 func sendPos(pos):
 	position = pos
+	player_movement.current_map_position = Multihelper.map.tile_map.local_to_map( position )
 
 func _on_back_to_menu_pressed() -> void:
 	var game_scene: PackedScene = load(Constants.PATH_GAME_SCENE)
