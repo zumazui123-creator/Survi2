@@ -17,12 +17,20 @@ var paintable_tiles = {
 }
 
 func build(building_type: String, tile_position: Vector2i) -> void:
+	execute_build.rpc(building_type, tile_position)
+
+@rpc("call_local", "any_peer", "reliable")
+func execute_build(building_type: String, tile_position: Vector2i) -> void:
 	if building_type in building_scenes:
 		Multihelper.map.buildings.place_building(building_scenes[building_type], tile_position)
 	else:
 		print("Building type ", building_type, " not found.")
 
 func paint(tile_type: String, tile_pos: Vector2i) -> void:
+	execute_paint.rpc(tile_type, tile_pos)
+
+@rpc("call_local", "any_peer", "reliable")
+func execute_paint(tile_type: String, tile_pos: Vector2i) -> void:
 	if tile_type in paintable_tiles:
 		Multihelper.map.set_field(tile_pos, paintable_tiles[tile_type])
 		print("Painted ", tile_type, " at ", tile_pos)
