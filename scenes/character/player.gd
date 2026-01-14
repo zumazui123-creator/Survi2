@@ -10,6 +10,7 @@ var act : String = ""
 @onready var player_movement = $PlayerMovement
 @onready var player_animation = $PlayerAnimation
 @onready var player_combat = $PlayerCombat
+@export var player_building : PlayerBuilding
 @onready var player_items = $PlayerItems
 @onready var player_status = %PlayerStatus
 @onready var code_edit = %CodeEdit

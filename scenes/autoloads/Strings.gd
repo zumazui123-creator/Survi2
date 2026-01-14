@@ -11,6 +11,8 @@ const ACTION_WALK_UP = "oben"
 const ACTION_WALK_DOWN = "unten"
 const ACTION_ATTACK = "attacke"
 const ACTION_SAY = "sage"
+const ACTION_BUILD = "build"
+const ACTION_PAINT = "paint"
 
 # --- Code Keywords ---
 const KEYWORD_FUNC = "func"
