@@ -205,7 +205,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 size_flags_horizontal = 3
-text = "localhost"
+text = "127.0.0.1"
 placeholder_text = "localhost"
 max_length = 30
 
@@ -218,7 +218,7 @@ size_flags_horizontal = 4
 
 [node name="Label" type="Label" parent="HBoxContainer2/PanelContainer/VBoxContainer/HBoxContainer2/HostWithPlayerContainer"]
 layout_mode = 2
-text = "Host with Player"
+text = "Host as Player"
 
 [node name="CheckButton" type="CheckButton" parent="HBoxContainer2/PanelContainer/VBoxContainer/HBoxContainer2/HostWithPlayerContainer"]
 layout_mode = 2
