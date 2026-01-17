@@ -204,19 +204,35 @@ text = "Join Server IP-Address:"
 unique_name_in_owner = true
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
+size_flags_horizontal = 3
 text = "localhost"
 placeholder_text = "localhost"
 max_length = 30
 
-[node name="DebugCodeParserContainer" type="HBoxContainer" parent="HBoxContainer2/PanelContainer/VBoxContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="HBoxContainer2/PanelContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HostWithPlayerContainer" type="HBoxContainer" parent="HBoxContainer2/PanelContainer/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 4
 
-[node name="Label" type="Label" parent="HBoxContainer2/PanelContainer/VBoxContainer/DebugCodeParserContainer"]
+[node name="Label" type="Label" parent="HBoxContainer2/PanelContainer/VBoxContainer/HBoxContainer2/HostWithPlayerContainer"]
 layout_mode = 2
-text = "Enable Debug Code Player"
+text = "Host with Player"
 
-[node name="CheckButton" type="CheckButton" parent="HBoxContainer2/PanelContainer/VBoxContainer/DebugCodeParserContainer"]
+[node name="CheckButton" type="CheckButton" parent="HBoxContainer2/PanelContainer/VBoxContainer/HBoxContainer2/HostWithPlayerContainer"]
+layout_mode = 2
+button_pressed = true
+
+[node name="DebugCodeParserContainer" type="HBoxContainer" parent="HBoxContainer2/PanelContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="Label" type="Label" parent="HBoxContainer2/PanelContainer/VBoxContainer/HBoxContainer2/DebugCodeParserContainer"]
+layout_mode = 2
+text = "Debug Code Player"
+
+[node name="CheckButton" type="CheckButton" parent="HBoxContainer2/PanelContainer/VBoxContainer/HBoxContainer2/DebugCodeParserContainer"]
 layout_mode = 2
 button_pressed = true
 
@@ -226,4 +242,4 @@ button_pressed = true
 [connection signal="item_selected" from="HBoxContainer/KI_PLaygroundMap/VBoxContainer/KI_PLaygroundList" to="." method="_on_ki_p_layground_list_item_selected"]
 [connection signal="pressed" from="HBoxContainer2/PanelContainer/VBoxContainer/StartBtn" to="." method="_on_start_btn_pressed"]
 [connection signal="pressed" from="HBoxContainer2/PanelContainer/VBoxContainer/HBoxContainer/JoinBtn" to="." method="_on_join_btn_pressed"]
-[connection signal="toggled" from="HBoxContainer2/PanelContainer/VBoxContainer/DebugCodeParserContainer/CheckButton" to="." method="_on_code_parser_button_toggled"]
+[connection signal="toggled" from="HBoxContainer2/PanelContainer/VBoxContainer/HBoxContainer2/DebugCodeParserContainer/CheckButton" to="." method="_on_code_parser_button_toggled"]
