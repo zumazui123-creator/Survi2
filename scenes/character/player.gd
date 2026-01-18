@@ -44,8 +44,7 @@ func _ready():
 				
 	if characterFile != "":
 		player_animation.set_character_sprite(characterFile)
-	
-	#if multiplayer.is_server():
+
 
 func _on_multidata_received():
 	try_recover_body()
@@ -104,21 +103,12 @@ func disconnected(id):
 		if player_combat_node:
 			player_combat_node.die()
 
-func net_commander():
-	var net_action = net_control.net_commander()
-	if net_action == Strings.CMD_END_SEQUENCE:
-		resetPlayer()
-		net_control.send_text(net_action)
-	if net_action == Strings.CMD_RESET:
-		Multihelper.spawnPlayers()
-	return net_action
 
 func _physics_process(_delta: float) -> void:
 	if str(multiplayer.get_unique_id()) != name:
 		return
 
-	act = net_commander()
-	press_action(act)
+
 	player_movement.input()
 	player_movement.tile_move()
 	player_movement.win_condition()
@@ -129,32 +119,7 @@ func resetPlayer():
 	if difLevelMode > 0:
 		Multihelper.spawnPlayers()
 
-func press_action(inp_action : String):
-	if inp_action == "":
-		return
-	inp_action = inp_action.strip_edges()
 
-	if Strings.ACTION_SAY in inp_action:
-		print("sage:"+inp_action)
-		var text = inp_action.trim_prefix(Strings.ACTION_SAY)
-		sendMessage(text)
-		net_control.send_text("Godot: " + inp_action)
-
-	if Strings.ACTION_USE_ITEM in inp_action:
-		var item_id = player_items.use_item(inp_action)
-		net_control.send_text("Godot: " + inp_action + ", item: "+str(item_id))
-		
-	player_movement.press_action(inp_action)
-	
-	if Multihelper.level in range(0,2) and "End Sequenz" in inp_action:
-		code_edit.text = ""
-		var end = Multihelper.map.laby_map.spawnPosition
-		var start = Multihelper.map.tile_map.map_to_local( end )
-		position = start
-		net_control.send_text("Godot: " + inp_action)
-		print("End Sequenz")
-
-# GODOT Server
 func action(vel, angle, doingAction):
 	var player_movement_node = get_node("PlayerMovement")
 	if player_movement_node:

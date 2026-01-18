@@ -44,8 +44,6 @@ func tile_move():
 
 		current_map_position = Multihelper.map.tile_map.local_to_map( player.position )
 		snap_to_tiles_position()
-		#player.net_control.send_text("Godot: " + player.act )
-		player.ai_control.send_ki_obs() #TODO 
 		player.act = ""
 	
 	player.player_animation.animate_player(direction)
