@@ -8,6 +8,7 @@ var level : Dictionary = {"level": 0,"type": Constants.MAP_MAIN}
 var map: Map
 var main: Node2D
 
+var lang : String = "de"
 
 signal player_connected(peer_id)
 signal player_disconnected(peer_id)

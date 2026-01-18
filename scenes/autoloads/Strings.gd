@@ -5,14 +5,39 @@ extends Node
 
 
 # --- Player Actions ---
-const ACTION_WALK_LEFT = "links"
-const ACTION_WALK_RIGHT = "rechts"
-const ACTION_WALK_UP = "oben"
-const ACTION_WALK_DOWN = "unten"
-const ACTION_ATTACK = "attacke"
-const ACTION_SAY = "sage"
-const ACTION_BUILD = "build"
-const ACTION_PAINT = "paint"
+const ACTION_WALK_LEFT  = "walkLeft"
+const ACTION_WALK_RIGHT = "walkRight"
+const ACTION_WALK_UP    = "walkUp"
+const ACTION_WALK_DOWN  = "walkDown"
+const ACTION_ATTACK     = "attack"
+const ACTION_SAY        = "say"
+const ACTION_BUILD      = "build"
+const ACTION_PAINT      = "paint"
+
+const ACTION_NAMES = {
+	"de": {
+		"links":  ACTION_WALK_LEFT,
+		"rechts": ACTION_WALK_RIGHT,
+		"oben":   ACTION_WALK_UP,
+		"unten":  ACTION_WALK_DOWN,
+		"attacke": ACTION_ATTACK,
+		"sage":   ACTION_SAY,
+		"baue":   ACTION_BUILD,
+		"male":   ACTION_PAINT,
+	},
+	"en": {
+		"left":   ACTION_WALK_LEFT,
+		"right":  ACTION_WALK_RIGHT,
+		"up":     ACTION_WALK_UP,
+		"down":   ACTION_WALK_DOWN,
+		"attack": ACTION_ATTACK,
+		"speak":  ACTION_SAY,
+		"build":  ACTION_BUILD,
+		"paint":  ACTION_PAINT,
+	}
+}
+
+
 
 # --- Code Keywords ---
 const KEYWORD_FUNC = "func"
@@ -36,8 +61,7 @@ const CMD_RESET = "reset"
 # --- RPC Result Keys ---
 const RPC_RESULT_KEY_FUNCTIONS = "functions"
 
-# --- Player Actions (extended) ---
-const ACTION_USE_ITEM = "use item"
+
 
 # --- Animation Names ---
 const ANIM_WALKING = "walking"

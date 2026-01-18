@@ -33,24 +33,27 @@ func _ready():
 
 func _on_exit_btn_pressed():
 	popup.hide()
+
+func _insert_text(text : String):
+	code_edit.insert_text_at_caret(text + "\n")
 	
-func _on_links_button_pressed() -> void:
-	code_edit.insert_text_at_caret(Strings.ACTION_WALK_LEFT + "\n")
+func _on_links_button_pressed(button: Button) -> void:
+	_insert_text(button.text)
 
-func _on_oben_button_pressed() -> void:
-	code_edit.insert_text_at_caret(Strings.ACTION_WALK_UP + "\n")
+func _on_oben_button_pressed(button: Button) -> void:
+	_insert_text(button.text)
 
-func _on_rechts_button_pressed() -> void:
-	code_edit.insert_text_at_caret(Strings.ACTION_WALK_RIGHT + "\n")
+func _on_rechts_button_pressed(button: Button) -> void:
+	_insert_text(button.text)
 	
-func _on_unten_button_pressed() -> void:
-	code_edit.insert_text_at_caret(Strings.ACTION_WALK_DOWN + "\n")
+func _on_unten_button_pressed(button: Button) -> void:
+	_insert_text(button.text)
 
-func _on_attacke_button_pressed() -> void:
-	code_edit.insert_text_at_caret(Strings.ACTION_ATTACK + "\n")
+func _on_attacke_button_pressed(button: Button) -> void:
+	_insert_text(button.text)
 
-func _on_sage_button_pressed() -> void:
-	code_edit.insert_text_at_caret(Strings.ACTION_SAY + "\n")
+func _on_sage_button_pressed(button: Button) -> void:
+	_insert_text(button.text)
 
 func _on_item_list_item_activated(index: int) -> void:
 	var item_text = item_list.get_item_text(index)

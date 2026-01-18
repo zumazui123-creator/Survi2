@@ -39,47 +39,50 @@ func execute_command(parts: PackedStringArray) -> void:
 	if parts.is_empty():
 		return
 		
-	var cmd = parts[0]
+	var child_cmd = parts[0]
 
-	if cmd in command_map:
-		var count = 1
-		if parts.size() > 1 and parts[1].is_valid_int():
-			count = parts[1].to_int()
+	#if cmd in command_map:
+	if child_cmd in Strings.ACTION_NAMES["de"].keys():
+		var cmd = Strings.ACTION_NAMES["de"][child_cmd] 
+		if "walk" in cmd:
+			var count = 1
+			if parts.size() > 1 and parts[1].is_valid_int():
+				count = parts[1].to_int()
+				
+			var movement_action = cmd # command_map[cmd]
+			for i in range(count):
+				await move_step(movement_action)
 			
-		var movement_action = command_map[cmd]
-		for i in range(count):
-			await move_step(movement_action)
+		elif cmd == Strings.ACTION_ATTACK:
+			if player.player_combat:
+				player.player_combat.hit(Strings.ACTION_ATTACK)
 			
-	elif cmd == Strings.ACTION_ATTACK:
-		if player.player_combat:
-			player.player_combat.hit(Strings.ACTION_ATTACK)
+		elif cmd == Strings.ACTION_BUILD or cmd == Strings.ACTION_PAINT:
+			if parts.size() < 3:
+				print("Command missing arguments: ", parts)
+				return
+				
+			var type = parts[1]
+			var dir_str = parts[2]
 			
-	elif cmd == Strings.ACTION_BUILD or cmd == Strings.ACTION_PAINT:
-		if parts.size() < 3:
-			print("Command missing arguments: ", parts)
-			return
-			
-		var type = parts[1]
-		var dir_str = parts[2]
-		
-		if dir_str in direction_map:
-			var dir = direction_map[dir_str]
-			var current_map_pos = player.player_movement.current_map_position
-			var target_map_pos = current_map_pos + dir
-			
-			if cmd == Strings.ACTION_BUILD:
-				# Convert to world position for building placement
-				if player.player_building:
-					player.player_building.build(type, target_map_pos)
-					
-			elif cmd == Strings.ACTION_PAINT:
-				if player.player_building:
-					player.player_building.paint(type, target_map_pos)
+			if dir_str in direction_map:
+				var dir = direction_map[dir_str]
+				var current_map_pos = player.player_movement.current_map_position
+				var target_map_pos = current_map_pos + dir
+				
+				if cmd == Strings.ACTION_BUILD:
+					# Convert to world position for building placement
+					if player.player_building:
+						player.player_building.build(type, target_map_pos)
+						
+				elif cmd == Strings.ACTION_PAINT:
+					if player.player_building:
+						player.player_building.paint(type, target_map_pos)
+			else:
+				print("Unknown direction: ", dir_str)
+				
 		else:
-			print("Unknown direction: ", dir_str)
-			
-	else:
-		print("Unknown command: ", cmd)
+			print("Unknown command: ", cmd)
 
 func move_step(action: String) -> void:
 	while player.player_movement.is_moving():
