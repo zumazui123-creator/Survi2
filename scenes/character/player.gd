@@ -108,7 +108,6 @@ func _physics_process(_delta: float) -> void:
 	if str(multiplayer.get_unique_id()) != name:
 		return
 
-
 	player_movement.input()
 	player_movement.tile_move()
 	player_movement.win_condition()

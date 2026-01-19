@@ -66,7 +66,8 @@ func _on_create_function_pressed() -> void:
 	popup.popup_centered()
 
 func _on_load_function_pressed() -> void:
-	net_control.send_rpc_request(Strings.RPC_METHOD_LOAD_FUNCTIONS, {})
+	print("todo load func")
+	#net_control.send_rpc_request(Strings.RPC_METHOD_LOAD_FUNCTIONS, {})
 	
 func _on_code_delete_button_pressed() -> void:
 	code_edit.text = ""
@@ -75,11 +76,12 @@ func _on_play_button_pressed() -> void:
 	if debug_code_player != null && Multihelper.debug_parser_enabled:
 		debug_code_player.play(code_edit.text)
 		return
-	net_control.send_rpc_request(Strings.RPC_METHOD_PLAY_SEQUENCE, {"message": code_edit.text})
+	#net_control.send_rpc_request(Strings.RPC_METHOD_PLAY_SEQUENCE, {"message": code_edit.text})
 
 func _on_stop_button_pressed() -> void:
-	net_control.send_text(Strings.CMD_END_SEQUENCE + "\n")
-	net_control.send_text(Strings.CMD_STOP_SEQUENCE + "\n")
+	print("_on_stop_button_pressed")
+	#net_control.send_text(Strings.CMD_END_SEQUENCE + "\n")
+	#net_control.send_text(Strings.CMD_STOP_SEQUENCE + "\n")
 
 func checkInputFuncName():
 	print("checkInputFuncName")
@@ -96,4 +98,4 @@ func _on_create_btn_pressed() -> void:
 		+ "\n"
 		+ Strings.KEYWORD_END_FUNC
 	)
-	net_control.send_rpc_request(Strings.RPC_METHOD_CREATE_FUNCTION, {"message": message})
+	#net_control.send_rpc_request(Strings.RPC_METHOD_CREATE_FUNCTION, {"message": message})
