@@ -7,7 +7,8 @@ func _ready():
 		print(Multihelper.level)
 		Multihelper.loadMap()
 		breakables.spawnObjects(breakables.initialSpawnObjects)
-		$HUD.queue_free()
+		if not Multihelper.host_as_player_enabled:
+			$HUD.queue_free()
 	$dayNight.time_tick.connect(%DayNightCycleUI.set_daytime)
 	#createHUD()
 

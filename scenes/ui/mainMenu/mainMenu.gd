@@ -48,5 +48,8 @@ func _on_start_btn_pressed() -> void:
 func _on_join_btn_pressed() -> void:
 	Multihelper.join_game(ipInputLine.text)
 
-func _on_code_parser_button_toggled(toggled_on):
-	Multihelper.debug_parser_enabled = toggled_on
+func _on_code_player_btn_toggled(toggled_on: bool) -> void:
+	Multihelper.code_player_enabled = toggled_on
+
+func _on_host_as_player_btn_toggled(toggled_on: bool) -> void:
+	Multihelper.host_as_player_enabled = toggled_on

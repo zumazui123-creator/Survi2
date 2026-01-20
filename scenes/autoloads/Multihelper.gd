@@ -29,13 +29,14 @@ var syncedPlayers = []
 
 var player_info = {"name": ""}
 var goal_tile = Vector2i(0,0)
-var debug_parser_enabled = true
-
+var code_player_enabled 		= true
+var host_as_player_enabled 	= true
 
 var game : Node
 func setGameNode(gameNode : Node):
 	game.queue_free()
 	game = gameNode
+	
 func _ready():
 	game = get_node("/root/Game")
 	multiplayer.peer_connected.connect(_on_player_connected)
@@ -60,7 +61,7 @@ func join_game(address = ""):
 func create_game():
 	if not game:
 		game = get_node_or_null("/root/Game")
-	print("create_game")
+	print("hosting a game")
 	var peer = ENetMultiplayerPeer.new()
 	var error = peer.create_server(PORT)
 	if error:

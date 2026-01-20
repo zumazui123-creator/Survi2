@@ -1,5 +1,5 @@
 extends Node
-class_name DebugCodePlayer
+class_name CodePlayer
 
 @export var player : Player
 													 

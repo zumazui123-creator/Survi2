@@ -1,10 +1,9 @@
-[gd_scene load_steps=37 format=3 uid="uid://bmhxilkffhqa5"]
+[gd_scene load_steps=36 format=3 uid="uid://bmhxilkffhqa5"]
 
 [ext_resource type="Script" uid="uid://bruqpv3kpycof" path="res://scenes/character/player.gd" id="1_7xvi4"]
 [ext_resource type="Script" uid="uid://dukylmcbt25lk" path="res://scenes/character/builder.gd" id="2_7r6u0"]
 [ext_resource type="Script" uid="uid://ddrqxuc43a4rn" path="res://scenes/character/components/function_handler.gd" id="3_vreni"]
 [ext_resource type="AudioStream" uid="uid://dshuyvbl21dh7" path="res://assets/sfx/step.ogg" id="4_bflkw"]
-[ext_resource type="Script" uid="uid://bf5je5nup6p3v" path="res://scenes/character/player_code.gd" id="4_okkwj"]
 [ext_resource type="Texture2D" uid="uid://sm4e4ahe6vnd" path="res://assets/characters/hands/hands-sheet.png" id="4_yjkcj"]
 [ext_resource type="AudioStream" uid="uid://c5kpasvow2dlb" path="res://assets/sfx/swing.ogg" id="5_xs70q"]
 [ext_resource type="Script" uid="uid://2fmmi7tylwwx" path="res://scenes/character/components/player_movement.gd" id="6_7r6u0"]
@@ -19,7 +18,7 @@
 [ext_resource type="Script" path="res://scenes/character/camera_2d.gd" id="13_e5n5u"]
 [ext_resource type="Texture2D" uid="uid://bwihn7idvcobs" path="res://assets/ui/itemSlotSelected.png" id="14_ux0ro"]
 [ext_resource type="Script" path="res://scenes/character/goal_texture_rect.gd" id="15_vhx6d"]
-[ext_resource type="Script" uid="uid://3u5wolperx1b" path="res://scenes/code/DebugCodePlayer.gd" id="16_2smwq"]
+[ext_resource type="Script" uid="uid://3u5wolperx1b" path="res://scenes/code/CodePlayer.gd" id="16_2smwq"]
 [ext_resource type="Script" path="res://scenes/character/components/spawn_area.gd" id="17_jb4us"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_1pknd"]
@@ -362,9 +361,6 @@ script = ExtResource("13_e5n5u")
 
 [node name="Builder" type="Node" parent="."]
 script = ExtResource("2_7r6u0")
-
-[node name="PlayerCode" type="Node" parent="."]
-script = ExtResource("4_okkwj")
 
 [node name="FunctionHandler" type="Node" parent="."]
 script = ExtResource("3_vreni")
