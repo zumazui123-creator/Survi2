@@ -26,6 +26,7 @@ var characterFile : String:
 			player_animation.set_character_sprite(characterFile)
 
 var EndUI     : Control
+var local_setup_done := false
 
 func _enter_tree():
 	set_multiplayer_authority(name.to_int())
@@ -38,9 +39,12 @@ func _ready():
 	
 	Multihelper.data_loaded.connect(_on_multidata_received)
 	Multihelper.player_spawned.connect(_on_player_spawned_info)
+	Multihelper.player_disconnected.connect(disconnected)
 	
 	if characterFile == "":
 		try_recover_body()
+	else:
+		_setup_local_player()
 				
 	if characterFile != "":
 		player_animation.set_character_sprite(characterFile)
@@ -73,13 +77,16 @@ func try_recover_body():
 			#player_combat_node.player_killed.connect(player_combat_node.enemyPlayerKilled)
 			#player_combat_node.object_destroyed.connect(player_combat_node.objectDestroyed)
 	
-	if name == str(multiplayer.get_unique_id()):
-		print("player HUD")
-		var main = get_parent().get_parent()
-		EndUI = main.get_node("HUD/EndUI")
-		$Camera2D.enabled = true
-		
-	Multihelper.player_disconnected.connect(disconnected)
+	_setup_local_player()
+
+func _setup_local_player():
+	if local_setup_done or name != str(multiplayer.get_unique_id()):
+		return
+	local_setup_done = true
+	print("player HUD")
+	var main = get_parent().get_parent()
+	EndUI = main.get_node("HUD/EndUI")
+	$Camera2D.enabled = true
 
 func getDamage(causer, amount, _type):
 	player_combat.getDamage(causer, amount, _type)

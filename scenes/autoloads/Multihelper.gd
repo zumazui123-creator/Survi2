@@ -45,16 +45,20 @@ func _ready():
 	multiplayer.connection_failed.connect(_on_connected_fail)
 	multiplayer.server_disconnected.connect(_on_server_disconnected)
 
+func _set_multiplayer_peer(peer):
+	multiplayer.multiplayer_peer = peer
+	get_tree().get_multiplayer().multiplayer_peer = peer
+
 func join_game(address = ""):
 	print("join_game")
 	if address.is_empty():
 		address = DEFAULT_SERVER_IP
-	multiplayer.multiplayer_peer = null
+	_set_multiplayer_peer(null)
 	var peer = ENetMultiplayerPeer.new()
 	var error = peer.create_client(address, PORT)
 	if error:
 		return error
-	multiplayer.multiplayer_peer = peer
+	_set_multiplayer_peer(peer)
 	print("peer:")
 	print(peer)
 
@@ -66,21 +70,25 @@ func create_game():
 	var error = peer.create_server(PORT)
 	if error:
 		return error
-	multiplayer.multiplayer_peer = peer
+	_set_multiplayer_peer(peer)
 	player_connected.emit(1, player_info)
 	game.start_game()
 
 func remove_multiplayer_peer():
 	print("remove_multiplayer_peer")
-	multiplayer.multiplayer_peer = null
+	_set_multiplayer_peer(null)
 
 func _on_player_connected(id):
 	print("player connected with id "+str(id)+" to "+str(multiplayer.get_unique_id()))
 
 @rpc("call_local" ,"any_peer", "reliable")
-func _register_character(new_player_info):
+func _register_character(new_player_info, requested_id := 0):
 	print("player register:"+str(new_player_info))
 	var new_player_id = multiplayer.get_remote_sender_id()
+	if new_player_id == 0:
+		new_player_id = requested_id
+	if new_player_id == 0:
+		return
 	spawnedPlayers[new_player_id] = new_player_info
 	player_spawned.emit(new_player_id, new_player_info)
 	player_registered.emit()
@@ -136,10 +144,10 @@ func sendGameData(playerData, mapData):
 	set_process(true)
 
 func _on_connected_fail():
-	multiplayer.multiplayer_peer = null
+	_set_multiplayer_peer(null)
 
 func _on_server_disconnected():
-	multiplayer.multiplayer_peer = null
+	_set_multiplayer_peer(null)
 	server_disconnected.emit()
 
 func loadMap():
@@ -159,8 +167,15 @@ func requestSpawn(playerName, id, characterFile):
 	new_player_info["body"] = characterFile
 	new_player_info["score"] = 0
 	spawnedPlayers[id] = new_player_info
-	_register_character.rpc(new_player_info)
-	addPlayer.rpc_id(1, playerName, id, characterFile)
+	_register_character.rpc(new_player_info, id)
+	if multiplayer.is_server():
+		var peers = multiplayer.get_peers()
+		if peers.is_empty():
+			addPlayer(playerName, id, characterFile)
+		else:
+			addPlayer.rpc(playerName, id, characterFile)
+	else:
+		addPlayer.rpc_id(1, playerName, id, characterFile)
 	
 
 @rpc("any_peer", "call_local", "reliable")

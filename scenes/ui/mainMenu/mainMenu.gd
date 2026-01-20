@@ -4,11 +4,15 @@ extends Control
 @onready var turnierLevelList = $HBoxContainer/TurnierContainer/VBoxContainer/TunierLevelList
 @onready var kiList =  $HBoxContainer/KI_PLaygroundMap/VBoxContainer/KI_PLaygroundList
 @onready var ipInputLine = %IpInputLine
+@onready var hostAsPlayerBtn = $HBoxContainer2/PanelContainer/VBoxContainer/HBoxContainer2/HostWithPlayerContainer/HostAsPlayerBtn
+@onready var codePlayerBtn = $HBoxContainer2/PanelContainer/VBoxContainer/HBoxContainer2/CodePlayerContainer/CodePlayerBtn
 
 var selcted_level : Dictionary = {}
 
 func _ready():
 	selcted_level = Levels.LabyrinthLevels.get(0)
+	Multihelper.host_as_player_enabled = hostAsPlayerBtn.button_pressed
+	Multihelper.code_player_enabled = codePlayerBtn.button_pressed
 	if OS.has_feature("dedicated_server"):
 		Multihelper.create_game()
 		
