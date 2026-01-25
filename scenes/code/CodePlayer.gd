@@ -42,25 +42,25 @@ func execute_command(parts: PackedStringArray) -> void:
 	var child_cmd = parts[0]
 
 	if child_cmd in Strings.ACTION_NAMES["de"].keys():
-		var cmd = Strings.ACTION_NAMES["de"][child_cmd] 
-		if "walk" in cmd:
+		parts[0] = Strings.ACTION_NAMES["de"][child_cmd] 
+		if "walk" in parts[0]:
 			walk(parts)
 			
-		elif cmd == Strings.ACTION_ATTACK:
+		elif parts[0] == Strings.ACTION_ATTACK:
 			if player.player_combat:
 				player.player_combat.hit(Strings.ACTION_ATTACK)
 			
-		elif cmd == Strings.ACTION_BUILD or cmd == Strings.ACTION_PAINT:
-			build(cmd,parts)
+		elif parts[0] == Strings.ACTION_BUILD or parts[0] == Strings.ACTION_PAINT:
+			build(parts[0],parts)
 			
-		elif Strings.ACTION_USE_ITEM in cmd:
-			var item_id = player.player_items.use_item(cmd)
+		elif Strings.ACTION_USE_ITEM in parts[0]:
+			var item_id = player.player_items.use_item(parts[0])
 			print("Using item:"+str(item_id))
 			
-		elif Strings.ACTION_SAY in cmd:
+		elif Strings.ACTION_SAY in parts[0]:
 			say(parts)
 		else:
-			print("Unknown command: ", cmd)
+			print("Unknown command: ", parts[0])
 			
 func build(cmd,parts):
 	if parts.size() < 3:

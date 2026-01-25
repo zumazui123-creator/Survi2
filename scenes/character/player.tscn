@@ -531,12 +531,12 @@ text = "Zurück zum Menu"
 offset = Vector2(640, 360)
 transform = Transform2D(1, 0, 0, 1, 640, 360)
 
-[node name="Code" type="Node2D" parent="CanvasLayer" node_paths=PackedStringArray("debug_code_player")]
+[node name="Code" type="Node2D" parent="CanvasLayer" node_paths=PackedStringArray("code_player")]
 z_index = 6
 z_as_relative = false
 position = Vector2(218, -371)
 script = ExtResource("8_5y66v")
-debug_code_player = NodePath("DebugCodePlayer")
+code_player = NodePath("DebugCodePlayer")
 
 [node name="TabContainer" type="TabContainer" parent="CanvasLayer/Code"]
 offset_left = 67.0

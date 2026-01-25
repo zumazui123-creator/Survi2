@@ -13,6 +13,7 @@ const ACTION_ATTACK     = "attack"
 const ACTION_SAY        = "say"
 const ACTION_BUILD      = "build"
 const ACTION_PAINT      = "paint"
+const ACTION_USE_ITEM   = "use item"
 
 const ACTION_NAMES = {
 	"de": {
@@ -22,6 +23,7 @@ const ACTION_NAMES = {
 		"unten":  ACTION_WALK_DOWN,
 		"attacke": ACTION_ATTACK,
 		"sage":   ACTION_SAY,
+		"nutze item" : ACTION_USE_ITEM,
 		"baue":   ACTION_BUILD,
 		"male":   ACTION_PAINT,
 	},
@@ -32,6 +34,7 @@ const ACTION_NAMES = {
 		"down":   ACTION_WALK_DOWN,
 		"attack": ACTION_ATTACK,
 		"speak":  ACTION_SAY,
+		"use item" : ACTION_USE_ITEM,
 		"build":  ACTION_BUILD,
 		"paint":  ACTION_PAINT,
 	}
