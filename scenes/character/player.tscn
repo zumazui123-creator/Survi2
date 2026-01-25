@@ -527,18 +527,18 @@ popup/item_2/id = 2
 layout_mode = 2
 text = "Zurück zum Menu"
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
+[node name="CodeLayer" type="CanvasLayer" parent="."]
 offset = Vector2(640, 360)
 transform = Transform2D(1, 0, 0, 1, 640, 360)
 
-[node name="Code" type="Node2D" parent="CanvasLayer" node_paths=PackedStringArray("code_player")]
+[node name="Code" type="Node2D" parent="CodeLayer" node_paths=PackedStringArray("code_player")]
 z_index = 6
 z_as_relative = false
 position = Vector2(218, -371)
 script = ExtResource("8_5y66v")
 code_player = NodePath("DebugCodePlayer")
 
-[node name="TabContainer" type="TabContainer" parent="CanvasLayer/Code"]
+[node name="TabContainer" type="TabContainer" parent="CodeLayer/Code"]
 offset_left = 67.0
 offset_top = 14.0
 offset_right = 422.0
@@ -547,20 +547,20 @@ size_flags_vertical = 3
 tab_alignment = 1
 current_tab = 0
 
-[node name="Code" type="VBoxContainer" parent="CanvasLayer/Code/TabContainer"]
+[node name="Code" type="VBoxContainer" parent="CodeLayer/Code/TabContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 6
 size_flags_vertical = 3
 metadata/_tab_index = 0
 
-[node name="HauptCodeLabel" type="Label" parent="CanvasLayer/Code/TabContainer/Code"]
+[node name="HauptCodeLabel" type="Label" parent="CodeLayer/Code/TabContainer/Code"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
 text = "Haupt-Code"
 
-[node name="CodeEdit" type="CodeEdit" parent="CanvasLayer/Code/TabContainer/Code"]
+[node name="CodeEdit" type="CodeEdit" parent="CodeLayer/Code/TabContainer/Code"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 440)
 layout_mode = 2
@@ -574,90 +574,90 @@ highlight_current_line = true
 symbol_tooltip_on_hover = true
 gutters_draw_line_numbers = true
 
-[node name="ButtonCotainer" type="HBoxContainer" parent="CanvasLayer/Code/TabContainer/Code"]
+[node name="ButtonCotainer" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/Code"]
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_constants/separation = 15
 
-[node name="PlayButton" type="Button" parent="CanvasLayer/Code/TabContainer/Code/ButtonCotainer"]
+[node name="PlayButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ButtonCotainer"]
 layout_mode = 2
 text = "Play"
 
-[node name="StopButton" type="Button" parent="CanvasLayer/Code/TabContainer/Code/ButtonCotainer"]
+[node name="StopButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ButtonCotainer"]
 layout_mode = 2
 text = "Stop"
 
-[node name="CodeDeleteButton" type="Button" parent="CanvasLayer/Code/TabContainer/Code/ButtonCotainer"]
+[node name="CodeDeleteButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ButtonCotainer"]
 layout_mode = 2
 text = "Code löschen"
 
-[node name="ActionsContainer" type="VBoxContainer" parent="CanvasLayer/Code/TabContainer/Code"]
+[node name="ActionsContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/Code"]
 modulate = Color(1, 1, 1, 0.984314)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 3
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Code/TabContainer/Code/ActionsContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="BewegContainer" type="VBoxContainer" parent="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer"]
+[node name="BewegContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer"]
 layout_mode = 2
 
-[node name="BewegeLabel" type="Label" parent="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer"]
+[node name="BewegeLabel" type="Label" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Bewege"
 
-[node name="ObenButton" type="Button" parent="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer"]
+[node name="ObenButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer"]
 layout_mode = 2
 text = "oben"
 
-[node name="LinksRechtsContainer" type="HBoxContainer" parent="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer"]
+[node name="LinksRechtsContainer" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer"]
 layout_mode = 2
 theme_override_constants/separation = 9
 
-[node name="LinksButton" type="Button" parent="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer/LinksRechtsContainer"]
+[node name="LinksButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer/LinksRechtsContainer"]
 layout_mode = 2
 text = "links"
 
-[node name="rechtsButton" type="Button" parent="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer/LinksRechtsContainer"]
+[node name="rechtsButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer/LinksRechtsContainer"]
 layout_mode = 2
 text = "rechts"
 
-[node name="UntenButton" type="Button" parent="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer"]
+[node name="UntenButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer"]
 layout_mode = 2
 text = "unten"
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
 
-[node name="Label" type="Label" parent="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer2"]
+[node name="Label" type="Label" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
 text = "Action"
 
-[node name="attackeButton" type="Button" parent="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer2"]
+[node name="attackeButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 8
 text = "attacke"
 
-[node name="sageButton" type="Button" parent="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer2"]
+[node name="sageButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 8
 text = "sage"
 
-[node name="VBoxContainer3" type="VBoxContainer" parent="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer"]
+[node name="VBoxContainer3" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer3"]
+[node name="Label" type="Label" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer3"]
 layout_mode = 2
 text = "Funktion"
 
-[node name="ItemList" type="ItemList" parent="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer3"]
+[node name="ItemList" type="ItemList" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer3"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -667,20 +667,20 @@ auto_width = true
 item_count = 1
 item_0/text = "wiederhole 3 mal"
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="CanvasLayer/Code/TabContainer/Code/ActionsContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 alignment = 1
 
-[node name="createFunction" type="Button" parent="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer2"]
+[node name="createFunction" type="Button" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer2"]
 layout_mode = 2
 text = "Funktion Menu"
 
-[node name="loadFunction" type="Button" parent="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer2"]
+[node name="loadFunction" type="Button" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer2"]
 layout_mode = 2
 text = "Lade Funktionen"
 
-[node name="KI Playground" type="MarginContainer" parent="CanvasLayer/Code/TabContainer"]
+[node name="KI Playground" type="MarginContainer" parent="CodeLayer/Code/TabContainer"]
 visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 15
@@ -688,145 +688,145 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 10
 metadata/_tab_index = 1
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Code/TabContainer/KI Playground"]
+[node name="VBoxContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground"]
 layout_mode = 2
 theme_override_constants/separation = 25
 
-[node name="Paramcontainer" type="VBoxContainer" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer"]
+[node name="Paramcontainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer"]
 layout_mode = 2
 
-[node name="KIConfLabel" type="Label" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer"]
+[node name="KIConfLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer"]
 layout_mode = 2
 text = "KI Configurationen"
 horizontal_alignment = 1
 
-[node name="KiModelLabel" type="Label" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer"]
+[node name="KiModelLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer"]
 layout_mode = 2
 text = "Model: Neural Network"
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer"]
 layout_mode = 2
 
-[node name="stepsLabel" type="Label" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/HBoxContainer2"]
+[node name="stepsLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/HBoxContainer2"]
 layout_mode = 2
 text = "Action-Schritte: "
 
-[node name="stepsEdit" type="LineEdit" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/HBoxContainer2"]
+[node name="stepsEdit" type="LineEdit" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "100"
 
-[node name="GridContainer" type="GridContainer" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer"]
+[node name="GridContainer" type="GridContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer"]
 layout_mode = 2
 theme_override_constants/h_separation = 12
 columns = 3
 
-[node name="learnRateLabel" type="Label" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/GridContainer"]
+[node name="learnRateLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/GridContainer"]
 layout_mode = 2
 text = "Lernrate: 0.004"
 
-[node name="learnRateBtnPlus" type="Button" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/GridContainer"]
+[node name="learnRateBtnPlus" type="Button" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/GridContainer"]
 layout_mode = 2
 text = "+"
 
-[node name="learnRateBtnMinus" type="Button" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/GridContainer"]
+[node name="learnRateBtnMinus" type="Button" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/GridContainer"]
 layout_mode = 2
 text = "-"
 
-[node name="exploreRateLabel" type="Label" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/GridContainer"]
+[node name="exploreRateLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/GridContainer"]
 layout_mode = 2
 text = "Erforschungrate: 0.004"
 
-[node name="Button" type="Button" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/GridContainer"]
+[node name="Button" type="Button" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/GridContainer"]
 layout_mode = 2
 text = "+"
 
-[node name="Button6" type="Button" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/GridContainer"]
+[node name="Button6" type="Button" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/GridContainer"]
 layout_mode = 2
 text = "-"
 
-[node name="RewardContainer" type="VBoxContainer" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer"]
+[node name="RewardContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer"]
 layout_mode = 2
 
-[node name="KiModelLabel" type="Label" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/RewardContainer"]
+[node name="KiModelLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/RewardContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Belohnungssystem"
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/RewardContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/RewardContainer"]
 layout_mode = 2
 
-[node name="WayLabel" type="Label" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/RewardContainer/HBoxContainer2"]
+[node name="WayLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/RewardContainer/HBoxContainer2"]
 layout_mode = 2
 text = "nur moegliche Wege"
 
-[node name="WayCheckBox" type="CheckBox" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/RewardContainer/HBoxContainer2"]
+[node name="WayCheckBox" type="CheckBox" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/RewardContainer/HBoxContainer2"]
 layout_mode = 2
 button_pressed = true
 
-[node name="Label" type="Label" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/RewardContainer"]
+[node name="Label" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/RewardContainer"]
 visible = false
 layout_mode = 2
 text = "Kekse platzieren"
 
-[node name="GameSetContainer" type="VBoxContainer" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer"]
+[node name="GameSetContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer"]
 layout_mode = 2
 
-[node name="GameSetLabel" type="Label" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer"]
+[node name="GameSetLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Game-Settings"
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer"]
 layout_mode = 2
 
-[node name="SpeedLabel" type="Label" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2"]
+[node name="SpeedLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2"]
 layout_mode = 2
 text = "Game-Speed: "
 
-[node name="Speed" type="Label" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2"]
+[node name="Speed" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2"]
 layout_mode = 2
 text = "1"
 
-[node name="SpeedPlus" type="Button" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2"]
+[node name="SpeedPlus" type="Button" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2"]
 layout_mode = 2
 text = "+"
 
-[node name="SpeedMinus" type="Button" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2"]
+[node name="SpeedMinus" type="Button" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2"]
 layout_mode = 2
 text = "-"
 
-[node name="FuncContainer" type="VBoxContainer" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer"]
+[node name="FuncContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer"]
 layout_mode = 2
 
-[node name="FuncLabel" type="Label" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/FuncContainer"]
+[node name="FuncLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/FuncContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
 text = "KI "
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/FuncContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/FuncContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
 
-[node name="StartKiButton" type="Button" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/FuncContainer/HBoxContainer"]
+[node name="StartKiButton" type="Button" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/FuncContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 6
 size_flags_vertical = 4
 text = "Start"
 
-[node name="StopKiButton" type="Button" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/FuncContainer/HBoxContainer"]
+[node name="StopKiButton" type="Button" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/FuncContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 6
 size_flags_vertical = 4
 text = "Stop"
 
-[node name="SaveKiButton" type="Button" parent="CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/FuncContainer/HBoxContainer"]
+[node name="SaveKiButton" type="Button" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/FuncContainer/HBoxContainer"]
 layout_mode = 2
 text = "Speicher Ki Verhalten"
 
-[node name="TabContainerKI" type="TabContainer" parent="CanvasLayer/Code"]
+[node name="TabContainerKI" type="TabContainer" parent="CodeLayer/Code"]
 visible = false
 offset_left = 67.0
 offset_top = 14.0
@@ -836,20 +836,20 @@ size_flags_vertical = 3
 tab_alignment = 1
 current_tab = 1
 
-[node name="Code" type="VBoxContainer" parent="CanvasLayer/Code/TabContainerKI"]
+[node name="Code" type="VBoxContainer" parent="CodeLayer/Code/TabContainerKI"]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 6
 size_flags_vertical = 3
 metadata/_tab_index = 0
 
-[node name="HauptCodeLabel" type="Label" parent="CanvasLayer/Code/TabContainerKI/Code"]
+[node name="HauptCodeLabel" type="Label" parent="CodeLayer/Code/TabContainerKI/Code"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
 text = "Haupt-Code"
 
-[node name="CodeEdit" type="CodeEdit" parent="CanvasLayer/Code/TabContainerKI/Code"]
+[node name="CodeEdit" type="CodeEdit" parent="CodeLayer/Code/TabContainerKI/Code"]
 custom_minimum_size = Vector2(0, 440)
 layout_mode = 2
 size_flags_vertical = 3
@@ -862,90 +862,90 @@ highlight_current_line = true
 symbol_tooltip_on_hover = true
 gutters_draw_line_numbers = true
 
-[node name="ButtonCotainer" type="HBoxContainer" parent="CanvasLayer/Code/TabContainerKI/Code"]
+[node name="ButtonCotainer" type="HBoxContainer" parent="CodeLayer/Code/TabContainerKI/Code"]
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_constants/separation = 15
 
-[node name="PlayButton" type="Button" parent="CanvasLayer/Code/TabContainerKI/Code/ButtonCotainer"]
+[node name="PlayButton" type="Button" parent="CodeLayer/Code/TabContainerKI/Code/ButtonCotainer"]
 layout_mode = 2
 text = "Play"
 
-[node name="StopButton" type="Button" parent="CanvasLayer/Code/TabContainerKI/Code/ButtonCotainer"]
+[node name="StopButton" type="Button" parent="CodeLayer/Code/TabContainerKI/Code/ButtonCotainer"]
 layout_mode = 2
 text = "Stop"
 
-[node name="CodeDeleteButton" type="Button" parent="CanvasLayer/Code/TabContainerKI/Code/ButtonCotainer"]
+[node name="CodeDeleteButton" type="Button" parent="CodeLayer/Code/TabContainerKI/Code/ButtonCotainer"]
 layout_mode = 2
 text = "Code löschen"
 
-[node name="ActionsContainer" type="VBoxContainer" parent="CanvasLayer/Code/TabContainerKI/Code"]
+[node name="ActionsContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainerKI/Code"]
 modulate = Color(1, 1, 1, 0.984314)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 3
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Code/TabContainerKI/Code/ActionsContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="CodeLayer/Code/TabContainerKI/Code/ActionsContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="BewegContainer" type="VBoxContainer" parent="CanvasLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer"]
+[node name="BewegContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer"]
 layout_mode = 2
 
-[node name="BewegeLabel" type="Label" parent="CanvasLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer/BewegContainer"]
+[node name="BewegeLabel" type="Label" parent="CodeLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer/BewegContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Bewege"
 
-[node name="ObenButton" type="Button" parent="CanvasLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer/BewegContainer"]
+[node name="ObenButton" type="Button" parent="CodeLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer/BewegContainer"]
 layout_mode = 2
 text = "oben"
 
-[node name="LinksRechtsContainer" type="HBoxContainer" parent="CanvasLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer/BewegContainer"]
+[node name="LinksRechtsContainer" type="HBoxContainer" parent="CodeLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer/BewegContainer"]
 layout_mode = 2
 theme_override_constants/separation = 9
 
-[node name="LinksButton" type="Button" parent="CanvasLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer/BewegContainer/LinksRechtsContainer"]
+[node name="LinksButton" type="Button" parent="CodeLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer/BewegContainer/LinksRechtsContainer"]
 layout_mode = 2
 text = "links"
 
-[node name="rechtsButton" type="Button" parent="CanvasLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer/BewegContainer/LinksRechtsContainer"]
+[node name="rechtsButton" type="Button" parent="CodeLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer/BewegContainer/LinksRechtsContainer"]
 layout_mode = 2
 text = "rechts"
 
-[node name="UntenButton" type="Button" parent="CanvasLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer/BewegContainer"]
+[node name="UntenButton" type="Button" parent="CodeLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer/BewegContainer"]
 layout_mode = 2
 text = "unten"
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="CanvasLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="CodeLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
 
-[node name="Label" type="Label" parent="CanvasLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer/VBoxContainer2"]
+[node name="Label" type="Label" parent="CodeLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
 text = "Action"
 
-[node name="attackeButton" type="Button" parent="CanvasLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer/VBoxContainer2"]
+[node name="attackeButton" type="Button" parent="CodeLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 8
 text = "attacke"
 
-[node name="sageButton" type="Button" parent="CanvasLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer/VBoxContainer2"]
+[node name="sageButton" type="Button" parent="CodeLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 8
 text = "sage"
 
-[node name="VBoxContainer3" type="VBoxContainer" parent="CanvasLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer"]
+[node name="VBoxContainer3" type="VBoxContainer" parent="CodeLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="CanvasLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer/VBoxContainer3"]
+[node name="Label" type="Label" parent="CodeLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer/VBoxContainer3"]
 layout_mode = 2
 text = "Funktion"
 
-[node name="ItemList" type="ItemList" parent="CanvasLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer/VBoxContainer3"]
+[node name="ItemList" type="ItemList" parent="CodeLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer/VBoxContainer3"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -954,251 +954,251 @@ auto_width = true
 item_count = 1
 item_0/text = "wiederhole 3 mal"
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="CanvasLayer/Code/TabContainerKI/Code/ActionsContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="CodeLayer/Code/TabContainerKI/Code/ActionsContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 alignment = 1
 
-[node name="createFunction" type="Button" parent="CanvasLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer2"]
+[node name="createFunction" type="Button" parent="CodeLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer2"]
 layout_mode = 2
 text = "Funktion Menu"
 
-[node name="loadFunction" type="Button" parent="CanvasLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer2"]
+[node name="loadFunction" type="Button" parent="CodeLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer2"]
 layout_mode = 2
 text = "Lade Funktionen"
 
-[node name="KI Playground" type="MarginContainer" parent="CanvasLayer/Code/TabContainerKI"]
+[node name="KI Playground" type="MarginContainer" parent="CodeLayer/Code/TabContainerKI"]
 layout_mode = 2
 theme_override_constants/margin_left = 15
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 10
 metadata/_tab_index = 1
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Code/TabContainerKI/KI Playground"]
+[node name="VBoxContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainerKI/KI Playground"]
 layout_mode = 2
 theme_override_constants/separation = 25
 
-[node name="Paramcontainer" type="VBoxContainer" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer"]
+[node name="Paramcontainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer"]
 layout_mode = 2
 
-[node name="KIConfLabel" type="Label" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/Paramcontainer"]
+[node name="KIConfLabel" type="Label" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/Paramcontainer"]
 layout_mode = 2
 text = "KI Configurationen"
 horizontal_alignment = 1
 
-[node name="KiModelLabel" type="Label" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/Paramcontainer"]
+[node name="KiModelLabel" type="Label" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/Paramcontainer"]
 layout_mode = 2
 text = "Model: Neural Network"
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/Paramcontainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/Paramcontainer"]
 layout_mode = 2
 
-[node name="stepsLabel" type="Label" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/Paramcontainer/HBoxContainer2"]
+[node name="stepsLabel" type="Label" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/Paramcontainer/HBoxContainer2"]
 layout_mode = 2
 text = "Action-Schritte: "
 
-[node name="stepsEdit" type="LineEdit" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/Paramcontainer/HBoxContainer2"]
+[node name="stepsEdit" type="LineEdit" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/Paramcontainer/HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "100"
 
-[node name="GridContainer" type="GridContainer" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/Paramcontainer"]
+[node name="GridContainer" type="GridContainer" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/Paramcontainer"]
 layout_mode = 2
 theme_override_constants/h_separation = 12
 columns = 3
 
-[node name="learnRateLabel" type="Label" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/Paramcontainer/GridContainer"]
+[node name="learnRateLabel" type="Label" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/Paramcontainer/GridContainer"]
 layout_mode = 2
 text = "Lernrate: 0.004"
 
-[node name="learnRateBtnPlus" type="Button" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/Paramcontainer/GridContainer"]
+[node name="learnRateBtnPlus" type="Button" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/Paramcontainer/GridContainer"]
 layout_mode = 2
 text = "+"
 
-[node name="learnRateBtnMinus" type="Button" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/Paramcontainer/GridContainer"]
+[node name="learnRateBtnMinus" type="Button" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/Paramcontainer/GridContainer"]
 layout_mode = 2
 text = "-"
 
-[node name="exploreRateLabel" type="Label" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/Paramcontainer/GridContainer"]
+[node name="exploreRateLabel" type="Label" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/Paramcontainer/GridContainer"]
 layout_mode = 2
 text = "Erforschungrate: 0.004"
 
-[node name="Button" type="Button" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/Paramcontainer/GridContainer"]
+[node name="Button" type="Button" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/Paramcontainer/GridContainer"]
 layout_mode = 2
 text = "+"
 
-[node name="Button6" type="Button" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/Paramcontainer/GridContainer"]
+[node name="Button6" type="Button" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/Paramcontainer/GridContainer"]
 layout_mode = 2
 text = "-"
 
-[node name="RewardContainer" type="VBoxContainer" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer"]
+[node name="RewardContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer"]
 layout_mode = 2
 
-[node name="KiModelLabel" type="Label" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/RewardContainer"]
+[node name="KiModelLabel" type="Label" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/RewardContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Belohnungssystem"
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/RewardContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/RewardContainer"]
 layout_mode = 2
 
-[node name="WayLabel" type="Label" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/RewardContainer/HBoxContainer2"]
+[node name="WayLabel" type="Label" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/RewardContainer/HBoxContainer2"]
 layout_mode = 2
 text = "nur moegliche Wege"
 
-[node name="WayCheckBox" type="CheckBox" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/RewardContainer/HBoxContainer2"]
+[node name="WayCheckBox" type="CheckBox" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/RewardContainer/HBoxContainer2"]
 layout_mode = 2
 button_pressed = true
 
-[node name="Label" type="Label" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/RewardContainer"]
+[node name="Label" type="Label" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/RewardContainer"]
 visible = false
 layout_mode = 2
 text = "Kekse platzieren"
 
-[node name="GameSetContainer" type="VBoxContainer" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer"]
+[node name="GameSetContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer"]
 layout_mode = 2
 
-[node name="GameSetLabel" type="Label" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/GameSetContainer"]
+[node name="GameSetLabel" type="Label" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/GameSetContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Game-Settings"
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/GameSetContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/GameSetContainer"]
 layout_mode = 2
 
-[node name="SpeedLabel" type="Label" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2"]
+[node name="SpeedLabel" type="Label" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2"]
 layout_mode = 2
 text = "Game-Speed: "
 
-[node name="Speed" type="Label" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2"]
+[node name="Speed" type="Label" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2"]
 layout_mode = 2
 text = "1"
 
-[node name="SpeedPlus" type="Button" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2"]
+[node name="SpeedPlus" type="Button" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2"]
 layout_mode = 2
 text = "+"
 
-[node name="SpeedMinus" type="Button" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2"]
+[node name="SpeedMinus" type="Button" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2"]
 layout_mode = 2
 text = "-"
 
-[node name="SpawnContainer" type="VBoxContainer" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer"]
+[node name="SpawnContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer"]
 layout_mode = 2
 
-[node name="SpawnTitle" type="Label" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/SpawnContainer"]
+[node name="SpawnTitle" type="Label" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/SpawnContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Spawn-Settings"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/SpawnContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/SpawnContainer"]
 layout_mode = 2
 
-[node name="TextureRect" type="TextureRect" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/SpawnContainer/HBoxContainer"]
+[node name="TextureRect" type="TextureRect" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/SpawnContainer/HBoxContainer"]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 script = ExtResource("13_ba010")
 
-[node name="Label" type="Label" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/SpawnContainer/HBoxContainer"]
+[node name="Label" type="Label" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/SpawnContainer/HBoxContainer"]
 layout_mode = 2
 text = "Spawn Mob: "
 
-[node name="OptionButton" type="OptionButton" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/SpawnContainer/HBoxContainer"]
+[node name="OptionButton" type="OptionButton" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/SpawnContainer/HBoxContainer"]
 layout_mode = 2
 
-[node name="MoveContainer" type="VBoxContainer" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer"]
+[node name="MoveContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer"]
 layout_mode = 2
 
-[node name="Title" type="Label" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/MoveContainer"]
+[node name="Title" type="Label" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/MoveContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Move-Settings"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/MoveContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/MoveContainer"]
 layout_mode = 2
 
-[node name="TextureRect" type="TextureRect" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/MoveContainer/HBoxContainer"]
+[node name="TextureRect" type="TextureRect" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/MoveContainer/HBoxContainer"]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 tooltip_text = "goal_tile"
 texture = ExtResource("14_ux0ro")
 script = ExtResource("15_vhx6d")
 
-[node name="Label" type="Label" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/MoveContainer/HBoxContainer"]
+[node name="Label" type="Label" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/MoveContainer/HBoxContainer"]
 layout_mode = 2
 text = "   Bewegung Ziel "
 
-[node name="FuncContainer" type="VBoxContainer" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer"]
+[node name="FuncContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer"]
 layout_mode = 2
 
-[node name="FuncLabel" type="Label" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/FuncContainer"]
+[node name="FuncLabel" type="Label" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/FuncContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
 text = "KI "
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/FuncContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/FuncContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
 
-[node name="StartKiButton" type="Button" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/FuncContainer/HBoxContainer"]
+[node name="StartKiButton" type="Button" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/FuncContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 6
 size_flags_vertical = 4
 text = "Start"
 
-[node name="StopKiButton" type="Button" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/FuncContainer/HBoxContainer"]
+[node name="StopKiButton" type="Button" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/FuncContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 6
 size_flags_vertical = 4
 text = "Stop"
 
-[node name="SaveKiButton" type="Button" parent="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/FuncContainer/HBoxContainer"]
+[node name="SaveKiButton" type="Button" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/FuncContainer/HBoxContainer"]
 layout_mode = 2
 text = "Speicher Ki Verhalten"
 
-[node name="Belohnung" type="MarginContainer" parent="CanvasLayer/Code/TabContainerKI"]
+[node name="Belohnung" type="MarginContainer" parent="CodeLayer/Code/TabContainerKI"]
 visible = false
 layout_mode = 2
 metadata/_tab_index = 2
 
-[node name="MoveContainer" type="VBoxContainer" parent="CanvasLayer/Code/TabContainerKI/Belohnung"]
+[node name="MoveContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainerKI/Belohnung"]
 layout_mode = 2
 
-[node name="Title" type="Label" parent="CanvasLayer/Code/TabContainerKI/Belohnung/MoveContainer"]
+[node name="Title" type="Label" parent="CodeLayer/Code/TabContainerKI/Belohnung/MoveContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Belohnung-Settings"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Code/TabContainerKI/Belohnung/MoveContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="CodeLayer/Code/TabContainerKI/Belohnung/MoveContainer"]
 layout_mode = 2
 
-[node name="TextureRect" type="TextureRect" parent="CanvasLayer/Code/TabContainerKI/Belohnung/MoveContainer/HBoxContainer"]
+[node name="TextureRect" type="TextureRect" parent="CodeLayer/Code/TabContainerKI/Belohnung/MoveContainer/HBoxContainer"]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 texture = ExtResource("14_ux0ro")
 script = ExtResource("13_ba010")
 
-[node name="Label" type="Label" parent="CanvasLayer/Code/TabContainerKI/Belohnung/MoveContainer/HBoxContainer"]
+[node name="Label" type="Label" parent="CodeLayer/Code/TabContainerKI/Belohnung/MoveContainer/HBoxContainer"]
 layout_mode = 2
 text = "Bewegung Ziel Belohnung : "
 
-[node name="LineEdit" type="LineEdit" parent="CanvasLayer/Code/TabContainerKI/Belohnung/MoveContainer/HBoxContainer"]
+[node name="LineEdit" type="LineEdit" parent="CodeLayer/Code/TabContainerKI/Belohnung/MoveContainer/HBoxContainer"]
 layout_mode = 2
 text = "0.7"
 
-[node name="DebugCodePlayer" type="Node" parent="CanvasLayer/Code" node_paths=PackedStringArray("player")]
+[node name="DebugCodePlayer" type="Node" parent="CodeLayer/Code" node_paths=PackedStringArray("player")]
 script = ExtResource("16_2smwq")
 player = NodePath("../../..")
 metadata/_custom_type_script = "uid://3u5wolperx1b"
 
-[node name="PopupPanel" type="PopupPanel" parent="CanvasLayer"]
+[node name="PopupPanel" type="PopupPanel" parent="CodeLayer"]
 unique_name_in_owner = true
 oversampling_override = 1.0
 title = "Funktionen"
 size = Vector2i(559, 478)
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/PopupPanel"]
+[node name="HBoxContainer" type="HBoxContainer" parent="CodeLayer/PopupPanel"]
 anchors_preset = 4
 anchor_top = 0.5
 anchor_bottom = 0.5
@@ -1211,25 +1211,25 @@ size_flags_horizontal = 0
 size_flags_vertical = 0
 theme_override_constants/separation = 10
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/PopupPanel/HBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="CodeLayer/PopupPanel/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/PopupPanel/HBoxContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="CodeLayer/PopupPanel/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="CanvasLayer/PopupPanel/HBoxContainer/VBoxContainer/HBoxContainer"]
+[node name="Label" type="Label" parent="CodeLayer/PopupPanel/HBoxContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = "Funktionsname: "
 
-[node name="InputFuncName" type="LineEdit" parent="CanvasLayer/PopupPanel/HBoxContainer/VBoxContainer/HBoxContainer"]
+[node name="InputFuncName" type="LineEdit" parent="CodeLayer/PopupPanel/HBoxContainer/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 max_length = 30
 
-[node name="CodeEdit" type="CodeEdit" parent="CanvasLayer/PopupPanel/HBoxContainer/VBoxContainer"]
+[node name="CodeEdit" type="CodeEdit" parent="CodeLayer/PopupPanel/HBoxContainer/VBoxContainer"]
 custom_minimum_size = Vector2(400, 400)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1241,30 +1241,30 @@ symbol_tooltip_on_hover = true
 gutters_draw_bookmarks = true
 gutters_draw_line_numbers = true
 
-[node name="BtnContainer" type="HBoxContainer" parent="CanvasLayer/PopupPanel/HBoxContainer/VBoxContainer"]
+[node name="BtnContainer" type="HBoxContainer" parent="CodeLayer/PopupPanel/HBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_constants/separation = 20
 
-[node name="CreateBtn" type="Button" parent="CanvasLayer/PopupPanel/HBoxContainer/VBoxContainer/BtnContainer"]
+[node name="CreateBtn" type="Button" parent="CodeLayer/PopupPanel/HBoxContainer/VBoxContainer/BtnContainer"]
 layout_mode = 2
 text = "Erstellen"
 
-[node name="ExitBtn" type="Button" parent="CanvasLayer/PopupPanel/HBoxContainer/VBoxContainer/BtnContainer"]
+[node name="ExitBtn" type="Button" parent="CodeLayer/PopupPanel/HBoxContainer/VBoxContainer/BtnContainer"]
 layout_mode = 2
 text = "Abbrechen"
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="CanvasLayer/PopupPanel/HBoxContainer"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="CodeLayer/PopupPanel/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 15
 
-[node name="Label" type="Label" parent="CanvasLayer/PopupPanel/HBoxContainer/VBoxContainer2"]
+[node name="Label" type="Label" parent="CodeLayer/PopupPanel/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
 text = "Funktionsliste"
 
-[node name="FuncList" type="ItemList" parent="CanvasLayer/PopupPanel/HBoxContainer/VBoxContainer2"]
+[node name="FuncList" type="ItemList" parent="CodeLayer/PopupPanel/HBoxContainer/VBoxContainer2"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
@@ -1360,18 +1360,18 @@ offset_bottom = 364.0
 script = ExtResource("17_jb4us")
 
 [connection signal="pressed" from="PlayerStatus/WorkContainer/VBoxContainer/backToMenu" to="." method="_on_back_to_menu_pressed"]
-[connection signal="pressed" from="CanvasLayer/Code/TabContainer/Code/ButtonCotainer/PlayButton" to="CanvasLayer/Code" method="_on_play_button_pressed"]
-[connection signal="pressed" from="CanvasLayer/Code/TabContainer/Code/ButtonCotainer/StopButton" to="CanvasLayer/Code" method="_on_stop_button_pressed"]
-[connection signal="pressed" from="CanvasLayer/Code/TabContainer/Code/ButtonCotainer/CodeDeleteButton" to="CanvasLayer/Code" method="_on_code_delete_button_pressed"]
-[connection signal="pressed" from="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer/ObenButton" to="CanvasLayer/Code" method="_on_oben_button_pressed" flags=18]
-[connection signal="pressed" from="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer/LinksRechtsContainer/LinksButton" to="CanvasLayer/Code" method="_on_links_button_pressed" flags=18]
-[connection signal="pressed" from="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer/LinksRechtsContainer/rechtsButton" to="CanvasLayer/Code" method="_on_rechts_button_pressed" flags=18]
-[connection signal="pressed" from="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer/UntenButton" to="CanvasLayer/Code" method="_on_unten_button_pressed" flags=18]
-[connection signal="pressed" from="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer2/attackeButton" to="CanvasLayer/Code" method="_on_attacke_button_pressed" flags=18]
-[connection signal="pressed" from="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer2/sageButton" to="CanvasLayer/Code" method="_on_sage_button_pressed" flags=18]
-[connection signal="item_activated" from="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer3/ItemList" to="CanvasLayer/Code" method="_on_item_list_item_activated"]
-[connection signal="pressed" from="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer2/createFunction" to="CanvasLayer/Code" method="_on_create_function_pressed"]
-[connection signal="pressed" from="CanvasLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer2/loadFunction" to="CanvasLayer/Code" method="_on_load_function_pressed"]
-[connection signal="item_selected" from="CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/SpawnContainer/HBoxContainer/OptionButton" to="Builder" method="_on_option_button_item_selected"]
-[connection signal="pressed" from="CanvasLayer/PopupPanel/HBoxContainer/VBoxContainer/BtnContainer/CreateBtn" to="CanvasLayer/Code" method="_on_create_btn_pressed"]
-[connection signal="item_activated" from="CanvasLayer/PopupPanel/HBoxContainer/VBoxContainer2/FuncList" to="FunctionHandler" method="_on_func_list_item_activated"]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ButtonCotainer/PlayButton" to="CodeLayer/Code" method="_on_play_button_pressed"]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ButtonCotainer/StopButton" to="CodeLayer/Code" method="_on_stop_button_pressed"]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ButtonCotainer/CodeDeleteButton" to="CodeLayer/Code" method="_on_code_delete_button_pressed"]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer/ObenButton" to="CodeLayer/Code" method="_on_oben_button_pressed" flags=18]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer/LinksRechtsContainer/LinksButton" to="CodeLayer/Code" method="_on_links_button_pressed" flags=18]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer/LinksRechtsContainer/rechtsButton" to="CodeLayer/Code" method="_on_rechts_button_pressed" flags=18]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer/UntenButton" to="CodeLayer/Code" method="_on_unten_button_pressed" flags=18]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer2/attackeButton" to="CodeLayer/Code" method="_on_attacke_button_pressed" flags=18]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer2/sageButton" to="CodeLayer/Code" method="_on_sage_button_pressed" flags=18]
+[connection signal="item_activated" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer3/ItemList" to="CodeLayer/Code" method="_on_item_list_item_activated"]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer2/createFunction" to="CodeLayer/Code" method="_on_create_function_pressed"]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer2/loadFunction" to="CodeLayer/Code" method="_on_load_function_pressed"]
+[connection signal="item_selected" from="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/SpawnContainer/HBoxContainer/OptionButton" to="Builder" method="_on_option_button_item_selected"]
+[connection signal="pressed" from="CodeLayer/PopupPanel/HBoxContainer/VBoxContainer/BtnContainer/CreateBtn" to="CodeLayer/Code" method="_on_create_btn_pressed"]
+[connection signal="item_activated" from="CodeLayer/PopupPanel/HBoxContainer/VBoxContainer2/FuncList" to="FunctionHandler" method="_on_func_list_item_activated"]

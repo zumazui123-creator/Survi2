@@ -13,7 +13,7 @@ extends Node
 @onready var exit_btn = $"../PopupPanel/HBoxContainer/VBoxContainer/BtnContainer/ExitBtn"
 @onready var tab_containerki = $TabContainerKI
 @onready var tab_container = $TabContainerKI
-
+@onready var function_handler = $"../../FunctionHandler"
 #var highlighter := MyCodeHighLighter.new()
 
 func init_tab_container() -> void:
@@ -74,12 +74,14 @@ func _on_code_delete_button_pressed() -> void:
 
 func _on_play_button_pressed() -> void:
 	if code_player != null && Multihelper.code_player_enabled:
+		Multihelper.is_stopped = false
 		code_player.play(code_edit.text)
 		return
 	#net_control.send_rpc_request(Strings.RPC_METHOD_PLAY_SEQUENCE, {"message": code_edit.text})
 
 func _on_stop_button_pressed() -> void:
 	print("_on_stop_button_pressed")
+	Multihelper.is_stopped = true
 	#net_control.send_text(Strings.CMD_END_SEQUENCE + "\n")
 	#net_control.send_text(Strings.CMD_STOP_SEQUENCE + "\n")
 
@@ -87,15 +89,23 @@ func checkInputFuncName():
 	print("checkInputFuncName")
 
 func _on_create_btn_pressed() -> void:
-	var message = (
-		Strings.RPC_METHOD_CREATE_FUNCTION
-		+ "\n"
-		+ Strings.KEYWORD_FUNC
-		+ " "
-		+ inputFuncName.text
-		+ "\n"
-		+ code_func.text
-		+ "\n"
-		+ Strings.KEYWORD_END_FUNC
-	)
+	if Multihelper.code_player_enabled:
+		print("create func")
+		var data := {
+			inputFuncName.text: code_func.text ,
+			}
+		function_handler.set_func( data )
+	#var message = (
+		#Strings.RPC_METHOD_CREATE_FUNCTION
+		#+ "\n"
+		#+ Strings.KEYWORD_FUNC
+		#+ " "
+		#+ inputFuncName.text
+		#+ "\n"
+		#+ code_func.text
+		#+ "\n"
+		#+ Strings.KEYWORD_END_FUNC
+	#)
+
+	
 	#net_control.send_rpc_request(Strings.RPC_METHOD_CREATE_FUNCTION, {"message": message})

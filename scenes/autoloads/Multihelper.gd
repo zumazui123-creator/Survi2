@@ -5,6 +5,8 @@ var isHost = false
 var mapSeed = randi()
 var level : Dictionary = {"level": 0,"type": Constants.MAP_MAIN}
 
+var is_stopped :bool = false
+
 var map: Map
 var main: Node2D
 

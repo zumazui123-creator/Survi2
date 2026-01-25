@@ -2,7 +2,7 @@ extends Node
 
 
 var player: CharacterBody2D
-@onready var speedLabel = $"../CanvasLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2/Speed"
+@onready var speedLabel = $"../CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2/Speed"
 
 const default_move_speed_factor : float = 2.5
 var move_speed_factor : float = default_move_speed_factor
@@ -21,6 +21,7 @@ func is_moving() -> bool:
 
 func input():
 	if is_moving(): return
+	if Multihelper.is_stopped: return
 	if Input.is_action_pressed("walkRight"):
 		direction = Vector2(1, 0)
 	elif Input.is_action_pressed("walkLeft"):

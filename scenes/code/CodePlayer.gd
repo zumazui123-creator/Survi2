@@ -2,15 +2,7 @@ extends Node
 class_name CodePlayer
 
 @export var player : Player
-													 
-
-
-var direction_map = {
-	Strings.ACTION_WALK_LEFT: Vector2i.LEFT,
-	Strings.ACTION_WALK_RIGHT: Vector2i.RIGHT,
-	Strings.ACTION_WALK_UP: Vector2i.UP,
-	Strings.ACTION_WALK_DOWN: Vector2i.DOWN
-}
+@onready var function_handler =  $"../../../FunctionHandler"													 
 
 func play(code: String) -> void:
 	if not player:
@@ -18,43 +10,50 @@ func play(code: String) -> void:
 		return
 
 	var lines = code.split("\n", false)
+
 	for line in lines:
+		
 		line = line.strip_edges()
 		if line == "" or line.begins_with("#"):
 			continue
 		
+		if line in function_handler.functions.keys():
+			for func_line in function_handler.functions[line]:
+				execute_command(func_line.split(" ", false))
+		
 		# Parse command and args
 		var parts = line.split(" ", false)
-		await execute_command(parts)
+		execute_command(parts)
 	
 	print("Code execution finished")
 
 func execute_command(parts: PackedStringArray) -> void:
 	if parts.is_empty():
 		return
-		
-	var child_cmd = parts[0]
 
-	if child_cmd in Strings.ACTION_NAMES["de"].keys():
-		parts[0] = Strings.ACTION_NAMES["de"][child_cmd] 
-		if "walk" in parts[0]:
-			walk(parts)
+	parts[0] = Strings.remap_code_cmd_to_action("de", parts[0])
+	if parts[0] == "":
+		return
+		
+	if "walk" in parts[0]:
+		walk(parts)
+		
+	elif parts[0] == Strings.ACTION_ATTACK:
+		if player.player_combat:
+			player.player_combat.hit(Strings.ACTION_ATTACK)
+		
+	elif parts[0] == Strings.ACTION_BUILD or parts[0] == Strings.ACTION_PAINT:
+		build(parts[0],parts)
+		
+	elif Strings.ACTION_USE_ITEM in parts[0]:
+		var item_id = player.player_items.use_item(parts[0])
+		print("Using item:"+str(item_id))
+		
+	elif Strings.ACTION_SAY in parts[0]:
+		say(parts)
+	else:
+		print("Unknown command: ", parts[0])
 			
-		elif parts[0] == Strings.ACTION_ATTACK:
-			if player.player_combat:
-				player.player_combat.hit(Strings.ACTION_ATTACK)
-			
-		elif parts[0] == Strings.ACTION_BUILD or parts[0] == Strings.ACTION_PAINT:
-			build(parts[0],parts)
-			
-		elif Strings.ACTION_USE_ITEM in parts[0]:
-			var item_id = player.player_items.use_item(parts[0])
-			print("Using item:"+str(item_id))
-			
-		elif Strings.ACTION_SAY in parts[0]:
-			say(parts)
-		else:
-			print("Unknown command: ", parts[0])
 			
 func build(cmd,parts):
 	if parts.size() < 3:
@@ -64,8 +63,8 @@ func build(cmd,parts):
 	var type = parts[1]
 	var dir_str = parts[2]
 	
-	if dir_str in direction_map:
-		var dir = direction_map[dir_str]
+	if dir_str in Strings.direction_map:
+		var dir = Strings.direction_map[dir_str]
 		var current_map_pos = player.player_movement.current_map_position
 		var target_map_pos = current_map_pos + dir
 		

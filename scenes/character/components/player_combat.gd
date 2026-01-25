@@ -67,7 +67,7 @@ func hit(inp_action : String):
 			var delay : float = 0.8 / attackRate
 			await get_tree().create_timer(delay).timeout
 			animation_player.stop()
-			player.net_control.send_text("Godot: " + inp_action)
+			#player.net_control.send_text("Godot: " + inp_action)
 
 func punchCheckCollision():
 	var id = multiplayer.get_unique_id()

@@ -15,6 +15,15 @@ const ACTION_BUILD      = "build"
 const ACTION_PAINT      = "paint"
 const ACTION_USE_ITEM   = "use item"
 
+const direction_map = {
+	Strings.ACTION_WALK_LEFT: Vector2i.LEFT,
+	Strings.ACTION_WALK_RIGHT: Vector2i.RIGHT,
+	Strings.ACTION_WALK_UP: Vector2i.UP,
+	Strings.ACTION_WALK_DOWN: Vector2i.DOWN
+}
+
+
+
 const ACTION_NAMES = {
 	"de": {
 		"links":  ACTION_WALK_LEFT,
@@ -86,3 +95,10 @@ const DAMAGE_NORMAL = "normal"
 const DAMAGE_AXE = "axe"
 const DAMAGE_PICKAXE = "pickaxe"
 const DAMAGE_MAGIC = "magic"
+
+
+
+func remap_code_cmd_to_action(lang:String, code_cmd : String) -> String:
+	if code_cmd in Strings.ACTION_NAMES[lang].keys():
+		return Strings.ACTION_NAMES[lang][code_cmd];
+	return "";

@@ -1,6 +1,6 @@
 extends Node
-@onready var spawn_list : OptionButton =  $"../CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/SpawnContainer/HBoxContainer/OptionButton"
-@onready var spawn_texture : TextureRect =   $"../CanvasLayer/Code/TabContainerKI/KI Playground/VBoxContainer/SpawnContainer/HBoxContainer/TextureRect"
+@onready var spawn_list : OptionButton =  $"../CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/SpawnContainer/HBoxContainer/OptionButton"
+@onready var spawn_texture : TextureRect =   $"../CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/SpawnContainer/HBoxContainer/TextureRect"
 var mobs = ["spider","zombie"]
 
 

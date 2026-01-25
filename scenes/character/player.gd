@@ -31,8 +31,8 @@ var local_setup_done := false
 func _enter_tree():
 	set_multiplayer_authority(name.to_int())
 	if str(multiplayer.get_unique_id()) != name:
-		$CanvasLayer.hide()
-		$CanvasLayer.process_mode = Node.PROCESS_MODE_DISABLED
+		$CodeLayer.hide()
+		$CodeLayer.process_mode = Node.PROCESS_MODE_DISABLED
 
 func _ready():
 	print("Player : "+str(characterFile))
