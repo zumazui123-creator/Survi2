@@ -3,13 +3,7 @@ class_name CodePlayer
 
 @export var player : Player
 													 
-# Mapping user commands to player_movement actions
-var command_map = {
-	Strings.ACTION_WALK_LEFT: "walkLeft",
-	Strings.ACTION_WALK_RIGHT: "walkRight",
-	Strings.ACTION_WALK_UP: "walkUp",
-	Strings.ACTION_WALK_DOWN: "walkDown"
-}
+
 
 var direction_map = {
 	Strings.ACTION_WALK_LEFT: Vector2i.LEFT,
