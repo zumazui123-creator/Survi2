@@ -1,10 +1,17 @@
 extends Node2D
+
 var initialSpawnObjects := Constants.INITAL_OBJECTS
 var maxObjects 	  		:= Constants.MAX_OBJECTS
 var objectWaveCount 		:= 10
 var spawnedObjects 	  	:= 0
 
 func _ready() -> void:
+	if Multihelper.level and "size" in Multihelper.level:
+		var map_size = Multihelper.level["size"]
+		var scale_factor = sqrt(map_size.x * map_size.y) / sqrt(Constants.MAP_SIZE.x * Constants.MAP_SIZE.y)
+		maxObjects = int(Constants.MAX_OBJECTS * scale_factor)
+		objectWaveCount = max(1, int(objectWaveCount * scale_factor))
+		print(maxObjects)
 	print("ready  Breakables")
 
 func spawnObjects(amount):

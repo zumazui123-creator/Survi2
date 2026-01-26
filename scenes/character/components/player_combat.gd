@@ -58,7 +58,7 @@ func _ready():
 		player_killed.connect(enemyPlayerKilled)
 		object_destroyed.connect(objectDestroyed)
 
-func hit(inp_action : String):
+func hit(_inp_action : String):
 	animation_player.speed_scale = attackRate
 	var action_anim = Items.equips[player_items.equippedItem]["attack"] if player_items.equippedItem else Strings.ANIM_PUNCHING
 	if not animation_player.is_playing() or animation_player.current_animation != action_anim:
@@ -73,7 +73,7 @@ func punchCheckCollision():
 	if spawnsProjectile:
 		if str(id) == player.name:
 			sendProjectile.rpc_id(1, player.player_movement.direction)
-	if not player.is_multiplayer_authority():
+	if not multiplayer.is_server() and not player.is_multiplayer_authority():
 		return
 	if player_items.equippedItem:
 		Inventory.useItemDurability(str(player.name), player_items.equippedItem)
