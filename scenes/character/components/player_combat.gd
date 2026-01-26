@@ -59,15 +59,14 @@ func _ready():
 		object_destroyed.connect(objectDestroyed)
 
 func hit(inp_action : String):
-	if "leftClickAction" == inp_action or Input.is_action_pressed("leftClickAction"):
-		animation_player.speed_scale = attackRate
-		var action_anim = Items.equips[player_items.equippedItem]["attack"] if player_items.equippedItem else Strings.ANIM_PUNCHING
-		if not animation_player.is_playing() or animation_player.current_animation != action_anim:
-			animation_player.play(action_anim)
-			var delay : float = 0.8 / attackRate
-			await get_tree().create_timer(delay).timeout
-			animation_player.stop()
-			#player.net_control.send_text("Godot: " + inp_action)
+	animation_player.speed_scale = attackRate
+	var action_anim = Items.equips[player_items.equippedItem]["attack"] if player_items.equippedItem else Strings.ANIM_PUNCHING
+	if not animation_player.is_playing() or animation_player.current_animation != action_anim:
+		animation_player.play(action_anim)
+		var delay : float = 0.8 / attackRate
+		await get_tree().create_timer(delay).timeout
+		animation_player.stop()
+		#player.net_control.send_text("Godot: " + inp_action)
 
 func punchCheckCollision():
 	var id = multiplayer.get_unique_id()

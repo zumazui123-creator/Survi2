@@ -114,11 +114,9 @@ func disconnected(id):
 func _physics_process(_delta: float) -> void:
 	if str(multiplayer.get_unique_id()) != name:
 		return
-
 	player_movement.input()
 	player_movement.tile_move()
 	player_movement.win_condition()
-	player_combat.hit(act)
 
 func resetPlayer():
 	var difLevelMode = %DifModeButton.get_selected_id()

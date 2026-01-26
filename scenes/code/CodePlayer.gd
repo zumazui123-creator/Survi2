@@ -19,11 +19,11 @@ func play(code: String) -> void:
 		
 		if line in function_handler.functions.keys():
 			for func_line in function_handler.functions[line]:
-				execute_command(func_line.split(" ", false))
+				await execute_command(func_line.split(" ", false))
 		
 		# Parse command and args
 		var parts = line.split(" ", false)
-		execute_command(parts)
+		await execute_command(parts)
 	
 	print("Code execution finished")
 
@@ -36,14 +36,14 @@ func execute_command(parts: PackedStringArray) -> void:
 		return
 		
 	if "walk" in parts[0]:
-		walk(parts)
+		await walk(parts)
 		
 	elif parts[0] == Strings.ACTION_ATTACK:
 		if player.player_combat:
-			player.player_combat.hit(Strings.ACTION_ATTACK)
+			await player.player_combat.hit(Strings.ACTION_ATTACK)
 		
 	elif parts[0] == Strings.ACTION_BUILD or parts[0] == Strings.ACTION_PAINT:
-		build(parts[0],parts)
+		await build(parts[0],parts)
 		
 	elif Strings.ACTION_USE_ITEM in parts[0]:
 		var item_id = player.player_items.use_item(parts[0])
@@ -55,7 +55,7 @@ func execute_command(parts: PackedStringArray) -> void:
 		print("Unknown command: ", parts[0])
 			
 			
-func build(cmd,parts):
+func build(cmd,parts) -> void:
 	if parts.size() < 3:
 		print("Command missing arguments: ", parts)
 		return
@@ -79,7 +79,7 @@ func build(cmd,parts):
 	else:
 		print("Unknown direction: ", dir_str)
 
-func walk(parts):
+func walk(parts) -> void:
 	var count = 1
 	if parts.size() > 1 and parts[1].is_valid_int():
 		count = parts[1].to_int()
