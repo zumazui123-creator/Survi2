@@ -63,8 +63,8 @@ func build(cmd,parts):
 	var type = parts[1]
 	var dir_str = parts[2]
 	
-	if dir_str in Strings.direction_map:
-		var dir = Strings.direction_map[dir_str]
+	if dir_str in Strings.ACTION_NAMES[Strings.current_locale] and Strings.ACTION_NAMES[Strings.current_locale][dir_str] in Strings.direction_map:
+		var dir = Strings.direction_map[Strings.ACTION_NAMES[Strings.current_locale][dir_str]]
 		var current_map_pos = player.player_movement.current_map_position
 		var target_map_pos = current_map_pos + dir
 		

@@ -3,6 +3,7 @@ extends Node
 # This file centralizes all user-facing and command strings
 # to facilitate internationalization and prevent hardcoding.
 
+var current_locale = "de"
 
 # --- Player Actions ---
 const ACTION_WALK_LEFT  = "walkLeft"
@@ -21,8 +22,6 @@ const direction_map = {
 	Strings.ACTION_WALK_UP: Vector2i.UP,
 	Strings.ACTION_WALK_DOWN: Vector2i.DOWN
 }
-
-
 
 const ACTION_NAMES = {
 	"de": {
