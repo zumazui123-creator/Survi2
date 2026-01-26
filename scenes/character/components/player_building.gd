@@ -22,7 +22,7 @@ func build(building_type: String, tile_position: Vector2i) -> void:
 @rpc("call_local", "any_peer", "reliable")
 func execute_build(building_type: String, tile_position: Vector2i) -> void:
 	if building_type in building_scenes:
-		Multihelper.map.buildings.place_building(building_scenes[building_type], tile_position)
+		Multihelper.main.buildings.place_building(building_scenes[building_type], tile_position)
 	else:
 		print("Building type ", building_type, " not found.")
 

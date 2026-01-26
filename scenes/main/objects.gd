@@ -1,4 +1,5 @@
 extends Node2D
+class_name Objects
 
 var initialSpawnObjects := Constants.INITAL_OBJECTS
 var maxObjects 	  		:= Constants.MAX_OBJECTS

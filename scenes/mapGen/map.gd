@@ -17,7 +17,6 @@ var levelData := {}
 @onready var animals : Node2D 
 @export var tile_map : TileMapLayer 
 @onready var laby_map : Node
-@export var buildings : MapBuildings
 
 var walkable_tiles = []
 var level_type = -1

@@ -1,5 +1,5 @@
 extends Node2D
-class_name MapBuildings
+class_name Buildings
 
 var placed_buildings : Dictionary[Vector2i, Node] = {}
 

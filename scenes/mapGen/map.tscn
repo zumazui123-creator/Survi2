@@ -1,17 +1,15 @@
-[gd_scene load_steps=6 format=3 uid="uid://bf074ibcy5o0"]
+[gd_scene load_steps=5 format=3 uid="uid://bf074ibcy5o0"]
 
 [ext_resource type="Script" uid="uid://bbn7yedve2law" path="res://scenes/mapGen/map.gd" id="1_gggpt"]
 [ext_resource type="TileSet" uid="uid://cny45owea8lcj" path="res://assets/tileset/tileset.tres" id="2_c3hbg"]
 [ext_resource type="Script" uid="uid://cl5tcm0jnykd6" path="res://scenes/mapGen/tile_map.gd" id="3_qci3n"]
 [ext_resource type="Script" uid="uid://bqqq0ujqgl6ln" path="res://scenes/mapGen/labyrinth.gd" id="3_qpycp"]
-[ext_resource type="Script" uid="uid://d035jxg7j54jl" path="res://scenes/mapGen/map_buildings.gd" id="4_qci3n"]
 
-[node name="Map" type="Control" node_paths=PackedStringArray("tile_map", "buildings")]
+[node name="Map" type="Control" node_paths=PackedStringArray("tile_map")]
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_gggpt")
 tile_map = NodePath("TileMap")
-buildings = NodePath("TileMap/Buildings")
 
 [node name="TileMap" type="TileMapLayer" parent="."]
 unique_name_in_owner = true
@@ -19,9 +17,6 @@ use_parent_material = true
 tile_set = ExtResource("2_c3hbg")
 navigation_visibility_mode = 1
 script = ExtResource("3_qci3n")
-
-[node name="Buildings" type="Node2D" parent="TileMap"]
-script = ExtResource("4_qci3n")
 
 [node name="Labyrinth" type="Node" parent="."]
 script = ExtResource("3_qpycp")

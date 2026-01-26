@@ -1,6 +1,7 @@
 extends Node2D
 
-@onready var breakables = $Breakables
+@export var breakables : Objects
+@export var buildings : Buildings
 
 func _ready():
 	if multiplayer.is_server():
@@ -25,8 +26,6 @@ func setMobs(initialSpawnObjects : int , maxObjects : int ,
 	$Enemies.maxEnemiesPerPlayer = maxEnemiesPerPlayer
 	$Animals.maxAnimalsPerPlayer = maxAnimalsPerPlayer
 
-
-
 func trySpawnObjectWave():
 	#print("SpawnObjects: "+ str(spawnedObjects)+ " maxObjects: "+str(maxObjects) )
 	if breakables.spawnedObjects < breakables.maxObjects:
@@ -44,4 +43,3 @@ func _on_enemy_spawn_timer_timeout():
 func _on_animal_spawn_timer_timeout() -> void:
 	if multiplayer.is_server():
 		$Animals.trySpawnAnimals()
-		
