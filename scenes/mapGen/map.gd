@@ -11,6 +11,7 @@ var tileset_source = 1
 var map_width = Constants.MAP_SIZE.x
 var map_height = Constants.MAP_SIZE.y
 
+var levelData := {}
 
 @onready var enemies : Node2D  
 @onready var animals : Node2D 
@@ -28,6 +29,7 @@ func _ready():
 	laby_map  =  get_node_or_null("Labyrinth")
 	
 func generateMap(level_dict : Dictionary):
+	levelData = level_dict
 	print("generated:"+str(level_dict))
 	var level_no = level_dict["level"]
 	level_type = level_dict["type"]
@@ -43,15 +45,11 @@ func generateMap(level_dict : Dictionary):
 	if level_type == Constants.MAP_KI:
 		generateMainMap(0)
 
-
-
 func generateMainMap(level_no: int):
 	print("gen. level "+str(level_no))
 	generate_terrain()
 	set_level_options(level_no)
 	generate_borders()
-	
-
 	
 func generate_terrain():
 	print("generate_terrain with seed: ", Multihelper.mapSeed)
@@ -63,6 +61,9 @@ func generate_terrain():
 	noise.fractal_octaves = 1.1
 	noise.fractal_lacunarity = 1.0 #2.0
 	noise.frequency = 0.03
+	if "size" in levelData:
+		map_width = levelData["size"].x
+		map_height = levelData["size"].y
 	
 	for y in range(map_height):
 		for x in range(map_width):
@@ -104,8 +105,6 @@ func generate_borders():
 		tile_map.set_cell( Vector2i(x2, edge_y), tileset_source, tile_coord, 0)
 		tile_map.set_cell( Vector2i(x2, edge_y2), tileset_source, tile_coord, 0)
 
-
-
 func set_grass_field(tile_place : Vector2i ):
 	var rng = RandomNumberGenerator.new()
 	rng.seed = Multihelper.mapSeed + tile_place.x + tile_place.y # Deterministic but varies by position
@@ -115,7 +114,6 @@ func set_grass_field(tile_place : Vector2i ):
 
 func set_field(tile_place : Vector2i, atlasCoor : Vector2i ):
 	tile_map.set_cell( tile_place, tileset_source, atlasCoor, 0)
-
 
 func set_level_options(level : int):
 	#print("set level options:"+str(level))
@@ -131,4 +129,3 @@ func set_level_options(level : int):
 	if level == 2:
 		enemies.maxEnemiesPerPlayer = 25
 		animals.maxAnimalsPerPlayer  = 6
-		
