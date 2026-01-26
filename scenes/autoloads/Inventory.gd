@@ -24,6 +24,9 @@ func _ready():
 
 func sendToPeer(id):
 	if multiplayer.is_server():
+		if int(str(id)) == multiplayer.get_unique_id():
+			updateReceived.emit(id)
+			return
 		print("sendToPeer")
 		var durabilityData = durabilities[id] if id in durabilities else {}
 		setInventory.rpc_id(int(str(id)), id, inventories[id], durabilityData)

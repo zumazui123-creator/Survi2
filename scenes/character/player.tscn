@@ -347,7 +347,7 @@ _data = [Vector2(0.00279329, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 2
 
 [node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("player_building") groups=["damageable", "player"]]
-collision_layer = 0
+collision_layer = 2
 script = ExtResource("1_7xvi4")
 player_building = NodePath("PlayerBuilding")
 
