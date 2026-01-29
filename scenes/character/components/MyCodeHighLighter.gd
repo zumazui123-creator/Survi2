@@ -9,7 +9,7 @@ const MOVEMENT_KEYWORDS := [
 ]
 
 const LOOP_KEYWORDS := [
-	"wiederhole", "mal", "ende"
+	"wiederhole", "mal", "ende", "nutze item"
 ]
 
 const END_KEYWORDS := [
