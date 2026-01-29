@@ -73,9 +73,6 @@ func play(code: String) -> void:
 		if line == "" or line.begins_with("#"):
 			continue
 		
-		if line in function_handler.functions.keys():
-			for func_line in function_handler.functions[line]:
-				await execute_command(func_line.split(" ", false))
 		
 		# Parse command and args
 		var parts = line.split(" ", false)
