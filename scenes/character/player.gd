@@ -5,7 +5,7 @@ var act : String = ""
 
 @onready var status = $PlayerStatus
 @onready var ai_control = $AIControl
-@onready var workTaskText = $PlayerStatus/WorkContainer/VBoxContainer/workTaskText
+@onready var workTaskText = %workTaskText
 @onready var net_control = $NetControl
 @onready var player_movement = $PlayerMovement
 @onready var player_animation = $PlayerAnimation

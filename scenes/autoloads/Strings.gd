@@ -56,6 +56,7 @@ const KEYWORD_END = "ende"
 const KEYWORD_END_FUNC = "end_func"
 const KEYWORD_REPEAT = "wiederhole 3 mal"
 const KEYWORD_REPEAT_FULL = "wiederhole 3 mal\n\nende"
+const KEYWORD_USE_ITEM = "nutze item 3"
 
 # --- Network Commands ---
 # Sent from Godot to Python

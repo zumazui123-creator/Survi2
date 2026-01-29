@@ -26,6 +26,7 @@ func reload_functions_names():
 	func_list.clear()
 	
 	item_list.add_item(Strings.KEYWORD_REPEAT)
+	item_list.add_item(Strings.KEYWORD_USE_ITEM)
 	
 	for func_name in functions.keys():
 		item_list.add_item(func_name)

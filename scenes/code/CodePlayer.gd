@@ -4,12 +4,68 @@ class_name CodePlayer
 @export var player : Player
 @onready var function_handler =  $"../../../FunctionHandler"													 
 
+func parse_lines_with_repeat(lines: PackedStringArray, start := 0) -> Dictionary:
+	var result: Array = []
+	var i := start
+
+	while i < lines.size():
+		var line = lines[i].strip_edges()
+
+		if line == "" or line.begins_with("#"):
+			i += 1
+			continue
+
+		# --- Ende eines Blocks ---
+		if line == Strings.KEYWORD_END:
+			return {
+				"lines": result,
+				"index": i
+			}
+
+		# --- Wiederholung ---
+		if line.begins_with("wiederhole"):
+			var parts = line.split(" ", false)
+
+			if parts.size() >= 3 and parts[1].is_valid_int():
+				var repeat_count = parts[1].to_int()
+
+				var parsed = parse_lines_with_repeat(lines, i + 1)
+				var block = parsed.lines
+				i = parsed.index
+
+				for r in range(repeat_count):
+					result.append_array(block)
+			else:
+				push_error("Invalid repeat syntax: " + line)
+		else:
+			result.append(line)
+
+		i += 1
+
+	return {
+		"lines": result,
+		"index": i
+	}
+
+func parse_lines_with_func(lines: PackedStringArray, start := 0) -> PackedStringArray:
+	var result: Array = [] 
+	for line in lines:
+		if line in function_handler.functions.keys():
+			for func_line in function_handler.functions[line]:
+				result.append(line)
+		result.append(line)
+	
+	return result
+	
 func play(code: String) -> void:
 	if not player:
 		push_error("DebugCodePlayer: Player node not assigned")
 		return
 
 	var lines = code.split("\n", false)
+	lines  			   = parse_lines_with_func(lines)
+	var parsed_repeats = parse_lines_with_repeat(lines)
+	lines = parsed_repeats.lines
 
 	for line in lines:
 		

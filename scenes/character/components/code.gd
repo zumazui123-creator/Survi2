@@ -7,28 +7,24 @@ extends Node
 @onready var player =  "res://scenes/character/player.gd"
 @onready var net_control = %NetControl
 @onready var inputFuncName = %InputFuncName
-@onready var code_func = $"../PopupPanel/HBoxContainer/VBoxContainer/CodeEdit"
+@onready var code_func = $"../PopupFunction/HBoxContainer/VBoxContainer/CodeEdit"
 @onready var funcHandler = $"../../FunctionHandler"
-@onready var popup = %PopupPanel
-@onready var exit_btn = $"../PopupPanel/HBoxContainer/VBoxContainer/BtnContainer/ExitBtn"
-@onready var tab_containerki = $TabContainerKI
-@onready var tab_container = $TabContainerKI
+@onready var popup = %PopupFunction
+@onready var exit_btn = $"../PopupFunction/HBoxContainer/VBoxContainer/BtnContainer/ExitBtn"
+
+@onready var tab_container = $TabContainer
 @onready var function_handler = $"../../FunctionHandler"
-#var highlighter := MyCodeHighLighter.new()
+var highlighter := MyCodeHighLighter.new()
 
 func init_tab_container() -> void:
-	if Multihelper.level["type"] == Constants.MAP_KI:
-		tab_container.visible = false
-		tab_containerki.visible = true
-	else:
-		tab_container.visible = true
-		tab_containerki.visible = false
+	item_list.add_item("wiederhole 3 mal")
+	item_list.add_item("nutze item 3")
 		
 func _ready():
 	if Multihelper.code_player_enabled:
 		print("Debug Code Playing enabled.")
 	exit_btn.pressed.connect(_on_exit_btn_pressed)
-	#highlighter.setup_custom_highlighter(code_edit)
+	highlighter.setup_custom_highlighter(code_edit)
 	init_tab_container()
 
 func _on_exit_btn_pressed():
@@ -59,7 +55,8 @@ func _on_item_list_item_activated(index: int) -> void:
 	var item_text = item_list.get_item_text(index)
 	if item_text == Strings.KEYWORD_REPEAT:
 		item_text = Strings.KEYWORD_REPEAT_FULL
-	
+	if item_text == Strings.KEYWORD_USE_ITEM:
+		item_text = Strings.KEYWORD_USE_ITEM
 	code_edit.insert_text_at_caret(item_text+"\n")
 
 func _on_create_function_pressed() -> void:

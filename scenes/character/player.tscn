@@ -1,11 +1,14 @@
-[gd_scene load_steps=36 format=3 uid="uid://bmhxilkffhqa5"]
+[gd_scene load_steps=38 format=3 uid="uid://bmhxilkffhqa5"]
 
 [ext_resource type="Script" uid="uid://bruqpv3kpycof" path="res://scenes/character/player.gd" id="1_7xvi4"]
 [ext_resource type="Script" uid="uid://dukylmcbt25lk" path="res://scenes/character/builder.gd" id="2_7r6u0"]
+[ext_resource type="Script" uid="uid://qko0vstvhwtu" path="res://scenes/character/AI/rl_agent.gd" id="2_x06ku"]
+[ext_resource type="Script" uid="uid://cklljf6dkq1ch" path="res://scenes/character/AI/environment.gd" id="3_pygui"]
 [ext_resource type="Script" uid="uid://ddrqxuc43a4rn" path="res://scenes/character/components/function_handler.gd" id="3_vreni"]
-[ext_resource type="AudioStream" uid="uid://cqi2ycda0odwm" path="res://assets/sfx/step.ogg" id="4_bflkw"]
-[ext_resource type="Texture2D" uid="uid://bx7fpakrdnbf3" path="res://assets/characters/hands/hands-sheet.png" id="4_yjkcj"]
-[ext_resource type="AudioStream" uid="uid://70ym6t6pjpde" path="res://assets/sfx/swing.ogg" id="5_xs70q"]
+[ext_resource type="AudioStream" uid="uid://dshuyvbl21dh7" path="res://assets/sfx/step.ogg" id="4_bflkw"]
+[ext_resource type="Script" uid="uid://c5vvg50hpvd0s" path="res://scenes/character/AI/rl_trainer.gd" id="4_okkwj"]
+[ext_resource type="Texture2D" uid="uid://sm4e4ahe6vnd" path="res://assets/characters/hands/hands-sheet.png" id="4_yjkcj"]
+[ext_resource type="AudioStream" uid="uid://c5kpasvow2dlb" path="res://assets/sfx/swing.ogg" id="5_xs70q"]
 [ext_resource type="Script" uid="uid://2fmmi7tylwwx" path="res://scenes/character/components/player_movement.gd" id="6_7r6u0"]
 [ext_resource type="Script" uid="uid://ijovcwkpl4jg" path="res://scenes/character/components/player_animation.gd" id="7_e5n5u"]
 [ext_resource type="Script" uid="uid://bl0tm663e7r6k" path="res://scenes/character/components/player_status.gd" id="7_wmtbp"]
@@ -14,12 +17,12 @@
 [ext_resource type="Script" uid="uid://fac0m1pdvo7" path="res://scenes/character/player_items.gd" id="9_e5n5u"]
 [ext_resource type="Script" uid="uid://be83kpy3e88gx" path="res://scenes/character/components/player_building.gd" id="10_x06ku"]
 [ext_resource type="PackedScene" uid="uid://dagsu16arm3mv" path="res://scenes/spawn/object/breakable.tscn" id="11_pygui"]
-[ext_resource type="Script" uid="uid://dngrh67x5tj38" path="res://scenes/character/components/texture_rect.gd" id="13_ba010"]
-[ext_resource type="Script" uid="uid://cgqh4whq45khp" path="res://scenes/character/camera_2d.gd" id="13_e5n5u"]
-[ext_resource type="Texture2D" uid="uid://bvjipxot1udu8" path="res://assets/ui/itemSlotSelected.png" id="14_ux0ro"]
-[ext_resource type="Script" uid="uid://jwr2prr58xmw" path="res://scenes/character/goal_texture_rect.gd" id="15_vhx6d"]
+[ext_resource type="Script" path="res://scenes/character/components/texture_rect.gd" id="13_ba010"]
+[ext_resource type="Script" path="res://scenes/character/camera_2d.gd" id="13_e5n5u"]
+[ext_resource type="Texture2D" uid="uid://bwihn7idvcobs" path="res://assets/ui/itemSlotSelected.png" id="14_ux0ro"]
+[ext_resource type="Script" path="res://scenes/character/goal_texture_rect.gd" id="15_vhx6d"]
 [ext_resource type="Script" uid="uid://3u5wolperx1b" path="res://scenes/code/CodePlayer.gd" id="16_2smwq"]
-[ext_resource type="Script" uid="uid://covi850vpbbri" path="res://scenes/character/components/spawn_area.gd" id="17_jb4us"]
+[ext_resource type="Script" path="res://scenes/character/components/spawn_area.gd" id="17_jb4us"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_1pknd"]
 properties/0/path = NodePath("AnimationPlayer:current_animation")
@@ -99,9 +102,6 @@ expand_margin_right = 30.0
 expand_margin_bottom = 30.0
 
 [sub_resource type="CodeHighlighter" id="CodeHighlighter_vreni"]
-number_color = Color(0.16078432, 0.5294118, 0.36862746, 1)
-
-[sub_resource type="CodeHighlighter" id="CodeHighlighter_7r6u0"]
 number_color = Color(0.16078432, 0.5294118, 0.36862746, 1)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_wmtbp"]
@@ -351,16 +351,25 @@ collision_layer = 2
 script = ExtResource("1_7xvi4")
 player_building = NodePath("PlayerBuilding")
 
+[node name="AI" type="Node" parent="."]
+
+[node name="RLTrainer" type="Node" parent="AI" node_paths=PackedStringArray("agent", "environment")]
+script = ExtResource("4_okkwj")
+agent = NodePath("RLAgent")
+environment = NodePath("Environment")
+
+[node name="RLAgent" type="Node" parent="AI/RLTrainer"]
+script = ExtResource("2_x06ku")
+
+[node name="Environment" type="Node" parent="AI/RLTrainer"]
+script = ExtResource("3_pygui")
+
+[node name="Builder" type="Node" parent="AI"]
+script = ExtResource("2_7r6u0")
+
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_1pknd")
 visibility_update_mode = 2
-
-[node name="Camera2D" type="Camera2D" parent="."]
-enabled = false
-script = ExtResource("13_e5n5u")
-
-[node name="Builder" type="Node" parent="."]
-script = ExtResource("2_7r6u0")
 
 [node name="FunctionHandler" type="Node" parent="."]
 script = ExtResource("3_vreni")
@@ -477,55 +486,31 @@ text = "Essen"
 z_index = 100
 layout_mode = 0
 offset_left = -568.0
-offset_top = -240.0
-offset_right = -342.0
-offset_bottom = -140.0
-grow_vertical = 2
+offset_top = -229.0
+offset_right = -477.0
+offset_bottom = -134.0
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_wmtbp")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PlayerStatus/WorkContainer"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="PlayerStatus/WorkContainer"]
 layout_mode = 2
-size_flags_vertical = 0
-alignment = 1
 
-[node name="Label" type="Label" parent="PlayerStatus/WorkContainer/VBoxContainer"]
+[node name="HBoxContainer2" type="VBoxContainer" parent="PlayerStatus/WorkContainer/VBoxContainer2"]
 layout_mode = 2
-text = "Aufgaben"
+
+[node name="Label" type="Label" parent="PlayerStatus/WorkContainer/VBoxContainer2/HBoxContainer2"]
+layout_mode = 2
+text = "Main-Menu"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="HSeparator" type="HSeparator" parent="PlayerStatus/WorkContainer/VBoxContainer"]
+[node name="SettingsButton" type="Button" parent="PlayerStatus/WorkContainer/VBoxContainer2/HBoxContainer2"]
 layout_mode = 2
+text = "Settings"
 
-[node name="workTaskText" type="RichTextLabel" parent="PlayerStatus/WorkContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 20)
+[node name="InfoButton" type="Button" parent="PlayerStatus/WorkContainer/VBoxContainer2/HBoxContainer2"]
 layout_mode = 2
-text = "- Geh zum weißen Feld!"
-fit_content = true
-
-[node name="HBoxContainer" type="HBoxContainer" parent="PlayerStatus/WorkContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="PlayerStatus/WorkContainer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-text = "Schwerigkeitsgrad:"
-
-[node name="DifModeButton" type="OptionButton" parent="PlayerStatus/WorkContainer/VBoxContainer/HBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-selected = 0
-item_count = 3
-popup/item_0/text = "Leicht"
-popup/item_0/id = 0
-popup/item_1/text = "Hart"
-popup/item_1/id = 1
-popup/item_2/text = "Horror"
-popup/item_2/id = 2
-
-[node name="backToMenu" type="Button" parent="PlayerStatus/WorkContainer/VBoxContainer"]
-layout_mode = 2
-text = "Zurück zum Menu"
+text = "Info"
 
 [node name="CodeLayer" type="CanvasLayer" parent="."]
 offset = Vector2(640, 360)
@@ -545,10 +530,11 @@ offset_right = 422.0
 offset_bottom = 724.0
 size_flags_vertical = 3
 tab_alignment = 1
-current_tab = 0
+current_tab = 1
 
 [node name="Code" type="VBoxContainer" parent="CodeLayer/Code/TabContainer"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 size_flags_horizontal = 6
 size_flags_vertical = 3
@@ -664,8 +650,6 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 select_mode = 1
 auto_width = true
-item_count = 1
-item_0/text = "wiederhole 3 mal"
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer"]
 layout_mode = 2
@@ -681,7 +665,6 @@ layout_mode = 2
 text = "Lade Funktionen"
 
 [node name="KI Playground" type="MarginContainer" parent="CodeLayer/Code/TabContainer"]
-visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 15
 theme_override_constants/margin_top = 5
@@ -796,6 +779,53 @@ text = "+"
 layout_mode = 2
 text = "-"
 
+[node name="SpawnContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer"]
+layout_mode = 2
+
+[node name="SpawnTitle" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/SpawnContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Spawn-Settings"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/SpawnContainer"]
+layout_mode = 2
+
+[node name="TextureSpawn" type="TextureRect" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/SpawnContainer/HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+script = ExtResource("13_ba010")
+
+[node name="Label" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/SpawnContainer/HBoxContainer"]
+layout_mode = 2
+text = "Spawn Mob: "
+
+[node name="OptionSpawn" type="OptionButton" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/SpawnContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="MoveContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/MoveContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Move-Settings"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/MoveContainer"]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/MoveContainer/HBoxContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+tooltip_text = "goal_tile"
+texture = ExtResource("14_ux0ro")
+script = ExtResource("15_vhx6d")
+
+[node name="Label" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/MoveContainer/HBoxContainer"]
+layout_mode = 2
+text = "   Bewegung Ziel "
+
 [node name="FuncContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer"]
 layout_mode = 2
 
@@ -826,364 +856,33 @@ text = "Stop"
 layout_mode = 2
 text = "Speicher Ki Verhalten"
 
-[node name="TabContainerKI" type="TabContainer" parent="CodeLayer/Code"]
-visible = false
-offset_left = 67.0
-offset_top = 14.0
-offset_right = 422.0
-offset_bottom = 724.0
-size_flags_vertical = 3
-tab_alignment = 1
-current_tab = 1
-
-[node name="Code" type="VBoxContainer" parent="CodeLayer/Code/TabContainerKI"]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 6
-size_flags_vertical = 3
-metadata/_tab_index = 0
-
-[node name="HauptCodeLabel" type="Label" parent="CodeLayer/Code/TabContainerKI/Code"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 0
-text = "Haupt-Code"
-
-[node name="CodeEdit" type="CodeEdit" parent="CodeLayer/Code/TabContainerKI/Code"]
-custom_minimum_size = Vector2(0, 440)
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_constants/line_spacing = 3
-theme_override_font_sizes/font_size = 14
-scroll_smooth = true
-scroll_past_end_of_file = true
-syntax_highlighter = SubResource("CodeHighlighter_7r6u0")
-highlight_current_line = true
-symbol_tooltip_on_hover = true
-gutters_draw_line_numbers = true
-
-[node name="ButtonCotainer" type="HBoxContainer" parent="CodeLayer/Code/TabContainerKI/Code"]
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_constants/separation = 15
-
-[node name="PlayButton" type="Button" parent="CodeLayer/Code/TabContainerKI/Code/ButtonCotainer"]
-layout_mode = 2
-text = "Play"
-
-[node name="StopButton" type="Button" parent="CodeLayer/Code/TabContainerKI/Code/ButtonCotainer"]
-layout_mode = 2
-text = "Stop"
-
-[node name="CodeDeleteButton" type="Button" parent="CodeLayer/Code/TabContainerKI/Code/ButtonCotainer"]
-layout_mode = 2
-text = "Code löschen"
-
-[node name="ActionsContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainerKI/Code"]
-modulate = Color(1, 1, 1, 0.984314)
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 3
-
-[node name="HBoxContainer" type="HBoxContainer" parent="CodeLayer/Code/TabContainerKI/Code/ActionsContainer"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="BewegContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer"]
-layout_mode = 2
-
-[node name="BewegeLabel" type="Label" parent="CodeLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer/BewegContainer"]
-layout_mode = 2
-size_flags_horizontal = 4
-text = "Bewege"
-
-[node name="ObenButton" type="Button" parent="CodeLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer/BewegContainer"]
-layout_mode = 2
-text = "oben"
-
-[node name="LinksRechtsContainer" type="HBoxContainer" parent="CodeLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer/BewegContainer"]
-layout_mode = 2
-theme_override_constants/separation = 9
-
-[node name="LinksButton" type="Button" parent="CodeLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer/BewegContainer/LinksRechtsContainer"]
-layout_mode = 2
-text = "links"
-
-[node name="rechtsButton" type="Button" parent="CodeLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer/BewegContainer/LinksRechtsContainer"]
-layout_mode = 2
-text = "rechts"
-
-[node name="UntenButton" type="Button" parent="CodeLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer/BewegContainer"]
-layout_mode = 2
-text = "unten"
-
-[node name="VBoxContainer2" type="VBoxContainer" parent="CodeLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 0
-
-[node name="Label" type="Label" parent="CodeLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer/VBoxContainer2"]
-layout_mode = 2
-text = "Action"
-
-[node name="attackeButton" type="Button" parent="CodeLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer/VBoxContainer2"]
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 8
-text = "attacke"
-
-[node name="sageButton" type="Button" parent="CodeLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer/VBoxContainer2"]
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 8
-text = "sage"
-
-[node name="VBoxContainer3" type="VBoxContainer" parent="CodeLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Label" type="Label" parent="CodeLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer/VBoxContainer3"]
-layout_mode = 2
-text = "Funktion"
-
-[node name="ItemList" type="ItemList" parent="CodeLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer/VBoxContainer3"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-select_mode = 1
-auto_width = true
-item_count = 1
-item_0/text = "wiederhole 3 mal"
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="CodeLayer/Code/TabContainerKI/Code/ActionsContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-alignment = 1
-
-[node name="createFunction" type="Button" parent="CodeLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer2"]
-layout_mode = 2
-text = "Funktion Menu"
-
-[node name="loadFunction" type="Button" parent="CodeLayer/Code/TabContainerKI/Code/ActionsContainer/HBoxContainer2"]
-layout_mode = 2
-text = "Lade Funktionen"
-
-[node name="KI Playground" type="MarginContainer" parent="CodeLayer/Code/TabContainerKI"]
-layout_mode = 2
-theme_override_constants/margin_left = 15
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 10
-metadata/_tab_index = 1
-
-[node name="VBoxContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainerKI/KI Playground"]
-layout_mode = 2
-theme_override_constants/separation = 25
-
-[node name="Paramcontainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer"]
-layout_mode = 2
-
-[node name="KIConfLabel" type="Label" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/Paramcontainer"]
-layout_mode = 2
-text = "KI Configurationen"
-horizontal_alignment = 1
-
-[node name="KiModelLabel" type="Label" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/Paramcontainer"]
-layout_mode = 2
-text = "Model: Neural Network"
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/Paramcontainer"]
-layout_mode = 2
-
-[node name="stepsLabel" type="Label" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/Paramcontainer/HBoxContainer2"]
-layout_mode = 2
-text = "Action-Schritte: "
-
-[node name="stepsEdit" type="LineEdit" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/Paramcontainer/HBoxContainer2"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "100"
-
-[node name="GridContainer" type="GridContainer" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/Paramcontainer"]
-layout_mode = 2
-theme_override_constants/h_separation = 12
-columns = 3
-
-[node name="learnRateLabel" type="Label" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/Paramcontainer/GridContainer"]
-layout_mode = 2
-text = "Lernrate: 0.004"
-
-[node name="learnRateBtnPlus" type="Button" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/Paramcontainer/GridContainer"]
-layout_mode = 2
-text = "+"
-
-[node name="learnRateBtnMinus" type="Button" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/Paramcontainer/GridContainer"]
-layout_mode = 2
-text = "-"
-
-[node name="exploreRateLabel" type="Label" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/Paramcontainer/GridContainer"]
-layout_mode = 2
-text = "Erforschungrate: 0.004"
-
-[node name="Button" type="Button" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/Paramcontainer/GridContainer"]
-layout_mode = 2
-text = "+"
-
-[node name="Button6" type="Button" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/Paramcontainer/GridContainer"]
-layout_mode = 2
-text = "-"
-
-[node name="RewardContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer"]
-layout_mode = 2
-
-[node name="KiModelLabel" type="Label" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/RewardContainer"]
-layout_mode = 2
-size_flags_horizontal = 4
-text = "Belohnungssystem"
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/RewardContainer"]
-layout_mode = 2
-
-[node name="WayLabel" type="Label" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/RewardContainer/HBoxContainer2"]
-layout_mode = 2
-text = "nur moegliche Wege"
-
-[node name="WayCheckBox" type="CheckBox" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/RewardContainer/HBoxContainer2"]
-layout_mode = 2
-button_pressed = true
-
-[node name="Label" type="Label" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/RewardContainer"]
-visible = false
-layout_mode = 2
-text = "Kekse platzieren"
-
-[node name="GameSetContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer"]
-layout_mode = 2
-
-[node name="GameSetLabel" type="Label" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/GameSetContainer"]
-layout_mode = 2
-size_flags_horizontal = 4
-text = "Game-Settings"
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/GameSetContainer"]
-layout_mode = 2
-
-[node name="SpeedLabel" type="Label" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2"]
-layout_mode = 2
-text = "Game-Speed: "
-
-[node name="Speed" type="Label" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2"]
-layout_mode = 2
-text = "1"
-
-[node name="SpeedPlus" type="Button" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2"]
-layout_mode = 2
-text = "+"
-
-[node name="SpeedMinus" type="Button" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2"]
-layout_mode = 2
-text = "-"
-
-[node name="SpawnContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer"]
-layout_mode = 2
-
-[node name="SpawnTitle" type="Label" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/SpawnContainer"]
-layout_mode = 2
-size_flags_horizontal = 4
-text = "Spawn-Settings"
-
-[node name="HBoxContainer" type="HBoxContainer" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/SpawnContainer"]
-layout_mode = 2
-
-[node name="TextureRect" type="TextureRect" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/SpawnContainer/HBoxContainer"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-script = ExtResource("13_ba010")
-
-[node name="Label" type="Label" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/SpawnContainer/HBoxContainer"]
-layout_mode = 2
-text = "Spawn Mob: "
-
-[node name="OptionButton" type="OptionButton" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/SpawnContainer/HBoxContainer"]
-layout_mode = 2
-
-[node name="MoveContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer"]
-layout_mode = 2
-
-[node name="Title" type="Label" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/MoveContainer"]
-layout_mode = 2
-size_flags_horizontal = 4
-text = "Move-Settings"
-
-[node name="HBoxContainer" type="HBoxContainer" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/MoveContainer"]
-layout_mode = 2
-
-[node name="TextureRect" type="TextureRect" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/MoveContainer/HBoxContainer"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-tooltip_text = "goal_tile"
-texture = ExtResource("14_ux0ro")
-script = ExtResource("15_vhx6d")
-
-[node name="Label" type="Label" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/MoveContainer/HBoxContainer"]
-layout_mode = 2
-text = "   Bewegung Ziel "
-
-[node name="FuncContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer"]
-layout_mode = 2
-
-[node name="FuncLabel" type="Label" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/FuncContainer"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 0
-text = "KI "
-
-[node name="HBoxContainer" type="HBoxContainer" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/FuncContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 4
-
-[node name="StartKiButton" type="Button" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/FuncContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 6
-size_flags_vertical = 4
-text = "Start"
-
-[node name="StopKiButton" type="Button" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/FuncContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 6
-size_flags_vertical = 4
-text = "Stop"
-
-[node name="SaveKiButton" type="Button" parent="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/FuncContainer/HBoxContainer"]
-layout_mode = 2
-text = "Speicher Ki Verhalten"
-
-[node name="Belohnung" type="MarginContainer" parent="CodeLayer/Code/TabContainerKI"]
+[node name="Belohnung" type="MarginContainer" parent="CodeLayer/Code/TabContainer"]
 visible = false
 layout_mode = 2
 metadata/_tab_index = 2
 
-[node name="MoveContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainerKI/Belohnung"]
+[node name="MoveContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/Belohnung"]
 layout_mode = 2
 
-[node name="Title" type="Label" parent="CodeLayer/Code/TabContainerKI/Belohnung/MoveContainer"]
+[node name="Title" type="Label" parent="CodeLayer/Code/TabContainer/Belohnung/MoveContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Belohnung-Settings"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CodeLayer/Code/TabContainerKI/Belohnung/MoveContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/Belohnung/MoveContainer"]
 layout_mode = 2
 
-[node name="TextureRect" type="TextureRect" parent="CodeLayer/Code/TabContainerKI/Belohnung/MoveContainer/HBoxContainer"]
+[node name="TextureRect" type="TextureRect" parent="CodeLayer/Code/TabContainer/Belohnung/MoveContainer/HBoxContainer"]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 texture = ExtResource("14_ux0ro")
 script = ExtResource("13_ba010")
 
-[node name="Label" type="Label" parent="CodeLayer/Code/TabContainerKI/Belohnung/MoveContainer/HBoxContainer"]
+[node name="Label" type="Label" parent="CodeLayer/Code/TabContainer/Belohnung/MoveContainer/HBoxContainer"]
 layout_mode = 2
 text = "Bewegung Ziel Belohnung : "
 
-[node name="LineEdit" type="LineEdit" parent="CodeLayer/Code/TabContainerKI/Belohnung/MoveContainer/HBoxContainer"]
+[node name="LineEdit" type="LineEdit" parent="CodeLayer/Code/TabContainer/Belohnung/MoveContainer/HBoxContainer"]
 layout_mode = 2
 text = "0.7"
 
@@ -1192,13 +891,13 @@ script = ExtResource("16_2smwq")
 player = NodePath("../../..")
 metadata/_custom_type_script = "uid://3u5wolperx1b"
 
-[node name="PopupPanel" type="PopupPanel" parent="CodeLayer"]
+[node name="PopupFunction" type="PopupPanel" parent="CodeLayer"]
 unique_name_in_owner = true
 oversampling_override = 1.0
 title = "Funktionen"
 size = Vector2i(559, 478)
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CodeLayer/PopupPanel"]
+[node name="HBoxContainer" type="HBoxContainer" parent="CodeLayer/PopupFunction"]
 anchors_preset = 4
 anchor_top = 0.5
 anchor_bottom = 0.5
@@ -1211,25 +910,25 @@ size_flags_horizontal = 0
 size_flags_vertical = 0
 theme_override_constants/separation = 10
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CodeLayer/PopupPanel/HBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="CodeLayer/PopupFunction/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CodeLayer/PopupPanel/HBoxContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="CodeLayer/PopupPanel/HBoxContainer/VBoxContainer/HBoxContainer"]
+[node name="Label" type="Label" parent="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = "Funktionsname: "
 
-[node name="InputFuncName" type="LineEdit" parent="CodeLayer/PopupPanel/HBoxContainer/VBoxContainer/HBoxContainer"]
+[node name="InputFuncName" type="LineEdit" parent="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 max_length = 30
 
-[node name="CodeEdit" type="CodeEdit" parent="CodeLayer/PopupPanel/HBoxContainer/VBoxContainer"]
+[node name="CodeEdit" type="CodeEdit" parent="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer"]
 custom_minimum_size = Vector2(400, 400)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1241,30 +940,30 @@ symbol_tooltip_on_hover = true
 gutters_draw_bookmarks = true
 gutters_draw_line_numbers = true
 
-[node name="BtnContainer" type="HBoxContainer" parent="CodeLayer/PopupPanel/HBoxContainer/VBoxContainer"]
+[node name="BtnContainer" type="HBoxContainer" parent="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_constants/separation = 20
 
-[node name="CreateBtn" type="Button" parent="CodeLayer/PopupPanel/HBoxContainer/VBoxContainer/BtnContainer"]
+[node name="CreateBtn" type="Button" parent="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer/BtnContainer"]
 layout_mode = 2
 text = "Erstellen"
 
-[node name="ExitBtn" type="Button" parent="CodeLayer/PopupPanel/HBoxContainer/VBoxContainer/BtnContainer"]
+[node name="ExitBtn" type="Button" parent="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer/BtnContainer"]
 layout_mode = 2
 text = "Abbrechen"
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="CodeLayer/PopupPanel/HBoxContainer"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="CodeLayer/PopupFunction/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 15
 
-[node name="Label" type="Label" parent="CodeLayer/PopupPanel/HBoxContainer/VBoxContainer2"]
+[node name="Label" type="Label" parent="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
 text = "Funktionsliste"
 
-[node name="FuncList" type="ItemList" parent="CodeLayer/PopupPanel/HBoxContainer/VBoxContainer2"]
+[node name="FuncList" type="ItemList" parent="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer2"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
@@ -1359,7 +1058,86 @@ offset_right = 381.0
 offset_bottom = 364.0
 script = ExtResource("17_jb4us")
 
-[connection signal="pressed" from="PlayerStatus/WorkContainer/VBoxContainer/backToMenu" to="." method="_on_back_to_menu_pressed"]
+[node name="Camera2D" type="Camera2D" parent="."]
+enabled = false
+script = ExtResource("13_e5n5u")
+
+[node name="PopupSettings" type="PopupPanel" parent="."]
+transparent_bg = false
+oversampling_override = 1.0
+title = "Settings"
+initial_position = 1
+size = Vector2i(243, 109)
+transparent = false
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PopupSettings"]
+top_level = true
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 239.0
+offset_bottom = 105.0
+size_flags_horizontal = 6
+size_flags_vertical = 6
+alignment = 1
+
+[node name="Label" type="Label" parent="PopupSettings/VBoxContainer"]
+layout_mode = 2
+text = "Main-Settings"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="PopupSettings/VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PopupSettings/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PopupSettings/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Schwerigkeitsgrad:"
+
+[node name="DifModeButton" type="OptionButton" parent="PopupSettings/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+selected = 0
+item_count = 3
+popup/item_0/text = "Leicht"
+popup/item_0/id = 0
+popup/item_1/text = "Hart"
+popup/item_1/id = 1
+popup/item_2/text = "Horror"
+popup/item_2/id = 2
+
+[node name="backToMenu" type="Button" parent="PopupSettings/VBoxContainer"]
+layout_mode = 2
+text = "Exit Game"
+
+[node name="PopupInfo" type="PopupPanel" parent="."]
+transparent_bg = false
+oversampling_override = 1.0
+initial_position = 1
+transparent = false
+
+[node name="workTaskText" type="RichTextLabel" parent="PopupInfo"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 20)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -46.0
+offset_top = -46.0
+offset_right = 46.0
+offset_bottom = 46.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+text = "- Geh zum weißen Feld!"
+fit_content = true
+
+[connection signal="pressed" from="PlayerStatus/WorkContainer/VBoxContainer2/HBoxContainer2/SettingsButton" to="PlayerStatus" method="_on_settings_button_pressed"]
+[connection signal="pressed" from="PlayerStatus/WorkContainer/VBoxContainer2/HBoxContainer2/InfoButton" to="PlayerStatus" method="_on_info_button_pressed"]
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ButtonCotainer/PlayButton" to="CodeLayer/Code" method="_on_play_button_pressed"]
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ButtonCotainer/StopButton" to="CodeLayer/Code" method="_on_stop_button_pressed"]
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ButtonCotainer/CodeDeleteButton" to="CodeLayer/Code" method="_on_code_delete_button_pressed"]
@@ -1372,6 +1150,7 @@ script = ExtResource("17_jb4us")
 [connection signal="item_activated" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer3/ItemList" to="CodeLayer/Code" method="_on_item_list_item_activated"]
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer2/createFunction" to="CodeLayer/Code" method="_on_create_function_pressed"]
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer2/loadFunction" to="CodeLayer/Code" method="_on_load_function_pressed"]
-[connection signal="item_selected" from="CodeLayer/Code/TabContainerKI/KI Playground/VBoxContainer/SpawnContainer/HBoxContainer/OptionButton" to="Builder" method="_on_option_button_item_selected"]
-[connection signal="pressed" from="CodeLayer/PopupPanel/HBoxContainer/VBoxContainer/BtnContainer/CreateBtn" to="CodeLayer/Code" method="_on_create_btn_pressed"]
-[connection signal="item_activated" from="CodeLayer/PopupPanel/HBoxContainer/VBoxContainer2/FuncList" to="FunctionHandler" method="_on_func_list_item_activated"]
+[connection signal="item_selected" from="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/SpawnContainer/HBoxContainer/OptionSpawn" to="AI/Builder" method="_on_option_button_item_selected"]
+[connection signal="pressed" from="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer/BtnContainer/CreateBtn" to="CodeLayer/Code" method="_on_create_btn_pressed"]
+[connection signal="item_activated" from="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer2/FuncList" to="FunctionHandler" method="_on_func_list_item_activated"]
+[connection signal="pressed" from="PopupSettings/VBoxContainer/backToMenu" to="." method="_on_back_to_menu_pressed"]
