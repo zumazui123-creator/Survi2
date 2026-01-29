@@ -79,10 +79,10 @@ func handle_item_selection(id):
 		Inventory.useItem(str(player.name), id)
 
 
-func use_item(inp_action):
-	var item_id_str = inp_action.trim_prefix(Strings.ACTION_USE_ITEM).strip_edges()
-	print("action: "+inp_action+" item_id_str: "+item_id_str)
-	var item_id : int = -1
+func use_item(cmd: PackedStringArray):
+	
+	var item_id : int 				= -1
+	var item_id_str : String 	= cmd[1]
 	if item_id_str.is_valid_int():
 		item_id = int(item_id_str)
 		inventory.selectionChanged.emit(item_id)

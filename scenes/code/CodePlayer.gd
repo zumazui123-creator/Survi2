@@ -62,10 +62,10 @@ func play(code: String) -> void:
 		push_error("DebugCodePlayer: Player node not assigned")
 		return
 
-	var lines = code.split("\n", false)
-	lines  			   = parse_lines_with_func(lines)
+	var lines 				 = code.split("\n", false)
+	lines  			   	 	 = parse_lines_with_func(lines)
 	var parsed_repeats = parse_lines_with_repeat(lines)
-	lines = parsed_repeats.lines
+	lines 						 = parsed_repeats.lines
 
 	for line in lines:
 		
@@ -75,6 +75,7 @@ func play(code: String) -> void:
 		
 		
 		# Parse command and args
+		line = Strings.remap_code_cmd_to_action("de", line)
 		var parts = line.split(" ", false)
 		await execute_command(parts)
 	
@@ -84,7 +85,6 @@ func execute_command(parts: PackedStringArray) -> void:
 	if parts.is_empty():
 		return
 
-	parts[0] = Strings.remap_code_cmd_to_action("de", parts[0])
 	if parts[0] == "":
 		return
 		
@@ -99,7 +99,7 @@ func execute_command(parts: PackedStringArray) -> void:
 		await build(parts[0],parts)
 		
 	elif Strings.ACTION_USE_ITEM in parts[0]:
-		var item_id = player.player_items.use_item(parts[0])
+		var item_id = player.player_items.use_item(parts)
 		print("Using item:"+str(item_id))
 		
 	elif Strings.ACTION_SAY in parts[0]:

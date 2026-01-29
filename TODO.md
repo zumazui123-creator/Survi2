@@ -11,9 +11,12 @@ Möglich:
 - Tower u. Hero defense
 
 # TODO:
+- bei string.remap evtl mit befehle trimmern und besetzen
+- eine class fuer cmd sowie class cmd { command, paramter, etc.}?
+
+
 
 - ad stop flag
-- implement "function erstellen"
 - easy and ahrd mode for laby
 - food und water aufüllen
 

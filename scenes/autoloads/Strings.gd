@@ -14,7 +14,7 @@ const ACTION_ATTACK     = "attack"
 const ACTION_SAY        = "say"
 const ACTION_BUILD      = "build"
 const ACTION_PAINT      = "paint"
-const ACTION_USE_ITEM   = "use item"
+const ACTION_USE_ITEM   = "useItem"
 
 const direction_map = {
 	Strings.ACTION_WALK_LEFT: Vector2i.LEFT,
@@ -98,7 +98,26 @@ const DAMAGE_MAGIC = "magic"
 
 
 
-func remap_code_cmd_to_action(lang:String, code_cmd : String) -> String:
-	if code_cmd in Strings.ACTION_NAMES[lang].keys():
-		return Strings.ACTION_NAMES[lang][code_cmd];
-	return "";
+func remap_code_cmd_to_action(lang:String, line : String) -> String:
+	line = line.strip_edges();
+	for action in Strings.ACTION_NAMES[lang].keys():
+		if line.begins_with(action):
+			line = line.replace(action, Strings.ACTION_NAMES[lang][action]) ;
+			return line
+	return ""
+
+	# var code_cmd = sperated_line
+	# var parameter = "" inp_action.trim_prefix(Strings.ACTION_USE_ITEM).strip_edges()Z
+
+	# if len(sperated_line) ==  3:
+	# 	if sperated_line[2].is_valid_int():
+	# 		code_cmd = sperated_line[0] +" "+sperated_line[1] 
+	# 		parameter = sperated_line[2]
+
+	# if len(sperated_line) ==  2:
+	# 	code_cmd = sperated_line[0]
+	# 	parameter = sperated_line[1]
+
+	# if code_cmd in Strings.ACTION_NAMES[lang].keys():
+	# 	return [Strings.ACTION_NAMES[lang][code_cmd],parameter];
+	# return [code_cmd, parameter];
