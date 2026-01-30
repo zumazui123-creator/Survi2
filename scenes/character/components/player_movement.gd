@@ -115,7 +115,7 @@ func win_condition():
 	player.player_status.status["terminated"] = false
 	
 	if Multihelper.level["end"] == Constants.END_LABY:
-		var end_goal_position = Multihelper.map.laby_map.endPosition
+		var end_goal_position = Multihelper.map.endPosition
 		if current_map_position == end_goal_position:
 			current_map_position = Vector2i()
 			player.EndUI.setLabel("Level Abgeschlossen!")
@@ -123,13 +123,6 @@ func win_condition():
 			player.EndUI.visible = true
 
 
-
-func get_reward():
-	var reward = 0
-	if Multihelper.level["type"] == 100:
-		var end_goal_position = Multihelper.map.laby_map.endPosition
-		reward = 1/current_map_position.distance_to(end_goal_position)
-	return reward
 	
 func set_speed( player_speed : float):
 	move_speed_factor += player_speed

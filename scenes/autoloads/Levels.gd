@@ -2,8 +2,8 @@ extends Node
 
 
 var MainLevels := {
-	0: {"level": 0,"type": Constants.MAP_MAIN, "end": Constants.END_MAIN, "size": Vector2i(16,16)},
-	1: {"level": 1,"type": Constants.MAP_MAIN, "end": Constants.END_MAIN},
+	0: {"level": 0,"type": Constants.MAP_MAIN, "end": Constants.END_MAIN, },
+	1: {"level": 1,"type": Constants.MAP_MAIN, "end": Constants.END_MAIN,"size": Vector2i(16,16) },
 	2: {"level": 2,"type": Constants.MAP_MAIN, "end": Constants.END_MAIN},
 }
 

@@ -49,6 +49,18 @@ const ACTION_NAMES = {
 }
 
 
+const BUILDING_WALL = "wall"
+const BUILDING_NAMES = {
+	"de": {
+		"mauer":  BUILDING_WALL,
+
+	},
+	"en": {
+		"wall":   BUILDING_WALL,
+
+	}
+}
+
 
 # --- Code Keywords ---
 const KEYWORD_FUNC = "func"
@@ -97,6 +109,13 @@ const DAMAGE_PICKAXE = "pickaxe"
 const DAMAGE_MAGIC = "magic"
 
 
+func translate_building_names(lang:String, line : String) -> String:
+	line = line.strip_edges();
+	for building in Strings.BUILDING_NAMES[lang].keys():
+		if line.begins_with(building):
+			line = line.replace(building, Strings.BUILDING_NAMES[lang][building]) ;
+			return line
+	return ""
 
 func remap_code_cmd_to_action(lang:String, line : String) -> String:
 	line = line.strip_edges();

@@ -31,7 +31,7 @@ var syncedPlayers = []
 
 var player_info = {"name": ""}
 var goal_tile = Vector2i(0,0)
-var code_player_enabled 		= true
+var code_player_enabled 	= true
 var host_as_player_enabled 	= true
 
 var game : Node
@@ -190,9 +190,15 @@ func addPlayer(playerName, id, characterFile):
 	main.get_node("Players").add_child(newPlayer)
 	spawnPlayer(newPlayer)
 
-func spawnPlayers():
+func getPlayers():
 	if not main: return
 	var players = main.get_node("Players")
+	if players:
+		return players
+	
+
+func spawnPlayers():
+	var players = getPlayers()
 	if players:
 		for newPlayer in players.get_children():
 			spawnPlayer(newPlayer)
@@ -201,10 +207,15 @@ func spawnPlayer(newPlayer):
 	#var players = main.get_node("Players")
 	#for newPlayer in players.get_children():
 	var spawnPosition = Vector2i(0,0)
-	if map.laby_map.spawnPosition > Vector2i(0,0):
-		spawnPosition = map.laby_map.spawnPosition
+	if map.spawnPosition > Vector2i(0,0):
+		spawnPosition = map.spawnPosition
 	else :
-		spawnPosition = map.walkable_tiles.pick_random()
+		if  len(spawnedPlayers) > 1:
+			print("spawn near players")
+			var player1 = getPlayers().get_child(0)
+			spawnPosition = player1.player_movement.current_map_position
+		else:
+			spawnPosition = map.walkable_tiles.pick_random()
 	newPlayer.workTaskText.text = workTask.getWorkTask(self.level)
 	newPlayer.sendPos.rpc(map.tile_map.map_to_local( spawnPosition ))
 

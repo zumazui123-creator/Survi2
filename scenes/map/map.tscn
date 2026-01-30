@@ -1,0 +1,25 @@
+[gd_scene load_steps=6 format=3 uid="uid://bf074ibcy5o0"]
+
+[ext_resource type="Script" uid="uid://bbn7yedve2law" path="res://scenes/map/map.gd" id="1_gggpt"]
+[ext_resource type="TileSet" uid="uid://cny45owea8lcj" path="res://assets/tileset/tileset.tres" id="2_c3hbg"]
+[ext_resource type="Script" uid="uid://cl5tcm0jnykd6" path="res://scenes/map/tile_map.gd" id="3_qci3n"]
+[ext_resource type="Script" uid="uid://bqqq0ujqgl6ln" path="res://scenes/map/mapGenerator/labyrinth.gd" id="3_qpycp"]
+[ext_resource type="Script" uid="uid://c8y1yilcj8bkg" path="res://scenes/map/mapGenerator/main_level.gd" id="5_qci3n"]
+
+[node name="Map" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_gggpt")
+
+[node name="TileMap" type="TileMapLayer" parent="."]
+unique_name_in_owner = true
+use_parent_material = true
+tile_set = ExtResource("2_c3hbg")
+navigation_visibility_mode = 1
+script = ExtResource("3_qci3n")
+
+[node name="Labyrinth" type="Node" parent="."]
+script = ExtResource("3_qpycp")
+
+[node name="MainLevel" type="Node" parent="."]
+script = ExtResource("5_qci3n")

@@ -4,8 +4,7 @@ extends Node
 @onready var animals = $"../../Animals"
 
 var walkable_tiles : Array[Vector2i] = []
-var spawnPosition = Vector2i(0,0)
-var endPosition = Vector2i(-10,-10)
+
 var randomDirection : Array[Vector2i] = [Vector2i(1,0),Vector2i(-1,0),Vector2i(0,1),Vector2i(0,-1)]
 var moduleNumber = [2,3,5,7,11,13]
 var atlasCoorWhiteField = Vector2i(11,0)
@@ -29,7 +28,7 @@ func generateLabyrinth( level_no : int) -> Array[Vector2i] :
 	map.full_terrain_with_water_fields()
 	walkable_tiles = []
 
-	var walkVec = Vector2i(int(map.map_height/2),int(map.map_width/2)) 
+	var walkVec = Vector2i(int(map.height/2),int(map.width/2)) 
 	var randomVec = Vector2i()
 	for tile in range(level_hard_count): 
 		
@@ -41,9 +40,9 @@ func generateLabyrinth( level_no : int) -> Array[Vector2i] :
 			map.set_grass_field(walkVec)
 			walkable_tiles.append(walkVec)
 	# TODO : walkable tiles come empty sometimes
-	spawnPosition = walkable_tiles[0]
-	endPosition = walkable_tiles[-1]
-	map.set_field(endPosition, atlasCoorWhiteField)
+	map.spawnPosition = walkable_tiles[0]
+	map.endPosition = walkable_tiles[-1]
+	map.set_field(map.endPosition, atlasCoorWhiteField)
 	return walkable_tiles
 	
 func generateLabyrinthWithSeed( level_no : int, rnd_seed : int)-> Array[Vector2i]: 
@@ -73,9 +72,9 @@ func generateLabyrinthWithSeed( level_no : int, rnd_seed : int)-> Array[Vector2i
 			animals.add_child(animal)
 			walkable_tiles.append(walkVec)
 		
-	spawnPosition = walkable_tiles[0]
-	endPosition = walkable_tiles[-1]
-	map.set_field(endPosition, atlasCoorWhiteField)
+	map.spawnPosition = walkable_tiles[0]
+	map.endPosition = walkable_tiles[-1]
+	map.set_field(map.endPosition, atlasCoorWhiteField)
 	return walkable_tiles
 	
 

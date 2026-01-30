@@ -1,7 +1,7 @@
 [gd_scene load_steps=18 format=3 uid="uid://ccrctrojuyiel"]
 
 [ext_resource type="Script" uid="uid://c4h0ahffrs4to" path="res://scenes/main/main.gd" id="1_5kenc"]
-[ext_resource type="PackedScene" uid="uid://bf074ibcy5o0" path="res://scenes/mapGen/map.tscn" id="1_vj1jr"]
+[ext_resource type="PackedScene" uid="uid://bf074ibcy5o0" path="res://scenes/map/map.tscn" id="1_vj1jr"]
 [ext_resource type="PackedScene" uid="uid://do5frseoo8sxj" path="res://scenes/ui/spawn/spawnPlayer.tscn" id="2_ajc02"]
 [ext_resource type="Script" uid="uid://di16mip16jhcr" path="res://scenes/main/spawn_object.gd" id="2_raeie"]
 [ext_resource type="Script" uid="uid://dhjwv3aq1c8ed" path="res://scenes/main/spawn_enemies.gd" id="3_th5th"]
@@ -103,6 +103,10 @@ visible = false
 [node name="PlayerSpawner" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("uid://bmhxilkffhqa5")
 spawn_path = NodePath("../Players")
+
+[node name="AnimalSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("uid://4yb25tbuu2at")
+spawn_path = NodePath("../Animals")
 
 [node name="EnemySpawner" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("uid://d3bgdspo4bhr4")

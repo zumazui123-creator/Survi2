@@ -154,6 +154,6 @@ func move_step(action: String) -> void:
 
 func say(parts):
 	var text = ""
-	if parts[1]: 
+	if len(parts) > 1: 
 		text = parts[1].trim_prefix(Strings.ACTION_SAY)
 	player.sendMessage(text)

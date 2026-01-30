@@ -18,7 +18,7 @@ var hydration_rate: float = 2
 var food_rate: float = 5
 
 
-@export var maxHP := 250.0
+@export var maxHP := 25000.0
 @export var hp := maxHP:
 	set(value):
 		hp = value

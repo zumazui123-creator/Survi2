@@ -105,6 +105,9 @@ func enemyPlayerKilled():
 	increaseScore.rpc(Constants.PK_SCORE_GAIN)
 
 func getDamage(causer, amount, _type):
+	if causer.is_in_group("player"):
+		return
+		
 	hp -= amount
 	if (hp - amount) <= 0 and causer.is_in_group(Strings.GROUP_PLAYER):
 		causer.get_node("PlayerCombat").player_killed.emit()

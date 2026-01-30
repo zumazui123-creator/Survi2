@@ -17,6 +17,7 @@ var paintable_tiles = {
 }
 
 func build(building_type: String, tile_position: Vector2i) -> void:
+	building_type = Strings.translate_building_names(Multihelper.lang, building_type);
 	execute_build.rpc(building_type, tile_position)
 
 @rpc("call_local", "any_peer", "reliable")

@@ -1,24 +1,24 @@
 [gd_scene load_steps=8 format=3 uid="uid://4yb25tbuu2at"]
 
 [ext_resource type="Script" uid="uid://ow586srjgj2u" path="res://scenes/animal/animal.gd" id="1_428fe"]
-[ext_resource type="Texture2D" uid="uid://cmgqoo4d6mewa" path="res://assets/characters/enemy/zombie.png" id="2_f46n4"]
+[ext_resource type="Texture2D" uid="uid://c11x4ywwn6jmi" path="res://assets/characters/enemy/zombie.png" id="2_f46n4"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_m76gk"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_tx4kn"]
-properties/0/path = NodePath("..:position")
+properties/0/path = NodePath("..:animalId")
 properties/0/spawn = true
 properties/0/replication_mode = 2
-properties/1/path = NodePath("..:targetPlayer")
+properties/1/path = NodePath("..:position")
 properties/1/spawn = true
 properties/1/replication_mode = 2
-properties/2/path = NodePath("..:hp")
+properties/2/path = NodePath("..:targetPlayerId")
 properties/2/spawn = true
 properties/2/replication_mode = 2
-properties/3/path = NodePath("../MovingParts:rotation")
+properties/3/path = NodePath("../AnimalUI/HPBar:value")
 properties/3/spawn = true
 properties/3/replication_mode = 2
-properties/4/path = NodePath("..:enemyId")
+properties/4/path = NodePath("../MovingParts:rotation")
 properties/4/spawn = true
 properties/4/replication_mode = 2
 
@@ -41,6 +41,7 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [node name="Animal" type="CharacterBody2D" groups=["damageable"]]
+collision_layer = 3
 script = ExtResource("1_428fe")
 
 [node name="MovingParts" type="Node2D" parent="."]

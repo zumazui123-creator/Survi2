@@ -11,7 +11,11 @@ Möglich:
 - Tower u. Hero defense
 
 # TODO:
-- bei string.remap evtl mit befehle trimmern und besetzen
+/ bei wiederhole order beim funktion bewegt sich die figur schenller damit die kinder mehr schleifen benzzuten bzw komplexeren strukturen mehr geschwindigkeit beispiel wiederhole mit wenn
+- leveln m;glich durch killen von gegner und 
+-  von llm extrahieren von experten in lmm ectl. durch lora und null setyen von parametern pder som. evtl versuchen gewichte yu verteilen damit kein pixel dominanz entsteht
+- beim plaz 1 sec pause damit code play nicht wie ein joystick verwendet wird.
+- clean arch nochmal angucken
 - eine class fuer cmd sowie class cmd { command, paramter, etc.}?
 
 

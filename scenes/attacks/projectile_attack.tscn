@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://c574wa7os4la4"]
 
 [ext_resource type="Script" uid="uid://bschexk11oqf3" path="res://scenes/attacks/projectile_attack.gd" id="1_hm7c1"]
-[ext_resource type="Texture2D" uid="uid://dx25tuercd8b8" path="res://assets/characters/attacks/fireshuriken.png" id="2_xfsfk"]
+[ext_resource type="Texture2D" uid="uid://dyuvwy0qvajvp" path="res://assets/characters/attacks/fireshuriken.png" id="2_xfsfk"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_5p05c"]
 radius = 8.0
@@ -53,6 +53,8 @@ hframes = 4
 [node name="AttackArea" type="Area2D" parent="MovingParts/Adjust"]
 unique_name_in_owner = true
 position = Vector2(6, 0)
+collision_layer = 2
+collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="MovingParts/Adjust/AttackArea"]
 position = Vector2(-7, 0)
@@ -63,7 +65,7 @@ replication_config = SubResource("SceneReplicationConfig_pit57")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
-"": SubResource("AnimationLibrary_y8a8n")
+&"": SubResource("AnimationLibrary_y8a8n")
 }
 autoplay = "loop"
 
