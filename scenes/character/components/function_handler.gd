@@ -2,7 +2,7 @@ extends Node
 
 @onready var item_list = %ItemList
 @onready var func_list = %FuncList
-@onready var code_edit = $"../CodeLayer/PopupPanel/HBoxContainer/VBoxContainer/CodeEdit"
+@onready var code_edit = $"../CodeLayer/PopupFunction/HBoxContainer/VBoxContainer/CodeEdit"
 @onready var input_func_name = %InputFuncName
 
 var functions: Dictionary = {}

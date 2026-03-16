@@ -14,7 +14,8 @@ func _ready():
 
 func generateLabyrinth( level_no : int) -> Array[Vector2i] : 
 	var rng = RandomNumberGenerator.new()
-	rng.seed = Multihelper.mapSeed
+	rng.seed = randi()
+	Multihelper.mapSeed = rng.seed 
 	
 	var way_size = 5
 	var level_hard_count = level_no+5

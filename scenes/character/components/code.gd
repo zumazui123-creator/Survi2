@@ -88,10 +88,12 @@ func checkInputFuncName():
 func _on_create_btn_pressed() -> void:
 	if Multihelper.code_player_enabled:
 		print("create func")
+		var funcName = inputFuncName.text
 		var data := {
 			inputFuncName.text: code_func.text ,
 			}
 		function_handler.set_func( data )
+		highlighter._apply_keywords(code_edit.syntax_highlighter, [funcName], Color.CHARTREUSE)
 	#var message = (
 		#Strings.RPC_METHOD_CREATE_FUNCTION
 		#+ "\n"

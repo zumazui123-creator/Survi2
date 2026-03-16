@@ -3,15 +3,18 @@ extends Node2D
 @export var breakables : Objects
 @export var buildings : Buildings
 
+
 func _ready():
 	if multiplayer.is_server():
 		print(Multihelper.level)
 		Multihelper.loadMap()
+		
 		breakables.spawnObjects(breakables.initialSpawnObjects)
 		if not Multihelper.host_as_player_enabled:
 			$HUD.queue_free()
 	$dayNight.time_tick.connect(%DayNightCycleUI.set_daytime)
 	#createHUD()
+	
 
 #func createHUD():
 	#var hudScene := preload("res://scenes/ui/playersList/generalHud.tscn")

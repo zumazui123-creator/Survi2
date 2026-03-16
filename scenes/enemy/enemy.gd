@@ -41,7 +41,7 @@ func _process(_delta):
 		else:
 			tryAttack()
 	else:
-		if GameTime.isNightTime():
+		if GameTime.is_night_time():
 			die(false)
 		else:
 			die(true)
@@ -85,7 +85,7 @@ func die(dropLoot):
 			dropLoots()
 
 func dropLoots():
-	if not GameTime.isNightTime():
+	if not GameTime.is_night_time():
 		return
 	for drop in drops.keys():
 		Items.spawnPickups(drop, position, randi_range(drops[drop]["min"],drops[drop]["max"]))

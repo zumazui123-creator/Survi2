@@ -9,18 +9,16 @@ const MOVEMENT_KEYWORDS := [
 ]
 
 const LOOP_KEYWORDS := [
-	"wiederhole", "mal", "ende", "nutze item"
+	"wiederhole", "mal", "ende", "nutze", "item"
 ]
 
-const END_KEYWORDS := [
+const FUNC_KEYWORDS := [
 	
 ]
 
 # Farbe für Zahlen
 const NUMBER_COLOR := Color(1.0, 0.5, 0.0) # Orange
-# ------------------------------
-# Public API
-# ------------------------------
+
 func setup_custom_highlighter(code_edit: CodeEdit) -> void:
 	assert(code_edit != null, "code_edit darf nicht null sein.")
 
@@ -32,13 +30,10 @@ func setup_custom_highlighter(code_edit: CodeEdit) -> void:
 	_clear_existing_highlight_rules(highlighter)
 	_apply_keywords(highlighter, MOVEMENT_KEYWORDS, Color.AQUAMARINE)
 	_apply_keywords(highlighter, LOOP_KEYWORDS, Color.YELLOW)
-	_apply_keywords(highlighter, END_KEYWORDS, Color.RED)
+	_apply_keywords(highlighter, FUNC_KEYWORDS, Color.CHARTREUSE)
 	
 
 
-# ------------------------------
-# Private helpers
-# ------------------------------
 func _clear_existing_highlight_rules(highlighter: CodeHighlighter) -> void:
 	if highlighter.has_method("clear_keyword_colors"):
 		highlighter.clear_keyword_colors()

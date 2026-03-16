@@ -2,7 +2,9 @@ extends Control
 class_name Map
 
 var grassAtlasCoords = [Vector2i(0,0),Vector2i(1,0),Vector2i(2,0),Vector2i(3,0),Vector2i(16,0),Vector2i(17,0)]
-var waterCoors = [Vector2i(18,0), Vector2i(19,0)]
+var waterCoors 		 = [Vector2i(18,0), Vector2i(19,0)]
+var startFieldCoords = [Vector2i(23,4)]
+var blockFieldCoords = [Vector2i(20,4)]
 #var blockStoneCoors = [Vector2i(6,0),Vector2i(7,0),Vector2i(8,0),Vector2i(9,0), Vector2i(10,0)]
 
 var tileset_source = 1
@@ -11,18 +13,19 @@ var tileset_source = 1
 var width = Constants.MAP_SIZE.x
 var height = Constants.MAP_SIZE.y
 
-var levelData := {}
 
 @onready var enemies : Node2D  
 @onready var animals : Node2D 
 #@export var tile_map : TileMapLayer 
-var tile_map 
+var tile_map : TileMapLayer 
 
 var map_type : Node
 var spawnPosition = Vector2i(0,0)
 var endPosition = Vector2i(-10,-10)
 var walkable_tiles = []
+
 var level_type = -1
+var level_no : int = -1
 
 func _ready():
 	print("Map ready")
@@ -31,37 +34,50 @@ func _ready():
 	
 	
 func generateMap(level_dict : Dictionary):
-	levelData = level_dict
 	print("generated:"+str(level_dict))
-	var level_no 	= level_dict["level"]
-	level_type 		= level_dict["type"]
+	level_no 	= level_dict["level"]
+	level_type 	= level_dict["type"]
 	
 	if level_type == Constants.MAP_MAIN:
-		var scene = load("res://scenes/map/levels/level1.tscn")
-		var level_main 	= scene.instantiate()
-		walkable_tiles 	= level_main.get_walkable_tiles(grassAtlasCoords)
-		tile_map 		= level_main.layer
-		set_level_options(1)
-		
-		add_child(level_main)
+		var random_level = $MainLevelGenerator
+		tile_map 		 = $TileMap
+		tile_map.visible = true
+		random_level.generateMainMap(level_dict)
+		walkable_tiles 	= get_walkable_tiles(tile_map, grassAtlasCoords)
+		set_level_options(level_no)
+		return 
+			
+		#if level_no > 0:
+			#var level_path : String = "res://scenes/map/levels/level"+str(level_no)+".tscn"
+			#var scene : PackedScene	= load(level_path)
+			#var level_main : Node	= scene.instantiate()
+			#walkable_tiles 	= get_walkable_tiles(level_main.layer, grassAtlasCoords)
+			#tile_map = level_main.layer
+			#set_level_options(0)
+			#add_child(level_main)
+			
 
-		#map_type  		=  get_node_or_null("MainLevel")
-		#walkable_tiles 	= map_type.generateMainMap(level_no)
-		
 	if level_type == Constants.MAP_LABY:
-		map_type  		=  get_node_or_null("Labyrinth")
-		walkable_tiles 	= map_type.generateLabyrinth(level_no)
+		if level_no % 2 == 0:
+			tile_map 		 = $TileMap
+			tile_map.visible = true
+			map_type  		 =  get_node_or_null("Labyrinth")
+			walkable_tiles 	 = map_type.generateLabyrinth(level_no)
 		
 	if level_type == Constants.MAP_TOURMENT:
+		tile_map 		 = $TileMap
+		tile_map.visible = true
 		map_type  		=  get_node_or_null("Labyrinth")
 		walkable_tiles 	= map_type.generateLabyrinthWithSeed(level_no+15,42+level_no)
 		
 	if level_type == Constants.MAP_KI:
+		tile_map 		 = $TileMap
+		tile_map.visible = true
 		map_type  		=  get_node_or_null("MainLevel")
 		walkable_tiles 	= map_type.generateMainMap(0)
 
 
-	
+
 
 
 func full_terrain_with_water_fields():
@@ -71,7 +87,7 @@ func full_terrain_with_water_fields():
 	for y in range(height):
 		for x in range(width):
 			tile_coord = waterCoors[rng.randi() % waterCoors.size()]
-			tile_map.set_cell(Vector2i(x, y), tileset_source, tile_coord, 0)
+			Multihelper.map.tile_map.set_cell(Vector2i(x, y), tileset_source, tile_coord, 0)
 
 func generate_borders():
 	var rng = RandomNumberGenerator.new()
@@ -113,7 +129,7 @@ func set_level_options(level : int):
 		animals.maxAnimalsPerPlayer  = 25
 		
 	if level == 2:
-		enemies.maxEnemiesPerPlayer = 25
+		enemies.maxEnemiesPerPlayer = 1
 		animals.maxAnimalsPerPlayer  = 6
 
 
@@ -123,12 +139,12 @@ func get_walkable_tiles(
 		grass_atlas_coords
 	) :
 
-	var walkable_tiles = []
+	var walkable_tiles_tmp = []
 
 	for cell in layer.get_used_cells():
 		var atlas := layer.get_cell_atlas_coords(cell)
 
 		if atlas in grass_atlas_coords:
-			walkable_tiles.append(cell)
+			walkable_tiles_tmp.append(cell)
 
-	return walkable_tiles
+	return walkable_tiles_tmp

@@ -52,9 +52,8 @@ func parse_lines_with_func(lines: PackedStringArray, start := 0) -> PackedString
 	for line in lines:
 		if line in function_handler.functions.keys():
 			for func_line in function_handler.functions[line]:
-				result.append(line)
+				result.append(func_line)
 		result.append(line)
-	
 	return result
 	
 func play(code: String) -> void:

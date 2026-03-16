@@ -33,10 +33,10 @@ properties/1/spawn = true
 properties/1/replication_mode = 2
 properties/2/path = NodePath(".:playerName")
 properties/2/spawn = true
-properties/2/replication_mode = 0
+properties/2/replication_mode = 2
 properties/3/path = NodePath(".:characterFile")
 properties/3/spawn = true
-properties/3/replication_mode = 0
+properties/3/replication_mode = 2
 properties/4/path = NodePath("PlayerStatus:hp")
 properties/4/spawn = true
 properties/4/replication_mode = 2
@@ -446,6 +446,7 @@ vertical_alignment = 1
 autowrap_mode = 1
 
 [node name="Bar" type="GridContainer" parent="PlayerStatus"]
+z_index = 100
 layout_mode = 0
 offset_left = -596.0
 offset_top = -59.0
@@ -1108,33 +1109,43 @@ popup/item_1/id = 1
 popup/item_2/text = "Horror"
 popup/item_2/id = 2
 
-[node name="backToMenu" type="Button" parent="PopupSettings/VBoxContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="PopupSettings/VBoxContainer"]
+layout_mode = 2
+
+[node name="backToMenu" type="Button" parent="PopupSettings/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
 text = "Exit Game"
+
+[node name="SettingsOkBtn" type="Button" parent="PopupSettings/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "OK"
 
 [node name="PopupInfo" type="PopupPanel" parent="."]
 transparent_bg = false
 oversampling_override = 1.0
 initial_position = 1
+size = Vector2i(208, 108)
+visible = true
 transparent = false
 
 [node name="workTaskText" type="RichTextLabel" parent="PopupInfo"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 20)
+custom_minimum_size = Vector2(100, 20)
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = 4.0
-offset_top = 4.0
-offset_right = 96.0
-offset_bottom = 96.0
+offset_left = -100.0
+offset_top = -50.0
+offset_right = 100.0
+offset_bottom = 50.0
 grow_horizontal = 2
 grow_vertical = 2
-size_flags_horizontal = 4
 size_flags_vertical = 4
-text = "- Geh zum weißen Feld!"
+bbcode_enabled = true
+text = "Geh zum weißen Feld!"
 fit_content = true
 
 [connection signal="pressed" from="PlayerStatus/WorkContainer/VBoxContainer2/HBoxContainer2/SettingsButton" to="PlayerStatus" method="_on_settings_button_pressed"]
@@ -1154,4 +1165,5 @@ fit_content = true
 [connection signal="item_selected" from="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/SpawnContainer/HBoxContainer/OptionSpawn" to="AI/Builder" method="_on_option_button_item_selected"]
 [connection signal="pressed" from="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer/BtnContainer/CreateBtn" to="CodeLayer/Code" method="_on_create_btn_pressed"]
 [connection signal="item_activated" from="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer2/FuncList" to="FunctionHandler" method="_on_func_list_item_activated"]
-[connection signal="pressed" from="PopupSettings/VBoxContainer/backToMenu" to="." method="_on_back_to_menu_pressed"]
+[connection signal="pressed" from="PopupSettings/VBoxContainer/HBoxContainer2/backToMenu" to="." method="_on_back_to_menu_pressed"]
+[connection signal="pressed" from="PopupSettings/VBoxContainer/HBoxContainer2/SettingsOkBtn" to="PlayerStatus" method="_on_settings_ok_btn_pressed"]

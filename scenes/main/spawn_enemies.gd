@@ -16,9 +16,9 @@ func _ready() -> void:
 
 #enemy spawn
 func trySpawnEnemies():
-	if not GameTime.isNightTime():
+	if not GameTime.is_night_time():
 		return
-	#print("SpawnEnemies at hour: "+str( GameTime.get_hour()) )	
+	print("SpawnEnemies at hour: "+str( GameTime.get_hour()) )	
 	var enemyScene := preload("res://scenes/enemy/enemy.tscn")
 	var players = Multihelper.spawnedPlayers.keys()
 	for player in players:

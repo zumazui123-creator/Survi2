@@ -78,9 +78,7 @@ func handle_item_selection(id):
 	if id in consumeList:
 		Inventory.useItem(str(player.name), id)
 
-
 func use_item(cmd: PackedStringArray):
-	
 	var item_id : int 				= -1
 	var item_id_str : String 	= cmd[1]
 	if item_id_str.is_valid_int():

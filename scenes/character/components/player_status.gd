@@ -95,7 +95,7 @@ func get_heal(heal_hp : float):
 	hp += heal_hp
 
 func _process(_delta: float) -> void:
-	var now = GameTime.get_time()
+	var now = GameTime.get_hour()
 	if now - last_time_hydration > hydration_rate:
 		hydrationBar.value -= 1
 		last_time_hydration = now
@@ -111,3 +111,7 @@ func _on_settings_button_pressed() -> void:
 
 func _on_info_button_pressed() -> void:
 	popup_info.visible = true
+
+
+func _on_settings_ok_btn_pressed() -> void:
+	popup_settings.visible = false

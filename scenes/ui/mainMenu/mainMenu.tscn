@@ -109,7 +109,7 @@ alignment = 1
 
 [node name="Label" type="Label" parent="HBoxContainer/LabrinthContainer/VBoxContainer"]
 layout_mode = 2
-text = "Labyrinth-Level"
+text = "Rätsel-Level"
 horizontal_alignment = 1
 vertical_alignment = 1
 
