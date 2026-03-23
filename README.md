@@ -22,7 +22,7 @@ All game logic, AI behavior, and interactions are handled directly inside Godot.
 ## Usage
 
 1. Launch the game.
-2. Play directly — no external services or background processes are required.
+2. Play directly
 
 ---
 
