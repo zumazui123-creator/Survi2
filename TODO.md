@@ -11,7 +11,9 @@ Möglich:
 - Tower u. Hero defense
 
 # TODO:
-/ bei wiederhole order beim funktion bewegt sich die figur schenller damit die kinder mehr schleifen benzzuten bzw komplexeren strukturen mehr geschwindigkeit beispiel wiederhole mit wenn
+- `build wall oben` 
+- bei wiederhole order beim funktion bewegt sich die figur schenller damit die kinder mehr schleifen benuzten 
+- player say statt print errors
 - leveln m;glich durch killen von gegner und 
 -  von llm extrahieren von experten in lmm ectl. durch lora und null setyen von parametern pder som. evtl versuchen gewichte yu verteilen damit kein pixel dominanz entsteht
 - beim plaz 1 sec pause damit code play nicht wie ein joystick verwendet wird.

@@ -1,7 +1,7 @@
-[gd_scene format=3 uid="uid://dagsu16arm3mv"]
+[gd_scene format=3 uid="uid://c5vhr2saulowe"]
 
-[ext_resource type="Script" uid="uid://cxdh77bwwe5u2" path="res://scenes/spawn/object/breakable.gd" id="1_2ysco"]
-[ext_resource type="Texture2D" uid="uid://i17mwgyr2rqe" path="res://assets/objects/tree1.png" id="1_dsonf"]
+[ext_resource type="Script" uid="uid://d0it8ym6pwdbd" path="res://scenes/spawn/buildings/building.gd" id="1_rvqm1"]
+[ext_resource type="Texture2D" uid="uid://i17mwgyr2rqe" path="res://assets/objects/tree1.png" id="2_ics6v"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_sene2"]
 radius = 48.8365
@@ -89,12 +89,12 @@ _data = {
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 2
 
-[node name="Breakable" type="StaticBody2D" unique_id=46637213 groups=["damageable"]]
+[node name="Buildings" type="StaticBody2D" unique_id=46637213 groups=["damageable"]]
 collision_layer = 3
-script = ExtResource("1_2ysco")
+script = ExtResource("1_rvqm1")
 
 [node name="Sprite" type="Sprite2D" parent="." unique_id=1433906994]
-texture = ExtResource("1_dsonf")
+texture = ExtResource("2_ics6v")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=869055359]
 shape = SubResource("CircleShape2D_sene2")

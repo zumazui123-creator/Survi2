@@ -1,9 +1,9 @@
-[gd_scene load_steps=18 format=3 uid="uid://ccrctrojuyiel"]
+[gd_scene format=3 uid="uid://ccrctrojuyiel"]
 
 [ext_resource type="Script" uid="uid://c4h0ahffrs4to" path="res://scenes/main/main.gd" id="1_5kenc"]
 [ext_resource type="PackedScene" uid="uid://bf074ibcy5o0" path="res://scenes/map/map.tscn" id="1_vj1jr"]
 [ext_resource type="PackedScene" uid="uid://do5frseoo8sxj" path="res://scenes/ui/spawn/spawnPlayer.tscn" id="2_ajc02"]
-[ext_resource type="Script" uid="uid://di16mip16jhcr" path="res://scenes/main/spawn_object.gd" id="2_raeie"]
+[ext_resource type="Script" uid="uid://di16mip16jhcr" path="res://scenes/main/creator.gd" id="2_raeie"]
 [ext_resource type="Script" uid="uid://dhjwv3aq1c8ed" path="res://scenes/main/spawn_enemies.gd" id="3_th5th"]
 [ext_resource type="Script" uid="uid://dl6e2xb030n8p" path="res://scenes/main/spawn_animal.gd" id="4_th5th"]
 [ext_resource type="Script" uid="uid://cddr76mw3uc08" path="res://scenes/main/objects.gd" id="5_7smn1"]
@@ -22,12 +22,12 @@ properties/0/path = NodePath("dayNight:time")
 properties/0/spawn = true
 properties/0/replication_mode = 2
 
-[node name="Main" type="Node2D" node_paths=PackedStringArray("breakables", "buildings")]
+[node name="Main" type="Node2D" unique_id=1930195944 node_paths=PackedStringArray("breakables", "buildings")]
 script = ExtResource("1_5kenc")
-breakables = NodePath("Breakables")
+breakables = NodePath("Objects")
 buildings = NodePath("Buildings")
 
-[node name="Map" parent="." instance=ExtResource("1_vj1jr")]
+[node name="Map" parent="." unique_id=1142803009 instance=ExtResource("1_vj1jr")]
 unique_name_in_owner = true
 anchors_preset = 15
 anchor_right = 1.0
@@ -39,48 +39,51 @@ grow_vertical = 2
 size_flags_horizontal = 1
 size_flags_vertical = 1
 
-[node name="Creator" type="Node" parent="."]
+[node name="Creator" type="Node" parent="." unique_id=524279930]
 script = ExtResource("2_raeie")
 
-[node name="Pickups" type="Node2D" parent="."]
+[node name="Pickups" type="Node2D" parent="." unique_id=1773571447]
 
-[node name="Players" type="Node2D" parent="."]
+[node name="Players" type="Node2D" parent="." unique_id=566366385]
 
-[node name="Enemies" type="Node2D" parent="."]
+[node name="Enemies" type="Node2D" parent="." unique_id=1946773943]
 unique_name_in_owner = true
 script = ExtResource("3_th5th")
 
-[node name="Animals" type="Node2D" parent="."]
+[node name="Animals" type="Node2D" parent="." unique_id=943993284]
 unique_name_in_owner = true
 script = ExtResource("4_th5th")
 
-[node name="Projectiles" type="Node2D" parent="."]
+[node name="Projectiles" type="Node2D" parent="." unique_id=614943988]
 
-[node name="Buildings" type="Node2D" parent="."]
-script = ExtResource("6_hxu8e")
-
-[node name="Breakables" type="Node2D" parent="."]
+[node name="Objects" type="Node2D" parent="." unique_id=1525263792]
 script = ExtResource("5_7smn1")
 
-[node name="NavHelper" type="Node2D" parent="."]
+[node name="Buildings" type="Node2D" parent="." unique_id=376389143]
+script = ExtResource("6_hxu8e")
+
+[node name="Breakables" type="Node2D" parent="." unique_id=629876086]
+script = ExtResource("5_7smn1")
+
+[node name="NavHelper" type="Node2D" parent="." unique_id=244153116]
 script = ExtResource("10_40gnc")
 
-[node name="HUD" type="CanvasLayer" parent="."]
+[node name="HUD" type="CanvasLayer" parent="." unique_id=461272148]
 
-[node name="DayNightCycleUI" parent="HUD" instance=ExtResource("7_c4hjm")]
+[node name="DayNightCycleUI" parent="HUD" unique_id=1938933947 instance=ExtResource("7_c4hjm")]
 unique_name_in_owner = true
 offset_right = -1201.0
 offset_bottom = -670.0
 mouse_filter = 2
 
-[node name="PlayerList" parent="HUD" instance=ExtResource("5_th5th")]
+[node name="PlayerList" parent="HUD" unique_id=627656908 instance=ExtResource("5_th5th")]
 visible = false
 offset_left = 1.0
 offset_top = -1.0
 offset_right = 1.0
 offset_bottom = -1.0
 
-[node name="Inventory" parent="HUD" instance=ExtResource("6_tq15c")]
+[node name="Inventory" parent="HUD" unique_id=1512725673 instance=ExtResource("6_tq15c")]
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
@@ -89,61 +92,61 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 0
 
-[node name="Minimap" parent="HUD" instance=ExtResource("6_xel07")]
+[node name="Minimap" parent="HUD" unique_id=1001358332 instance=ExtResource("6_xel07")]
 offset_top = -230.0
 offset_right = 200.0
 offset_bottom = -30.0
 
-[node name="SpawnPlayer" parent="HUD" instance=ExtResource("2_ajc02")]
+[node name="SpawnPlayer" parent="HUD" unique_id=161453860 instance=ExtResource("2_ajc02")]
 z_index = 1000
 
-[node name="EndUI" parent="HUD" instance=ExtResource("13_raeie")]
+[node name="EndUI" parent="HUD" unique_id=1789217077 instance=ExtResource("13_raeie")]
 visible = false
 
-[node name="PlayerSpawner" type="MultiplayerSpawner" parent="."]
+[node name="PlayerSpawner" type="MultiplayerSpawner" parent="." unique_id=108049658]
 _spawnable_scenes = PackedStringArray("uid://bmhxilkffhqa5")
 spawn_path = NodePath("../Players")
 
-[node name="AnimalSpawner" type="MultiplayerSpawner" parent="."]
+[node name="AnimalSpawner" type="MultiplayerSpawner" parent="." unique_id=2005880034]
 _spawnable_scenes = PackedStringArray("uid://4yb25tbuu2at")
 spawn_path = NodePath("../Animals")
 
-[node name="EnemySpawner" type="MultiplayerSpawner" parent="."]
+[node name="EnemySpawner" type="MultiplayerSpawner" parent="." unique_id=1050839693]
 _spawnable_scenes = PackedStringArray("uid://d3bgdspo4bhr4")
 spawn_path = NodePath("../Enemies")
 
-[node name="ProjectileSpawner" type="MultiplayerSpawner" parent="."]
+[node name="ProjectileSpawner" type="MultiplayerSpawner" parent="." unique_id=1312236852]
 _spawnable_scenes = PackedStringArray("uid://ckcl60ixuavyq", "uid://c574wa7os4la4")
 spawn_path = NodePath("../Projectiles")
 
-[node name="ObjectSpawner" type="MultiplayerSpawner" parent="."]
+[node name="ObjectSpawner" type="MultiplayerSpawner" parent="." unique_id=114748828]
 _spawnable_scenes = PackedStringArray("uid://dagsu16arm3mv")
 spawn_path = NodePath("../Breakables")
 
-[node name="BuildingSpawner" type="MultiplayerSpawner" parent="."]
+[node name="BuildingSpawner" type="MultiplayerSpawner" parent="." unique_id=1419203123]
 _spawnable_scenes = PackedStringArray("uid://dagsu16arm3mv")
-spawn_path = NodePath("../Buildings")
+spawn_path = NodePath("../Objects")
 
-[node name="PickupSpawner" type="MultiplayerSpawner" parent="."]
+[node name="PickupSpawner" type="MultiplayerSpawner" parent="." unique_id=406642788]
 _spawnable_scenes = PackedStringArray("uid://bfq4kkw8jhqay")
 spawn_path = NodePath("../Pickups")
 
-[node name="ObjectSpawnTimer" type="Timer" parent="."]
+[node name="ObjectSpawnTimer" type="Timer" parent="." unique_id=733694442]
 autostart = true
 
-[node name="EnemySpawnTimer" type="Timer" parent="."]
+[node name="EnemySpawnTimer" type="Timer" parent="." unique_id=1459450870]
 wait_time = 5.0
 autostart = true
 
-[node name="AnimalSpawnTimer" type="Timer" parent="."]
+[node name="AnimalSpawnTimer" type="Timer" parent="." unique_id=1007100697]
 wait_time = 5.0
 autostart = true
 
-[node name="dayNight" type="CanvasModulate" parent="."]
+[node name="dayNight" type="CanvasModulate" parent="." unique_id=1901846854]
 script = ExtResource("7_4y3sb")
 gradient_texture = ExtResource("8_le63a")
 
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=200771347]
 replication_config = SubResource("SceneReplicationConfig_dr53p")
 
 [connection signal="timeout" from="ObjectSpawnTimer" to="." method="_on_object_spawn_timer_timeout"]

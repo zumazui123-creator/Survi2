@@ -6,8 +6,11 @@ class_name PlayerBuilding
 # supports two building modes, one is painting tiles in tilemap in Map,
 # the other is placing building scenes in the world
 
-@export var building_scenes : Dictionary[String, PackedScene] = {
-	# Defined in editor
+#@export var building_scenes : Dictionary[String, PackedScene] = {
+	#
+#}
+var building_scenes : Dictionary[String, PackedScene] = {
+	"wall" : preload("res://scenes/spawn/buildings/building.tscn")
 }
 
 # dict of paintable tile atlas coords

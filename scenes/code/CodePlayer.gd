@@ -58,20 +58,19 @@ func parse_lines_with_func(lines: PackedStringArray, start := 0) -> PackedString
 	
 func play(code: String) -> void:
 	if not player:
-		push_error("DebugCodePlayer: Player node not assigned")
+		push_error("CodePlayer: Player node not assigned")
 		return
 
-	var lines 				 = code.split("\n", false)
-	lines  			   	 	 = parse_lines_with_func(lines)
-	var parsed_repeats = parse_lines_with_repeat(lines)
-	lines 						 = parsed_repeats.lines
+	var lines 			= code.split("\n", false)
+	lines  			   	= parse_lines_with_func(lines)
+	var parsed_repeats  = parse_lines_with_repeat(lines)
+	lines 			 	= parsed_repeats.lines
 
 	for line in lines:
 		
 		line = line.strip_edges()
 		if line == "" or line.begins_with("#"):
 			continue
-		
 		
 		# Parse command and args
 		line = Strings.remap_code_cmd_to_action("de", line)
