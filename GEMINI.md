@@ -10,9 +10,9 @@ This is a survival game built with Godot Engine.
 - **Engine:** Godot 4.x (GDScript)
 - **Style:** Follow standard GDScript style guide.
 - **Structure:**
-    - `scenes/`: Contains all game scenes (.tscn) and their attached scripts (.gd).
-    - `assets/`: Contains raw assets like images, sounds, fonts.
-    - `client_code_runner/`: Python scripts, likely for external logic or testing.
+	- `scenes/`: Contains all game scenes (.tscn) and their attached scripts (.gd).
+	- `assets/`: Contains raw assets like images, sounds, fonts.
+
 
 ## Multiplayer
 - The game is intended to have LAN multiplayer capabilities.
