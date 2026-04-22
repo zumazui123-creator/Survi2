@@ -1,0 +1,123 @@
+[gd_scene format=3 uid="uid://ccrctrojuyiel"]
+
+[ext_resource type="Script" uid="uid://c4h0ahffrs4to" path="res://scenes/main/main.gd" id="1_5kenc"]
+[ext_resource type="PackedScene" uid="uid://bf074ibcy5o0" path="res://scenes/map/map.tscn" id="1_vj1jr"]
+[ext_resource type="PackedScene" uid="uid://do5frseoo8sxj" path="res://scenes/ui/spawn/spawnPlayer.tscn" id="2_ajc02"]
+[ext_resource type="Script" uid="uid://di16mip16jhcr" path="res://scenes/main/creator.gd" id="2_raeie"]
+[ext_resource type="Script" uid="uid://dhjwv3aq1c8ed" path="res://scenes/main/spawn_enemies.gd" id="3_th5th"]
+[ext_resource type="Script" uid="uid://dl6e2xb030n8p" path="res://scenes/main/spawn_animal.gd" id="4_th5th"]
+[ext_resource type="Script" uid="uid://cddr76mw3uc08" path="res://scenes/main/objects.gd" id="5_7smn1"]
+[ext_resource type="PackedScene" uid="uid://c0gaxwlt4ajax" path="res://scenes/ui/playersList/generalHud.tscn" id="5_th5th"]
+[ext_resource type="Script" uid="uid://d035jxg7j54jl" path="res://scenes/main/buildings.gd" id="6_hxu8e"]
+[ext_resource type="PackedScene" uid="uid://bmv1uy5a1k05u" path="res://scenes/ui/inventory/inventory.tscn" id="6_tq15c"]
+[ext_resource type="PackedScene" uid="uid://cogav6f5iu6qb" path="res://scenes/ui/minimap/minimap.tscn" id="6_xel07"]
+[ext_resource type="Script" uid="uid://httko1hso0a1" path="res://scenes/main/dayNightCycle.gd" id="7_4y3sb"]
+[ext_resource type="PackedScene" uid="uid://ceolcwatpaicu" path="res://scenes/ui/daynight/daynightcycle_ui.tscn" id="7_c4hjm"]
+[ext_resource type="Texture2D" uid="uid://d4iknbe05uwaj" path="res://scenes/main/daynightcycle-gradient-texture.tres" id="8_le63a"]
+[ext_resource type="Script" uid="uid://bysoe6stvcca4" path="res://scenes/main/NavHelper.gd" id="10_40gnc"]
+[ext_resource type="PackedScene" uid="uid://xisgglhsre7n" path="res://scenes/main/HUD/EndUI.tscn" id="13_raeie"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_dr53p"]
+properties/0/path = NodePath("dayNight:time")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+
+[node name="Main" type="Node2D" unique_id=1930195944 node_paths=PackedStringArray("breakables", "buildings")]
+script = ExtResource("1_5kenc")
+breakables = NodePath("Objects")
+buildings = NodePath("Buildings")
+
+[node name="Map" parent="." unique_id=1142803009 instance=ExtResource("1_vj1jr")]
+unique_name_in_owner = true
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 1280.0
+offset_bottom = 720.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 1
+size_flags_vertical = 1
+
+[node name="Creator" type="Node" parent="." unique_id=524279930]
+script = ExtResource("2_raeie")
+
+[node name="Pickups" type="Node2D" parent="." unique_id=1773571447]
+
+[node name="Players" type="Node2D" parent="." unique_id=566366385]
+
+[node name="Enemies" type="Node2D" parent="." unique_id=1946773943]
+unique_name_in_owner = true
+script = ExtResource("3_th5th")
+
+[node name="Animals" type="Node2D" parent="." unique_id=943993284]
+unique_name_in_owner = true
+script = ExtResource("4_th5th")
+
+[node name="Projectiles" type="Node2D" parent="." unique_id=614943988]
+
+[node name="Objects" type="Node2D" parent="." unique_id=1525263792]
+script = ExtResource("5_7smn1")
+
+[node name="Buildings" type="Node2D" parent="." unique_id=376389143]
+script = ExtResource("6_hxu8e")
+
+[node name="Breakables" type="Node2D" parent="." unique_id=629876086]
+script = ExtResource("5_7smn1")
+
+[node name="NavHelper" type="Node2D" parent="." unique_id=244153116]
+script = ExtResource("10_40gnc")
+
+[node name="HUD" type="CanvasLayer" parent="." unique_id=461272148]
+
+[node name="DayNightCycleUI" parent="HUD" unique_id=1938933947 instance=ExtResource("7_c4hjm")]
+unique_name_in_owner = true
+offset_right = -1201.0
+offset_bottom = -670.0
+mouse_filter = 2
+
+[node name="PlayerList" parent="HUD" unique_id=627656908 instance=ExtResource("5_th5th")]
+visible = false
+offset_left = 1.0
+offset_top = -1.0
+offset_right = 1.0
+offset_bottom = -1.0
+
+[node name="Inventory" parent="HUD" unique_id=1512725673 instance=ExtResource("6_tq15c")]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="Minimap" parent="HUD" unique_id=1001358332 instance=ExtResource("6_xel07")]
+offset_top = -230.0
+offset_right = 200.0
+offset_bottom = -30.0
+
+[node name="SpawnPlayer" parent="HUD" unique_id=161453860 instance=ExtResource("2_ajc02")]
+z_index = 1000
+
+[node name="EndUI" parent="HUD" unique_id=1789217077 instance=ExtResource("13_raeie")]
+visible = false
+
+[node name="ObjectSpawnTimer" type="Timer" parent="." unique_id=733694442]
+autostart = true
+
+[node name="EnemySpawnTimer" type="Timer" parent="." unique_id=1459450870]
+wait_time = 5.0
+autostart = true
+
+[node name="AnimalSpawnTimer" type="Timer" parent="." unique_id=1007100697]
+wait_time = 5.0
+autostart = true
+
+[node name="dayNight" type="CanvasModulate" parent="." unique_id=1901846854]
+script = ExtResource("7_4y3sb")
+gradient_texture = ExtResource("8_le63a")
+
+[connection signal="timeout" from="ObjectSpawnTimer" to="." method="_on_object_spawn_timer_timeout"]
+[connection signal="timeout" from="EnemySpawnTimer" to="." method="_on_enemy_spawn_timer_timeout"]
+[connection signal="timeout" from="AnimalSpawnTimer" to="." method="_on_animal_spawn_timer_timeout"]

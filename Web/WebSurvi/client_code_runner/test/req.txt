@@ -1,0 +1,7 @@
+gymnasium[all]
+tensorflow
+keras
+visualkeras
+Pillow
+numpy
+tk

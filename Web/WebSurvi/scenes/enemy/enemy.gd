@@ -1,0 +1,87 @@
+extends CharacterBody2D
+
+var spawner : Node2D
+var targetPlayer : CharacterBody2D
+@export var targetPlayerId : int:
+	set(value):
+		targetPlayerId = value
+		targetPlayer = get_node("../../Players/"+str(value))
+@onready var dayNight 	  = $"../dayNight"
+
+#stats
+@export var enemyId := "":
+	set(value):
+		enemyId = value
+		var enemyData = Items.mobs[value]
+		%Sprite2D.texture = load("res://assets/characters/enemy/"+value+".png")
+		for stat in enemyData.keys():
+			set(stat, enemyData[stat])
+
+var maxhp := 100.0:
+	set(value):
+		maxhp = value
+		hp = value
+var hp := maxhp:
+	set(value):
+		hp = value
+		$EnemyUI/HPBar.value = hp/maxhp
+var speed := 2000.0
+var attack := ""
+var attackRange := 50.0
+var attackDamage := 20.0
+var drops := {}
+
+func _process(_delta):
+	if is_instance_valid(targetPlayer):
+		rotateToTarget()
+		if position.distance_to(targetPlayer.position) > attackRange:
+			move_towards_position()
+		else:
+			tryAttack()
+	else:
+		if GameTime.is_night_time():
+			die(false)
+		else:
+			die(true)
+
+func rotateToTarget():
+	$MovingParts.look_at(targetPlayer.position)
+
+func move_towards_position():
+	var direction = (targetPlayer.position - position).normalized()
+	velocity = direction * speed
+	move_and_slide()
+
+func tryAttack():
+	if $AttackCooldown.is_stopped():
+		$AttackCooldown.start()
+		var projectileScene := load("res://scenes/attacks/"+attack+"_attack.tscn")
+		var projectile = projectileScene.instantiate()
+		spawner.get_node("../Projectiles").add_child(projectile,true)
+		projectile.position = position
+		projectile.get_node("MovingParts").rotation = $MovingParts.rotation
+		projectile.hitPlayer.connect(hitPlayer)
+		projectile.targetPos = targetPlayer.position
+		
+func hitPlayer(body):
+	body.getDamage(self, attackDamage, "normal")
+			
+func getDamage(causer, amount, _type):
+	hp -= amount
+	$bloodParticles.emitting = true
+	if hp <= 0:
+		if causer.is_in_group("player"):
+			causer.mob_killed.emit()
+		die(true)
+
+func die(dropLoot):
+	spawner.decreasePlayerEnemyCount(targetPlayerId)
+	queue_free()
+	if dropLoot:
+		dropLoots()
+
+func dropLoots():
+	if not GameTime.is_night_time():
+		return
+	for drop in drops.keys():
+		Items.spawnPickups(drop, position, randi_range(drops[drop]["min"],drops[drop]["max"]))

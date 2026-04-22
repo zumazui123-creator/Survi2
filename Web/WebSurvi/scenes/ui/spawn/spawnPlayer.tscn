@@ -1,0 +1,95 @@
+[gd_scene load_steps=4 format=3 uid="uid://do5frseoo8sxj"]
+
+[ext_resource type="Script" uid="uid://ckvxoflf7pw3c" path="res://scenes/ui/spawn/spawnPlayer.gd" id="1_buuas"]
+[ext_resource type="Texture2D" uid="uid://blsumxlwuly6d" path="res://assets/characters/bodies/0.png" id="2_3xo70"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qdlud"]
+bg_color = Color(0.180392, 0.180392, 0.180392, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+expand_margin_left = 30.0
+expand_margin_top = 30.0
+expand_margin_right = 30.0
+expand_margin_bottom = 30.0
+
+[node name="SpawnPlayer" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_buuas")
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 561.0
+offset_top = 124.0
+offset_right = 767.0
+offset_bottom = 513.0
+theme_override_constants/separation = 100
+
+[node name="CharacterlContainer" type="PanelContainer" parent="VBoxContainer2"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_qdlud")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer2/CharacterlContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="RetryWindow" type="VBoxContainer" parent="VBoxContainer2/CharacterlContainer/VBoxContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="YouDied" type="Label" parent="VBoxContainer2/CharacterlContainer/VBoxContainer/RetryWindow"]
+layout_mode = 2
+text = "You Died...
+"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer2/CharacterlContainer/VBoxContainer/RetryWindow"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer2/CharacterlContainer/VBoxContainer"]
+layout_mode = 2
+text = "Willkommen zu Survival"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="nameInput" type="LineEdit" parent="VBoxContainer2/CharacterlContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+placeholder_text = "Name eingeben"
+alignment = 1
+max_length = 15
+
+[node name="BodySelectBox" type="HBoxContainer" parent="VBoxContainer2/CharacterlContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="prevCharacterButton" type="Button" parent="VBoxContainer2/CharacterlContainer/VBoxContainer/BodySelectBox"]
+layout_mode = 2
+text = "<"
+
+[node name="selectedBody" type="TextureRect" parent="VBoxContainer2/CharacterlContainer/VBoxContainer/BodySelectBox"]
+unique_name_in_owner = true
+layout_mode = 2
+texture = ExtResource("2_3xo70")
+
+[node name="nextCharacterButton" type="Button" parent="VBoxContainer2/CharacterlContainer/VBoxContainer/BodySelectBox"]
+layout_mode = 2
+text = ">"
+
+[node name="Button" type="Button" parent="VBoxContainer2/CharacterlContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+text = "Erstellen"
+
+[connection signal="pressed" from="VBoxContainer2/CharacterlContainer/VBoxContainer/BodySelectBox/prevCharacterButton" to="." method="_on_prev_character_button_pressed"]
+[connection signal="pressed" from="VBoxContainer2/CharacterlContainer/VBoxContainer/BodySelectBox/nextCharacterButton" to="." method="_on_next_character_button_pressed"]
+[connection signal="pressed" from="VBoxContainer2/CharacterlContainer/VBoxContainer/Button" to="." method="_on_button_pressed"]

@@ -1,0 +1,82 @@
+extends Node
+
+@onready var map = $".."
+@onready var animals = $"../../Animals"
+
+var walkable_tiles : Array[Vector2i] = []
+
+var randomDirection : Array[Vector2i] = [Vector2i(1,0),Vector2i(-1,0),Vector2i(0,1),Vector2i(0,-1)]
+var moduleNumber = [2,3,5,7,11,13]
+var atlasCoorWhiteField = Vector2i(11,0)
+
+func _ready():
+	print("Laby ready")
+
+func generateLabyrinth( level_no : int) -> Array[Vector2i] : 
+	var rng = RandomNumberGenerator.new()
+	rng.seed = randi()
+	Multihelper.mapSeed = rng.seed 
+	
+	var way_size = 5
+	var level_hard_count = level_no+5
+	if level_no > 10:
+		level_hard_count += 10
+		way_size = 7
+	if level_no > 20:
+		level_hard_count += 15
+		way_size = 10
+	Multihelper.setMobs(0,0,0,0)
+	map.full_terrain_with_water_fields()
+	walkable_tiles = []
+
+	var walkVec = Vector2i(int(map.height/2),int(map.width/2)) 
+	var randomVec = Vector2i()
+	for tile in range(level_hard_count): 
+		
+		randomVec = randomDirection[rng.randi() % randomDirection.size()]
+		var wide = rng.randi() % way_size
+		for i in range(wide):
+			walkVec += randomVec
+			#print("tile:"+str(tile)+str(walkVec))
+			map.set_grass_field(walkVec)
+			walkable_tiles.append(walkVec)
+	# TODO : walkable tiles come empty sometimes
+	map.spawnPosition = walkable_tiles[0]
+	map.endPosition = walkable_tiles[-1]
+	map.set_field(map.endPosition, atlasCoorWhiteField)
+	return walkable_tiles
+	
+func generateLabyrinthWithSeed( level_no : int, rnd_seed : int)-> Array[Vector2i]: 
+	var rng = RandomNumberGenerator.new()
+	rng.seed = rnd_seed
+	var way_size = 5
+	var level_hard_count = level_no+5
+	if level_no > 10:
+		level_hard_count += 10
+		way_size = 7
+	if level_no > 20:
+		level_hard_count += 15
+		way_size = 10
+	Multihelper.setMobs(0,0,0,5)
+	map.full_terrain_with_water_fields()
+	walkable_tiles = []
+
+	var walkVec = Vector2i(int(map.map_height/2),int(map.map_width/2)) 
+	var randomVec = Vector2i()
+	for tile in range(level_hard_count): 
+		randomVec = randomDirection[rng.randi() % randomDirection.size()]
+		var wide = rng.randi() % way_size
+		for i in range(wide):
+			walkVec += randomVec
+			map.set_grass_field(walkVec)
+			var animal = animals.spawn(walkVec)
+			animals.add_child(animal)
+			walkable_tiles.append(walkVec)
+		
+	map.spawnPosition = walkable_tiles[0]
+	map.endPosition = walkable_tiles[-1]
+	map.set_field(map.endPosition, atlasCoorWhiteField)
+	return walkable_tiles
+	
+
+	

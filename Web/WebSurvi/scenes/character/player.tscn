@@ -1,0 +1,1155 @@
+[gd_scene format=3 uid="uid://bmhxilkffhqa5"]
+
+[ext_resource type="Script" uid="uid://bruqpv3kpycof" path="res://scenes/character/player.gd" id="1_7xvi4"]
+[ext_resource type="Script" uid="uid://dukylmcbt25lk" path="res://scenes/character/builder.gd" id="2_7r6u0"]
+[ext_resource type="Script" uid="uid://qko0vstvhwtu" path="res://scenes/character/AI/rl_agent.gd" id="2_x06ku"]
+[ext_resource type="Script" uid="uid://cklljf6dkq1ch" path="res://scenes/character/AI/environment.gd" id="3_pygui"]
+[ext_resource type="Script" uid="uid://ddrqxuc43a4rn" path="res://scenes/character/components/function_handler.gd" id="3_vreni"]
+[ext_resource type="AudioStream" uid="uid://cqi2ycda0odwm" path="res://assets/sfx/step.ogg" id="4_bflkw"]
+[ext_resource type="Script" uid="uid://c5vvg50hpvd0s" path="res://scenes/character/AI/rl_trainer.gd" id="4_okkwj"]
+[ext_resource type="Texture2D" uid="uid://bx7fpakrdnbf3" path="res://assets/characters/hands/hands-sheet.png" id="4_yjkcj"]
+[ext_resource type="AudioStream" uid="uid://70ym6t6pjpde" path="res://assets/sfx/swing.ogg" id="5_xs70q"]
+[ext_resource type="Script" uid="uid://2fmmi7tylwwx" path="res://scenes/character/components/player_movement.gd" id="6_7r6u0"]
+[ext_resource type="Script" uid="uid://ijovcwkpl4jg" path="res://scenes/character/components/player_animation.gd" id="7_e5n5u"]
+[ext_resource type="Script" uid="uid://bl0tm663e7r6k" path="res://scenes/character/components/player_status.gd" id="7_wmtbp"]
+[ext_resource type="Script" uid="uid://dsnm03bgpmori" path="res://scenes/character/components/code.gd" id="8_5y66v"]
+[ext_resource type="Script" uid="uid://bjrh8avfky7c7" path="res://scenes/character/components/player_combat.gd" id="8_ba010"]
+[ext_resource type="Script" uid="uid://fac0m1pdvo7" path="res://scenes/character/player_items.gd" id="9_e5n5u"]
+[ext_resource type="Script" uid="uid://be83kpy3e88gx" path="res://scenes/character/components/player_building.gd" id="10_x06ku"]
+[ext_resource type="PackedScene" uid="uid://dagsu16arm3mv" path="res://scenes/spawn/object/breakable.tscn" id="11_pygui"]
+[ext_resource type="Script" uid="uid://dngrh67x5tj38" path="res://scenes/character/components/texture_rect.gd" id="13_ba010"]
+[ext_resource type="Script" uid="uid://cgqh4whq45khp" path="res://scenes/character/camera_2d.gd" id="13_e5n5u"]
+[ext_resource type="Texture2D" uid="uid://bvjipxot1udu8" path="res://assets/ui/itemSlotSelected.png" id="14_ux0ro"]
+[ext_resource type="Script" uid="uid://jwr2prr58xmw" path="res://scenes/character/goal_texture_rect.gd" id="15_vhx6d"]
+[ext_resource type="Script" uid="uid://3u5wolperx1b" path="res://scenes/code/CodePlayer.gd" id="16_2smwq"]
+[ext_resource type="Script" uid="uid://covi850vpbbri" path="res://scenes/character/components/spawn_area.gd" id="17_jb4us"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_1pknd"]
+properties/0/path = NodePath("AnimationPlayer:current_animation")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+properties/1/path = NodePath("MovingParts:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 2
+properties/2/path = NodePath(".:playerName")
+properties/2/spawn = true
+properties/2/replication_mode = 2
+properties/3/path = NodePath(".:characterFile")
+properties/3/spawn = true
+properties/3/replication_mode = 2
+properties/4/path = NodePath("PlayerStatus:hp")
+properties/4/spawn = true
+properties/4/replication_mode = 2
+properties/5/path = NodePath("PlayerStatus:rotation")
+properties/5/spawn = true
+properties/5/replication_mode = 2
+properties/6/path = NodePath("PlayerStatus:maxHP")
+properties/6/spawn = true
+properties/6/replication_mode = 2
+properties/7/path = NodePath("PlayerCombat:speed")
+properties/7/spawn = true
+properties/7/replication_mode = 2
+properties/8/path = NodePath("PlayerCombat:attackDamage")
+properties/8/spawn = true
+properties/8/replication_mode = 2
+properties/9/path = NodePath(".:position")
+properties/9/spawn = true
+properties/9/replication_mode = 2
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5y66v"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uicah"]
+bg_color = Color(0.807843, 0.294118, 0.235294, 0.556863)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.52549, 0.52549, 0.52549, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+expand_margin_left = 2.0
+expand_margin_top = 2.0
+expand_margin_right = 2.0
+expand_margin_bottom = 2.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g2qfr"]
+bg_color = Color(0, 0.529412, 0.113725, 1)
+border_color = Color(0.701961, 0.701961, 0.701961, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+expand_margin_left = 2.0
+expand_margin_top = 2.0
+expand_margin_right = 2.0
+expand_margin_bottom = 2.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wmtbp"]
+bg_color = Color(0.180392, 0.180392, 0.180392, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+expand_margin_left = 30.0
+expand_margin_top = 30.0
+expand_margin_right = 30.0
+expand_margin_bottom = 30.0
+
+[sub_resource type="CodeHighlighter" id="CodeHighlighter_vreni"]
+number_color = Color(0.16078432, 0.5294118, 0.36862746, 1)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_wmtbp"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_5y66v"]
+radius = 15.0
+
+[sub_resource type="Animation" id="Animation_l6e13"]
+resource_name = "punching"
+length = 0.8
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("MovingParts/Hands:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [4, 5, 6, 7, 8, 9, 10, 11]
+}
+tracks/1/type = "audio"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("AudioStreamPlayer2D")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"clips": [{
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource("5_xs70q")
+}, {
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource("5_xs70q")
+}],
+"times": PackedFloat32Array(0.2, 0.5)
+}
+tracks/1/use_blend = true
+tracks/2/type = "method"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("PlayerCombat")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.16666667, 0.5666666),
+"transitions": PackedFloat32Array(1, 1),
+"values": [{
+"args": [],
+"method": &"punchCheckCollision"
+}, {
+"args": [],
+"method": &"punchCheckCollision"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_oaeq3"]
+resource_name = "stab"
+length = 0.6
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("MovingParts/HeldItem:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [0.0, -0.785398, 0.785398, 0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("MovingParts/HeldItem:offset")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(19, 10), Vector2(10, 15), Vector2(25, -25), Vector2(19, 10)]
+}
+tracks/2/type = "audio"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("AudioStreamPlayer2D")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"clips": [{
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource("5_xs70q")
+}],
+"times": PackedFloat32Array(0.3)
+}
+tracks/2/use_blend = true
+tracks/3/type = "method"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("PlayerCombat")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0.4),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"punchCheckCollision"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_ed68f"]
+resource_name = "swing"
+length = 0.7
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("MovingParts/HeldItem:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.4, 0.6, 0.7),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [0.0, -1.0472, 0.523599, 0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("MovingParts/HeldItem:offset")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.4, 0.6, 0.7),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(19, 10), Vector2(5, 10), Vector2(25, 2), Vector2(19, 10)]
+}
+tracks/2/type = "audio"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("AudioStreamPlayer2D")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"clips": [{
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource("5_xs70q")
+}],
+"times": PackedFloat32Array(0.5)
+}
+tracks/2/use_blend = true
+tracks/3/type = "method"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("PlayerCombat")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0.6),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"punchCheckCollision"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_1ejc1"]
+resource_name = "walking"
+length = 0.4
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("MovingParts/Hands:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3]
+}
+tracks/1/type = "audio"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("AudioStreamPlayer2D")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"clips": [{
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource("4_bflkw")
+}],
+"times": PackedFloat32Array(0.2)
+}
+tracks/1/use_blend = true
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("MovingParts/HeldItem:offset")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(16, 7), Vector2(23, 2), Vector2(19, 10), Vector2(16, 7)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("MovingParts/HeldItem:rotation")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.20944, -0.0698132, 0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_4vloy"]
+_data = {
+&"punching": SubResource("Animation_l6e13"),
+&"stab": SubResource("Animation_oaeq3"),
+&"swing": SubResource("Animation_ed68f"),
+&"walking": SubResource("Animation_1ejc1")
+}
+
+[sub_resource type="Curve" id="Curve_s5j1r"]
+_data = [Vector2(0.00279329, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[node name="Player" type="CharacterBody2D" unique_id=699968112 node_paths=PackedStringArray("player_building") groups=["damageable", "player"]]
+collision_layer = 3
+collision_mask = 3
+script = ExtResource("1_7xvi4")
+player_building = NodePath("PlayerBuilding")
+
+[node name="AI" type="Node" parent="." unique_id=1856201777]
+
+[node name="RLTrainer" type="Node" parent="AI" unique_id=839086992 node_paths=PackedStringArray("agent", "environment")]
+script = ExtResource("4_okkwj")
+agent = NodePath("RLAgent")
+environment = NodePath("Environment")
+
+[node name="RLAgent" type="Node" parent="AI/RLTrainer" unique_id=1911412211]
+script = ExtResource("2_x06ku")
+
+[node name="Environment" type="Node" parent="AI/RLTrainer" unique_id=1785568005]
+script = ExtResource("3_pygui")
+
+[node name="Builder" type="Node" parent="AI" unique_id=1201989924]
+script = ExtResource("2_7r6u0")
+
+[node name="FunctionHandler" type="Node" parent="." unique_id=1216350956]
+script = ExtResource("3_vreni")
+
+[node name="PlayerMovement" type="Node" parent="." unique_id=242878014]
+script = ExtResource("6_7r6u0")
+
+[node name="PlayerAnimation" type="Node" parent="." unique_id=934239989]
+script = ExtResource("7_e5n5u")
+
+[node name="PlayerCombat" type="Node" parent="." unique_id=1291276715]
+unique_name_in_owner = true
+script = ExtResource("8_ba010")
+
+[node name="PlayerBuilding" type="Node" parent="." unique_id=1139544709 node_paths=PackedStringArray("player")]
+script = ExtResource("10_x06ku")
+player = NodePath("..")
+building_scenes = Dictionary[String, PackedScene]({
+"wall": ExtResource("11_pygui")
+})
+
+[node name="PlayerItems" type="Node" parent="." unique_id=533001143]
+script = ExtResource("9_e5n5u")
+
+[node name="PlayerStatus" type="Control" parent="." unique_id=381426310]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -32.0
+offset_top = -40.0
+offset_right = 32.0
+offset_bottom = 24.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 10
+script = ExtResource("7_wmtbp")
+
+[node name="NameTag" type="PanelContainer" parent="PlayerStatus" unique_id=1692831233]
+layout_direction = 1
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -50.0
+offset_right = 50.0
+offset_bottom = 20.0
+grow_horizontal = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_5y66v")
+
+[node name="hpBar" type="ProgressBar" parent="PlayerStatus/NameTag" unique_id=1506261142]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_styles/background = SubResource("StyleBoxFlat_uicah")
+theme_override_styles/fill = SubResource("StyleBoxFlat_g2qfr")
+max_value = 1.0
+value = 1.0
+show_percentage = false
+
+[node name="nameLabel" type="Label" parent="PlayerStatus/NameTag" unique_id=1397500899]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 10)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 14
+text = "playerName"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 1
+
+[node name="Bar" type="GridContainer" parent="PlayerStatus" unique_id=99468987]
+z_index = 100
+layout_mode = 0
+offset_left = -596.0
+offset_top = -59.0
+offset_right = -496.0
+offset_bottom = -1.0
+
+[node name="HydrationBar" type="ProgressBar" parent="PlayerStatus/Bar" unique_id=301583031]
+modulate = Color(0, 0.491312, 0.491312, 1)
+self_modulate = Color(0.0216716, 0, 0.829495, 1)
+layout_mode = 2
+size_flags_horizontal = 3
+rounded = true
+
+[node name="WasserLabel" type="Label" parent="PlayerStatus/Bar/HydrationBar" unique_id=20246718]
+modulate = Color(0.00130165, 0.129496, 0.566333, 1)
+layout_mode = 1
+offset_left = 112.0
+offset_top = 2.0
+offset_right = 169.0
+offset_bottom = 25.0
+text = "Wasser"
+
+[node name="FoodBar" type="ProgressBar" parent="PlayerStatus/Bar" unique_id=351694071]
+modulate = Color(0.227451, 0.12549, 0.0588235, 1)
+layout_mode = 2
+size_flags_horizontal = 3
+rounded = true
+
+[node name="FoodLabel" type="Label" parent="PlayerStatus/Bar/FoodBar" unique_id=1029477792]
+modulate = Color(0.22673, 0.127422, 0.0601467, 1)
+layout_mode = 1
+offset_left = 112.0
+offset_top = 2.0
+offset_right = 169.0
+offset_bottom = 25.0
+text = "Essen"
+
+[node name="WorkContainer" type="PanelContainer" parent="PlayerStatus" unique_id=1271707983]
+z_index = 100
+layout_mode = 0
+offset_left = -568.0
+offset_top = -229.0
+offset_right = -477.0
+offset_bottom = -134.0
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_wmtbp")
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="PlayerStatus/WorkContainer" unique_id=2047578385]
+layout_mode = 2
+
+[node name="HBoxContainer2" type="VBoxContainer" parent="PlayerStatus/WorkContainer/VBoxContainer2" unique_id=1745333666]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PlayerStatus/WorkContainer/VBoxContainer2/HBoxContainer2" unique_id=229846487]
+layout_mode = 2
+text = "Main-Menu"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SettingsButton" type="Button" parent="PlayerStatus/WorkContainer/VBoxContainer2/HBoxContainer2" unique_id=1508724194]
+layout_mode = 2
+text = "Settings"
+
+[node name="InfoButton" type="Button" parent="PlayerStatus/WorkContainer/VBoxContainer2/HBoxContainer2" unique_id=181675464]
+layout_mode = 2
+text = "Info"
+
+[node name="CodeLayer" type="CanvasLayer" parent="." unique_id=336348594]
+offset = Vector2(640, 360)
+transform = Transform2D(1, 0, 0, 1, 640, 360)
+
+[node name="Code" type="Node2D" parent="CodeLayer" unique_id=52590820 node_paths=PackedStringArray("code_player")]
+z_index = 6
+z_as_relative = false
+position = Vector2(218, -371)
+script = ExtResource("8_5y66v")
+code_player = NodePath("DebugCodePlayer")
+
+[node name="TabContainer" type="TabContainer" parent="CodeLayer/Code" unique_id=1538183637]
+offset_left = 67.0
+offset_top = 14.0
+offset_right = 422.0
+offset_bottom = 724.0
+size_flags_vertical = 3
+tab_alignment = 1
+current_tab = 0
+
+[node name="Code" type="VBoxContainer" parent="CodeLayer/Code/TabContainer" unique_id=1184559495]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 3
+metadata/_tab_index = 0
+
+[node name="HauptCodeLabel" type="Label" parent="CodeLayer/Code/TabContainer/Code" unique_id=1457924743]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+text = "Haupt-Code"
+
+[node name="CodeEdit" type="CodeEdit" parent="CodeLayer/Code/TabContainer/Code" unique_id=1757023759]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 440)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/line_spacing = 3
+theme_override_font_sizes/font_size = 14
+scroll_smooth = true
+scroll_past_end_of_file = true
+syntax_highlighter = SubResource("CodeHighlighter_vreni")
+highlight_current_line = true
+symbol_tooltip_on_hover = true
+gutters_draw_line_numbers = true
+
+[node name="ButtonCotainer" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/Code" unique_id=1098950445]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 15
+
+[node name="PlayButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ButtonCotainer" unique_id=882962888]
+layout_mode = 2
+text = "Play"
+
+[node name="StopButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ButtonCotainer" unique_id=969813704]
+layout_mode = 2
+text = "Stop"
+
+[node name="CodeDeleteButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ButtonCotainer" unique_id=354657902]
+layout_mode = 2
+text = "Code löschen"
+
+[node name="ActionsContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/Code" unique_id=1139331600]
+modulate = Color(1, 1, 1, 0.984314)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer" unique_id=1118339553]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="BewegContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer" unique_id=1303574342]
+layout_mode = 2
+
+[node name="BewegeLabel" type="Label" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer" unique_id=1542221444]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Bewege"
+
+[node name="ObenButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer" unique_id=827057773]
+layout_mode = 2
+text = "oben"
+
+[node name="LinksRechtsContainer" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer" unique_id=1051260093]
+layout_mode = 2
+theme_override_constants/separation = 9
+
+[node name="LinksButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer/LinksRechtsContainer" unique_id=75737517]
+layout_mode = 2
+text = "links"
+
+[node name="rechtsButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer/LinksRechtsContainer" unique_id=2008059962]
+layout_mode = 2
+text = "rechts"
+
+[node name="UntenButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer" unique_id=1412224385]
+layout_mode = 2
+text = "unten"
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer" unique_id=305099569]
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="Label" type="Label" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer2" unique_id=1930048048]
+layout_mode = 2
+text = "Action"
+
+[node name="attackeButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer2" unique_id=288217940]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+text = "attacke"
+
+[node name="sageButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer2" unique_id=568166206]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+text = "sage"
+
+[node name="VBoxContainer3" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer" unique_id=2079471987]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer3" unique_id=1616721237]
+layout_mode = 2
+text = "Funktion"
+
+[node name="ItemList" type="ItemList" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer3" unique_id=575498734]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+select_mode = 1
+auto_width = true
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer" unique_id=664948786]
+layout_mode = 2
+size_flags_vertical = 3
+alignment = 1
+
+[node name="createFunction" type="Button" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer2" unique_id=79635568]
+layout_mode = 2
+text = "Funktion Menu"
+
+[node name="loadFunction" type="Button" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer2" unique_id=1071860524]
+layout_mode = 2
+text = "Lade Funktionen"
+
+[node name="KI Playground" type="MarginContainer" parent="CodeLayer/Code/TabContainer" unique_id=1000470522]
+visible = false
+layout_mode = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 10
+metadata/_tab_index = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground" unique_id=717277918]
+layout_mode = 2
+theme_override_constants/separation = 25
+
+[node name="Paramcontainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer" unique_id=1034550588]
+layout_mode = 2
+
+[node name="KIConfLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer" unique_id=792466002]
+layout_mode = 2
+text = "KI Configurationen"
+horizontal_alignment = 1
+
+[node name="KiModelLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer" unique_id=1749922437]
+layout_mode = 2
+text = "Model: Neural Network"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer" unique_id=1688024044]
+layout_mode = 2
+
+[node name="stepsLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/HBoxContainer2" unique_id=1045248903]
+layout_mode = 2
+text = "Action-Schritte: "
+
+[node name="stepsEdit" type="LineEdit" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/HBoxContainer2" unique_id=1894936392]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "100"
+
+[node name="GridContainer" type="GridContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer" unique_id=1291591006]
+layout_mode = 2
+theme_override_constants/h_separation = 12
+columns = 3
+
+[node name="learnRateLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/GridContainer" unique_id=1493848835]
+layout_mode = 2
+text = "Lernrate: 0.004"
+
+[node name="learnRateBtnPlus" type="Button" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/GridContainer" unique_id=2016231900]
+layout_mode = 2
+text = "+"
+
+[node name="learnRateBtnMinus" type="Button" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/GridContainer" unique_id=1461493371]
+layout_mode = 2
+text = "-"
+
+[node name="exploreRateLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/GridContainer" unique_id=342505418]
+layout_mode = 2
+text = "Erforschungrate: 0.004"
+
+[node name="Button" type="Button" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/GridContainer" unique_id=846524826]
+layout_mode = 2
+text = "+"
+
+[node name="Button6" type="Button" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/GridContainer" unique_id=91335276]
+layout_mode = 2
+text = "-"
+
+[node name="RewardContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer" unique_id=1761456200]
+layout_mode = 2
+
+[node name="KiModelLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/RewardContainer" unique_id=2014271528]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Belohnungssystem"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/RewardContainer" unique_id=1848092692]
+layout_mode = 2
+
+[node name="WayLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/RewardContainer/HBoxContainer2" unique_id=1744230220]
+layout_mode = 2
+text = "nur moegliche Wege"
+
+[node name="WayCheckBox" type="CheckBox" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/RewardContainer/HBoxContainer2" unique_id=1338347329]
+layout_mode = 2
+button_pressed = true
+
+[node name="Label" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/RewardContainer" unique_id=883916502]
+visible = false
+layout_mode = 2
+text = "Kekse platzieren"
+
+[node name="GameSetContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer" unique_id=1191880012]
+layout_mode = 2
+
+[node name="GameSetLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer" unique_id=1397285321]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Game-Settings"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer" unique_id=118195405]
+layout_mode = 2
+
+[node name="SpeedLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2" unique_id=179140846]
+layout_mode = 2
+text = "Game-Speed: "
+
+[node name="Speed" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2" unique_id=664526434]
+layout_mode = 2
+text = "1"
+
+[node name="SpeedPlus" type="Button" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2" unique_id=1938951500]
+layout_mode = 2
+text = "+"
+
+[node name="SpeedMinus" type="Button" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2" unique_id=1024851392]
+layout_mode = 2
+text = "-"
+
+[node name="SpawnContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer" unique_id=507567459]
+layout_mode = 2
+
+[node name="SpawnTitle" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/SpawnContainer" unique_id=2015383879]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Spawn-Settings"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/SpawnContainer" unique_id=1285579958]
+layout_mode = 2
+
+[node name="TextureSpawn" type="TextureRect" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/SpawnContainer/HBoxContainer" unique_id=185019145]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+script = ExtResource("13_ba010")
+
+[node name="Label" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/SpawnContainer/HBoxContainer" unique_id=1974657243]
+layout_mode = 2
+text = "Spawn Mob: "
+
+[node name="OptionSpawn" type="OptionButton" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/SpawnContainer/HBoxContainer" unique_id=54962371]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="MoveContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer" unique_id=209659878]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/MoveContainer" unique_id=575204912]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Move-Settings"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/MoveContainer" unique_id=2002526501]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/MoveContainer/HBoxContainer" unique_id=926680482]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+tooltip_text = "goal_tile"
+texture = ExtResource("14_ux0ro")
+script = ExtResource("15_vhx6d")
+
+[node name="Label" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/MoveContainer/HBoxContainer" unique_id=32377616]
+layout_mode = 2
+text = "   Bewegung Ziel "
+
+[node name="FuncContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer" unique_id=1735334161]
+layout_mode = 2
+
+[node name="FuncLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/FuncContainer" unique_id=1996348255]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+text = "KI "
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/FuncContainer" unique_id=1643646615]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+
+[node name="StartKiButton" type="Button" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/FuncContainer/HBoxContainer" unique_id=316282103]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+text = "Start"
+
+[node name="StopKiButton" type="Button" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/FuncContainer/HBoxContainer" unique_id=695888154]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+text = "Stop"
+
+[node name="SaveKiButton" type="Button" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/FuncContainer/HBoxContainer" unique_id=593696690]
+layout_mode = 2
+text = "Speicher Ki Verhalten"
+
+[node name="Belohnung" type="MarginContainer" parent="CodeLayer/Code/TabContainer" unique_id=752890000]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 2
+
+[node name="MoveContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/Belohnung" unique_id=1410167063]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="CodeLayer/Code/TabContainer/Belohnung/MoveContainer" unique_id=303420302]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Belohnung-Settings"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/Belohnung/MoveContainer" unique_id=1529662817]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="CodeLayer/Code/TabContainer/Belohnung/MoveContainer/HBoxContainer" unique_id=1727016986]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+texture = ExtResource("14_ux0ro")
+script = ExtResource("13_ba010")
+
+[node name="Label" type="Label" parent="CodeLayer/Code/TabContainer/Belohnung/MoveContainer/HBoxContainer" unique_id=1503944505]
+layout_mode = 2
+text = "Bewegung Ziel Belohnung : "
+
+[node name="LineEdit" type="LineEdit" parent="CodeLayer/Code/TabContainer/Belohnung/MoveContainer/HBoxContainer" unique_id=832260504]
+layout_mode = 2
+text = "0.7"
+
+[node name="DebugCodePlayer" type="Node" parent="CodeLayer/Code" unique_id=1473287517 node_paths=PackedStringArray("player")]
+script = ExtResource("16_2smwq")
+player = NodePath("../../..")
+metadata/_custom_type_script = "uid://3u5wolperx1b"
+
+[node name="PopupFunction" type="PopupPanel" parent="CodeLayer" unique_id=1573069857]
+unique_name_in_owner = true
+oversampling_override = 1.0
+title = "Funktionen"
+size = Vector2i(559, 478)
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CodeLayer/PopupFunction" unique_id=1817172930]
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 555.0
+offset_bottom = 474.0
+grow_vertical = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_constants/separation = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CodeLayer/PopupFunction/HBoxContainer" unique_id=1023878274]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer" unique_id=1285933140]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=359106307]
+layout_mode = 2
+text = "Funktionsname: "
+
+[node name="InputFuncName" type="LineEdit" parent="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=706551571]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+max_length = 30
+
+[node name="CodeEdit" type="CodeEdit" parent="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer" unique_id=881055132]
+custom_minimum_size = Vector2(400, 400)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+scroll_smooth = true
+scroll_past_end_of_file = true
+highlight_current_line = true
+symbol_tooltip_on_hover = true
+gutters_draw_bookmarks = true
+gutters_draw_line_numbers = true
+
+[node name="BtnContainer" type="HBoxContainer" parent="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer" unique_id=1176897146]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 20
+
+[node name="CreateBtn" type="Button" parent="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer/BtnContainer" unique_id=531604751]
+layout_mode = 2
+text = "Erstellen"
+
+[node name="ExitBtn" type="Button" parent="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer/BtnContainer" unique_id=913988223]
+layout_mode = 2
+text = "Abbrechen"
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="CodeLayer/PopupFunction/HBoxContainer" unique_id=1857271388]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 15
+
+[node name="Label" type="Label" parent="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer2" unique_id=1289616111]
+layout_mode = 2
+text = "Funktionsliste"
+
+[node name="FuncList" type="ItemList" parent="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer2" unique_id=1811930146]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+item_count = 1
+item_0/text = "Test2"
+
+[node name="MovingParts" type="Node2D" parent="." unique_id=1677369711]
+
+[node name="Sprite2D" type="Sprite2D" parent="MovingParts" unique_id=1577559968]
+scale = Vector2(0.833333, 0.825581)
+
+[node name="Hands" type="Sprite2D" parent="MovingParts" unique_id=863491252]
+unique_name_in_owner = true
+scale = Vector2(0.9, 0.848837)
+texture = ExtResource("4_yjkcj")
+offset = Vector2(6, 0)
+hframes = 12
+frame = 4
+
+[node name="HeldItem" type="Sprite2D" parent="MovingParts" unique_id=800330785]
+unique_name_in_owner = true
+texture_filter = 1
+offset = Vector2(16, 7)
+
+[node name="HitArea" type="Area2D" parent="MovingParts" unique_id=623606295]
+unique_name_in_owner = true
+
+[node name="HitCollision" type="CollisionShape2D" parent="MovingParts/HitArea" unique_id=1096221125]
+unique_name_in_owner = true
+position = Vector2(25, 0)
+rotation = 1.5708
+shape = SubResource("CircleShape2D_wmtbp")
+
+[node name="Equipment" type="Node2D" parent="MovingParts" unique_id=766952440]
+unique_name_in_owner = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1001149962]
+shape = SubResource("CircleShape2D_5y66v")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=507196032]
+libraries/ = SubResource("AnimationLibrary_4vloy")
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="." unique_id=1581309287]
+
+[node name="bloodParticles" type="CPUParticles2D" parent="." unique_id=1922889635]
+emitting = false
+lifetime = 0.25
+one_shot = true
+speed_scale = 0.9
+explosiveness = 1.0
+randomness = 0.46
+gravity = Vector2(0, 450)
+initial_velocity_min = 25.25
+initial_velocity_max = 267.67
+angular_velocity_min = -225.45
+angular_velocity_max = 370.91
+scale_amount_max = 4.0
+scale_amount_curve = SubResource("Curve_s5j1r")
+color = Color(1, 0.172549, 0.113725, 1)
+
+[node name="PlayerMessages" type="VBoxContainer" parent="." unique_id=965107711]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(140, 50)
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -70.0
+offset_top = -100.0
+offset_right = 70.0
+offset_bottom = -50.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="SpawnArea" type="Control" parent="." unique_id=1947374714]
+layout_mode = 3
+anchors_preset = 0
+offset_left = -340.0
+offset_top = -358.0
+offset_right = 381.0
+offset_bottom = 364.0
+script = ExtResource("17_jb4us")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=196605848]
+enabled = false
+script = ExtResource("13_e5n5u")
+
+[node name="PopupSettings" type="PopupPanel" parent="." unique_id=796379025]
+transparent_bg = false
+oversampling_override = 1.0
+title = "Settings"
+initial_position = 1
+size = Vector2i(243, 109)
+transparent = false
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PopupSettings" unique_id=385842997]
+top_level = true
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 239.0
+offset_bottom = 105.0
+size_flags_horizontal = 6
+size_flags_vertical = 6
+alignment = 1
+
+[node name="Label" type="Label" parent="PopupSettings/VBoxContainer" unique_id=601219807]
+layout_mode = 2
+text = "Main-Settings"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="PopupSettings/VBoxContainer" unique_id=1975201783]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PopupSettings/VBoxContainer" unique_id=1273410260]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PopupSettings/VBoxContainer/HBoxContainer" unique_id=969707803]
+layout_mode = 2
+text = "Schwerigkeitsgrad:"
+
+[node name="DifModeButton" type="OptionButton" parent="PopupSettings/VBoxContainer/HBoxContainer" unique_id=770128902]
+unique_name_in_owner = true
+layout_mode = 2
+selected = 0
+item_count = 3
+popup/item_0/text = "Leicht"
+popup/item_0/id = 0
+popup/item_1/text = "Hart"
+popup/item_1/id = 1
+popup/item_2/text = "Horror"
+popup/item_2/id = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="PopupSettings/VBoxContainer" unique_id=1762720176]
+layout_mode = 2
+
+[node name="backToMenu" type="Button" parent="PopupSettings/VBoxContainer/HBoxContainer2" unique_id=1632201480]
+layout_mode = 2
+text = "Exit Game"
+
+[node name="SettingsOkBtn" type="Button" parent="PopupSettings/VBoxContainer/HBoxContainer2" unique_id=720929007]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "OK"
+
+[node name="PopupInfo" type="PopupPanel" parent="." unique_id=1022056431]
+transparent_bg = false
+oversampling_override = 1.0
+initial_position = 1
+size = Vector2i(208, 108)
+visible = true
+transparent = false
+
+[node name="workTaskText" type="RichTextLabel" parent="PopupInfo" unique_id=448736662]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 20)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -50.0
+offset_right = 100.0
+offset_bottom = 50.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 4
+bbcode_enabled = true
+text = "Geh zum weißen Feld!"
+fit_content = true
+
+[connection signal="pressed" from="PlayerStatus/WorkContainer/VBoxContainer2/HBoxContainer2/SettingsButton" to="PlayerStatus" method="_on_settings_button_pressed"]
+[connection signal="pressed" from="PlayerStatus/WorkContainer/VBoxContainer2/HBoxContainer2/InfoButton" to="PlayerStatus" method="_on_info_button_pressed"]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ButtonCotainer/PlayButton" to="CodeLayer/Code" method="_on_play_button_pressed"]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ButtonCotainer/StopButton" to="CodeLayer/Code" method="_on_stop_button_pressed"]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ButtonCotainer/CodeDeleteButton" to="CodeLayer/Code" method="_on_code_delete_button_pressed"]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer/ObenButton" to="CodeLayer/Code" method="_on_oben_button_pressed" flags=18]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer/LinksRechtsContainer/LinksButton" to="CodeLayer/Code" method="_on_links_button_pressed" flags=18]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer/LinksRechtsContainer/rechtsButton" to="CodeLayer/Code" method="_on_rechts_button_pressed" flags=18]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer/UntenButton" to="CodeLayer/Code" method="_on_unten_button_pressed" flags=18]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer2/attackeButton" to="CodeLayer/Code" method="_on_attacke_button_pressed" flags=18]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer2/sageButton" to="CodeLayer/Code" method="_on_sage_button_pressed" flags=18]
+[connection signal="item_activated" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer3/ItemList" to="CodeLayer/Code" method="_on_item_list_item_activated"]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer2/createFunction" to="CodeLayer/Code" method="_on_create_function_pressed"]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer2/loadFunction" to="CodeLayer/Code" method="_on_load_function_pressed"]
+[connection signal="item_selected" from="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/SpawnContainer/HBoxContainer/OptionSpawn" to="AI/Builder" method="_on_option_button_item_selected"]
+[connection signal="pressed" from="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer/BtnContainer/CreateBtn" to="CodeLayer/Code" method="_on_create_btn_pressed"]
+[connection signal="item_activated" from="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer2/FuncList" to="FunctionHandler" method="_on_func_list_item_activated"]
+[connection signal="pressed" from="PopupSettings/VBoxContainer/HBoxContainer2/backToMenu" to="." method="_on_back_to_menu_pressed"]
+[connection signal="pressed" from="PopupSettings/VBoxContainer/HBoxContainer2/SettingsOkBtn" to="PlayerStatus" method="_on_settings_ok_btn_pressed"]
