@@ -21,4 +21,4 @@
 - [ ] **Deployment & Testing**:
     - [ ] Test the exported build on a local web server (e.g., `python -m http.server`).
     - [ ] Check for memory leaks in the browser console during long sessions.
-    - [ ] Verify that the "Code Player" (python-based tools in `client_code_runner/`) has an equivalent web implementation or is disabled for the web build, as standard Python won't run in the browser without WebAssembly (Wasm).
+   

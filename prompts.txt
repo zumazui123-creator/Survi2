@@ -1,0 +1,11 @@
+
+Laser Prompt:
+Erstelle ein Laser in der Godot mit RayCast2D und Line2D.
+Das script ist in RayCast2D.
+Der Laser wird mit der TAB Taste ausgelöst
+Der Laser baut sich sichtbar  auf
+Verwende Line2D, um den Laserstrahl darzustellen
+Wenn der Laser ein Objekt trifft, soll er dort enden
+Der Laser soll nach kurzer Zeit automatisch verschwinden
+
+Gib den vollständigen Code.

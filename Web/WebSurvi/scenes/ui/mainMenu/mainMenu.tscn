@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://dp2aay1f31ek8"]
+[gd_scene format=3 uid="uid://dp2aay1f31ek8"]
 
 [ext_resource type="Script" uid="uid://bqog12ktm17hx" path="res://scenes/ui/mainMenu/mainMenu.gd" id="1_3oxb4"]
 
@@ -17,28 +17,6 @@ expand_margin_top = 30.0
 expand_margin_right = 30.0
 expand_margin_bottom = 30.0
 
-[sub_resource type="Animation" id="Animation_jpejd"]
-resource_name = "loop"
-length = 0.9
-loop_mode = 1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("HBoxContainer2/PanelContainer/VBoxContainer/Label:text")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.3, 0.6),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 1,
-"values": ["Connecting to server.", "Connecting to server..", "Connecting to server..."]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_6cyr1"]
-_data = {
-&"loop": SubResource("Animation_jpejd")
-}
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vtvwi"]
 content_margin_left = 20.0
 content_margin_top = 20.0
@@ -50,7 +28,7 @@ corner_radius_top_right = 7
 corner_radius_bottom_right = 7
 corner_radius_bottom_left = 7
 
-[node name="MainMenu" type="Control"]
+[node name="MainMenu" type="Control" unique_id=1631144904]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -61,7 +39,7 @@ size_flags_vertical = 3
 script = ExtResource("1_3oxb4")
 metadata/_edit_use_anchors_ = true
 
-[node name="HBoxContainer" type="HBoxContainer" parent="."]
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=1461358101]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -76,97 +54,49 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 100
 
-[node name="MainContainer" type="PanelContainer" parent="HBoxContainer"]
+[node name="MainContainer" type="PanelContainer" parent="HBoxContainer" unique_id=250589479]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_wx4k7")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/MainContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/MainContainer" unique_id=16013156]
 layout_mode = 2
 alignment = 1
 
-[node name="Label" type="Label" parent="HBoxContainer/MainContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="HBoxContainer/MainContainer/VBoxContainer" unique_id=1369688471]
 layout_mode = 2
 text = "Main-Level"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="MainLevelList" type="ItemList" parent="HBoxContainer/MainContainer/VBoxContainer"]
+[node name="MainLevelList" type="ItemList" parent="HBoxContainer/MainContainer/VBoxContainer" unique_id=1875377877]
 layout_mode = 2
 size_flags_vertical = 3
 auto_width = true
 
-[node name="LabrinthContainer" type="PanelContainer" parent="HBoxContainer"]
+[node name="LabrinthContainer" type="PanelContainer" parent="HBoxContainer" unique_id=532602494]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_wx4k7")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/LabrinthContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/LabrinthContainer" unique_id=946929299]
 layout_mode = 2
 alignment = 1
 
-[node name="Label" type="Label" parent="HBoxContainer/LabrinthContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="HBoxContainer/LabrinthContainer/VBoxContainer" unique_id=1830665063]
 layout_mode = 2
 text = "Rätsel-Level"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="LabyrinthLevelList" type="ItemList" parent="HBoxContainer/LabrinthContainer/VBoxContainer"]
+[node name="LabyrinthLevelList" type="ItemList" parent="HBoxContainer/LabrinthContainer/VBoxContainer" unique_id=112325372]
 layout_mode = 2
 size_flags_vertical = 3
 auto_width = true
 
-[node name="TurnierContainer" type="PanelContainer" parent="HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_wx4k7")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/TurnierContainer"]
-layout_mode = 2
-alignment = 1
-
-[node name="Label" type="Label" parent="HBoxContainer/TurnierContainer/VBoxContainer"]
-layout_mode = 2
-text = "Turnier-Level"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="TunierLevelList" type="ItemList" parent="HBoxContainer/TurnierContainer/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-auto_width = true
-
-[node name="KI_PLaygroundMap" type="PanelContainer" parent="HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_wx4k7")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/KI_PLaygroundMap"]
-layout_mode = 2
-alignment = 1
-
-[node name="Label" type="Label" parent="HBoxContainer/KI_PLaygroundMap/VBoxContainer"]
-layout_mode = 2
-text = "KI-Playground Maps"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="KI_PLaygroundList" type="ItemList" parent="HBoxContainer/KI_PLaygroundMap/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-auto_width = true
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-&"": SubResource("AnimationLibrary_6cyr1")
-}
-autoplay = "loop"
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="."]
+[node name="HBoxContainer2" type="HBoxContainer" parent="." unique_id=969872776]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -176,55 +106,40 @@ offset_right = 168.0
 offset_bottom = 98.0
 grow_horizontal = 2
 
-[node name="PanelContainer" type="PanelContainer" parent="HBoxContainer2"]
+[node name="PanelContainer" type="PanelContainer" parent="HBoxContainer2" unique_id=229261084]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_vtvwi")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer2/PanelContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer2/PanelContainer" unique_id=56183296]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="HBoxContainer2/PanelContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="HBoxContainer2/PanelContainer/VBoxContainer" unique_id=2104575669]
 layout_mode = 2
 size_flags_vertical = 6
-text = " Spiel-Optionen"
+text = "Connecting to server."
 vertical_alignment = 1
 
-[node name="StartBtn" type="Button" parent="HBoxContainer2/PanelContainer/VBoxContainer"]
+[node name="StartBtn" type="Button" parent="HBoxContainer2/PanelContainer/VBoxContainer" unique_id=415540910]
 layout_mode = 2
 text = "Start Game"
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="HBoxContainer2/PanelContainer/VBoxContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="HBoxContainer2/PanelContainer/VBoxContainer" unique_id=455509901]
 layout_mode = 2
 
-[node name="HostWithPlayerContainer" type="HBoxContainer" parent="HBoxContainer2/PanelContainer/VBoxContainer/HBoxContainer2"]
-layout_mode = 2
-size_flags_horizontal = 4
-
-[node name="Label" type="Label" parent="HBoxContainer2/PanelContainer/VBoxContainer/HBoxContainer2/HostWithPlayerContainer"]
-layout_mode = 2
-text = "Host as Player"
-
-[node name="HostAsPlayerBtn" type="CheckButton" parent="HBoxContainer2/PanelContainer/VBoxContainer/HBoxContainer2/HostWithPlayerContainer"]
-layout_mode = 2
-button_pressed = true
-
-[node name="CodePlayerContainer" type="HBoxContainer" parent="HBoxContainer2/PanelContainer/VBoxContainer/HBoxContainer2"]
+[node name="CodePlayerContainer" type="HBoxContainer" parent="HBoxContainer2/PanelContainer/VBoxContainer/HBoxContainer2" unique_id=297863609]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 
-[node name="Label" type="Label" parent="HBoxContainer2/PanelContainer/VBoxContainer/HBoxContainer2/CodePlayerContainer"]
+[node name="Label" type="Label" parent="HBoxContainer2/PanelContainer/VBoxContainer/HBoxContainer2/CodePlayerContainer" unique_id=973118356]
 layout_mode = 2
 text = "Debug Code Player"
 
-[node name="CodePlayerBtn" type="CheckButton" parent="HBoxContainer2/PanelContainer/VBoxContainer/HBoxContainer2/CodePlayerContainer"]
+[node name="CodePlayerBtn" type="CheckButton" parent="HBoxContainer2/PanelContainer/VBoxContainer/HBoxContainer2/CodePlayerContainer" unique_id=1105422970]
 layout_mode = 2
 button_pressed = true
 
 [connection signal="item_selected" from="HBoxContainer/MainContainer/VBoxContainer/MainLevelList" to="." method="_on_main_level_list_item_selected"]
 [connection signal="item_selected" from="HBoxContainer/LabrinthContainer/VBoxContainer/LabyrinthLevelList" to="." method="_on_labyrinth_level_list_item_selected"]
-[connection signal="item_selected" from="HBoxContainer/TurnierContainer/VBoxContainer/TunierLevelList" to="." method="_on_tunier_level_list_item_selected"]
-[connection signal="item_selected" from="HBoxContainer/KI_PLaygroundMap/VBoxContainer/KI_PLaygroundList" to="." method="_on_ki_p_layground_list_item_selected"]
 [connection signal="pressed" from="HBoxContainer2/PanelContainer/VBoxContainer/StartBtn" to="." method="_on_start_btn_pressed"]
-[connection signal="toggled" from="HBoxContainer2/PanelContainer/VBoxContainer/HBoxContainer2/HostWithPlayerContainer/HostAsPlayerBtn" to="." method="_on_host_as_player_btn_toggled"]
 [connection signal="toggled" from="HBoxContainer2/PanelContainer/VBoxContainer/HBoxContainer2/CodePlayerContainer/CodePlayerBtn" to="." method="_on_code_player_btn_toggled"]
