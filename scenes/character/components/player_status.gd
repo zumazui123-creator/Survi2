@@ -103,7 +103,7 @@ func _process(_delta: float) -> void:
 	if now - last_time_food > food_rate:
 		foodBar.value -= 1
 		last_time_food = now
-
+	
 
 func _on_settings_button_pressed() -> void:
 	popup_settings.visible = true

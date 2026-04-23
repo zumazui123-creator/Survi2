@@ -100,7 +100,7 @@ func getDamage(causer, amount, _type):
 	if causer.is_in_group("player"):
 		return
 		
-	status.hp -= amount
+	player.status.hp -= amount
 	if (status.hp - amount) <= 0 and causer.is_in_group(Strings.GROUP_PLAYER):
 		causer.get_node("PlayerCombat").player_killed.emit()
 
