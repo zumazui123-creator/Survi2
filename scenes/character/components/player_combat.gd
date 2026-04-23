@@ -45,10 +45,10 @@ var attackRange := 1.0:
 
 func _ready():
 	player = get_parent()
-	if multiplayer.is_server():
-		mob_killed.connect(mobKilled)
-		player_killed.connect(enemyPlayerKilled)
-		object_destroyed.connect(objectDestroyed)
+	#if multiplayer.is_server():
+	mob_killed.connect(mobKilled)
+	player_killed.connect(enemyPlayerKilled)
+	object_destroyed.connect(objectDestroyed)
 
 func hit(_inp_action : String):
 	animation_player.speed_scale = attackRate
