@@ -12,7 +12,7 @@ func _process(_delta):
 	queue_redraw()
 
 func _draw():
-	if Multihelper.map.tile_map == null:
+	if Multihelper.map == null or Multihelper.map.tile_map == null:
 		return
 	if is_instance_valid(player):
 		var player_pos = player.global_position / Vector2(Multihelper.map.tile_map.tile_set.tile_size) * tile_size

@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://dp2aay1f31ek8"]
+[gd_scene format=3 uid="uid://dp2aay1f31ek8"]
 
 [ext_resource type="Script" uid="uid://bqog12ktm17hx" path="res://scenes/ui/mainMenu/mainMenu.gd" id="1_3oxb4"]
 
@@ -50,7 +50,7 @@ corner_radius_top_right = 7
 corner_radius_bottom_right = 7
 corner_radius_bottom_left = 7
 
-[node name="MainMenu" type="Control"]
+[node name="MainMenu" type="Control" unique_id=266888972]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -61,7 +61,7 @@ size_flags_vertical = 3
 script = ExtResource("1_3oxb4")
 metadata/_edit_use_anchors_ = true
 
-[node name="HBoxContainer" type="HBoxContainer" parent="."]
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=939796701]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -76,97 +76,95 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 100
 
-[node name="MainContainer" type="PanelContainer" parent="HBoxContainer"]
+[node name="MainContainer" type="PanelContainer" parent="HBoxContainer" unique_id=2138815905]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_wx4k7")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/MainContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/MainContainer" unique_id=1982890342]
 layout_mode = 2
 alignment = 1
 
-[node name="Label" type="Label" parent="HBoxContainer/MainContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="HBoxContainer/MainContainer/VBoxContainer" unique_id=992478783]
 layout_mode = 2
 text = "Main-Level"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="MainLevelList" type="ItemList" parent="HBoxContainer/MainContainer/VBoxContainer"]
+[node name="MainLevelList" type="ItemList" parent="HBoxContainer/MainContainer/VBoxContainer" unique_id=1352269213]
 layout_mode = 2
 size_flags_vertical = 3
 auto_width = true
 
-[node name="LabrinthContainer" type="PanelContainer" parent="HBoxContainer"]
+[node name="LabrinthContainer" type="PanelContainer" parent="HBoxContainer" unique_id=225203995]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_wx4k7")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/LabrinthContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/LabrinthContainer" unique_id=1194444782]
 layout_mode = 2
 alignment = 1
 
-[node name="Label" type="Label" parent="HBoxContainer/LabrinthContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="HBoxContainer/LabrinthContainer/VBoxContainer" unique_id=1324823465]
 layout_mode = 2
 text = "Rätsel-Level"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="LabyrinthLevelList" type="ItemList" parent="HBoxContainer/LabrinthContainer/VBoxContainer"]
+[node name="LabyrinthLevelList" type="ItemList" parent="HBoxContainer/LabrinthContainer/VBoxContainer" unique_id=727949099]
 layout_mode = 2
 size_flags_vertical = 3
 auto_width = true
 
-[node name="TurnierContainer" type="PanelContainer" parent="HBoxContainer"]
+[node name="TurnierContainer" type="PanelContainer" parent="HBoxContainer" unique_id=1960204867]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_wx4k7")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/TurnierContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/TurnierContainer" unique_id=93535553]
 layout_mode = 2
 alignment = 1
 
-[node name="Label" type="Label" parent="HBoxContainer/TurnierContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="HBoxContainer/TurnierContainer/VBoxContainer" unique_id=343803499]
 layout_mode = 2
 text = "Turnier-Level"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="TunierLevelList" type="ItemList" parent="HBoxContainer/TurnierContainer/VBoxContainer"]
+[node name="TunierLevelList" type="ItemList" parent="HBoxContainer/TurnierContainer/VBoxContainer" unique_id=255822071]
 layout_mode = 2
 size_flags_vertical = 3
 auto_width = true
 
-[node name="KI_PLaygroundMap" type="PanelContainer" parent="HBoxContainer"]
+[node name="KI_PLaygroundMap" type="PanelContainer" parent="HBoxContainer" unique_id=1185128777]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_wx4k7")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/KI_PLaygroundMap"]
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/KI_PLaygroundMap" unique_id=260172921]
 layout_mode = 2
 alignment = 1
 
-[node name="Label" type="Label" parent="HBoxContainer/KI_PLaygroundMap/VBoxContainer"]
+[node name="Label" type="Label" parent="HBoxContainer/KI_PLaygroundMap/VBoxContainer" unique_id=1646543]
 layout_mode = 2
 text = "KI-Playground Maps"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="KI_PLaygroundList" type="ItemList" parent="HBoxContainer/KI_PLaygroundMap/VBoxContainer"]
+[node name="KI_PLaygroundList" type="ItemList" parent="HBoxContainer/KI_PLaygroundMap/VBoxContainer" unique_id=711420713]
 layout_mode = 2
 size_flags_vertical = 3
 auto_width = true
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-&"": SubResource("AnimationLibrary_6cyr1")
-}
-autoplay = "loop"
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1272617948]
+libraries/ = SubResource("AnimationLibrary_6cyr1")
+autoplay = &"loop"
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="."]
+[node name="HBoxContainer2" type="HBoxContainer" parent="." unique_id=375183916]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -176,31 +174,31 @@ offset_right = 168.0
 offset_bottom = 98.0
 grow_horizontal = 2
 
-[node name="PanelContainer" type="PanelContainer" parent="HBoxContainer2"]
+[node name="PanelContainer" type="PanelContainer" parent="HBoxContainer2" unique_id=913452751]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_vtvwi")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer2/PanelContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer2/PanelContainer" unique_id=382302782]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="HBoxContainer2/PanelContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="HBoxContainer2/PanelContainer/VBoxContainer" unique_id=1875197443]
 layout_mode = 2
 size_flags_vertical = 6
 text = " Server-Optionen"
 vertical_alignment = 1
 
-[node name="StartBtn" type="Button" parent="HBoxContainer2/PanelContainer/VBoxContainer"]
+[node name="StartBtn" type="Button" parent="HBoxContainer2/PanelContainer/VBoxContainer" unique_id=1355423597]
 layout_mode = 2
 text = "Start Server"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer2/PanelContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer2/PanelContainer/VBoxContainer" unique_id=625309346]
 layout_mode = 2
 
-[node name="JoinBtn" type="Button" parent="HBoxContainer2/PanelContainer/VBoxContainer/HBoxContainer"]
+[node name="JoinBtn" type="Button" parent="HBoxContainer2/PanelContainer/VBoxContainer/HBoxContainer" unique_id=1784981059]
 layout_mode = 2
 text = "Join Server IP-Address:"
 
-[node name="IpInputLine" type="LineEdit" parent="HBoxContainer2/PanelContainer/VBoxContainer/HBoxContainer"]
+[node name="IpInputLine" type="LineEdit" parent="HBoxContainer2/PanelContainer/VBoxContainer/HBoxContainer" unique_id=2122196355]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
@@ -209,31 +207,31 @@ text = "127.0.0.1"
 placeholder_text = "localhost"
 max_length = 30
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="HBoxContainer2/PanelContainer/VBoxContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="HBoxContainer2/PanelContainer/VBoxContainer" unique_id=917318939]
 layout_mode = 2
 
-[node name="HostWithPlayerContainer" type="HBoxContainer" parent="HBoxContainer2/PanelContainer/VBoxContainer/HBoxContainer2"]
+[node name="HostWithPlayerContainer" type="HBoxContainer" parent="HBoxContainer2/PanelContainer/VBoxContainer/HBoxContainer2" unique_id=1581716702]
 layout_mode = 2
 size_flags_horizontal = 4
 
-[node name="Label" type="Label" parent="HBoxContainer2/PanelContainer/VBoxContainer/HBoxContainer2/HostWithPlayerContainer"]
+[node name="Label" type="Label" parent="HBoxContainer2/PanelContainer/VBoxContainer/HBoxContainer2/HostWithPlayerContainer" unique_id=1153860]
 layout_mode = 2
 text = "Host as Player"
 
-[node name="HostAsPlayerBtn" type="CheckButton" parent="HBoxContainer2/PanelContainer/VBoxContainer/HBoxContainer2/HostWithPlayerContainer"]
+[node name="HostAsPlayerBtn" type="CheckButton" parent="HBoxContainer2/PanelContainer/VBoxContainer/HBoxContainer2/HostWithPlayerContainer" unique_id=554915187]
 layout_mode = 2
 button_pressed = true
 
-[node name="CodePlayerContainer" type="HBoxContainer" parent="HBoxContainer2/PanelContainer/VBoxContainer/HBoxContainer2"]
+[node name="CodePlayerContainer" type="HBoxContainer" parent="HBoxContainer2/PanelContainer/VBoxContainer/HBoxContainer2" unique_id=898297727]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 
-[node name="Label" type="Label" parent="HBoxContainer2/PanelContainer/VBoxContainer/HBoxContainer2/CodePlayerContainer"]
+[node name="Label" type="Label" parent="HBoxContainer2/PanelContainer/VBoxContainer/HBoxContainer2/CodePlayerContainer" unique_id=611719111]
 layout_mode = 2
 text = "Debug Code Player"
 
-[node name="CodePlayerBtn" type="CheckButton" parent="HBoxContainer2/PanelContainer/VBoxContainer/HBoxContainer2/CodePlayerContainer"]
+[node name="CodePlayerBtn" type="CheckButton" parent="HBoxContainer2/PanelContainer/VBoxContainer/HBoxContainer2/CodePlayerContainer" unique_id=1382016057]
 layout_mode = 2
 button_pressed = true
 

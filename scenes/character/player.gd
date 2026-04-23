@@ -59,8 +59,8 @@ func save_tilemap_layer_to_file(layer: TileMapLayer) -> void:
 
 
 func _ready():
-	var tile_map = Multihelper.map.tile_map
-	save_tilemap_layer_to_file(Multihelper.map.tile_map)
+	#var tile_map = Multihelper.map.tile_map
+	#save_tilemap_layer_to_file(Multihelper.map.tile_map)
 
 	print("Player : "+str(characterFile))
 	

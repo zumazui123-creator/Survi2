@@ -16,7 +16,7 @@ func _ready():
 	
 	
 func _draw():
-	if Multihelper.map.tile_map == null:
+	if Multihelper.map == null or Multihelper.map.tile_map == null:
 		return
 	var used_rect = Multihelper.map.tile_map.get_used_rect()
 	for x in range(used_rect.size.x):
@@ -29,6 +29,8 @@ func _draw():
 				draw_rect(tile_rect, tile_color)
 
 func _process(_delta):
+	if Multihelper.map == null:
+		return
 	if not drawn and Multihelper.map.tile_map != null and Multihelper.map.tile_map.get_used_rect().size != Vector2i(0,0):
 		queue_redraw()
 		drawn = true

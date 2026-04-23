@@ -113,6 +113,6 @@ func die():
 	Multihelper.showSpawnUI.rpc_id(peerId)
 	player.queue_free()
 
-
+@rpc("any_peer", "reliable")
 func projectileHit(body):
 	body.getDamage(player, attackDamage, damageType)
