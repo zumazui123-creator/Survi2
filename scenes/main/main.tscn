@@ -43,6 +43,7 @@ size_flags_vertical = 1
 script = ExtResource("2_raeie")
 
 [node name="Pickups" type="Node2D" parent="." unique_id=1773571447]
+visible = false
 
 [node name="Players" type="Node2D" parent="." unique_id=566366385]
 
