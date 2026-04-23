@@ -79,7 +79,7 @@ var last_angle = 0.0 # für godot server nötig
 func action(vel, angle, doingAction):
 	if vel != Vector2.ZERO:
 		last_angle = vel.angle()
-	angle = last_angle
+	#angle = last_angle
 	moveProcess(vel, angle, doingAction)
 
 	var inputData = {
