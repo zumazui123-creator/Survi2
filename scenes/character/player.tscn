@@ -53,10 +53,10 @@ properties/8/spawn = true
 properties/8/replication_mode = 2
 properties/9/path = NodePath("PlayerStatus/NameTag/hpBar:value")
 properties/9/spawn = true
-properties/9/replication_mode = 1
+properties/9/replication_mode = 2
 properties/10/path = NodePath("PlayerStatus:hp")
 properties/10/spawn = true
-properties/10/replication_mode = 1
+properties/10/replication_mode = 2
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5y66v"]
 
