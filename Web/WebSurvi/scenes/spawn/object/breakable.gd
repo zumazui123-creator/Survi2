@@ -34,7 +34,7 @@ func startBreaking():
 func breakObject():
 	queue_free()
 	#spawner.spawnedObjects -= 1
-	#spawnDrops()
+	spawnDrops()
 
 func spawnDrops():
 	for drop in data["drops"].keys():
