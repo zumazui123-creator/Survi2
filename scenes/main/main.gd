@@ -16,7 +16,7 @@ func _ready():
 	#createHUD()
 	
 
-#func createHUD():
+#func createHUD(): # brauche leider den Platz fuer den Code editor
 	#var hudScene := preload("res://scenes/ui/playersList/generalHud.tscn")
 	#var hud := hudScene.instantiate()
 	#$HUD.add_child(hud)

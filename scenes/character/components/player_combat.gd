@@ -11,19 +11,11 @@ var player: CharacterBody2D
 @onready var blood_particles = get_parent().get_node("bloodParticles")
 @onready var animation_player = get_parent().get_node("AnimationPlayer")
 @onready var player_items =  $"../PlayerItems"
+@onready var status =  %PlayerStatus
 
 var attackRate : int = 1
 
 
-#stats
-@export var maxHP := 250.0
-@export var hp := maxHP:
-	set(value):
-		hp = value
-		blood_particles.emitting = true
-		player.status.setHPBarRatio(hp/maxHP)
-		if hp <= 0:
-			die()
 
 
 var spawnsProjectile := ""
@@ -88,8 +80,8 @@ func sendProjectile(towards):
 
 @rpc("authority", "call_local", "reliable")
 func increaseScore(by):
-	hp += by * 5
-	maxHP += by * 5
+	status.hp += by * 5
+	status.maxHP += by * 5
 	attackDamage += by
 	speed += by
 	Multihelper.spawnedPlayers[int(str(player.name))]["score"] += by
@@ -108,8 +100,8 @@ func getDamage(causer, amount, _type):
 	if causer.is_in_group("player"):
 		return
 		
-	hp -= amount
-	if (hp - amount) <= 0 and causer.is_in_group(Strings.GROUP_PLAYER):
+	status.hp -= amount
+	if (status.hp - amount) <= 0 and causer.is_in_group(Strings.GROUP_PLAYER):
 		causer.get_node("PlayerCombat").player_killed.emit()
 
 func die():

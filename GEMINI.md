@@ -8,8 +8,8 @@ Survi2 (also referred to as "Survivor IO" in config) is a 2D survival game built
 - **Main Scene:** `res://scenes/game/Game.tscn`
 - **Resolution:** 1280x720 (Viewport stretch mode)
 - **Physics Layers:** 
-    - Layer 1: Tiles
-    - Layer 2: Attacks
+	- Layer 1: Tiles
+	- Layer 2: Attacks
 
 ## Critical Rules
 - **DO NOT MODIFY:** `net_control.gd`. This script is critical for networking and must remain unchanged unless explicitly instructed otherwise.
