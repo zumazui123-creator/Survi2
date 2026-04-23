@@ -115,6 +115,7 @@ func _setup_local_player():
 	EndUI = main.get_node("HUD/EndUI")
 	$Camera2D.enabled = true
 
+@rpc("any_peer", "call_local", "reliable")
 func getDamage(causer, amount, _type):
 	player_combat.getDamage(causer, amount, _type)
 		
@@ -125,7 +126,7 @@ func visibilityFilter(id):
 
 @rpc("any_peer", "call_local", "reliable")
 func sendMessage(text):
-	if multiplayer.is_server():
+	#if multiplayer.is_server():
 		var messageBoxScene := preload(Constants.PATH_CHAT_MESSAGE_SCENE)
 		var messageBox := messageBoxScene.instantiate()
 		%PlayerMessages.add_child(messageBox, true)
