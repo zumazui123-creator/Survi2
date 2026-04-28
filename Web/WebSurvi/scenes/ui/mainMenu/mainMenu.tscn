@@ -76,6 +76,7 @@ size_flags_vertical = 3
 auto_width = true
 
 [node name="LabrinthContainer" type="PanelContainer" parent="HBoxContainer" unique_id=532602494]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3

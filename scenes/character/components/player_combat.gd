@@ -45,7 +45,7 @@ var attackRange := 1.0:
 
 func _ready():
 	player = get_parent()
-	#if multiplayer.is_server():
+	#if multiplayer.is_server(): #LS1
 	mob_killed.connect(mobKilled)
 	player_killed.connect(enemyPlayerKilled)
 	object_destroyed.connect(objectDestroyed)
@@ -58,15 +58,15 @@ func hit(_inp_action : String):
 		var delay : float = 0.8 / attackRate
 		await get_tree().create_timer(delay).timeout
 		animation_player.stop()
-		#player.net_control.send_text("Godot: " + inp_action)
+		
 
 func punchCheckCollision():
 	var id = multiplayer.get_unique_id()
 	if spawnsProjectile:
 		if str(id) == player.name:
 			sendProjectile.rpc_id(1, player.player_movement.direction)
-	if not multiplayer.is_server() and not player.is_multiplayer_authority():
-		return
+	#if not multiplayer.is_server() and not player.is_multiplayer_authority():
+		#return
 	if player_items.equippedItem:
 		Inventory.useItemDurability(str(player.name), player_items.equippedItem)
 	for body in hit_area.get_overlapping_bodies():

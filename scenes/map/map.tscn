@@ -1,23 +1,23 @@
-[gd_scene load_steps=5 format=3 uid="uid://bf074ibcy5o0"]
+[gd_scene format=3 uid="uid://bf074ibcy5o0"]
 
 [ext_resource type="Script" uid="uid://bbn7yedve2law" path="res://scenes/map/map.gd" id="1_gggpt"]
 [ext_resource type="TileSet" uid="uid://cny45owea8lcj" path="res://assets/tileset/tileset.tres" id="2_c3hbg"]
 [ext_resource type="Script" uid="uid://bqqq0ujqgl6ln" path="res://scenes/map/mapGenerator/labyrinth.gd" id="3_qpycp"]
 [ext_resource type="Script" uid="uid://c8y1yilcj8bkg" path="res://scenes/map/mapGenerator/main_level.gd" id="5_qci3n"]
 
-[node name="Map" type="Control"]
+[node name="Map" type="Control" unique_id=1853554641]
 layout_mode = 3
 anchors_preset = 0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("1_gggpt")
 
-[node name="TileMap" type="TileMapLayer" parent="."]
+[node name="TileMap" type="TileMapLayer" parent="." unique_id=1940010477]
 visible = false
 tile_set = ExtResource("2_c3hbg")
 
-[node name="Labyrinth" type="Node" parent="."]
+[node name="Labyrinth" type="Node" parent="." unique_id=16864905]
 script = ExtResource("3_qpycp")
 
-[node name="MainLevelGenerator" type="Node" parent="."]
+[node name="MainLevelGenerator" type="Node" parent="." unique_id=784512027]
 script = ExtResource("5_qci3n")
