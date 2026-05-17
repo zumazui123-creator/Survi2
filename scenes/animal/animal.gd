@@ -33,8 +33,15 @@ var attackRange := 5.0
 var attackDamage := 2.0
 var drops := {}
 
+func is_multipayer() -> bool:
+	if multiplayer == null:
+		return false
+	if multiplayer.is_server():
+		return true
+	return false
+	
 func _process(_delta):
-	if !multiplayer.is_server():
+	if !is_multipayer():
 		return
 		
 	#randomWalk()
@@ -56,7 +63,7 @@ func randomWalk():
 	#move_and_slide()
 
 func tryAttack():
-	if multiplayer.is_server() and $AttackCooldown.is_stopped():
+	if is_multipayer() and $AttackCooldown.is_stopped():
 		$AttackCooldown.start()
 		var projectileScene := load("res://scenes/attacks/"+attack+".tscn")
 		var projectile = projectileScene.instantiate()
@@ -67,7 +74,7 @@ func tryAttack():
 		projectile.targetPos = targetPlayer.position
 		
 func hitPlayer(body):
-	if multiplayer.is_server():
+	if is_multipayer():
 		body.getDamage(self, attackDamage, "normal")
 	
 func getDamage(causer, amount, _type):
@@ -79,13 +86,13 @@ func getDamage(causer, amount, _type):
 		die(true)
 
 func die(dropLoot):
-	if multiplayer == null:
+	if !is_multipayer():
 		return
-	if multiplayer.is_server():
-		spawner.decreasePlayerAnimalCount(targetPlayerId)
-		queue_free()
-		if dropLoot:
-			dropLoots()
+		
+	spawner.decreasePlayerAnimalCount(targetPlayerId)
+	queue_free()
+	if dropLoot:
+		dropLoots()
 
 func dropLoots():
 	for drop in drops.keys(): 
