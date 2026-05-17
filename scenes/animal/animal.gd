@@ -79,6 +79,8 @@ func getDamage(causer, amount, _type):
 		die(true)
 
 func die(dropLoot):
+	if multiplayer == null:
+		return
 	if multiplayer.is_server():
 		spawner.decreasePlayerAnimalCount(targetPlayerId)
 		queue_free()
@@ -86,5 +88,5 @@ func die(dropLoot):
 			dropLoots()
 
 func dropLoots():
-	for drop in drops.keys(): # TODO png food
+	for drop in drops.keys(): 
 		Items.spawnPickups(drop, position, randi_range(drops[drop]["min"],drops[drop]["max"]))

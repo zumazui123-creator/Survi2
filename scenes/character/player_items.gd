@@ -2,8 +2,8 @@ extends Node
 
 var player: CharacterBody2D
 
-@onready var held_item = get_parent().get_node("%HeldItem")
-@onready var equipment = get_parent().get_node("%Equipment")
+@onready var held_item = %HeldItem  #get_parent().get_node("%HeldItem")
+@onready var equipment = %Equipment #get_parent().get_node("%Equipment")
 var inventory 
 
 var equippedItem : String:
@@ -18,8 +18,9 @@ var equippedItem : String:
 			
 func _ready():
 	player = get_parent()
-	if multiplayer.is_server():
-		Inventory.itemRemoved.connect(itemRemoved)
+	Inventory.itemRemoved.connect(itemRemoved)
+	#if multiplayer.is_server():
+		#Inventory.itemRemoved.connect(itemRemoved)
 		#Inventory.itemConsumed.connect(_on_item_consumed)
 		
 	if player.name == str(multiplayer.get_unique_id()):
@@ -78,12 +79,14 @@ func handle_item_selection(id):
 	if id in consumeList:
 		Inventory.useItem(str(player.name), id)
 
+
 func use_item(cmd: PackedStringArray):
-	var item_id : int 				= -1
+	var item_id 	: int 		= -1
 	var item_id_str : String 	= cmd[1]
 	if item_id_str.is_valid_int():
 		item_id = int(item_id_str)
 		inventory.selectionChanged.emit(item_id)
+		
 		return item_id
 
 #func _on_item_consumed(id, effects):

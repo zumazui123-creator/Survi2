@@ -90,7 +90,8 @@ func _ready() -> void:
 	getPlayerStatus()
 
 
-@rpc("authority", "call_local", "reliable")
+#@rpc("authority", "call_local", "reliable")
+@rpc("any_peer", "call_local", "reliable")
 func get_heal(heal_hp : float):
 	hp += heal_hp
 

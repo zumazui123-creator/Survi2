@@ -1,7 +1,7 @@
-[gd_scene load_steps=8 format=3 uid="uid://d3bgdspo4bhr4"]
+[gd_scene format=3 uid="uid://d3bgdspo4bhr4"]
 
 [ext_resource type="Script" uid="uid://gncc76jm6lpk" path="res://scenes/enemy/enemy.gd" id="1_afvkb"]
-[ext_resource type="Texture2D" uid="uid://c11x4ywwn6jmi" path="res://assets/characters/enemy/zombie.png" id="2_dxtpn"]
+[ext_resource type="Texture2D" uid="uid://cmgqoo4d6mewa" path="res://assets/characters/enemy/zombie.png" id="2_dxtpn"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_m76gk"]
 
@@ -40,29 +40,29 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[node name="Enemy" type="CharacterBody2D" groups=["damageable"]]
+[node name="Enemy" type="CharacterBody2D" unique_id=748561879 groups=["damageable"]]
 collision_layer = 3
 script = ExtResource("1_afvkb")
 
-[node name="MovingParts" type="Node2D" parent="."]
+[node name="MovingParts" type="Node2D" parent="." unique_id=1760208631]
 
-[node name="Sprite2D" type="Sprite2D" parent="MovingParts"]
+[node name="Sprite2D" type="Sprite2D" parent="MovingParts" unique_id=1068145211]
 unique_name_in_owner = true
 texture = ExtResource("2_dxtpn")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2117654563]
 shape = SubResource("CircleShape2D_m76gk")
 
-[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="." unique_id=308028348]
 
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=1852702099]
 root_path = NodePath("../NavigationAgent2D")
 replication_config = SubResource("SceneReplicationConfig_tx4kn")
 
-[node name="AttackCooldown" type="Timer" parent="."]
+[node name="AttackCooldown" type="Timer" parent="." unique_id=810027838]
 one_shot = true
 
-[node name="bloodParticles" type="CPUParticles2D" parent="."]
+[node name="bloodParticles" type="CPUParticles2D" parent="." unique_id=1539824520]
 emitting = false
 lifetime = 0.25
 one_shot = true
@@ -78,13 +78,13 @@ scale_amount_max = 4.0
 scale_amount_curve = SubResource("Curve_popii")
 color = Color(0.215686, 0.658824, 0, 1)
 
-[node name="EnemyUI" type="Control" parent="."]
+[node name="EnemyUI" type="Control" parent="." unique_id=854429042]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="HPBar" type="ProgressBar" parent="EnemyUI"]
+[node name="HPBar" type="ProgressBar" parent="EnemyUI" unique_id=1204761343]
 custom_minimum_size = Vector2(60, 10)
 layout_mode = 0
 offset_left = -30.0
