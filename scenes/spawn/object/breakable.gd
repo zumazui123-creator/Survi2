@@ -32,6 +32,8 @@ func startBreaking():
 	$AnimationPlayer.play("break")
 
 func breakObject():
+	if !multiplayer.is_server():
+		return
 	queue_free()
 	#spawner.spawnedObjects -= 1
 	spawnDrops()
