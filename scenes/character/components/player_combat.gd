@@ -4,58 +4,34 @@ signal mob_killed
 signal object_destroyed
 signal player_killed
 
-var player: CharacterBody2D
+@export_group("References")
+@export var player: CharacterBody2D
+@export var status: PlayerStatus
+@export var player_items: Node
+@export var animation_player: AnimationPlayer
+@export var hit_area: Area2D
 
-@onready var hands = get_parent().get_node("%Hands")
-@onready var hit_area = %HitArea
-@onready var blood_particles = get_parent().get_node("bloodParticles")
-@onready var animation_player = get_parent().get_node("AnimationPlayer")
-@onready var player_items =  $"../PlayerItems"
-@onready var status =  %PlayerStatus
-
-var attackRate : int = 1
-
-
-
+@onready var hands = %Hands if has_node("%Hands") else null
 
 var spawnsProjectile := ""
-@export var speed := 10
-@export var attackDamage := 10:
-	get:
-		if player_items.equippedItem:
-			return Items.equips[player_items.equippedItem]["damage"] + attackDamage
-		else:
-			return attackDamage
-			
-var damageType := "normal":
-	get:
-		if player_items.equippedItem:
-			return Items.equips[player_items.equippedItem]["damageType"]
-		else:
-			return damageType
-			
-var attackRange := 1.0: 
-	set(value):
-		var clampedVal = clampf(value, 1.0, 5.0)
-		attackRange = clampedVal
-		var hit_collision = %HitCollision
-		if hit_collision:
-			hit_collision.shape.height = 20 * clampedVal
-
 
 func _ready():
-	player = get_parent()
-	#if multiplayer.is_server(): #LS1
+	if not player: player = get_parent()
+	if not status: status = %PlayerStatus
+	if not player_items: player_items = $"../PlayerItems"
+	if not animation_player: animation_player = $"../AnimationPlayer"
+	if not hit_area: hit_area = %HitArea
+
 	mob_killed.connect(mobKilled)
 	player_killed.connect(enemyPlayerKilled)
 	object_destroyed.connect(objectDestroyed)
 
 func hit(_inp_action : String):
-	animation_player.speed_scale = attackRate
+	animation_player.speed_scale = status.attack_rate
 	var action_anim = Items.equips[player_items.equippedItem]["attack"] if player_items.equippedItem else Strings.ANIM_PUNCHING
 	if not animation_player.is_playing() or animation_player.current_animation != action_anim:
 		animation_player.play(action_anim)
-		var delay : float = 0.8 / attackRate
+		var delay : float = 0.8 / status.attack_rate
 		await get_tree().create_timer(delay).timeout
 		animation_player.stop()
 		
@@ -65,13 +41,18 @@ func punchCheckCollision():
 	if spawnsProjectile:
 		if str(id) == player.name:
 			sendProjectile.rpc_id(1, player.player_movement.direction)
-	#if not multiplayer.is_server() and not player.is_multiplayer_authority():
-		#return
+	
 	if player_items.equippedItem:
 		Inventory.useItemDurability(str(player.name), player_items.equippedItem)
+		
 	for body in hit_area.get_overlapping_bodies():
 		if body != player and body.is_in_group(Strings.GROUP_DAMAGEABLE):
-			body.getDamage(self, attackDamage, damageType)
+			var damage = status.attack_damage
+			if player_items.equippedItem:
+				damage += Items.equips[player_items.equippedItem]["damage"]
+			
+			var damage_type = Items.equips[player_items.equippedItem]["damageType"] if player_items.equippedItem else status.damage_type
+			body.getDamage(self, damage, damage_type)
 
 @rpc("any_peer", "reliable")
 func sendProjectile(towards):
@@ -80,40 +61,46 @@ func sendProjectile(towards):
 
 @rpc("authority", "call_local", "reliable")
 func increaseScore(by):
+	# Stats werden jetzt über den Status erhöht
 	status.hp += by * 5
 	status.maxHP += by * 5
-	attackDamage += by
-	speed += by
+	status.attack_damage += by
+	
 	Multihelper.spawnedPlayers[int(str(player.name))]["score"] += by
 	Multihelper.player_score_updated.emit()
-	
 
 func objectDestroyed():
 	increaseScore.rpc(Constants.OBJECT_SCORE_GAIN)
+	status.gain_exp(10)
 
 func mobKilled():
 	increaseScore.rpc(Constants.MOB_SCORE_GAIN)
+	status.gain_exp(10)
 
 func enemyPlayerKilled():
 	increaseScore.rpc(Constants.PK_SCORE_GAIN)
+	status.gain_exp(20)
 
 func getDamage(causer, amount, _type):
 	if causer.is_in_group("player"):
 		return
 		
-	player.status.hp -= amount
-	if (status.hp - amount) <= 0 and causer.is_in_group(Strings.GROUP_PLAYER):
+	status.hp -= amount
+	if status.hp <= 0 and causer.is_in_group(Strings.GROUP_PLAYER):
 		causer.get_node("PlayerCombat").player_killed.emit()
 
 func die():
 	if not multiplayer.is_server():
 		return
 	var peerId := int(str(player.name))
-	Multihelper._deregister_character.rpc(peerId) # für Server
-	player.player_items.dropInventory()
+	Multihelper._deregister_character.rpc(peerId)
+	player_items.dropInventory()
 	Multihelper.showSpawnUI.rpc_id(peerId)
 	player.queue_free()
 
 @rpc("any_peer", "reliable")
 func projectileHit(body):
-	body.getDamage(player, attackDamage, damageType)
+	var damage = status.attack_damage
+	if player_items.equippedItem:
+		damage += Items.equips[player_items.equippedItem]["damage"]
+	body.getDamage(player, damage, status.damage_type)

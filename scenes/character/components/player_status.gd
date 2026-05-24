@@ -1,9 +1,20 @@
 extends Control
 class_name PlayerStatus
 
+signal hp_changed(current, max_val)
+signal exp_changed(current, max_val)
+signal level_changed(new_level)
+signal hydration_changed(value)
+signal food_changed(value)
+
+@export_group("UI References")
+@export var hp_bar: ProgressBar
+@export var exp_bar: ProgressBar
+@export var hydration_bar: ProgressBar
+@export var food_bar: ProgressBar
+@export var name_label: Label
+
 @onready var player = $".."
-@onready var hydrationBar = $Bar/HydrationBar
-@onready var foodBar 	  = $Bar/FoodBar
 @onready var dayNight 	  = $"../../../dayNight"
 @onready var player_movement = $"../PlayerMovement"
 @onready var player_combat = $"../PlayerCombat"
@@ -11,21 +22,58 @@ class_name PlayerStatus
 @onready var popup_settings: PopupPanel = $"../PopupSettings"
 @onready var popup_info: PopupPanel = $"../PopupInfo"
 
-
 var last_time_hydration: float = 0
 var last_time_food: float = 0
 var hydration_rate: float = 2
 var food_rate: float = 5
 
+var hydration := 100.0:
+	set(value):
+		hydration = clamp(value, 0, 100)
+		hydration_changed.emit(hydration)
 
+var food := 100.0:
+	set(value):
+		food = clamp(value, 0, 100)
+		food_changed.emit(food)
+
+var exp := 0.0:
+	set(value):
+		exp = value
+		exp_changed.emit(exp, 100.0)
+		if exp >= 100:
+			level_up()
+
+var level := 1:
+	set(value):
+		level = value
+		level_changed.emit(level)
+
+func level_up():
+	level += 1
+	exp -= 100
+	attack_damage += 2 # Bonus pro Level
+	maxHP += 20
+	hp = maxHP
+
+@export_group("Stats")
 @export var maxHP := 250.0
 @export var hp := maxHP:
 	set(value):
-		hp = value
-		$"../bloodParticles".emitting = true
-		setHPBarRatio(hp/maxHP)
+		hp = clamp(value, 0, maxHP)
+		hp_changed.emit(hp, maxHP)
+		if is_instance_valid(player) and player.has_node("bloodParticles"):
+			player.get_node("bloodParticles").emitting = true
 		if hp <= 0:
 			player.player_combat.die()
+
+@export var attack_damage := 10.0
+@export var attack_rate := 1.0
+@export var attack_range := 1.0
+@export var damage_type := "normal"
+
+func gain_exp(amount: float):
+	exp += amount
 
 var status := {"hp": 1,
 		"foodBar": 1,
@@ -45,28 +93,24 @@ var status := {"hp": 1,
 		
 func setPlayerName(newName:String):
 	status["name"] = newName
-	if is_node_ready():
-		%nameLabel.text = newName
-		resizeNameToFit()
-
-func setHPBarRatio(ratio):
-	%hpBar.value = ratio
+	_update_level_ui(level)
 
 func resizeNameToFit():
+	if not name_label: return
 	var fontSize = 14
-	while %nameLabel.get_line_count() > 1:
+	while name_label.get_line_count() > 1:
 		fontSize -= 1
-		%nameLabel.set("theme_override_font_sizes/font_size", fontSize)
+		name_label.set("theme_override_font_sizes/font_size", fontSize)
 
 func getPlayerStatus():
 	status = {"hp": hp,
-		"foodBar": foodBar.value,
-		"hydrationBar": hydrationBar.value,
+		"foodBar": food,
+		"hydrationBar": hydration,
 		"moveSpeed": player_movement.move_speed_factor,
-		"attackDmg": player_combat.attackDamage,
-		"attackRate": player_combat.attackRate,
-		"attackRange": player_combat.attackRange,
-		"damageType": player_combat.damageType,
+		"attackDmg": attack_damage,
+		"attackRate": attack_rate,
+		"attackRange": attack_range,
+		"damageType": damage_type,
 		"name": player.playerName,
 		"pixel_position": [player.position.x, player.position.y],
 		"tile_position":[player_movement.current_map_position.x, player_movement.current_map_position.y],
@@ -78,16 +122,58 @@ func getPlayerStatus():
 
 
 func _ready() -> void:
+	# Verbinde interne Signale für UI-Updates
+	hp_changed.connect(_update_hp_ui)
+	exp_changed.connect(_update_exp_ui)
+	level_changed.connect(_update_level_ui)
+	hydration_changed.connect(_update_hydration_ui)
+	food_changed.connect(_update_food_ui)
+	
 	if player.name != str(multiplayer.get_unique_id()):
-		$Bar.visible = false
-		$WorkContainer.visible = false
+		if has_node("Bar"): $Bar.visible = false
+		if has_node("WorkContainer"): $WorkContainer.visible = false
 		
-	if status.has("name"):
-		%nameLabel.text = status["name"]
-		resizeNameToFit()
-	hydrationBar.value = 100
-	foodBar.value 	   = 100
+	if player.playerName != "":
+		setPlayerName(player.playerName)
+	elif status.has("name") and status["name"] != "":
+		setPlayerName(status["name"])
+		
+	hydration = 100.0
+	food = 100.0
+	
+	# Initiale UI-Synchronisierung
+	_update_hp_ui(hp, maxHP)
+	_update_exp_ui(exp, 100.0)
+	_update_hydration_ui(hydration)
+	_update_food_ui(food)
+	_update_level_ui(level)
+	
 	getPlayerStatus()
+
+
+# UI Update Funktionen
+func _update_hp_ui(current, max_val):
+	if hp_bar:
+		hp_bar.max_value = max_val
+		hp_bar.value = current
+
+func _update_exp_ui(current, max_val):
+	if exp_bar:
+		exp_bar.max_value = max_val
+		exp_bar.value = current
+
+func _update_level_ui(new_level):
+	if name_label:
+		name_label.text = player.playerName + " [Lvl " + str(new_level) + "]"
+		resizeNameToFit()
+
+func _update_hydration_ui(value):
+	if hydration_bar:
+		hydration_bar.value = value
+
+func _update_food_ui(value):
+	if food_bar:
+		food_bar.value = value
 
 
 #@rpc("authority", "call_local", "reliable")
@@ -98,17 +184,12 @@ func get_heal(heal_hp : float):
 func _process(_delta: float) -> void:
 	var now = GameTime.get_hour()
 	if now - last_time_hydration > hydration_rate:
-		hydrationBar.value -= 1
+		hydration -= 1
 		last_time_hydration = now
 
 	if now - last_time_food > food_rate:
-		foodBar.value -= 1
+		food -= 1
 		last_time_food = now
-		
-	if now - last_time_food > 0.1:
-		last_time_food = now
-		print(hp)
-	
 	
 
 func _on_settings_button_pressed() -> void:
