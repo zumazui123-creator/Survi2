@@ -104,7 +104,11 @@ func _process(_delta: float) -> void:
 	if now - last_time_food > food_rate:
 		foodBar.value -= 1
 		last_time_food = now
-	print(hp)
+		
+	if now - last_time_food > 0.1:
+		last_time_food = now
+		print(hp)
+	
 	
 
 func _on_settings_button_pressed() -> void:

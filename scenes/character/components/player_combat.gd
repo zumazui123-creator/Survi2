@@ -86,6 +86,7 @@ func increaseScore(by):
 	speed += by
 	Multihelper.spawnedPlayers[int(str(player.name))]["score"] += by
 	Multihelper.player_score_updated.emit()
+	
 
 func objectDestroyed():
 	increaseScore.rpc(Constants.OBJECT_SCORE_GAIN)

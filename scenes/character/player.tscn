@@ -383,7 +383,7 @@ script = ExtResource("6_7r6u0")
 [node name="PlayerAnimation" type="Node" parent="." unique_id=934239989]
 script = ExtResource("7_e5n5u")
 
-[node name="PlayerCombat" type="Node" parent="." unique_id=1291276715]
+[node name="PlayerCombat" type="Node" parent="." unique_id=1291276715 groups=["player"]]
 unique_name_in_owner = true
 script = ExtResource("8_ba010")
 
