@@ -61,7 +61,7 @@ properties/10/replication_mode = 2
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5y66v"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uicah"]
-bg_color = Color(0.807843, 0.294118, 0.235294, 0.556863)
+bg_color = Color(0.45160097, 0.13573483, 0.102712326, 0.5568628)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
@@ -89,7 +89,7 @@ expand_margin_right = 2.0
 expand_margin_bottom = 2.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_exp"]
-bg_color = Color(0.658824, 0.521569, 0, 1)
+bg_color = Color(0.69803923, 0.68235296, 0.019607844, 1)
 border_color = Color(0.701961, 0.701961, 0.701961, 1)
 corner_radius_top_left = 3
 corner_radius_top_right = 3
@@ -406,7 +406,7 @@ player = NodePath("..")
 [node name="PlayerItems" type="Node" parent="." unique_id=533001143]
 script = ExtResource("9_e5n5u")
 
-[node name="PlayerStatus" type="Control" parent="." unique_id=381426310]
+[node name="PlayerStatus" type="Control" parent="." unique_id=381426310 node_paths=PackedStringArray("hp_bar", "exp_bar", "hydration_bar", "food_bar", "name_label")]
 unique_name_in_owner = true
 layout_mode = 3
 anchors_preset = 8
@@ -440,7 +440,7 @@ offset_bottom = 20.0
 grow_horizontal = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_5y66v")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PlayerStatus/NameTag"]
+[node name="VBoxContainer" type="VBoxContainer" parent="PlayerStatus/NameTag" unique_id=3770290]
 layout_mode = 2
 theme_override_constants/separation = 0
 
@@ -461,7 +461,6 @@ custom_minimum_size = Vector2(0, 2)
 layout_mode = 2
 theme_override_styles/background = SubResource("StyleBoxFlat_uicah")
 theme_override_styles/fill = SubResource("StyleBoxFlat_exp")
-max_value = 100.0
 step = 1.0
 show_percentage = false
 

@@ -37,12 +37,6 @@ var food := 100.0:
 		food = clamp(value, 0, 100)
 		food_changed.emit(food)
 
-var exp := 0.0:
-	set(value):
-		exp = value
-		exp_changed.emit(exp, 100.0)
-		if exp >= 100:
-			level_up()
 
 var level := 1:
 	set(value):
@@ -66,14 +60,19 @@ func level_up():
 			player.get_node("bloodParticles").emitting = true
 		if hp <= 0:
 			player.player_combat.die()
+			
+@export var maxExp := 100.0
+@export var exp := 0:
+	set(value):
+		exp = value
+		exp_changed.emit(exp, maxExp)
+		if exp >= maxExp:
+			level_up()
 
 @export var attack_damage := 10.0
 @export var attack_rate := 1.0
 @export var attack_range := 1.0
 @export var damage_type := "normal"
-
-func gain_exp(amount: float):
-	exp += amount
 
 var status := {"hp": 1,
 		"foodBar": 1,
@@ -161,9 +160,10 @@ func _update_exp_ui(current, max_val):
 	if exp_bar:
 		exp_bar.max_value = max_val
 		exp_bar.value = current
+		maxExp = maxExp * level
 
 func _update_level_ui(new_level):
-	if name_label:
+	if name_label and player:
 		name_label.text = player.playerName + " [Lvl " + str(new_level) + "]"
 		resizeNameToFit()
 
@@ -175,6 +175,10 @@ func _update_food_ui(value):
 	if food_bar:
 		food_bar.value = value
 
+@rpc("any_peer", "call_local", "reliable")
+func gain_exp(amount: float):
+	exp += amount
+	_update_exp_ui(exp, maxExp)
 
 #@rpc("authority", "call_local", "reliable")
 @rpc("any_peer", "call_local", "reliable")

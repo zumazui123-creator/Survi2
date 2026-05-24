@@ -65,21 +65,19 @@ func increaseScore(by):
 	status.hp += by * 5
 	status.maxHP += by * 5
 	status.attack_damage += by
-	
+	status.gain_exp(10*by)
 	Multihelper.spawnedPlayers[int(str(player.name))]["score"] += by
 	Multihelper.player_score_updated.emit()
+	
 
 func objectDestroyed():
 	increaseScore.rpc(Constants.OBJECT_SCORE_GAIN)
-	status.gain_exp(10)
 
 func mobKilled():
 	increaseScore.rpc(Constants.MOB_SCORE_GAIN)
-	status.gain_exp(10)
 
 func enemyPlayerKilled():
 	increaseScore.rpc(Constants.PK_SCORE_GAIN)
-	status.gain_exp(20)
 
 func getDamage(causer, amount, _type):
 	if causer.is_in_group("player"):
