@@ -45,10 +45,45 @@ var level := 1:
 
 func level_up():
 	level += 1
-	exp -= 100
+	var threshold = maxExp
+	maxExp = 100.0 * level
+	exp -= threshold
 	attack_damage += 2 # Bonus pro Level
 	maxHP += 20
 	hp = maxHP
+	_play_level_up_animation()
+
+func _play_level_up_animation():
+	if not is_inside_tree(): return
+	
+	var label = Label.new()
+	label.text = "LEVEL UP! (" + str(level) + ")"
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	
+	# Basic styling
+	label.add_theme_font_size_override("font_size", 24)
+	label.add_theme_color_override("font_color", Color.YELLOW)
+	label.add_theme_color_override("font_outline_color", Color.BLACK)
+	label.add_theme_constant_override("outline_size", 6)
+	
+	# Position it above the player
+	label.z_index = 100
+	add_child(label)
+	label.position = Vector2(-50, -80)
+	
+	var tween = create_tween()
+	tween.set_parallel(true)
+	# Float up
+	tween.tween_property(label, "position:y", label.position.y - 60, 2.0).set_trans(Tween.TRANS_OUT).set_ease(Tween.EASE_OUT)
+	# Fade out
+	tween.tween_property(label, "modulate:a", 0.0, 2.0).set_trans(Tween.TRANS_IN).set_ease(Tween.EASE_IN)
+	# Scale up a bit
+	label.scale = Vector2(0.5, 0.5)
+	label.pivot_offset = Vector2(50, 10)
+	tween.tween_property(label, "scale", Vector2(1.2, 1.2), 0.5).set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
+	
+	tween.chain().tween_callback(label.queue_free)
 
 @export_group("Stats")
 @export var maxHP := 250.0
@@ -160,7 +195,6 @@ func _update_exp_ui(current, max_val):
 	if exp_bar:
 		exp_bar.max_value = max_val
 		exp_bar.value = current
-		maxExp = maxExp * level
 
 func _update_level_ui(new_level):
 	if name_label and player:
@@ -178,7 +212,6 @@ func _update_food_ui(value):
 @rpc("any_peer", "call_local", "reliable")
 func gain_exp(amount: float):
 	exp += amount
-	_update_exp_ui(exp, maxExp)
 
 #@rpc("authority", "call_local", "reliable")
 @rpc("any_peer", "call_local", "reliable")
