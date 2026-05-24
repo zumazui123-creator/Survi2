@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://bfq4kkw8jhqay"]
+[gd_scene format=3 uid="uid://bfq4kkw8jhqay"]
 
 [ext_resource type="Script" uid="uid://b0rb0bsiboxj1" path="res://scenes/item/pickup.gd" id="1_4sb31"]
 [ext_resource type="Texture2D" uid="uid://dygjuft04c3qw" path="res://assets/items/wood.png" id="1_d0dnh"]
@@ -38,25 +38,23 @@ _data = {
 &"appear": SubResource("Animation_n3n0q")
 }
 
-[node name="Pickup" type="Area2D"]
+[node name="Pickup" type="Area2D" unique_id=1609978997]
 collision_layer = 0
 collision_mask = 3
 script = ExtResource("1_4sb31")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1005084376]
 texture_filter = 1
 texture = ExtResource("1_d0dnh")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1097322553]
 shape = SubResource("CircleShape2D_xjrky")
 
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=227974968]
 replication_config = SubResource("SceneReplicationConfig_ladu8")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-&"": SubResource("AnimationLibrary_7rbi3")
-}
-autoplay = "appear"
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=604219395]
+libraries/ = SubResource("AnimationLibrary_7rbi3")
+autoplay = &"appear"
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]

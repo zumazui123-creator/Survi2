@@ -1,7 +1,6 @@
 extends Node
 
 @export var code_player : CodePlayer
-
 @onready var code_edit = %CodeEdit
 @onready var item_list = %ItemList
 @onready var player =  "res://scenes/character/player.gd"
@@ -14,7 +13,7 @@ extends Node
 
 @onready var tab_container = $TabContainer
 @onready var function_handler = $"../../FunctionHandler"
-var highlighter := MyCodeHighLighter.new()
+var highlighter : MyCodeHighLighter
 
 func init_tab_container() -> void:
 	item_list.add_item("wiederhole 3 mal")
@@ -24,6 +23,7 @@ func _ready():
 	if Multihelper.code_player_enabled:
 		print("Debug Code Playing enabled.")
 	exit_btn.pressed.connect(_on_exit_btn_pressed)
+	highlighter = MyCodeHighLighter.new()
 	highlighter.setup_custom_highlighter(code_edit)
 	init_tab_container()
 

@@ -3,7 +3,6 @@ extends Node2D
 @export var breakables : Objects
 @export var buildings : Buildings
 
-
 func _ready():
 	if multiplayer.is_server():
 		print(Multihelper.level)

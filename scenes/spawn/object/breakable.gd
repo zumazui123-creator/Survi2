@@ -30,6 +30,7 @@ func getDamage(causer, amount, type):
 
 func startBreaking():
 	$AnimationPlayer.play("break")
+	#Also calling breakObject() in Animation
 
 func breakObject():
 	if !multiplayer.is_server():

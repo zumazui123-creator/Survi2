@@ -34,30 +34,6 @@ func _enter_tree():
 		$CodeLayer.hide()
 		$CodeLayer.process_mode = Node.PROCESS_MODE_DISABLED
 
-func save_tilemap_layer_to_file(layer: TileMapLayer) -> void:
-	var lines: Array[String] = []
-
-	for cell in layer.get_used_cells():
-		var source_id = layer.get_cell_source_id(cell)
-		var atlas = layer.get_cell_atlas_coords(cell)
-		var alternative = layer.get_cell_alternative_tile(cell)
-
-		var line = "%d,%d,%d,%d,%d,%d" % [
-			cell.x,
-			cell.y,
-			source_id,
-			atlas.x,
-			atlas.y,
-			alternative
-		]
-
-		lines.append(line)
-
-	var file := FileAccess.open("level1.txt", FileAccess.WRITE)
-	file.store_string("\n".join(lines))
-	file.close()
-
-
 func _ready():
 	#var tile_map = Multihelper.map.tile_map
 	#save_tilemap_layer_to_file(Multihelper.map.tile_map)
