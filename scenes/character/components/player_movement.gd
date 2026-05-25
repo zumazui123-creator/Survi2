@@ -39,9 +39,9 @@ func input():
 	elif Input.is_action_pressed("walkDown"):
 		direction = Vector2(0, 1)
 
-func tile_move():
+func tile_move() -> Vector2:
 	if not is_moving():
-		return
+		return Vector2.ZERO
 
 	_pixels_moved += 1
 	player.velocity = direction * move_speed_factor
@@ -55,7 +55,8 @@ func tile_move():
 		snap_to_tiles_position()
 		player.act = ""
 	
-	animation.animate_player(direction)
+	return direction
+
 
 
 func snap_to_tiles_position():
@@ -116,19 +117,6 @@ func press_action(inp_action : String):
 			direction = Vector2(0, -1)
 		elif inp_action == "walkDown":
 			direction = Vector2(0, 1)
-
-
-func win_condition():
-	status.char_info["terminated"] = false
-	
-	if Multihelper.level["end"] == Constants.END_LABY:
-		var end_goal_position = Multihelper.map.endPosition
-		if current_map_position == end_goal_position:
-			current_map_position = Vector2i()
-			player.EndUI.setLabel("Level Abgeschlossen!")
-			status.char_info["terminated"] = true
-			player.EndUI.visible = true
-
 
 	
 func set_speed( player_speed : float):

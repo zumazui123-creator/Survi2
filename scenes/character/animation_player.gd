@@ -1,8 +1,7 @@
-extends Node
+extends AnimationPlayer
 
 @export_group("References")
 @export var player: CharacterBody2D
-@export var animations: AnimationPlayer
 
 var status: PlayerStatus
 var items: Node
@@ -28,10 +27,10 @@ func set_character_sprite(file_path):
 func animate_player(dir: Vector2):
 	if dir != Vector2.ZERO:
 		moving_parts.rotation = dir.angle()
-		if not animations.is_playing() or animations.current_animation != Strings.ANIM_WALKING:
-			animations.play(Strings.ANIM_WALKING)
+		if not is_playing() or current_animation != Strings.ANIM_WALKING:
+			play(Strings.ANIM_WALKING)
 	else:
-		animations.stop()
+		stop()
 
 func handleAnims(vel, doing_action):
 	if not combat:
@@ -39,13 +38,13 @@ func handleAnims(vel, doing_action):
 		
 	if doing_action:
 		var action_anim = Items.equips[combat.equippedItem]["attack"] if combat.equippedItem else Strings.ANIM_PUNCHING
-		if not animations.is_playing() or animations.current_animation != action_anim:
-			animations.play(action_anim)
+		if not is_playing() or current_animation != action_anim:
+			play(action_anim)
 	elif vel != Vector2.ZERO:
-		if not animations.is_playing() or animations.current_animation != Strings.ANIM_WALKING:
-			animations.play(Strings.ANIM_WALKING)
+		if not is_playing() or current_animation != Strings.ANIM_WALKING:
+			play(Strings.ANIM_WALKING)
 	else:
-		animations.stop()
+		stop()
 		
 func _play_level_up_animation(level : String ):
 	if not is_inside_tree():

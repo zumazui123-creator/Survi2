@@ -90,14 +90,14 @@ func execute_command(parts: PackedStringArray) -> void:
 		await walk(parts)
 		
 	elif parts[0] == Strings.ACTION_ATTACK:
-		if player.player_combat:
-			await player.player_combat.hit(Strings.ACTION_ATTACK)
+		if player.combat:
+			await player.combat.hit(Strings.ACTION_ATTACK)
 		
 	elif parts[0] == Strings.ACTION_BUILD or parts[0] == Strings.ACTION_PAINT:
 		await build(parts[0],parts)
 		
 	elif Strings.ACTION_USE_ITEM in parts[0]:
-		var item_id = player.player_items.use_item(parts)
+		var item_id = player.items.use_item(parts)
 		print("Using item:"+str(item_id))
 		
 	elif Strings.ACTION_SAY in parts[0]:
@@ -116,17 +116,17 @@ func build(cmd,parts) -> void:
 	
 	if dir_str in Strings.ACTION_NAMES[Strings.current_locale] and Strings.ACTION_NAMES[Strings.current_locale][dir_str] in Strings.direction_map:
 		var dir = Strings.direction_map[Strings.ACTION_NAMES[Strings.current_locale][dir_str]]
-		var current_map_pos = player.player_movement.current_map_position
+		var current_map_pos = player.movement.current_map_position
 		var target_map_pos = current_map_pos + dir
 		
 		if cmd == Strings.ACTION_BUILD:
 			# Convert to world position for building placement
-			if player.player_building:
-				player.player_building.build(type, target_map_pos)
+			if player.building:
+				player.building.build(type, target_map_pos)
 				
 		elif cmd == Strings.ACTION_PAINT:
 			if player.player_building:
-				player.player_building.paint(type, target_map_pos)
+				player.building.paint(type, target_map_pos)
 	else:
 		print("Unknown direction: ", dir_str)
 
@@ -140,14 +140,14 @@ func walk(parts) -> void:
 		await move_step(movement_action)	
 					
 func move_step(action: String) -> void:
-	while player.player_movement.is_moving():
+	while player.movement.is_moving():
 		await get_tree().process_frame
 	
-	player.player_movement.press_action(action)
+	player.movement.press_action(action)
 	
 	await get_tree().process_frame
 	
-	while player.player_movement.is_moving():
+	while player.movement.is_moving():
 		await get_tree().process_frame
 
 func say(parts):

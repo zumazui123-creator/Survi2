@@ -13,7 +13,6 @@ var act : String = ""
 @onready var combat = $PlayerCombat
 @export var building : PlayerBuilding
 @onready var items = $PlayerItems
-@onready var mystatus = %PlayerStatus
 @onready var code_edit = %CodeEdit
 @export var playerName : String:
 	set(value):
@@ -120,8 +119,22 @@ func _physics_process(_delta: float) -> void:
 	if str(multiplayer.get_unique_id()) != name:
 		return
 	movement.input()
-	movement.tile_move()
-	movement.win_condition()
+	animation.animate_player(movement.tile_move())
+	win_condition()
+
+func win_condition():
+	status.char_info["terminated"] = false
+	
+	if Multihelper.level["end"] == Constants.END_LABY:
+		var current_map_position = Multihelper.map.tile_map.local_to_map( position )
+		var end_goal_position = Multihelper.map.endPosition
+		if current_map_position == end_goal_position:
+			current_map_position = Vector2i()
+			EndUI.setLabel("Level Abgeschlossen!")
+			status.char_info["terminated"] = true
+			EndUI.visible = true
+
+
 
 func resetPlayer():
 	var difLevelMode = %DifModeButton.get_selected_id()
@@ -148,3 +161,4 @@ func sendPos(pos):
 func _on_back_to_menu_pressed() -> void:
 	var game_scene: PackedScene = load(Constants.PATH_GAME_SCENE)
 	get_tree().change_scene_to_packed(game_scene)
+	
