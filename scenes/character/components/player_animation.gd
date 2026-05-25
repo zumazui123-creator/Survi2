@@ -1,11 +1,22 @@
 extends Node
 
-var player: CharacterBody2D
-@onready var animation_player = $"../AnimationPlayer"
+@export_group("References")
+@export var player: CharacterBody2D
+var status: PlayerStatus
+var items: Node
+var movement: Node
+var combat: Node
+var animations: AnimationPlayer
+
 @onready var moving_parts = $"../MovingParts"
 
 func _ready():
-	player = get_parent()
+	if not player: player = get_parent()
+	if not status: status = player.status
+	if not items: items = player.items
+	if not movement: movement = player.movement
+	if not combat: combat = player.combat
+	if not animations: animations = player.animations
 
 func set_character_sprite(file_path):
 	print("set_character_sprite: "+str(file_path))
@@ -16,25 +27,24 @@ func set_character_sprite(file_path):
 func animate_player(dir: Vector2):
 	if dir != Vector2.ZERO:
 		moving_parts.rotation = dir.angle()
-		if not animation_player.is_playing() or animation_player.current_animation != Strings.ANIM_WALKING:
-			animation_player.play(Strings.ANIM_WALKING)
+		if not animations.is_playing() or animations.current_animation != Strings.ANIM_WALKING:
+			animations.play(Strings.ANIM_WALKING)
 	else:
-		animation_player.stop()
+		animations.stop()
 
 func handleAnims(vel, doing_action):
-	var player_combat = player.get_node("PlayerCombat")
-	if not player_combat:
+	if not combat:
 		return
 		
 	if doing_action:
-		var action_anim = Items.equips[player_combat.equippedItem]["attack"] if player_combat.equippedItem else Strings.ANIM_PUNCHING
-		if not animation_player.is_playing() or animation_player.current_animation != action_anim:
-			animation_player.play(action_anim)
+		var action_anim = Items.equips[combat.equippedItem]["attack"] if combat.equippedItem else Strings.ANIM_PUNCHING
+		if not animations.is_playing() or animations.current_animation != action_anim:
+			animations.play(action_anim)
 	elif vel != Vector2.ZERO:
-		if not animation_player.is_playing() or animation_player.current_animation != Strings.ANIM_WALKING:
-			animation_player.play(Strings.ANIM_WALKING)
+		if not animations.is_playing() or animations.current_animation != Strings.ANIM_WALKING:
+			animations.play(Strings.ANIM_WALKING)
 	else:
-		animation_player.stop()
+		animations.stop()
 		
 func _play_level_up_animation(level : String ):
 	if not is_inside_tree():

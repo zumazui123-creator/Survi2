@@ -9,7 +9,9 @@ signal player_killed
 @export var hit_area: Area2D
 var status: PlayerStatus
 var items: Node
-var animation: AnimationPlayer
+var animation: Node # PlayerAnimation component
+var animations: AnimationPlayer
+var movement: Node
 
 
 @onready var hands = %Hands if has_node("%Hands") else null
@@ -21,6 +23,8 @@ func _ready():
 	if not status: status = player.status
 	if not items: items = player.items
 	if not animation: animation = player.animation
+	if not animations: animations = player.animations
+	if not movement: movement = player.movement
 	if not hit_area: hit_area = %HitArea
 
 	mob_killed.connect(mobKilled)
@@ -28,20 +32,20 @@ func _ready():
 	object_destroyed.connect(objectDestroyed)
 
 func hit(_inp_action : String):
-	animation.speed_scale = status.attack_rate
+	animations.speed_scale = status.attack_rate
 	var action_anim = Items.equips[items.equippedItem]["attack"] if items.equippedItem else Strings.ANIM_PUNCHING
-	if not animation.is_playing() or animation.current_animation != action_anim:
-		animation.play(action_anim)
+	if not animations.is_playing() or animations.current_animation != action_anim:
+		animations.play(action_anim)
 		var delay : float = 0.8 / status.attack_rate
 		await get_tree().create_timer(delay).timeout
-		animation.stop()
+		animations.stop()
 
 
 func punchCheckCollision():
 	var id = multiplayer.get_unique_id()
 	if spawnsProjectile:
 		if str(id) == player.name:
-			sendProjectile.rpc_id(1, player.player_movement.direction)
+			sendProjectile.rpc_id(1, movement.direction if movement else Vector2.ZERO)
 
 	if items.equippedItem:
 		Inventory.useItemDurability(str(player.name), items.equippedItem)

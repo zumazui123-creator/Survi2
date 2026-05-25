@@ -14,7 +14,13 @@ signal food_changed(value)
 @export var food_bar: ProgressBar
 @export var name_label: Label
 
-@onready var player = $".."
+@export_group("References")
+@export var player: CharacterBody2D
+var items: Node
+var animation: Node
+var movement: Node
+var combat: Node
+
 @onready var dayNight 	  = $"../../../dayNight"
 
 
@@ -50,7 +56,8 @@ func level_up():
 	attack_damage += 2 # Bonus pro Level
 	maxHP += 20
 	hp = maxHP
-	player.player_animation._play_level_up_animation()
+	if animation:
+		animation._play_level_up_animation()
 
 
 
@@ -62,8 +69,8 @@ func level_up():
 		hp_changed.emit(hp, maxHP)
 		if is_instance_valid(player) and player.has_node("bloodParticles"):
 			player.get_node("bloodParticles").emitting = true
-		if hp <= 0:
-			player.combat.die()
+		if hp <= 0 and combat:
+			combat.die()
 
 @export var maxExp := 100.0
 @export var exp := 0:
@@ -78,7 +85,7 @@ func level_up():
 @export var attack_range := 1.0
 @export var damage_type := "normal"
 
-var status := {"hp": 1,
+var char_info := {"hp": 1,
 		"foodBar": 1,
 		"hydrationBar": 1,
 		"moveSpeed": 1,
@@ -95,7 +102,7 @@ var status := {"hp": 1,
 		}
 
 func setPlayerName(newName:String):
-	status["name"] = newName
+	char_info["name"] = newName
 	_update_level_ui(level)
 
 func resizeNameToFit():
@@ -106,25 +113,31 @@ func resizeNameToFit():
 		name_label.set("theme_override_font_sizes/font_size", fontSize)
 
 func getPlayerStatus():
-	status = {"hp": hp,
+	char_info = {"hp": hp,
 		"foodBar": food,
 		"hydrationBar": hydration,
-		"moveSpeed": player.movement.move_speed_factor,
+		"moveSpeed": movement.move_speed_factor if movement else 1.0,
 		"attackDmg": attack_damage,
 		"attackRate": attack_rate,
 		"attackRange": attack_range,
 		"damageType": damage_type,
 		"name": player.playerName,
 		"pixel_position": [player.position.x, player.position.y],
-		"tile_position":[player.movement.current_map_position.x, player.movement.current_map_position.y],
+		"tile_position":[movement.current_map_position.x, movement.current_map_position.y] if movement else [0,0],
 		"items": Inventory.getItems(str(player.name)),
 		"time": 3, #TODO
 		"terminated": false
 		}
-	return status
+	return char_info
 
 
 func _ready() -> void:
+	if not player: player = get_parent()
+	if not items: items = player.items
+	if not animation: animation = player.animation
+	if not movement: movement = player.movement
+	if not combat: combat = player.combat
+
 	# Verbinde interne Signale für UI-Updates
 	hp_changed.connect(_update_hp_ui)
 	exp_changed.connect(_update_exp_ui)
@@ -138,8 +151,8 @@ func _ready() -> void:
 
 	if player.playerName != "":
 		setPlayerName(player.playerName)
-	elif status.has("name") and status["name"] != "":
-		setPlayerName(status["name"])
+	elif char_info.has("name") and char_info["name"] != "":
+		setPlayerName(char_info["name"])
 
 	hydration = 100.0
 	food = 100.0

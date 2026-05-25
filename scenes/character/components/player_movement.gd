@@ -1,7 +1,11 @@
 extends Node
 
+@export_group("References")
+@export var player: CharacterBody2D
+var status: PlayerStatus
+var items: Node
+var animation: Node # PlayerAnimation component
 
-var player: CharacterBody2D
 @onready var speedLabel = $"../CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2/Speed"
 
 const default_move_speed_factor : float = 2.5
@@ -12,7 +16,11 @@ var _pixels_moved: int = 0
 
 
 func _ready():
-	player = get_parent()
+	if not player: player = get_parent()
+	if not status: status = player.status
+	if not items: items = player.items
+	if not animation: animation = player.animation
+	
 	speedLabel.text = str(move_speed_factor)
 	
 
@@ -47,7 +55,7 @@ func tile_move():
 		snap_to_tiles_position()
 		player.act = ""
 	
-	player.player_animation.animate_player(direction)
+	animation.animate_player(direction)
 
 
 func snap_to_tiles_position():
@@ -95,9 +103,8 @@ func moveProcess(vel, angle, doingAction):
 	if player.velocity != Vector2.ZERO:
 		player.move_and_slide()
 	player.get_node("MovingParts").rotation = angle
-	var player_animation = player.get_node("PlayerAnimation")
-	if player_animation:
-		player_animation.handleAnims(vel,doingAction)
+	if animation:
+		animation.handleAnims(vel,doingAction)
 
 func press_action(inp_action : String):
 	if "walk" in inp_action:
@@ -112,14 +119,14 @@ func press_action(inp_action : String):
 
 
 func win_condition():
-	player.player_status.status["terminated"] = false
+	status.char_info["terminated"] = false
 	
 	if Multihelper.level["end"] == Constants.END_LABY:
 		var end_goal_position = Multihelper.map.endPosition
 		if current_map_position == end_goal_position:
 			current_map_position = Vector2i()
 			player.EndUI.setLabel("Level Abgeschlossen!")
-			player.player_status.status["terminated"] = true
+			status.char_info["terminated"] = true
 			player.EndUI.visible = true
 
 

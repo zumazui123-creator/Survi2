@@ -9,6 +9,7 @@ var act : String = ""
 @onready var net_control = $NetControl
 @onready var movement = $PlayerMovement
 @onready var animation = $PlayerAnimation
+@onready var animations = $AnimationPlayer
 @onready var combat = $PlayerCombat
 @export var building : PlayerBuilding
 @onready var items = $PlayerItems
