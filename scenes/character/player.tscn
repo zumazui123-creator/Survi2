@@ -57,6 +57,9 @@ properties/9/replication_mode = 2
 properties/10/path = NodePath("PlayerStatus:hp")
 properties/10/spawn = true
 properties/10/replication_mode = 2
+properties/11/path = NodePath("PlayerStatus:exp")
+properties/11/spawn = true
+properties/11/replication_mode = 2
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5y66v"]
 
@@ -360,11 +363,10 @@ _data = {
 _data = [Vector2(0.00279329, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 2
 
-[node name="Player" type="CharacterBody2D" unique_id=699968112 node_paths=PackedStringArray("player_building") groups=["damageable", "player"]]
+[node name="Player" type="CharacterBody2D" unique_id=699968112 groups=["damageable", "player"]]
 collision_layer = 3
 collision_mask = 3
 script = ExtResource("1_7xvi4")
-player_building = NodePath("PlayerBuilding")
 
 [node name="AI" type="Node" parent="." unique_id=1856201777]
 
@@ -395,9 +397,11 @@ script = ExtResource("6_7r6u0")
 [node name="PlayerAnimation" type="Node" parent="." unique_id=934239989]
 script = ExtResource("7_e5n5u")
 
-[node name="PlayerCombat" type="Node" parent="." unique_id=1291276715 groups=["player"]]
+[node name="PlayerCombat" type="Node" parent="." unique_id=1291276715 node_paths=PackedStringArray("player", "hit_area") groups=["player"]]
 unique_name_in_owner = true
 script = ExtResource("8_ba010")
+player = NodePath("..")
+hit_area = NodePath("../MovingParts/HitArea")
 
 [node name="PlayerBuilding" type="Node" parent="." unique_id=1139544709 node_paths=PackedStringArray("player")]
 script = ExtResource("10_x06ku")

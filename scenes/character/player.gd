@@ -7,12 +7,12 @@ var act : String = ""
 @onready var ai_control = $AIControl
 @onready var workTaskText = %workTaskText
 @onready var net_control = $NetControl
-@onready var player_movement = $PlayerMovement
-@onready var player_animation = $PlayerAnimation
-@onready var player_combat = $PlayerCombat
-@export var player_building : PlayerBuilding
-@onready var player_items = $PlayerItems
-@onready var player_status = %PlayerStatus
+@onready var movement = $PlayerMovement
+@onready var animation = $PlayerAnimation
+@onready var combat = $PlayerCombat
+@export var building : PlayerBuilding
+@onready var items = $PlayerItems
+@onready var mystatus = %PlayerStatus
 @onready var code_edit = %CodeEdit
 @export var playerName : String:
 	set(value):
@@ -23,7 +23,7 @@ var characterFile : String:
 	set(value):
 		characterFile = value
 		if is_node_ready() and characterFile != "":
-			player_animation.set_character_sprite(characterFile)
+			animation.set_character_sprite(characterFile)
 
 var EndUI     : Control
 var local_setup_done := false
@@ -50,7 +50,7 @@ func _ready():
 		_setup_local_player()
 				
 	if characterFile != "":
-		player_animation.set_character_sprite(characterFile)
+		animation.set_character_sprite(characterFile)
 
 
 func _on_multidata_received():
@@ -93,7 +93,7 @@ func _setup_local_player():
 
 @rpc("any_peer", "call_local", "reliable")
 func getDamage(causer, amount, _type):
-	player_combat.getDamage(causer, amount, _type)
+	combat.getDamage(causer, amount, _type)
 		
 func visibilityFilter(id):
 	if id == int(str(name)):
@@ -118,9 +118,9 @@ func disconnected(id):
 func _physics_process(_delta: float) -> void:
 	if str(multiplayer.get_unique_id()) != name:
 		return
-	player_movement.input()
-	player_movement.tile_move()
-	player_movement.win_condition()
+	movement.input()
+	movement.tile_move()
+	movement.win_condition()
 
 func resetPlayer():
 	var difLevelMode = %DifModeButton.get_selected_id()
@@ -142,7 +142,7 @@ func resetPlayer():
 @rpc("any_peer", "call_local", "reliable")
 func sendPos(pos):
 	position = pos
-	player_movement.current_map_position = Multihelper.map.tile_map.local_to_map( position )
+	movement.current_map_position = Multihelper.map.tile_map.local_to_map( position )
 
 func _on_back_to_menu_pressed() -> void:
 	var game_scene: PackedScene = load(Constants.PATH_GAME_SCENE)

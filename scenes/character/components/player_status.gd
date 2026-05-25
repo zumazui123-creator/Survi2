@@ -16,8 +16,7 @@ signal food_changed(value)
 
 @onready var player = $".."
 @onready var dayNight 	  = $"../../../dayNight"
-@onready var player_movement = $"../PlayerMovement"
-@onready var player_combat = $"../PlayerCombat"
+
 
 @onready var popup_settings: PopupPanel = $"../PopupSettings"
 @onready var popup_info: PopupPanel = $"../PopupInfo"
@@ -51,39 +50,9 @@ func level_up():
 	attack_damage += 2 # Bonus pro Level
 	maxHP += 20
 	hp = maxHP
-	_play_level_up_animation()
+	player.player_animation._play_level_up_animation()
 
-func _play_level_up_animation():
-	if not is_inside_tree(): return
-	
-	var label = Label.new()
-	label.text = "LEVEL UP! (" + str(level) + ")"
-	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	
-	# Basic styling
-	label.add_theme_font_size_override("font_size", 24)
-	label.add_theme_color_override("font_color", Color.YELLOW)
-	label.add_theme_color_override("font_outline_color", Color.BLACK)
-	label.add_theme_constant_override("outline_size", 6)
-	
-	# Position it above the player
-	label.z_index = 100
-	add_child(label)
-	label.position = Vector2(-50, -80)
-	
-	var tween = create_tween()
-	tween.set_parallel(true)
-	# Float up
-	tween.tween_property(label, "position:y", label.position.y - 60, 2.0).set_trans(Tween.TRANS_OUT).set_ease(Tween.EASE_OUT)
-	# Fade out
-	tween.tween_property(label, "modulate:a", 0.0, 2.0).set_trans(Tween.TRANS_IN).set_ease(Tween.EASE_IN)
-	# Scale up a bit
-	label.scale = Vector2(0.5, 0.5)
-	label.pivot_offset = Vector2(50, 10)
-	tween.tween_property(label, "scale", Vector2(1.2, 1.2), 0.5).set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
-	
-	tween.chain().tween_callback(label.queue_free)
+
 
 @export_group("Stats")
 @export var maxHP := 250.0
@@ -94,8 +63,8 @@ func _play_level_up_animation():
 		if is_instance_valid(player) and player.has_node("bloodParticles"):
 			player.get_node("bloodParticles").emitting = true
 		if hp <= 0:
-			player.player_combat.die()
-			
+			player.combat.die()
+
 @export var maxExp := 100.0
 @export var exp := 0:
 	set(value):
@@ -124,7 +93,7 @@ var status := {"hp": 1,
 		"time": 3, #TODO
 		"terminated": false
 		}
-		
+
 func setPlayerName(newName:String):
 	status["name"] = newName
 	_update_level_ui(level)
@@ -140,14 +109,14 @@ func getPlayerStatus():
 	status = {"hp": hp,
 		"foodBar": food,
 		"hydrationBar": hydration,
-		"moveSpeed": player_movement.move_speed_factor,
+		"moveSpeed": player.movement.move_speed_factor,
 		"attackDmg": attack_damage,
 		"attackRate": attack_rate,
 		"attackRange": attack_range,
 		"damageType": damage_type,
 		"name": player.playerName,
 		"pixel_position": [player.position.x, player.position.y],
-		"tile_position":[player_movement.current_map_position.x, player_movement.current_map_position.y],
+		"tile_position":[player.movement.current_map_position.x, player.movement.current_map_position.y],
 		"items": Inventory.getItems(str(player.name)),
 		"time": 3, #TODO
 		"terminated": false
@@ -162,26 +131,26 @@ func _ready() -> void:
 	level_changed.connect(_update_level_ui)
 	hydration_changed.connect(_update_hydration_ui)
 	food_changed.connect(_update_food_ui)
-	
+
 	if player.name != str(multiplayer.get_unique_id()):
 		if has_node("Bar"): $Bar.visible = false
 		if has_node("WorkContainer"): $WorkContainer.visible = false
-		
+
 	if player.playerName != "":
 		setPlayerName(player.playerName)
 	elif status.has("name") and status["name"] != "":
 		setPlayerName(status["name"])
-		
+
 	hydration = 100.0
 	food = 100.0
-	
+
 	# Initiale UI-Synchronisierung
 	_update_hp_ui(hp, maxHP)
 	_update_exp_ui(exp, 100.0)
 	_update_hydration_ui(hydration)
 	_update_food_ui(food)
 	_update_level_ui(level)
-	
+
 	getPlayerStatus()
 
 
@@ -227,7 +196,7 @@ func _process(_delta: float) -> void:
 	if now - last_time_food > food_rate:
 		food -= 1
 		last_time_food = now
-	
+
 
 func _on_settings_button_pressed() -> void:
 	popup_settings.visible = true

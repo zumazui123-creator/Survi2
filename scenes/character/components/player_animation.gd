@@ -35,3 +35,55 @@ func handleAnims(vel, doing_action):
 			animation_player.play(Strings.ANIM_WALKING)
 	else:
 		animation_player.stop()
+		
+func _play_level_up_animation(level : String ):
+	if not is_inside_tree():
+		return
+	var label = Label.new()
+	label.text = "LEVEL UP! (" + str(level) + ")"
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	
+	# Basic styling
+	label.add_theme_font_size_override("font_size", 24)
+	label.add_theme_color_override("font_color", Color.YELLOW)
+	label.add_theme_color_override("font_outline_color", Color.BLACK)
+	label.add_theme_constant_override("outline_size", 6)
+	
+	# Position it above the player
+	label.z_index = 100
+	add_child(label)
+	label.position = Vector2(-50, -80)
+	
+	# Initial scale
+	label.scale = Vector2(0.5, 0.5)
+	label.pivot_offset = Vector2(50, 10)
+	
+	var tween = create_tween()
+	tween.set_parallel(true)
+
+	# Float up
+	tween.tween_property(
+		label,
+		"position:y",
+		label.position.y - 60,
+		2.0
+	).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+
+	# Fade out
+	tween.tween_property(
+		label,
+		"modulate:a",
+		0.0,
+		2.0
+	).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+
+	# Scale up
+	tween.tween_property(
+		label,
+		"scale",
+		Vector2(1.2, 1.2),
+		0.5
+	).set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
+
+	tween.chain().tween_callback(label.queue_free)
