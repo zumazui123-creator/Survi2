@@ -3,26 +3,26 @@ class_name Player
 
 var act : String = ""
 
-@onready var status: PlayerStatus = $PlayerStatus
-@onready var ai_control = $AIControl
-@onready var workTaskText = %workTaskText
-@onready var net_control = $NetControl
-@onready var movement: PlayerMovement = $PlayerMovement
-@onready var animation: AnimationPlayer = $AnimationPlayer
-@onready var combat: PlayerCombat = $PlayerCombat
-@export var building: PlayerBuilding
-@onready var items: PlayerItems = $PlayerItems
+@onready var p_status: PlayerStatus = $PlayerStatus
+@onready var p_ai_control = $AIControl
+@onready var p_workTaskText = %workTaskText
+@onready var p_net_control = $NetControl
+@onready var p_movement: PlayerMovement = $PlayerMovement
+@onready var p_animation: AnimationPlayer = $AnimationPlayer
+@onready var p_combat: PlayerCombat = $PlayerCombat
+@export var p_building: PlayerBuilding
+@onready var p_items: PlayerItems = $PlayerItems
 @onready var code_edit = %CodeEdit
 @export var playerName : String:
 	set(value):
 		playerName = value
-		$PlayerStatus.setPlayerName(value)
+		p_status.setPlayerName(value)
 
 var characterFile : String:
 	set(value):
 		characterFile = value
 		if is_node_ready() and characterFile != "":
-			animation.set_character_sprite(characterFile)
+			p_animation.set_character_sprite(characterFile)
 
 var EndUI     : Control
 var local_setup_done := false
@@ -34,12 +34,18 @@ func _enter_tree():
 		$CodeLayer.process_mode = Node.PROCESS_MODE_DISABLED
 
 func _ready():
-	#var tile_map = Multihelper.map.tile_map
-	#save_tilemap_layer_to_file(Multihelper.map.tile_map)
-
-	print("Player : "+str(characterFile))
+	# ... (existing code)
+	var line = Line2D.new()
+	line.name = "PathLine"
+	line.default_color = Color(1, 1, 1, 0.3)
+	line.width = 2
+	line.points = PackedVector2Array([Vector2.ZERO, Vector2.ZERO])
+	line.z_index = -1 # Draw behind other elements
+	add_child(line)
+	p_movement.path_line = line
 	
 	Multihelper.data_loaded.connect(_on_multidata_received)
+	# ... (rest of existing code)
 	Multihelper.player_spawned.connect(_on_player_spawned_info)
 	Multihelper.player_disconnected.connect(disconnected)
 	
@@ -49,7 +55,7 @@ func _ready():
 		_setup_local_player()
 				
 	if characterFile != "":
-		animation.set_character_sprite(characterFile)
+		p_animation.set_character_sprite(characterFile)
 
 
 func _on_multidata_received():
@@ -72,12 +78,12 @@ func try_recover_body():
 	if characterFile == "" and info.has("body"):
 		print("Recovered body from Multihelper: " + str(info["body"]))
 		self.characterFile = info["body"]
-		#var player_combat_node = get_node("PlayerCombat")
-		#if player_combat_node:
-			#Inventory.itemRemoved.connect(player_items.itemRemoved)
-			#player_combat_node.mob_killed.connect(player_combat_node.mobKilled)
-			#player_combat_node.player_killed.connect(player_combat_node.enemyPlayerKilled)
-			#player_combat_node.object_destroyed.connect(player_combat_node.objectDestroyed)
+		#var p_combat_node = get_node("PlayerCombat")
+		#if p_combat_node:
+			#Inventory.itemRemoved.connect(p_items.itemRemoved)
+			#p_combat_node.mob_killed.connect(p_combat_node.mobKilled)
+			#p_combat_node.player_killed.connect(p_combat_node.enemyPlayerKilled)
+			#p_combat_node.object_destroyed.connect(p_combat_node.objectDestroyed)
 	
 	_setup_local_player()
 
@@ -92,7 +98,7 @@ func _setup_local_player():
 
 @rpc("any_peer", "call_local", "reliable")
 func getDamage(causer, amount, _type):
-	combat.getDamage(causer, amount, _type)
+	p_combat.getDamage(causer, amount, _type)
 		
 func visibilityFilter(id):
 	if id == int(str(name)):
@@ -109,20 +115,20 @@ func sendMessage(text):
 
 func disconnected(id):
 	if str(id) == name:
-		var player_combat_node = get_node("PlayerCombat")
-		if player_combat_node:
-			player_combat_node.die()
+		var p_combat_node = get_node("PlayerCombat")
+		if p_combat_node:
+			p_combat_node.die()
 
 
 func _physics_process(_delta: float) -> void:
 	if str(multiplayer.get_unique_id()) != name:
 		return
-	movement.input()
-	movement.tile_move()
+	p_movement.input()
+	p_movement.tile_move()
 	win_condition()
 
 func win_condition():
-	status.char_info["terminated"] = false
+	p_status.char_info["terminated"] = false
 	win_laby()
 
 func win_laby():
@@ -132,7 +138,7 @@ func win_laby():
 		if current_map_position == end_goal_position:
 			current_map_position = Vector2i()
 			EndUI.setLabel("Level Abgeschlossen!")
-			status.char_info["terminated"] = true
+			p_status.char_info["terminated"] = true
 			EndUI.visible = true
 			
 func resetPlayer():
@@ -144,7 +150,7 @@ func resetPlayer():
 @rpc("any_peer", "call_local", "reliable")
 func sendPos(pos):
 	position = pos
-	movement.current_map_position = Multihelper.map.tile_map.local_to_map( position )
+	p_movement.current_map_position = Multihelper.map.tile_map.local_to_map( position )
 
 func _on_back_to_menu_pressed() -> void:
 	var game_scene: PackedScene = load(Constants.PATH_GAME_SCENE)

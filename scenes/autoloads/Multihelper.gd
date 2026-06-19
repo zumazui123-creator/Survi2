@@ -213,10 +213,10 @@ func spawnPlayer(newPlayer):
 		if  len(spawnedPlayers) > 1:
 			print("spawn near players")
 			var player1 = getPlayers().get_child(0)
-			spawnPosition = player1.player_movement.current_map_position
+			spawnPosition = player1.p_movement.current_map_position
 		else:
 			spawnPosition = map.walkable_tiles.pick_random()
-	newPlayer.workTaskText.text = workTask.getWorkTask(self.level)
+	newPlayer.p_workTaskText.text = workTask.getWorkTask(self.level)
 	newPlayer.sendPos.rpc(map.tile_map.map_to_local( spawnPosition ))
 
 #func rebornPlayer(playerId : String):

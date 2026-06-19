@@ -11,10 +11,13 @@ var current_map_position : Vector2i
 var direction = Vector2.ZERO
 var _pixels_moved: int = 0
 var is_speed_boost_active := false
+var path_line : Line2D
 
 func _ready():
 	if not player: player = get_parent()
 	speedLabel.text = str(move_speed_factor)
+	if path_line:
+		path_line.points = PackedVector2Array([Vector2.ZERO, Vector2.ZERO])
 
 func is_moving() -> bool:
 	return direction != Vector2.ZERO
@@ -31,6 +34,9 @@ func input():
 	elif Input.is_action_pressed("walkDown"):
 		direction = Vector2(0, 1)
 
+	if direction != Vector2.ZERO and path_line:
+		path_line.points = PackedVector2Array([Vector2.ZERO, direction * Constants.TILE_SIZE])
+
 func tile_move() -> Vector2:
 	if not is_moving():
 		return Vector2.ZERO
@@ -42,12 +48,14 @@ func tile_move() -> Vector2:
 	if _pixels_moved >= Constants.TILE_SIZE/move_speed_factor:
 		direction = Vector2.ZERO
 		_pixels_moved = 0
+		if path_line:
+			path_line.points = PackedVector2Array([Vector2.ZERO, Vector2.ZERO])
 
 		current_map_position = Multihelper.map.tile_map.local_to_map( player.position )
 		snap_to_tiles_position()
 		player.act = ""
-		
-	player.animation.animate_player(direction)
+
+	player.p_animation.animate_player(direction)
 	return direction
 
 func snap_to_tiles_position():

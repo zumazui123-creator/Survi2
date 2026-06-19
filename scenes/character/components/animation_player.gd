@@ -28,11 +28,11 @@ func animate_player(dir: Vector2):
 		stop()
 
 func handleAnims(vel, doing_action):
-	if not player.combat:
+	if not player.p_combat:
 		return
 		
 	if doing_action:
-		var action_anim = Items.equips[player.combat.equippedItem]["attack"] if player.combat.equippedItem else Strings.ANIM_PUNCHING
+		var action_anim = Items.equips[player.p_combat.equippedItem]["attack"] if player.p_combat.equippedItem else Strings.ANIM_PUNCHING
 		if not is_playing() or current_animation != action_anim:
 			play(action_anim)
 	elif vel != Vector2.ZERO:

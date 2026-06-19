@@ -133,10 +133,10 @@ func getPlayerStatus():
 
 func _ready() -> void:
 	if not player: player = get_parent()
-	if not items: items = player.items
-	if not animation: animation = player.animation
-	if not movement: movement = player.movement
-	if not combat: combat = player.combat
+	if not items: items = player.p_items
+	if not animation: animation = player.p_animation
+	if not movement: movement = player.p_movement
+	if not combat: combat = player.p_combat
 
 	# Verbinde interne Signale für UI-Updates
 	hp_changed.connect(_update_hp_ui)
