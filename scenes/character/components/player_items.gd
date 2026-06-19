@@ -1,6 +1,6 @@
 extends Node
 
-var player: CharacterBody2D
+var player: Player
 
 @onready var held_item = %HeldItem  #get_parent().get_node("%HeldItem")
 @onready var equipment = %Equipment #get_parent().get_node("%Equipment")
@@ -12,9 +12,9 @@ var equippedItem : String:
 		if value in Items.equips:
 			var itemData = Items.equips[value]
 			if "projectile" in itemData:
-				player.player_combat.spawnsProjectile = itemData["projectile"]
+				player.combat.spawnsProjectile = itemData["projectile"]
 		else:
-			player.player_combat.spawnsProjectile = ""
+			player.combat.spawnsProjectile = ""
 			
 func _ready():
 	player = get_parent()
@@ -43,7 +43,7 @@ func tryEquipItem(id):
 @rpc("any_peer", "call_local", "reliable")
 func equipItem(id):
 	equippedItem = id
-	player.player_combat.hands.visible = false
+	player.combat.hands.visible = false
 	held_item.texture = load(Constants.PATH_ITEMS+id+".png")
 	if multiplayer.is_server() and "scene" in Items.equips[id]:
 		for c in equipment.get_children():
@@ -56,7 +56,7 @@ func equipItem(id):
 @rpc("any_peer", "call_local", "reliable")
 func unequipItem():
 	equippedItem = ""
-	player.player_combat.hands.visible = true
+	player.combat.hands.visible = true
 	held_item.texture = null
 	if multiplayer.is_server():
 		for c in equipment.get_children():
@@ -95,9 +95,9 @@ func use_item(cmd: PackedStringArray):
 	#if "hp" in effects:
 		#player.hp = min(player.maxHP, player.hp + effects["hp"])
 	#if "food" in effects:
-		#player.player_status.foodBar.value = min(100, player.player_status.foodBar.value + effects["food"])
+		#player.status.foodBar.value = min(100, player.status.foodBar.value + effects["food"])
 	#if "hydration" in effects:
-		#player.player_status.hydrationBar.value = min(100, player.player_status.hydrationBar.value + effects["hydration"])
+		#player.status.hydrationBar.value = min(100, player.status.hydrationBar.value + effects["hydration"])
 	#if "speed" in effects and "duration" in effects:
 		#player.apply_speed_boost(effects["speed"], effects["duration"])
 	#Inventory.removeItem(str(name),effects)
@@ -105,5 +105,5 @@ func use_item(cmd: PackedStringArray):
 @rpc("any_peer", "call_local", "reliable")
 func consumeItem(item, item_prop):
 	if "hp" in item_prop:
-		player.player_status.get_heal.rpc( 100 )#item["hp"])
+		player.status.get_heal.rpc( 100 )#item["hp"])
 	Inventory.removeItem(str(player.name),item)

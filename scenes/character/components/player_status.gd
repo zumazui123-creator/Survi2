@@ -15,7 +15,7 @@ signal food_changed(value)
 @export var name_label: Label
 
 @export_group("References")
-@export var player: CharacterBody2D
+@export var player: Player
 var items: Node
 var animation: Node
 var movement: Node

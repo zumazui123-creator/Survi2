@@ -28,12 +28,17 @@ Bessere Wartbarkeit, klare Trennung von Gameplay-Logik, UI-Interaktionen und Inf
 - [x] Schritt 4.3: Alle UI-Scripte in `ui/` auf die neuen Pfade anpassen.
 
 ## Phase 5: Validierung & Testing
-- [ ] Schritt 5.1: Projekt im Editor öffnen, um sicherzustellen, dass Godot keine "Script not found" Fehler meldet.
-- [ ] Schritt 5.2: Spiel starten und grundlegende Funktionen testen:
+- [x] Schritt 5.1: Projekt im Editor öffnen, um sicherzustellen, dass Godot keine "Script not found" Fehler meldet.
+- [x] Schritt 5.2: Spiel starten und grundlegende Funktionen testen:
     - Bewegung
     - Combat
     - UI-Interaktion (Drag & Drop)
-- [ ] Schritt 5.3: Ggf. Fehlerbehebung.
+- [x] Schritt 5.3: Ggf. Fehlerbehebung.
+
+## Phase 7: Cyber-Aura Implementierung
+- [x] Schritt 7.1: `codeParticles` Node (CPUParticles2D) in `player.tscn` hinzufügen und konfigurieren.
+- [x] Schritt 7.2: `CodePlayer.gd` anpassen, um `codeParticles` während der Code-Ausführung zu aktivieren, zu skalieren und danach zu deaktivieren.
+- [ ] Schritt 7.3: (Ausblick) Belohnungssystem für Code-Challenges (Placeholder/System-Foundation) erstellen.
 
 ---
 *Dieser Plan wird strikt sequentiell abgearbeitet.*

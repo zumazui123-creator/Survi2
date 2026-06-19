@@ -3,15 +3,15 @@ class_name Player
 
 var act : String = ""
 
-@onready var status = $PlayerStatus
+@onready var status: PlayerStatus = $PlayerStatus
 @onready var ai_control = $AIControl
 @onready var workTaskText = %workTaskText
 @onready var net_control = $NetControl
-@onready var movement = $PlayerMovement
-@onready var animation : AnimationPlayer = $AnimationPlayer
-@onready var combat = $PlayerCombat
-@export var building : PlayerBuilding
-@onready var items = $PlayerItems
+@onready var movement: PlayerMovement = $PlayerMovement
+@onready var animation: AnimationPlayer = $AnimationPlayer
+@onready var combat: PlayerCombat = $PlayerCombat
+@export var building: PlayerBuilding
+@onready var items: PlayerItems = $PlayerItems
 @onready var code_edit = %CodeEdit
 @export var playerName : String:
 	set(value):

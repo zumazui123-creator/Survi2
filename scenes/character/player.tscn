@@ -1058,6 +1058,21 @@ scale_amount_max = 4.0
 scale_amount_curve = SubResource("Curve_s5j1r")
 color = Color(1, 0.172549, 0.113725, 1)
 
+[node name="codeParticles" type="CPUParticles2D" parent="." unique_id=1028374655]
+emitting = false
+amount = 20
+lifetime = 0.5
+speed_scale = 1.5
+randomness = 0.5
+local_coords = false
+emission_shape = 1
+emission_sphere_radius = 20.0
+gravity = Vector2(0, -50)
+initial_velocity_min = 10.0
+initial_velocity_max = 20.0
+scale_amount_max = 2.0
+color = Color(0, 0.8, 1, 0.8)
+
 [node name="EquipmentSpawner" type="MultiplayerSpawner" parent="." unique_id=1930399837]
 _spawnable_scenes = PackedStringArray("uid://cv01pg7l0b1q8")
 spawn_path = NodePath("../MovingParts/Equipment")

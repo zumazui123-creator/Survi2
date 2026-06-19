@@ -1,7 +1,7 @@
 extends Node
 
 @export_group("References")
-@export var player: CharacterBody2D
+@export var player: Player
 
 @onready var speedLabel = $"../CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2/Speed"
 
@@ -71,6 +71,14 @@ func apply_speed_boost(multiplier, duration):
 func _on_speed_boost_timeout():
 	move_speed_factor = default_move_speed_factor
 	is_speed_boost_active = false
+
+func apply_code_speed_bonus(bonus_multiplier: float):
+	move_speed_factor = default_move_speed_factor * bonus_multiplier
+	print("Code Speed Bonus applied: ", move_speed_factor)
+
+func reset_code_speed_bonus():
+	move_speed_factor = default_move_speed_factor
+	print("Code Speed Bonus reset: ", move_speed_factor)
 
 # GODOT Server
 #var last_angle = 0.0 # für godot server nötig

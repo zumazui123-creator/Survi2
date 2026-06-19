@@ -5,7 +5,7 @@ signal object_destroyed
 signal player_killed
 
 @export_group("References")
-@export var player: CharacterBody2D
+@export var player: Player
 @export var hit_area: Area2D
 
 @onready var hands = %Hands if has_node("%Hands") else null

@@ -62,9 +62,21 @@ func play(code: String) -> void:
 		return
 
 	var lines 			= code.split("\n", false)
+	
 	lines  			   	= parse_lines_with_func(lines)
 	var parsed_repeats  = parse_lines_with_repeat(lines)
 	lines 			 	= parsed_repeats.lines
+
+	# --- Apply Speed Bonus & Cyber Aura ---
+	var line_count = lines.size()
+	var bonus_multiplier = 1.0 + (line_count * 0.05)
+	player.movement.apply_code_speed_bonus(bonus_multiplier)
+	
+	var code_particles = player.get_node("%codeParticles")
+	if code_particles:
+		code_particles.emitting = true
+		code_particles.amount = 10 + line_count * 2 # Complexity = more particles
+		code_particles.speed_scale = 1.0 + (line_count * 0.02)
 
 	for line in lines:
 		
@@ -76,6 +88,11 @@ func play(code: String) -> void:
 		line = Strings.remap_code_cmd_to_action("de", line)
 		var parts = line.split(" ", false)
 		await execute_command(parts)
+	
+	# --- Reset Speed Bonus & Cyber Aura ---
+	player.movement.reset_code_speed_bonus()
+	if code_particles:
+		code_particles.emitting = false
 	
 	print("Code execution finished")
 
