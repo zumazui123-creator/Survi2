@@ -32,7 +32,7 @@ const PK_SCORE_GAIN := 4
 # --- File Paths ---
 const PATH_CHARACTER_BODIES = "res://assets/characters/bodies/"
 const PATH_ITEMS = "res://assets/items/"
-const PATH_EQUIPMENT_SCENES = "res://scenes/character/equipments/"
+const PATH_EQUIPMENT_SCENES = "res://scenes/character/items/"
 const PATH_CHAT_MESSAGE_SCENE = "res://scenes/ui/chat/message_box.tscn"
 const PATH_GAME_SCENE = "res://scenes/game/Game.tscn"
 const PATH_PICKUP_SCENE = "res://scenes/item/pickup.tscn"
