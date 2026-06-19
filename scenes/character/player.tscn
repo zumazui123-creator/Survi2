@@ -10,7 +10,6 @@
 [ext_resource type="Texture2D" uid="uid://bx7fpakrdnbf3" path="res://assets/characters/hands/hands-sheet.png" id="4_yjkcj"]
 [ext_resource type="AudioStream" uid="uid://70ym6t6pjpde" path="res://assets/sfx/swing.ogg" id="5_xs70q"]
 [ext_resource type="Script" uid="uid://2fmmi7tylwwx" path="res://scenes/character/components/player_movement.gd" id="6_7r6u0"]
-[ext_resource type="Script" uid="uid://ijovcwkpl4jg" path="res://scenes/character/components/player_animation.gd" id="7_e5n5u"]
 [ext_resource type="Script" uid="uid://bl0tm663e7r6k" path="res://scenes/character/components/player_status.gd" id="7_wmtbp"]
 [ext_resource type="Script" uid="uid://dsnm03bgpmori" path="res://scenes/character/components/code.gd" id="8_5y66v"]
 [ext_resource type="Script" uid="uid://bjrh8avfky7c7" path="res://scenes/character/components/player_combat.gd" id="8_ba010"]
@@ -394,9 +393,6 @@ script = ExtResource("3_vreni")
 
 [node name="PlayerMovement" type="Node" parent="." unique_id=242878014]
 script = ExtResource("6_7r6u0")
-
-[node name="PlayerAnimation" type="Node" parent="." unique_id=934239989]
-script = ExtResource("7_e5n5u")
 
 [node name="PlayerCombat" type="Node" parent="." unique_id=1291276715 node_paths=PackedStringArray("player", "hit_area") groups=["player"]]
 unique_name_in_owner = true

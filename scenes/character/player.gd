@@ -8,8 +8,7 @@ var act : String = ""
 @onready var workTaskText = %workTaskText
 @onready var net_control = $NetControl
 @onready var movement = $PlayerMovement
-@onready var animation = $PlayerAnimation
-@onready var animations = $AnimationPlayer
+@onready var animation : AnimationPlayer = $AnimationPlayer
 @onready var combat = $PlayerCombat
 @export var building : PlayerBuilding
 @onready var items = $PlayerItems
@@ -119,12 +118,14 @@ func _physics_process(_delta: float) -> void:
 	if str(multiplayer.get_unique_id()) != name:
 		return
 	movement.input()
-	animation.animate_player(movement.tile_move())
+	movement.tile_move()
 	win_condition()
 
 func win_condition():
 	status.char_info["terminated"] = false
-	
+	win_laby()
+
+func win_laby():
 	if Multihelper.level["end"] == Constants.END_LABY:
 		var current_map_position = Multihelper.map.tile_map.local_to_map( position )
 		var end_goal_position = Multihelper.map.endPosition
@@ -133,25 +134,12 @@ func win_condition():
 			EndUI.setLabel("Level Abgeschlossen!")
 			status.char_info["terminated"] = true
 			EndUI.visible = true
-
-
-
+			
 func resetPlayer():
 	var difLevelMode = %DifModeButton.get_selected_id()
 	if difLevelMode > 0:
 		Multihelper.spawnPlayers()
 
-
-# func action(vel, angle, doingAction):
-# 	var player_movement_node = get_node("PlayerMovement")
-# 	if player_movement_node:
-# 		player_movement_node.action(vel, angle, doingAction)
-
-# @rpc("any_peer", "call_local", "reliable")
-# func sendInputstwo(data):
-# 	var player_movement_node = get_node("PlayerMovement")
-# 	if player_movement_node:
-# 		player_movement_node.moveServer(data["vel"], data["angle"], data["doingAction"])
 
 @rpc("any_peer", "call_local", "reliable")
 func sendPos(pos):

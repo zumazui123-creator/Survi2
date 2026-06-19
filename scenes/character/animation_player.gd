@@ -3,21 +3,16 @@ extends AnimationPlayer
 @export_group("References")
 @export var player: CharacterBody2D
 
-var status: PlayerStatus
-var items: Node
-var movement: Node
-var combat: Node
-
 
 @onready var moving_parts = $"../MovingParts"
 
 func _ready():
 	if not player: player = get_parent()
-	if not status: status = player.status
-	if not items: items = player.items
-	if not movement: movement = player.movement
-	if not combat: combat = player.combat
-
+	
+func _play(anim):
+	play(Strings.ANIM_WALKING)
+	play(anim)
+	
 func set_character_sprite(file_path):
 	print("set_character_sprite: "+str(file_path))
 	var sprite = moving_parts.get_node("Sprite2D")
@@ -33,11 +28,11 @@ func animate_player(dir: Vector2):
 		stop()
 
 func handleAnims(vel, doing_action):
-	if not combat:
+	if not player.combat:
 		return
 		
 	if doing_action:
-		var action_anim = Items.equips[combat.equippedItem]["attack"] if combat.equippedItem else Strings.ANIM_PUNCHING
+		var action_anim = Items.equips[player.combat.equippedItem]["attack"] if player.combat.equippedItem else Strings.ANIM_PUNCHING
 		if not is_playing() or current_animation != action_anim:
 			play(action_anim)
 	elif vel != Vector2.ZERO:

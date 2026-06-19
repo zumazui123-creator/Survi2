@@ -7,56 +7,42 @@ signal player_killed
 @export_group("References")
 @export var player: CharacterBody2D
 @export var hit_area: Area2D
-var status: PlayerStatus
-var items: Node
-var animation: Node # PlayerAnimation component
-var animations: AnimationPlayer
-var movement: Node
-
 
 @onready var hands = %Hands if has_node("%Hands") else null
 
 var spawnsProjectile := ""
 
 func _ready():
-	if not player: player = get_parent()
-	if not status: status = player.status
-	if not items: items = player.items
-	if not animation: animation = player.animation
-	if not animations: animations = player.animations
-	if not movement: movement = player.movement
-	if not hit_area: hit_area = %HitArea
-
 	mob_killed.connect(mobKilled)
 	player_killed.connect(enemyPlayerKilled)
 	object_destroyed.connect(objectDestroyed)
 
 func hit(_inp_action : String):
-	animations.speed_scale = status.attack_rate
-	var action_anim = Items.equips[items.equippedItem]["attack"] if items.equippedItem else Strings.ANIM_PUNCHING
-	if not animations.is_playing() or animations.current_animation != action_anim:
-		animations.play(action_anim)
-		var delay : float = 0.8 / status.attack_rate
+	player.animation.speed_scale = player.status.attack_rate
+	var action_anim = Items.equips[player.items.equippedItem]["attack"] if player.items.equippedItem else Strings.ANIM_PUNCHING
+	if not player.animation.is_playing() or player.animation.current_animation != action_anim:
+		player.animation.play(action_anim)
+		var delay : float = 0.8 / player.status.attack_rate
 		await get_tree().create_timer(delay).timeout
-		animations.stop()
+		player.animation.stop()
 
 
 func punchCheckCollision():
 	var id = multiplayer.get_unique_id()
 	if spawnsProjectile:
 		if str(id) == player.name:
-			sendProjectile.rpc_id(1, movement.direction if movement else Vector2.ZERO)
+			sendProjectile.rpc_id(1, player.movement.direction if player.movement else Vector2.ZERO)
 
-	if items.equippedItem:
-		Inventory.useItemDurability(str(player.name), items.equippedItem)
+	if player.items.equippedItem:
+		Inventory.useItemDurability(str(player.name), player.items.equippedItem)
 
 	for body in hit_area.get_overlapping_bodies():
 		if body != player and body.is_in_group(Strings.GROUP_DAMAGEABLE):
-			var damage = status.attack_damage
-			if items.equippedItem:
-				damage += Items.equips[items.equippedItem]["damage"]
+			var damage = player.status.attack_damage
+			if player.items.equippedItem:
+				damage += Items.equips[player.items.equippedItem]["damage"]
 
-			var damage_type = Items.equips[items.equippedItem]["damageType"] if items.equippedItem else status.damage_type
+			var damage_type = Items.equips[player.items.equippedItem]["damageType"] if player.items.equippedItem else player.status.damage_type
 			body.getDamage(self, damage, damage_type)
 
 @rpc("any_peer", "reliable")
@@ -67,10 +53,10 @@ func sendProjectile(towards):
 @rpc("authority", "call_local", "reliable")
 func increaseScore(by):
 	# Stats werden jetzt über den Status erhöht
-	status.hp += by * 5
-	status.maxHP += by * 5
-	status.attack_damage += by
-	status.gain_exp(10*by)
+	player.status.hp += by * 5
+	player.status.maxHP += by * 5
+	player.status.attack_damage += by
+	player.status.gain_exp(10*by)
 	Multihelper.spawnedPlayers[int(str(player.name))]["score"] += by
 	Multihelper.player_score_updated.emit()
 
@@ -88,8 +74,8 @@ func getDamage(causer, amount, _type):
 	if causer.is_in_group("player"):
 		return
 
-	status.hp -= amount
-	if status.hp <= 0 and causer.is_in_group(Strings.GROUP_PLAYER):
+	player.status.hp -= amount
+	if player.status.hp <= 0 and causer.is_in_group(Strings.GROUP_PLAYER):
 		causer.get_node("PlayerCombat").player_killed.emit()
 
 func die():
@@ -97,13 +83,13 @@ func die():
 		return
 	var peerId := int(str(player.name))
 	Multihelper._deregister_character.rpc(peerId)
-	items.dropInventory()
+	player.items.dropInventory()
 	Multihelper.showSpawnUI.rpc_id(peerId)
 	player.queue_free()
 
 @rpc("any_peer", "reliable")
 func projectileHit(body):
-	var damage = status.attack_damage
-	if items.equippedItem:
-		damage += Items.equips[items.equippedItem]["damage"]
-	body.getDamage(player, damage, status.damage_type)
+	var damage = player.status.attack_damage
+	if player.items.equippedItem:
+		damage += Items.equips[player.items.equippedItem]["damage"]
+	body.getDamage(player, damage, player.status.damage_type)
