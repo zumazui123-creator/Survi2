@@ -1,28 +1,28 @@
 extends CharacterBody2D
-class_name Player
+
 
 var act : String = ""
 
-@onready var p_status: PlayerStatus = $PlayerStatus
-@onready var p_ai_control = $AIControl
-@onready var p_workTaskText = %workTaskText
-@onready var p_net_control = $NetControl
-@onready var p_movement: PlayerMovement = $PlayerMovement
-@onready var p_animation: AnimationPlayer = $AnimationPlayer
-@onready var p_combat: PlayerCombat = $PlayerCombat
-@export var p_building: PlayerBuilding
-@onready var p_items: PlayerItems = $PlayerItems
-@onready var code_edit = %CodeEdit
+@export var status : Control 
+@export var ai_control : Node
+@export var workTaskText : Node 
+@export var net_control : Node 
+@export var movement : Node 
+@export var animation: AnimationPlayer 
+@export var combat : Node 
+@export var building: PlayerBuilding
+@export  var items : Node 
+@export  var code_edit : Node
 @export var playerName : String:
 	set(value):
 		playerName = value
-		p_status.setPlayerName(value)
+		status.setPlayerName(value)
 
 var characterFile : String:
 	set(value):
 		characterFile = value
 		if is_node_ready() and characterFile != "":
-			p_animation.set_character_sprite(characterFile)
+			animation.set_character_sprite(characterFile)
 
 var EndUI     : Control
 var local_setup_done := false
@@ -42,7 +42,7 @@ func _ready():
 	line.points = PackedVector2Array([Vector2.ZERO, Vector2.ZERO])
 	line.z_index = -1 # Draw behind other elements
 	add_child(line)
-	p_movement.path_line = line
+	movement.path_line = line
 	
 	Multihelper.data_loaded.connect(_on_multidata_received)
 	# ... (rest of existing code)
@@ -55,7 +55,7 @@ func _ready():
 		_setup_local_player()
 				
 	if characterFile != "":
-		p_animation.set_character_sprite(characterFile)
+		animation.set_character_sprite(characterFile)
 
 
 func _on_multidata_received():
@@ -98,7 +98,7 @@ func _setup_local_player():
 
 @rpc("any_peer", "call_local", "reliable")
 func getDamage(causer, amount, _type):
-	p_combat.getDamage(causer, amount, _type)
+	combat.getDamage(causer, amount, _type)
 		
 func visibilityFilter(id):
 	if id == int(str(name)):
@@ -123,12 +123,12 @@ func disconnected(id):
 func _physics_process(_delta: float) -> void:
 	if str(multiplayer.get_unique_id()) != name:
 		return
-	p_movement.input()
-	p_movement.tile_move()
+	movement.input()
+	movement.tile_move()
 	win_condition()
 
 func win_condition():
-	p_status.char_info["terminated"] = false
+	status.char_info["terminated"] = false
 	win_laby()
 
 func win_laby():
@@ -138,7 +138,7 @@ func win_laby():
 		if current_map_position == end_goal_position:
 			current_map_position = Vector2i()
 			EndUI.setLabel("Level Abgeschlossen!")
-			p_status.char_info["terminated"] = true
+			status.char_info["terminated"] = true
 			EndUI.visible = true
 			
 func resetPlayer():
@@ -150,7 +150,7 @@ func resetPlayer():
 @rpc("any_peer", "call_local", "reliable")
 func sendPos(pos):
 	position = pos
-	p_movement.current_map_position = Multihelper.map.tile_map.local_to_map( position )
+	movement.current_map_position = Multihelper.map.tile_map.local_to_map( position )
 
 func _on_back_to_menu_pressed() -> void:
 	var game_scene: PackedScene = load(Constants.PATH_GAME_SCENE)

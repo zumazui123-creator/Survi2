@@ -1,5 +1,4 @@
 extends Node
-class_name RLAgent
 
 var q_table := {}  # Dictionary: state -> action_values
 

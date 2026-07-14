@@ -1,8 +1,8 @@
 extends Node
 class_name CodePlayer
-
-@export var player : Player
-@onready var function_handler =  $"../../../FunctionHandler"													 
+ 
+@export var player : CharacterBody2D
+@onready var function_handler =  $"../../../FunctionHandler"	 
 
 func parse_lines_with_repeat(lines: PackedStringArray, start := 0) -> Dictionary:
 	var result: Array = []
@@ -71,6 +71,7 @@ func play(code: String) -> void:
 	var line_count = lines.size()
 	var bonus_multiplier = 1.0 + (line_count * 0.05)
 	player.movement.apply_code_speed_bonus(bonus_multiplier)
+	
 	
 	var code_particles = player.get_node("%codeParticles")
 	if code_particles:

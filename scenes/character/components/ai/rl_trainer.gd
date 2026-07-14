@@ -1,5 +1,5 @@
 extends Node
-class_name RLTrainer
+
 
 @export var agent: RLAgent
 @export var environment: RLEnvironment

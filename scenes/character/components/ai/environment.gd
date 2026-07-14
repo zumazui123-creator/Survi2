@@ -1,5 +1,4 @@
 extends Node
-class_name RLEnvironment
 
 # --- Grid config ---
 @export var grid_width := 5

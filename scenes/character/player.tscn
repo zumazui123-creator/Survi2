@@ -16,7 +16,7 @@
 [ext_resource type="Script" uid="uid://fac0m1pdvo7" path="res://scenes/character/components/player_items.gd" id="9_e5n5u"]
 [ext_resource type="Script" uid="uid://be83kpy3e88gx" path="res://scenes/character/components/player_building.gd" id="10_x06ku"]
 [ext_resource type="Script" uid="uid://dngrh67x5tj38" path="res://scenes/character/components/texture_rect.gd" id="13_ba010"]
-[ext_resource type="Script" uid="uid://cgqh4whq45khp" path="res://scenes/character/components/camera_2d.gd" id="13_e5n5u"]
+[ext_resource type="Script" uid="uid://cgqh4whq45khp" path="res://backup/scenes/character/camera_2d.gd" id="13_e5n5u"]
 [ext_resource type="Texture2D" uid="uid://ctsuis1o5sca5" path="res://assets/ui/itemSlotSelected.png" id="14_ux0ro"]
 [ext_resource type="Script" uid="uid://jwr2prr58xmw" path="res://scenes/character/ui/goal_texture_rect.gd" id="15_vhx6d"]
 [ext_resource type="Script" uid="uid://3u5wolperx1b" path="res://scenes/code/CodePlayer.gd" id="16_2smwq"]
@@ -363,10 +363,19 @@ _data = {
 _data = [Vector2(0.00279329, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 2
 
-[node name="Player" type="CharacterBody2D" unique_id=699968112 groups=["damageable", "player"]]
+[node name="Player" type="CharacterBody2D" unique_id=699968112 node_paths=PackedStringArray("status", "ai_control", "workTaskText", "movement", "animation", "combat", "building", "items", "code_edit") groups=["damageable", "player"]]
 collision_layer = 3
 collision_mask = 3
 script = ExtResource("1_7xvi4")
+status = NodePath("PlayerStatus")
+ai_control = NodePath("AI")
+workTaskText = NodePath("PopupInfo/workTaskText")
+movement = NodePath("PlayerMovement")
+animation = NodePath("AnimationPlayer")
+combat = NodePath("PlayerCombat")
+building = NodePath("PlayerBuilding")
+items = NodePath("PlayerItems")
+code_edit = NodePath("CodeLayer/Code/TabContainer/Code/CodeEdit")
 
 [node name="AI" type="Node" parent="." unique_id=1856201777]
 
@@ -391,8 +400,9 @@ visibility_update_mode = 2
 [node name="FunctionHandler" type="Node" parent="." unique_id=1216350956]
 script = ExtResource("3_vreni")
 
-[node name="PlayerMovement" type="Node" parent="." unique_id=242878014]
+[node name="PlayerMovement" type="Node" parent="." unique_id=242878014 node_paths=PackedStringArray("player")]
 script = ExtResource("6_7r6u0")
+player = NodePath("..")
 
 [node name="PlayerCombat" type="Node" parent="." unique_id=1291276715 node_paths=PackedStringArray("player", "hit_area") groups=["player"]]
 unique_name_in_owner = true
@@ -404,10 +414,11 @@ hit_area = NodePath("../MovingParts/HitArea")
 script = ExtResource("10_x06ku")
 player = NodePath("..")
 
-[node name="PlayerItems" type="Node" parent="." unique_id=533001143]
+[node name="PlayerItems" type="Node" parent="." unique_id=533001143 node_paths=PackedStringArray("player")]
 script = ExtResource("9_e5n5u")
+player = NodePath("..")
 
-[node name="PlayerStatus" type="Control" parent="." unique_id=381426310 node_paths=PackedStringArray("hp_bar", "exp_bar", "hydration_bar", "food_bar", "name_label")]
+[node name="PlayerStatus" type="Control" parent="." unique_id=381426310 node_paths=PackedStringArray("hp_bar", "exp_bar", "hydration_bar", "food_bar", "name_label", "player")]
 unique_name_in_owner = true
 layout_mode = 3
 anchors_preset = 8
@@ -428,6 +439,7 @@ exp_bar = NodePath("NameTag/VBoxContainer/expBar")
 hydration_bar = NodePath("Bar/HydrationBar")
 food_bar = NodePath("Bar/FoodBar")
 name_label = NodePath("NameTag/VBoxContainer/nameLabel")
+player = NodePath("..")
 
 [node name="NameTag" type="PanelContainer" parent="PlayerStatus" unique_id=1692831233]
 layout_direction = 1
@@ -1064,7 +1076,6 @@ amount = 20
 lifetime = 0.5
 speed_scale = 1.5
 randomness = 0.5
-local_coords = false
 emission_shape = 1
 emission_sphere_radius = 20.0
 gravity = Vector2(0, -50)

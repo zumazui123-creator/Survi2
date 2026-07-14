@@ -41,7 +41,7 @@ func handleAnims(vel, doing_action):
 	else:
 		stop()
 		
-func _play_level_up_animation(level : String ):
+func _play_level_up_animation(level : int ):
 	if not is_inside_tree():
 		return
 	var label = Label.new()

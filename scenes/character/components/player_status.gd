@@ -1,5 +1,4 @@
 extends Control
-class_name PlayerStatus
 
 signal hp_changed(current, max_val)
 signal exp_changed(current, max_val)
@@ -15,7 +14,7 @@ signal food_changed(value)
 @export var name_label: Label
 
 @export_group("References")
-@export var player: Player
+@export var player: CharacterBody2D
 var items: Node
 var animation: Node
 var movement: Node
@@ -57,7 +56,7 @@ func level_up():
 	maxHP += 20
 	hp = maxHP
 	if animation:
-		animation._play_level_up_animation()
+		animation._play_level_up_animation(level)
 
 
 
@@ -132,11 +131,10 @@ func getPlayerStatus():
 
 
 func _ready() -> void:
-	if not player: player = get_parent()
-	if not items: items = player.p_items
-	if not animation: animation = player.p_animation
-	if not movement: movement = player.p_movement
-	if not combat: combat = player.p_combat
+	if not items: items = player.items
+	if not animation: animation = player.animation
+	if not movement: movement = player.movement
+	if not combat: combat = player.combat
 
 	# Verbinde interne Signale für UI-Updates
 	hp_changed.connect(_update_hp_ui)

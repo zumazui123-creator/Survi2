@@ -1,6 +1,5 @@
 extends Node
-
-var player: Player
+@export var player: CharacterBody2D
 
 @onready var held_item = %HeldItem  #get_parent().get_node("%HeldItem")
 @onready var equipment = %Equipment #get_parent().get_node("%Equipment")
@@ -17,7 +16,7 @@ var equippedItem : String:
 			player.combat.spawnsProjectile = ""
 			
 func _ready():
-	player = get_parent()
+	
 	Inventory.itemRemoved.connect(itemRemoved)
 	#if multiplayer.is_server():
 		#Inventory.itemRemoved.connect(itemRemoved)

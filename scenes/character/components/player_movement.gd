@@ -1,7 +1,7 @@
 extends Node
 
 @export_group("References")
-@export var player: Player
+@export var player: CharacterBody2D
 
 @onready var speedLabel = $"../CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2/Speed"
 
@@ -14,7 +14,7 @@ var is_speed_boost_active := false
 var path_line : Line2D
 
 func _ready():
-	if not player: player = get_parent()
+	
 	speedLabel.text = str(move_speed_factor)
 	if path_line:
 		path_line.points = PackedVector2Array([Vector2.ZERO, Vector2.ZERO])
@@ -55,7 +55,7 @@ func tile_move() -> Vector2:
 		snap_to_tiles_position()
 		player.act = ""
 
-	player.p_animation.animate_player(direction)
+	player.animation.animate_player(direction)
 	return direction
 
 func snap_to_tiles_position():

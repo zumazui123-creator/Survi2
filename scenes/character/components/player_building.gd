@@ -1,7 +1,7 @@
 extends Node
-class_name PlayerBuilding
 
-@export var player : Player
+
+@export var player : CharacterBody2D
 
 # supports two building modes, one is painting tiles in tilemap in Map,
 # the other is placing building scenes in the world
