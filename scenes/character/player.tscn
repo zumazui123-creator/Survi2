@@ -16,7 +16,7 @@
 [ext_resource type="Script" uid="uid://fac0m1pdvo7" path="res://scenes/character/components/player_items.gd" id="9_e5n5u"]
 [ext_resource type="Script" uid="uid://be83kpy3e88gx" path="res://scenes/character/components/player_building.gd" id="10_x06ku"]
 [ext_resource type="Script" uid="uid://dngrh67x5tj38" path="res://scenes/character/components/texture_rect.gd" id="13_ba010"]
-[ext_resource type="Script" uid="uid://cgqh4whq45khp" path="res://backup/scenes/character/camera_2d.gd" id="13_e5n5u"]
+[ext_resource type="Script" uid="uid://cgqh4whq45khp" path="res://scenes/character/components/camera_2d.gd" id="13_e5n5u"]
 [ext_resource type="Texture2D" uid="uid://ctsuis1o5sca5" path="res://assets/ui/itemSlotSelected.png" id="14_ux0ro"]
 [ext_resource type="Script" uid="uid://jwr2prr58xmw" path="res://scenes/character/ui/goal_texture_rect.gd" id="15_vhx6d"]
 [ext_resource type="Script" uid="uid://3u5wolperx1b" path="res://scenes/code/CodePlayer.gd" id="16_2smwq"]
@@ -442,7 +442,6 @@ name_label = NodePath("NameTag/VBoxContainer/nameLabel")
 player = NodePath("..")
 
 [node name="NameTag" type="PanelContainer" parent="PlayerStatus" unique_id=1692831233]
-layout_direction = 1
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -451,6 +450,7 @@ offset_left = -50.0
 offset_right = 50.0
 offset_bottom = 20.0
 grow_horizontal = 2
+layout_direction = 1
 theme_override_styles/panel = SubResource("StyleBoxEmpty_5y66v")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="PlayerStatus/NameTag" unique_id=3770290]
@@ -566,7 +566,7 @@ z_index = 6
 z_as_relative = false
 position = Vector2(218, -371)
 script = ExtResource("8_5y66v")
-code_player = NodePath("DebugCodePlayer")
+code_player = NodePath("CodePlayer")
 
 [node name="TabContainer" type="TabContainer" parent="CodeLayer/Code" unique_id=1538183637]
 offset_left = 67.0
@@ -931,7 +931,7 @@ text = "Bewegung Ziel Belohnung : "
 layout_mode = 2
 text = "0.7"
 
-[node name="DebugCodePlayer" type="Node" parent="CodeLayer/Code" unique_id=1473287517 node_paths=PackedStringArray("player")]
+[node name="CodePlayer" type="Node" parent="CodeLayer/Code" unique_id=1473287517 node_paths=PackedStringArray("player")]
 script = ExtResource("16_2smwq")
 player = NodePath("../../..")
 metadata/_custom_type_script = "uid://3u5wolperx1b"

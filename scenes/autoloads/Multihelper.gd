@@ -215,7 +215,7 @@ func spawnPlayer(newPlayer):
 			var player1 = getPlayers().get_child(0)
 			spawnPosition = player1.movement.current_map_position
 		else:
-			spawnPosition = map.walkable_tiles.pick_random()
+			spawnPosition = map.spawnable_tiles.pick_random()
 	newPlayer.workTaskText.text = workTask.getWorkTask(self.level)
 	newPlayer.sendPos.rpc(map.tile_map.map_to_local( spawnPosition ))
 

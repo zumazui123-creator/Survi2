@@ -88,6 +88,8 @@ func play(code: String) -> void:
 		# Parse command and args
 		line = Strings.remap_code_cmd_to_action("de", line)
 		var parts = line.split(" ", false)
+		if Multihelper.is_stopped:
+			return 
 		await execute_command(parts)
 	
 	# --- Reset Speed Bonus & Cyber Aura ---

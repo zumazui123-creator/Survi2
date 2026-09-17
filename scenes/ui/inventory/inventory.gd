@@ -88,13 +88,13 @@ func populateRecipes():
 	
 func itemSelected(id):
 	if id in Items.equips.keys():
-		player.player_items.tryEquipItem.rpc_id(1, id)
-	elif player.player_items.equippedItem:
-		player.player_items.unequipItem.rpc()
+		player.items.tryEquipItem.rpc_id(1, id)
+	elif player.items.equippedItem:
+		player.items.unequipItem.rpc()
 		
 	var consumeList := Items.consume.keys()
 	if id in consumeList:
-		player.player_items.consumeItem.rpc_id(1, id, Items.consume[id] ) 
+		player.items.consumeItem.rpc_id(1, id, Items.consume[id] ) 
 		
 func _on_craft_button_pressed():
 	if %craftCont.visible:

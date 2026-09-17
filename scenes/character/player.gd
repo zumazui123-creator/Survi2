@@ -45,7 +45,6 @@ func _ready():
 	movement.path_line = line
 	
 	Multihelper.data_loaded.connect(_on_multidata_received)
-	# ... (rest of existing code)
 	Multihelper.player_spawned.connect(_on_player_spawned_info)
 	Multihelper.player_disconnected.connect(disconnected)
 	

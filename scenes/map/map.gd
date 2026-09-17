@@ -5,6 +5,8 @@ var grassAtlasCoords = [Vector2i(0,0),Vector2i(1,0),Vector2i(2,0),Vector2i(3,0),
 var waterCoors 		 = [Vector2i(18,0), Vector2i(19,0)]
 var startFieldCoords = [Vector2i(23,4)]
 var blockFieldCoords = [Vector2i(20,4)]
+var treeCoors 		 = Vector2i(17,0)
+
 #var blockStoneCoors = [Vector2i(6,0),Vector2i(7,0),Vector2i(8,0),Vector2i(9,0), Vector2i(10,0)]
 
 var tileset_source = 1
@@ -23,6 +25,7 @@ var map_type : Node
 var spawnPosition = Vector2i(0,0)
 var endPosition = Vector2i(-10,-10)
 var walkable_tiles = []
+var spawnable_tiles = []
 
 var level_type = -1
 var level_no : int = -1
@@ -37,43 +40,28 @@ func generateMap(level_dict : Dictionary):
 	print("generated:"+str(level_dict))
 	level_no 	= level_dict["level"]
 	level_type 	= level_dict["type"]
+	tile_map 		 = $TileMap
+	tile_map.visible = true
 	
 	if level_type == Constants.MAP_MAIN:
-		var random_level = $MainLevelGenerator
-		tile_map 		 = $TileMap
-		tile_map.visible = true
-		random_level.generateMainMap(level_dict)
-		walkable_tiles 	= get_walkable_tiles(tile_map, grassAtlasCoords)
+		map_type  		=  get_node_or_null("MainLevelGenerator")
+		var tiles 	= map_type.generateMainMap(level_dict)
+		walkable_tiles = tiles[0]
+		spawnable_tiles = tiles[1]
 		set_level_options(level_no)
 		return 
-			
-		#if level_no > 0:
-			#var level_path : String = "res://scenes/map/levels/level"+str(level_no)+".tscn"
-			#var scene : PackedScene	= load(level_path)
-			#var level_main : Node	= scene.instantiate()
-			#walkable_tiles 	= get_walkable_tiles(level_main.layer, grassAtlasCoords)
-			#tile_map = level_main.layer
-			#set_level_options(0)
-			#add_child(level_main)
-			
 
 	if level_type == Constants.MAP_LABY:
 		if level_no % 2 == 0:
-			tile_map 		 = $TileMap
-			tile_map.visible = true
-			map_type  		 =  get_node_or_null("Labyrinth")
+			map_type  		 =  get_node_or_null("LabyrinthGenerator")
 			walkable_tiles 	 = map_type.generateLabyrinth(level_no)
 		
 	if level_type == Constants.MAP_TOURMENT:
-		tile_map 		 = $TileMap
-		tile_map.visible = true
-		map_type  		=  get_node_or_null("Labyrinth")
+		map_type  		=  get_node_or_null("LabyrinthGenerator")
 		walkable_tiles 	= map_type.generateLabyrinthWithSeed(level_no+15,42+level_no)
 		
 	if level_type == Constants.MAP_KI:
-		tile_map 		 = $TileMap
-		tile_map.visible = true
-		map_type  		=  get_node_or_null("MainLevel")
+		map_type  		=  get_node_or_null("MainLevelGenerator")
 		walkable_tiles 	= map_type.generateMainMap(0)
 
 
@@ -134,7 +122,7 @@ func set_level_options(level : int):
 
 
 
-func get_walkable_tiles(
+func get_walkable_tiles2(
 		layer: TileMapLayer,
 		grass_atlas_coords
 	) :

@@ -17,6 +17,7 @@ var consume := {
 }
 
 var objects := {
+	"tree0": {"id": "tree0", "hp": 40, "tool": Strings.TOOL_AXE, "drops": {"wood": {"min": 1, "max": 2}}},
 	"tree1": {"id": "tree1", "hp": 40, "tool": Strings.TOOL_AXE, "drops": {"wood": {"min": 1, "max": 2}}},
 	"rock1": {"id": "rock1", "hp": 70, "tool": Strings.TOOL_PICKAXE, "drops": {"stone": {"min": 1, "max": 3}}},
 	"tree2": {"id": "tree2", "hp": 50, "tool": Strings.TOOL_AXE, "drops": {"wood": {"min": 2, "max": 4}}},

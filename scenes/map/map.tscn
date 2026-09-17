@@ -16,7 +16,7 @@ script = ExtResource("1_gggpt")
 visible = false
 tile_set = ExtResource("2_c3hbg")
 
-[node name="Labyrinth" type="Node" parent="." unique_id=16864905]
+[node name="LabyrinthGenerator" type="Node" parent="." unique_id=16864905]
 script = ExtResource("3_qpycp")
 
 [node name="MainLevelGenerator" type="Node" parent="." unique_id=784512027]

@@ -3,8 +3,9 @@ class_name Objects
 
 var initialSpawnObjects := Constants.INITAL_OBJECTS
 var maxObjects 	  		:= Constants.MAX_OBJECTS
-var objectWaveCount 		:= 10
+var objectWaveCount 	:= 10
 var spawnedObjects 	  	:= 0
+
 
 func _ready() -> void:
 	if Multihelper.level and "size" in Multihelper.level:
@@ -14,13 +15,14 @@ func _ready() -> void:
 		objectWaveCount = max(1, int(objectWaveCount * scale_factor))
 		print(maxObjects)
 	print("ready  Breakables")
-
+	
+	
 func spawnObjects(amount):
 	var breakableScene := preload("res://scenes/spawn/object/breakable.tscn")
 	var spawnedThisWave := 0
 	for i in range(amount):
 		var spawnPos = Multihelper.map.tile_map.map_to_local(
-							Multihelper.map.walkable_tiles.pick_random())
+							Multihelper.map.spawnable_tiles.pick_random())
 		var breakable := breakableScene.instantiate()
 		var objectId = Items.objects.keys().pick_random()
 		self.add_child(breakable,true)
