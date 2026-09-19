@@ -10,7 +10,7 @@ var act : String = ""
 @export var movement : Node 
 @export var animation: AnimationPlayer 
 @export var combat : Node 
-@export var building: PlayerBuilding
+@export var building: Node
 @export  var items : Node 
 @export  var code_edit : Node
 @export var playerName : String:

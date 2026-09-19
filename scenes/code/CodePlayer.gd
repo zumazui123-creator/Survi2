@@ -143,7 +143,8 @@ func build(cmd,parts) -> void:
 			# Convert to world position for building placement
 			if player.building:
 				player.building.build(type, target_map_pos)
-				
+			else:
+				print("player.building is null")
 		elif cmd == Strings.ACTION_PAINT:
 			if player.player_building:
 				player.building.paint(type, target_map_pos)
