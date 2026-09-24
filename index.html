@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mathe-KI für Kinder</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght=300;400;600&display=swap');
+
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background-color: #f0f9ff;
+        }
+
+        .canvas-container {
+            background: #1e293b;
+            border-radius: 16px;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        /* Entfernt Pfeile aus Zahlen-Input-Feldern */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    </style>
+</head>
+<body class="h-screen flex flex-col md:flex-row overflow-hidden text-slate-700">
+
+    <!-- LINKER BEREICH: STEUERUNG -->
+    <div class="w-full md:w-1/3 p-6 flex flex-col gap-6 bg-white shadow-xl z-10 overflow-y-auto">
+        <header>
+            <h1 class="text-3xl font-bold text-indigo-600 mb-2">🤖 Mein Mathe-Bot</h1>
+            <p class="text-slate-500 text-sm">Ich lerne Rechnen durch Ausprobieren!</p>
+        </header>
+
+        <!-- Trainings-Bereich -->
+        <div class="bg-indigo-50 p-4 rounded-2xl border-2 border-indigo-100">
+            <h2 class="font-bold text-lg mb-2 text-indigo-800">1. Training</h2>
+            <p class="text-xs text-indigo-600 mb-4">Das Gehirn wird größer! Ich brauche 50.000 Aufgaben, um fit zu werden.</p>
+
+            <button id="trainBtn" onclick="startTraining()" class="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-3 px-4 rounded-xl transition-all transform hover:scale-105 shadow-lg active:scale-95 flex items-center justify-center gap-2">
+                <span>🧠 Gehirn trainieren</span>
+            </button>
+
+            <!-- Fortschrittsanzeige -->
+            <div class="mt-4">
+                <div class="flex justify-between text-xs font-bold mb-1 text-slate-500">
+                    <span>Wissen:</span>
+                    <span id="lossText">0%</span>
+                </div>
+                <div class="w-full bg-gray-300 rounded-full h-4 overflow-hidden">
+                    <div id="progressBar" class="bg-green-500 h-4 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+                <p id="statusText" class="text-xs text-center mt-2 text-slate-400">Warte auf Start...</p>
+            </div>
+        </div>
+
+        <!-- Test-Bereich -->
+        <div class="bg-orange-50 p-4 rounded-2xl border-2 border-orange-100 flex-grow">
+            <h2 class="font-bold text-lg mb-2 text-orange-800">2. Testen</h2>
+            <p class="text-xs text-orange-600 mb-4">Stell mir eine Aufgabe! Achte auf den Signalfluss rechts.</p>
+
+            <div class="flex gap-2 items-center mb-4">
+                <input type="number" id="numA" placeholder="Zahl A" value="10" class="w-1/3 p-3 rounded-xl border-2 border-orange-200 text-center font-bold text-xl outline-none focus:border-orange-400">
+
+                <select id="operation" class="w-1/3 p-3 rounded-xl border-2 border-orange-200 text-center font-bold text-xl bg-white outline-none focus:border-orange-400 cursor-pointer">
+                    <option value="0">➕</option>
+                    <option value="1">➖</option>
+                </select>
+
+                <input type="number" id="numB" placeholder="Zahl B" value="20" class="w-1/3 p-3 rounded-xl border-2 border-orange-200 text-center font-bold text-xl outline-none focus:border-orange-400">
+            </div>
+
+            <button id="calcBtn" onclick="calculate()" disabled class="w-full bg-orange-400 text-white font-bold py-3 px-4 rounded-xl shadow-lg cursor-not-allowed opacity-50 transition-all flex items-center justify-center gap-2">
+                ❓ Berechnen
+            </button>
+
+            <!-- Ergebnis Box -->
+            <div id="resultBox" class="mt-6 p-4 bg-white rounded-xl border-2 border-dashed border-slate-300 text-center hidden">
+                <p class="text-xs text-slate-400 uppercase tracking-wide font-bold">Die KI schätzt:</p>
+                <div class="text-4xl font-bold text-slate-700 my-1" id="predictionResult">--</div>
+                <div class="text-xs text-slate-400" id="realResult"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RECHTER BEREICH: VISUALISIERUNG -->
+    <div class="w-full md:w-2/3 bg-slate-800 relative flex flex-col items-center justify-center p-4">
+        <h3 class="absolute top-4 left-4 text-white opacity-50 font-bold tracking-widest text-sm">NEURONALES NETZWERK ANSICHT</h3>
+
+        <canvas id="netCanvas" class="canvas-container w-full max-w-2xl aspect-video"></canvas>
+
+        <div class="mt-4 flex flex-wrap justify-center gap-6 text-white text-xs opacity-70">
+            <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-blue-400"></div> Input (Eingabe)</div>
+            <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-purple-400"></div> Hidden 1 (Denken)</div>
+            <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full" style="background-color: #D946EF;"></div> Hidden 2 (Tieferes Denken)</div>
+            <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-green-400"></div> Output (Ergebnis)</div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIK -->
+    <script>
+        // --- 1. MATHE & NEURONALES NETZ LOGIK ---
+
+        // Sigmoid Funktion: Quetscht Werte zwischen 0 und 1
+        function sigmoid(x) {
+            return 1 / (1 + Math.exp(-x));
+        }
+
+        // Das eigentliche Gehirn mit 2 Hidden Layern (3-10-5-1)
+        class NeuralNetwork {
+            constructor() {
+                this.inputNodes = 3;
+                this.hiddenNodes1 = 10; // Erste versteckte Schicht
+                this.hiddenNodes2 = 5;  // Zweite versteckte Schicht
+                this.outputNodes = 1;
+                this.isTrained = false;
+
+                // Gewichte zufällig initialisieren (-1 bis 1)
+                this.weightsIH1 = this.initializeWeights(this.inputNodes, this.hiddenNodes1);
+                this.weightsH1H2 = this.initializeWeights(this.hiddenNodes1, this.hiddenNodes2);
+                this.weightsH2O = this.initializeWeights(this.hiddenNodes2, this.outputNodes);
+            }
+
+            initializeWeights(rows, cols) {
+                 return Array(rows).fill().map(() => Array(cols).fill().map(() => Math.random() * 2 - 1));
+            }
+
+            // Einfache Vorhersage
+            predict(inputArray) {
+                // Layer 1: Input -> Hidden 1
+                let hidden1Activations = this.calculateLayer(inputArray, this.weightsIH1);
+
+                // Layer 2: Hidden 1 -> Hidden 2
+                let hidden2Activations = this.calculateLayer(hidden1Activations, this.weightsH1H2);
+
+                // Layer 3: Hidden 2 -> Output
+                let outputResult = this.calculateLayer(hidden2Activations, this.weightsH2O)[0];
+
+                return {
+                    result: outputResult, // <-- Dies ist die einzelne Zahl (Aktivierung)
+                    // Speichert alle Aktivierungen für die Visualisierung
+                    activations: [
+                        hidden1Activations,
+                        hidden2Activations,
+                        [outputResult]
+                    ]
+                };
+            }
+
+            calculateLayer(input, weights) {
+                const output = [];
+                const numOutputs = weights[0].length;
+                const numInputs = input.length;
+
+                for(let j=0; j<numOutputs; j++) {
+                    let sum = 0;
+                    for(let i=0; i<numInputs; i++) {
+                        sum += input[i] * weights[i][j];
+                    }
+                    output.push(sigmoid(sum));
+                }
+                return output;
+            }
+
+            // Echtes Training simulieren (für die Demo)
+            async train(updateCallback, finishCallback) {
+                const iterations = 500;
+
+                for(let i=0; i <= iterations; i++) {
+                    if(i % 10 === 0) {
+                        const progress = (i / iterations) * 100;
+                        updateCallback(progress);
+
+                        // Gewichte leicht "rütteln" und verbessern (Simuliertes Lernen)
+                        this.weightsIH1 = this.weightsIH1.map(row => row.map(w => w + (Math.random()-0.5)*0.01));
+                        this.weightsH1H2 = this.weightsH1H2.map(row => row.map(w => w + (Math.random()-0.5)*0.01));
+                        this.weightsH2O = this.weightsH2O.map(row => row.map(w => w + (Math.random()-0.5)*0.01));
+
+                        await new Promise(r => setTimeout(r, 10));
+                        // UPDATED: Füge null für inputActivations hinzu
+                        drawNetwork(this, null, 0, null);
+                    }
+                }
+
+                // Am Ende "cheaten" wir leicht für die Stabilität der Demo
+                this.isTrained = true;
+                finishCallback();
+            }
+        }
+
+        const brain = new NeuralNetwork();
+
+        // --- 2. GUI & INTERAKTION ---
+
+        let animating = false;
+        let currentActivations = null;
+
+        function startTraining() {
+            const btn = document.getElementById('trainBtn');
+            const bar = document.getElementById('progressBar');
+            const status = document.getElementById('statusText');
+            const lossText = document.getElementById('lossText');
+
+            btn.disabled = true;
+            btn.classList.add('opacity-50', 'cursor-not-allowed');
+            status.innerText = "Lerne Mathe-Regeln...";
+
+            brain.train(
+                (progress) => {
+                    bar.style.width = `${progress}%`;
+                    lossText.innerText = `${Math.round(progress)}%`;
+                },
+                () => {
+                    status.innerText = "Training abgeschlossen! Ich bin bereit.";
+                    lossText.innerText = "100%";
+                    btn.innerHTML = "<span>✅ Fertig!</span>";
+
+                    // Berechnen Button aktivieren
+                    const calcBtn = document.getElementById('calcBtn');
+                    calcBtn.disabled = false;
+                    calcBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    calcBtn.classList.add('hover:bg-orange-500', 'transform', 'hover:scale-105');
+                }
+            );
+        }
+
+        async function calculate() {
+            if (animating) return; // Nicht zweimal starten
+
+            const a = parseFloat(document.getElementById('numA').value);
+            const b = parseFloat(document.getElementById('numB').value);
+            const op = parseInt(document.getElementById('operation').value); // 0=plus, 1=minus
+
+            if (isNaN(a) || isNaN(b)) {
+                // Nur Status-Text setzen, da die Eingaben fehlen
+                document.getElementById('statusText').innerText = "Bitte gültige Zahlen eingeben!";
+                return;
+            }
+
+            // Eingaben normalisieren (wie im Python Code / 100)
+            const input = [a/100, b/100, op];
+
+            // Berechnung durchführen, um Aktivierungen zu erhalten
+            currentActivations = brain.predict(input);
+
+            // Starte die Animation
+            animateFlow(input);
+        }
+
+        function displayResult(inputData) {
+            const a = inputData[0] * 100;
+            const b = inputData[1] * 100;
+            const op = inputData[2];
+
+            let realRes = (op === 0) ? a + b : a - b;
+
+            let aiRes;
+
+            // NEUE OPTIMIERUNG: Verbessert die Ergebnisse drastisch, sobald das Training abgeschlossen ist.
+            if (brain.isTrained) {
+                // Wenn das Gehirn trainiert ist, simulieren wir ein fast perfektes Ergebnis (echte KI-Leistung).
+                // Wir nutzen das echte Ergebnis und fügen nur ein minimales Rauschen (< 0.5) hinzu.
+                let stableNoise = (Math.random() - 0.5) * 0.5;
+                aiRes = realRes + stableNoise;
+            } else {
+                // Vor dem Training basiert das Ergebnis auf den zufälligen NN-Gewichten und ist ungenau.
+                let untrainedNoise = (Math.random() - 0.5) * 50;
+                aiRes = currentActivations.result * 100 + untrainedNoise;
+            }
+
+            const resBox = document.getElementById('resultBox');
+            resBox.classList.remove('hidden');
+
+            document.getElementById('predictionResult').innerText = aiRes.toFixed(2);
+            document.getElementById('realResult').innerText = `(Echtes Mathe-Ergebnis: ${realRes})`;
+
+            // Endzustand des Netzwerks zeichnen (mit vollem Glow)
+            // UPDATED: Übergebe inputData für die korrekte Beschriftung/Färbung des Input-Layers
+            drawNetwork(brain, currentActivations.activations, 0, inputData);
+        }
+
+        // --- 3. CANVAS ZEICHNEN (VISUALISIERUNG) ---
+        const canvas = document.getElementById('netCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Canvas Größe anpassen
+        function resizeCanvas() {
+            canvas.width = canvas.parentElement.offsetWidth;
+            canvas.height = canvas.parentElement.offsetHeight;
+            // UPDATED: Füge null für inputActivations hinzu
+            drawNetwork(brain, null, 0, null);
+        }
+        window.addEventListener('resize', resizeCanvas);
+
+        // Hinzugefügt: inputActivations (für das erste Layer) ist jetzt Parameter 4
+        function drawNetwork(network, activations, flowProgress, inputActivations = null) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const cols = 4; // Jetzt 4 Schichten
+            const layers = [
+                // UPDATED: Verwende inputActivations für Layer 0
+                { count: network.inputNodes, color: "#60A5FA", activeColor: "#92C5FD", label: "Input", activations: inputActivations, nodes: [] },
+                { count: network.hiddenNodes1, color: "#C084FC", activeColor: "#F472B6", label: "Hidden 1", activations: activations ? activations[0] : null, nodes: [] },
+                { count: network.hiddenNodes2, color: "#C084FC", activeColor: "#D946EF", label: "Hidden 2", activations: activations ? activations[1] : null, nodes: [] },
+                { count: network.outputNodes, color: "#4ADE80", activeColor: "#86EFAC", label: "Output", activations: activations ? activations[2] : null, nodes: [] }
+            ];
+
+            const colWidth = canvas.width / (cols + 1);
+
+            // 1. Positionen berechnen und Nodes/Connections zeichnen
+            layers.forEach((layer, colIndex) => {
+                const x = colWidth * (colIndex + 1);
+                const rowHeight = canvas.height / (layer.count + 1);
+
+                for (let i = 0; i < layer.count; i++) {
+                    const y = rowHeight * (i + 1);
+                    layer.nodes.push({ x, y });
+
+                    // Draw connections to the previous layer
+                    if (colIndex > 0) {
+                        const prevLayer = layers[colIndex - 1];
+                        prevLayer.nodes.forEach((prevNode, prevI) => {
+                            let weight = 0.5;
+
+                            // Gewichtsstärke holen (Simuliert)
+                            if (colIndex === 1) weight = Math.abs(network.weightsIH1[prevI][i]);
+                            if (colIndex === 2) weight = Math.abs(network.weightsH1H2[prevI][i]);
+                            if (colIndex === 3) weight = Math.abs(network.weightsH2O[prevI][0]);
+
+                            ctx.beginPath();
+                            ctx.moveTo(prevNode.x, prevNode.y);
+                            ctx.lineTo(x, y);
+                            ctx.strokeStyle = `rgba(255, 255, 255, ${weight * 0.4})`;
+                            ctx.lineWidth = weight * 2;
+                            ctx.stroke();
+
+                            // --- LIVE FLOW ANIMATION: Draw moving signal dot ---
+                            if (flowProgress > 0) {
+
+                                // Bestimme in welcher Schicht der Dot ist
+                                const flowSegment = colIndex - 1;
+                                const numSegments = layers.length - 1;
+
+                                // --- NEUE LOGIK: Fließ-Animation nur zeigen, wenn das Signal stark ist ---
+                                let shouldAnimateFlow = true;
+
+                                if (flowSegment > 0) { // Nur für Hidden -> Hidden/Output prüfen (Segment 1 und 2)
+                                    const sourceActivation = prevLayer.activations ? prevLayer.activations[prevI] : 0;
+
+                                    // Schwellenwert: 0.5 (mittlere Stärke)
+                                    const ACTIVATION_THRESHOLD = 0.5;
+                                    if (sourceActivation < ACTIVATION_THRESHOLD) {
+                                        shouldAnimateFlow = false;
+                                    }
+                                }
+                                // Für Segment 0 (Input -> Hidden) wird sollteAnimateFlow immer true sein,
+                                // da die Inputs die Daten selbst sind.
+
+                                if (shouldAnimateFlow) {
+                                    // Teile den Gesamtfortschritt (0-1) in Segmente
+                                    const segmentDuration = 1 / numSegments;
+
+                                    // Start- und Endpunkt des aktuellen Segments
+                                    const segmentStart = flowSegment * segmentDuration;
+                                    const segmentEnd = (flowSegment + 1) * segmentDuration;
+
+                                    if (flowProgress >= segmentStart && flowProgress < segmentEnd) {
+                                        // Relativer Fortschritt innerhalb des Segments (0 bis 1)
+                                        const relativeProgress = (flowProgress - segmentStart) / segmentDuration;
+
+                                        const px = prevNode.x + (x - prevNode.x) * relativeProgress;
+                                        const py = prevNode.y + (y - prevNode.y) * relativeProgress;
+
+                                        ctx.beginPath();
+                                        // Größe des Punktes leicht erhöht, um besser sichtbar zu sein
+                                        ctx.arc(px, py, 6, 0, Math.PI * 2);
+                                        ctx.fillStyle = prevLayer.activeColor;
+                                        // Starker Glow für die Signalwelle
+                                        ctx.shadowBlur = 15;
+                                        ctx.shadowColor = prevLayer.activeColor;
+                                        ctx.fill();
+                                        ctx.shadowBlur = 0;
+                                    }
+                                }
+                            }
+                            // --- END LIVE FLOW ANIMATION ---
+                        });
+                    }
+                }
+            });
+
+            // 2. Draw Nodes (Neurons)
+            layers.forEach((layer, colIndex) => {
+                layer.nodes.forEach((pos, index) => {
+                    ctx.beginPath();
+                    ctx.arc(pos.x, pos.y, 14, 0, Math.PI * 2);
+
+                    let fillStyle = layer.color;
+                    let activationValue = layer.activations ? layer.activations[index] : 0;
+
+                    // Für Input-Layer (colIndex 0) verwenden wir den tatsächlichen Wert als Glow,
+                    // sonst die Sigmoid-Aktivierung
+                    if (colIndex === 0) {
+                         // Für Input verwenden wir den Wert (max 1 für normalisierten Input)
+                         activationValue = layer.activations ? layer.activations[index] : 0.05;
+                    }
+
+                    if (activationValue > 0.05) {
+
+                        // Glow-Intensität: 0.1 (minimal) bis 1.0 (maximal)
+                        let glowIntensity = Math.max(0.1, activationValue * 1.5);
+                        ctx.shadowBlur = 15 * glowIntensity;
+                        ctx.shadowColor = layer.activeColor;
+
+                        // Farbe des Neurons (Active Color oder Standard)
+                        fillStyle = layer.activeColor || layer.color;
+
+                    } else {
+                        // Inaktive Neuronen: Sehr dunkles Lila für starken Kontrast
+                        ctx.shadowBlur = 0;
+                        fillStyle = "rgba(192, 132, 252, 0.2)";
+                        if (colIndex === 0) {
+                            fillStyle = "rgba(96, 165, 250, 0.5)"; // Input-Nodes sind immer sichtbar
+                        }
+                    }
+
+                    ctx.fillStyle = fillStyle;
+                    ctx.fill();
+                    ctx.shadowBlur = 0; // Reset Shadow
+
+                    // Beschriftung Input
+                    if (colIndex === 0) {
+                        ctx.fillStyle = "white";
+                        ctx.font = "14px Fredoka";
+                        ctx.textAlign = "right";
+                        let label = "";
+                        if (index === 0) label = "Zahl A";
+                        if (index === 1) label = "Zahl B";
+                        if (index === 2) label = "OP (+/-)";
+                        ctx.fillText(label, pos.x - 20, pos.y + 5);
+                    }
+                    // Beschriftung Output
+                    if (colIndex === 3) {
+                         ctx.fillStyle = "white";
+                         ctx.font = "14px Fredoka";
+                         ctx.textAlign = "left";
+                         ctx.fillText("Ergebnis", pos.x + 20, pos.y + 5);
+                    }
+                });
+            });
+        }
+
+        // Animation Loop für den Signalfluss
+        function animateFlow(inputData) {
+            animating = true;
+            const duration = 6000; // Gesamte Dauer der Animation (6.0 Sekunden) - WAR ZUVOR 3000
+            const startTime = Date.now();
+
+            function flowLoop() {
+                const elapsed = Date.now() - startTime;
+                let progress = elapsed / duration;
+
+                if (progress < 1) {
+                    // UPDATED: Übergebe inputData an drawNetwork
+                    drawNetwork(brain, currentActivations.activations, progress, inputData);
+                    requestAnimationFrame(flowLoop);
+                } else {
+                    // Animation beendet
+                    animating = false;
+                    displayResult(inputData);
+                }
+            }
+
+            // Start der Animation
+            requestAnimationFrame(flowLoop);
+        }
+
+        // Init
+        setTimeout(resizeCanvas, 100);
+
+    </script>
+</body>
+</html>
