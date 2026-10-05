@@ -1,0 +1,583 @@
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/player_workspace/player_local_ui.gd" id="1_ui"]
+[ext_resource type="Script" uid="uid://dukylmcbt25lk" path="res://scenes/character/builder.gd" id="2_builder"]
+[ext_resource type="Script" uid="uid://ddrqxuc43a4rn" path="res://scenes/character/components/function_handler.gd" id="3_function"]
+[ext_resource type="Script" uid="uid://dsnm03bgpmori" path="res://scenes/character/components/code.gd" id="4_code"]
+[ext_resource type="Script" uid="uid://dngrh67x5tj38" path="res://scenes/character/components/texture_rect.gd" id="5_texture_rect"]
+[ext_resource type="Texture2D" uid="uid://ctsuis1o5sca5" path="res://assets/ui/itemSlotSelected.png" id="6_selected_texture"]
+[ext_resource type="Script" uid="uid://jwr2prr58xmw" path="res://scenes/character/ui/goal_texture_rect.gd" id="7_goal_texture"]
+[ext_resource type="Script" uid="uid://3u5wolperx1b" path="res://scenes/code/CodePlayer.gd" id="8_code_player"]
+
+[sub_resource type="CodeHighlighter" id="CodeHighlighter_vreni"]
+number_color = Color(0.16078432, 0.5294118, 0.36862746, 1)
+
+[node name="PlayerLocalUI" type="Node"]
+script = ExtResource("1_ui")
+
+[node name="FunctionHandler" type="Node" parent="."]
+script = ExtResource("3_function")
+
+[node name="Builder" type="Node" parent="."]
+script = ExtResource("2_builder")
+
+[node name="CodeLayer" type="CanvasLayer" parent="." unique_id=336348594]
+offset = Vector2(640, 360)
+transform = Transform2D(1, 0, 0, 1, 640, 360)
+
+[node name="Code" type="Node2D" parent="CodeLayer" unique_id=52590820 node_paths=PackedStringArray("code_player")]
+z_index = 6
+z_as_relative = false
+position = Vector2(218, -371)
+script = ExtResource("4_code")
+code_player = NodePath("CodePlayer")
+
+[node name="TabContainer" type="TabContainer" parent="CodeLayer/Code" unique_id=1538183637]
+offset_left = 67.0
+offset_top = 14.0
+offset_right = 422.0
+offset_bottom = 724.0
+size_flags_vertical = 3
+tab_alignment = 1
+current_tab = 0
+
+[node name="Code" type="VBoxContainer" parent="CodeLayer/Code/TabContainer" unique_id=1184559495]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 3
+metadata/_tab_index = 0
+
+[node name="HauptCodeLabel" type="Label" parent="CodeLayer/Code/TabContainer/Code" unique_id=1457924743]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+text = "Haupt-Code"
+
+[node name="CodeEdit" type="CodeEdit" parent="CodeLayer/Code/TabContainer/Code" unique_id=1757023759]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 440)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/line_spacing = 3
+theme_override_font_sizes/font_size = 14
+scroll_smooth = true
+scroll_past_end_of_file = true
+syntax_highlighter = SubResource("CodeHighlighter_vreni")
+highlight_current_line = true
+symbol_tooltip_on_hover = true
+gutters_draw_line_numbers = true
+
+[node name="ButtonCotainer" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/Code" unique_id=1098950445]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 15
+
+[node name="PlayButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ButtonCotainer" unique_id=882962888]
+layout_mode = 2
+text = "Play"
+
+[node name="StopButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ButtonCotainer" unique_id=969813704]
+layout_mode = 2
+text = "Stop"
+
+[node name="CodeDeleteButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ButtonCotainer" unique_id=354657902]
+layout_mode = 2
+text = "Code lÃ¶schen"
+
+[node name="ActionsContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/Code" unique_id=1139331600]
+modulate = Color(1, 1, 1, 0.984314)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer" unique_id=1118339553]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="BewegContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer" unique_id=1303574342]
+layout_mode = 2
+
+[node name="BewegeLabel" type="Label" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer" unique_id=1542221444]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Bewege"
+
+[node name="ObenButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer" unique_id=827057773]
+layout_mode = 2
+text = "oben"
+
+[node name="LinksRechtsContainer" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer" unique_id=1051260093]
+layout_mode = 2
+theme_override_constants/separation = 9
+
+[node name="LinksButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer/LinksRechtsContainer" unique_id=75737517]
+layout_mode = 2
+text = "links"
+
+[node name="rechtsButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer/LinksRechtsContainer" unique_id=2008059962]
+layout_mode = 2
+text = "rechts"
+
+[node name="UntenButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer" unique_id=1412224385]
+layout_mode = 2
+text = "unten"
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer" unique_id=305099569]
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="Label" type="Label" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer2" unique_id=1930048048]
+layout_mode = 2
+text = "Action"
+
+[node name="attackeButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer2" unique_id=288217940]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+text = "attacke"
+
+[node name="sageButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer2" unique_id=568166206]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+text = "sage"
+
+[node name="VBoxContainer3" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer" unique_id=2079471987]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer3" unique_id=1616721237]
+layout_mode = 2
+text = "Funktion"
+
+[node name="ItemList" type="ItemList" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer3" unique_id=575498734]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+select_mode = 1
+auto_width = true
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer" unique_id=664948786]
+layout_mode = 2
+size_flags_vertical = 3
+alignment = 1
+
+[node name="createFunction" type="Button" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer2" unique_id=79635568]
+layout_mode = 2
+text = "Funktion Menu"
+
+[node name="loadFunction" type="Button" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer2" unique_id=1071860524]
+layout_mode = 2
+text = "Lade Funktionen"
+
+[node name="KI Playground" type="MarginContainer" parent="CodeLayer/Code/TabContainer" unique_id=1000470522]
+visible = false
+layout_mode = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 10
+metadata/_tab_index = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground" unique_id=717277918]
+layout_mode = 2
+theme_override_constants/separation = 25
+
+[node name="Paramcontainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer" unique_id=1034550588]
+layout_mode = 2
+
+[node name="KIConfLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer" unique_id=792466002]
+layout_mode = 2
+text = "KI Configurationen"
+horizontal_alignment = 1
+
+[node name="KiModelLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer" unique_id=1749922437]
+layout_mode = 2
+text = "Model: Neural Network"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer" unique_id=1688024044]
+layout_mode = 2
+
+[node name="stepsLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/HBoxContainer2" unique_id=1045248903]
+layout_mode = 2
+text = "Action-Schritte: "
+
+[node name="stepsEdit" type="LineEdit" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/HBoxContainer2" unique_id=1894936392]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "100"
+
+[node name="GridContainer" type="GridContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer" unique_id=1291591006]
+layout_mode = 2
+theme_override_constants/h_separation = 12
+columns = 3
+
+[node name="learnRateLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/GridContainer" unique_id=1493848835]
+layout_mode = 2
+text = "Lernrate: 0.004"
+
+[node name="learnRateBtnPlus" type="Button" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/GridContainer" unique_id=2016231900]
+layout_mode = 2
+text = "+"
+
+[node name="learnRateBtnMinus" type="Button" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/GridContainer" unique_id=1461493371]
+layout_mode = 2
+text = "-"
+
+[node name="exploreRateLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/GridContainer" unique_id=342505418]
+layout_mode = 2
+text = "Erforschungrate: 0.004"
+
+[node name="Button" type="Button" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/GridContainer" unique_id=846524826]
+layout_mode = 2
+text = "+"
+
+[node name="Button6" type="Button" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/GridContainer" unique_id=91335276]
+layout_mode = 2
+text = "-"
+
+[node name="RewardContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer" unique_id=1761456200]
+layout_mode = 2
+
+[node name="KiModelLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/RewardContainer" unique_id=2014271528]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Belohnungssystem"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/RewardContainer" unique_id=1848092692]
+layout_mode = 2
+
+[node name="WayLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/RewardContainer/HBoxContainer2" unique_id=1744230220]
+layout_mode = 2
+text = "nur moegliche Wege"
+
+[node name="WayCheckBox" type="CheckBox" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/RewardContainer/HBoxContainer2" unique_id=1338347329]
+layout_mode = 2
+button_pressed = true
+
+[node name="Label" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/RewardContainer" unique_id=883916502]
+visible = false
+layout_mode = 2
+text = "Kekse platzieren"
+
+[node name="GameSetContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer" unique_id=1191880012]
+layout_mode = 2
+
+[node name="GameSetLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer" unique_id=1397285321]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Game-Settings"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer" unique_id=118195405]
+layout_mode = 2
+
+[node name="SpeedLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2" unique_id=179140846]
+layout_mode = 2
+text = "Game-Speed: "
+
+[node name="Speed" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2" unique_id=664526434]
+layout_mode = 2
+text = "1"
+
+[node name="SpeedPlus" type="Button" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2" unique_id=1938951500]
+layout_mode = 2
+text = "+"
+
+[node name="SpeedMinus" type="Button" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2" unique_id=1024851392]
+layout_mode = 2
+text = "-"
+
+[node name="SpawnContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer" unique_id=507567459]
+layout_mode = 2
+
+[node name="SpawnTitle" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/SpawnContainer" unique_id=2015383879]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Spawn-Settings"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/SpawnContainer" unique_id=1285579958]
+layout_mode = 2
+
+[node name="TextureSpawn" type="TextureRect" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/SpawnContainer/HBoxContainer" unique_id=185019145]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+script = ExtResource("5_texture_rect")
+
+[node name="Label" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/SpawnContainer/HBoxContainer" unique_id=1974657243]
+layout_mode = 2
+text = "Spawn Mob: "
+
+[node name="OptionSpawn" type="OptionButton" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/SpawnContainer/HBoxContainer" unique_id=54962371]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="MoveContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer" unique_id=209659878]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/MoveContainer" unique_id=575204912]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Move-Settings"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/MoveContainer" unique_id=2002526501]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/MoveContainer/HBoxContainer" unique_id=926680482]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+tooltip_text = "goal_tile"
+texture = ExtResource("6_selected_texture")
+script = ExtResource("7_goal_texture")
+
+[node name="Label" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/MoveContainer/HBoxContainer" unique_id=32377616]
+layout_mode = 2
+text = "   Bewegung Ziel "
+
+[node name="FuncContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer" unique_id=1735334161]
+layout_mode = 2
+
+[node name="FuncLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/FuncContainer" unique_id=1996348255]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+text = "KI "
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/FuncContainer" unique_id=1643646615]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+
+[node name="StartKiButton" type="Button" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/FuncContainer/HBoxContainer" unique_id=316282103]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+text = "Start"
+
+[node name="StopKiButton" type="Button" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/FuncContainer/HBoxContainer" unique_id=695888154]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+text = "Stop"
+
+[node name="SaveKiButton" type="Button" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/FuncContainer/HBoxContainer" unique_id=593696690]
+layout_mode = 2
+text = "Speicher Ki Verhalten"
+
+[node name="Belohnung" type="MarginContainer" parent="CodeLayer/Code/TabContainer" unique_id=752890000]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 2
+
+[node name="MoveContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/Belohnung" unique_id=1410167063]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="CodeLayer/Code/TabContainer/Belohnung/MoveContainer" unique_id=303420302]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Belohnung-Settings"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/Belohnung/MoveContainer" unique_id=1529662817]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="CodeLayer/Code/TabContainer/Belohnung/MoveContainer/HBoxContainer" unique_id=1727016986]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+texture = ExtResource("6_selected_texture")
+script = ExtResource("5_texture_rect")
+
+[node name="Label" type="Label" parent="CodeLayer/Code/TabContainer/Belohnung/MoveContainer/HBoxContainer" unique_id=1503944505]
+layout_mode = 2
+text = "Bewegung Ziel Belohnung : "
+
+[node name="LineEdit" type="LineEdit" parent="CodeLayer/Code/TabContainer/Belohnung/MoveContainer/HBoxContainer" unique_id=832260504]
+layout_mode = 2
+text = "0.7"
+
+[node name="CodePlayer" type="Node" parent="CodeLayer/Code" unique_id=1473287517]
+script = ExtResource("8_code_player")
+metadata/_custom_type_script = "uid://3u5wolperx1b"
+
+[node name="PopupFunction" type="PopupPanel" parent="CodeLayer" unique_id=1573069857]
+unique_name_in_owner = true
+oversampling_override = 1.0
+title = "Funktionen"
+size = Vector2i(559, 478)
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CodeLayer/PopupFunction" unique_id=1817172930]
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 555.0
+offset_bottom = 474.0
+grow_vertical = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_constants/separation = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CodeLayer/PopupFunction/HBoxContainer" unique_id=1023878274]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer" unique_id=1285933140]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=359106307]
+layout_mode = 2
+text = "Funktionsname: "
+
+[node name="InputFuncName" type="LineEdit" parent="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=706551571]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+max_length = 30
+
+[node name="CodeEdit" type="CodeEdit" parent="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer" unique_id=881055132]
+custom_minimum_size = Vector2(400, 400)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+scroll_smooth = true
+scroll_past_end_of_file = true
+highlight_current_line = true
+symbol_tooltip_on_hover = true
+gutters_draw_bookmarks = true
+gutters_draw_line_numbers = true
+
+[node name="BtnContainer" type="HBoxContainer" parent="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer" unique_id=1176897146]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 20
+
+[node name="CreateBtn" type="Button" parent="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer/BtnContainer" unique_id=531604751]
+layout_mode = 2
+text = "Erstellen"
+
+[node name="ExitBtn" type="Button" parent="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer/BtnContainer" unique_id=913988223]
+layout_mode = 2
+text = "Abbrechen"
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="CodeLayer/PopupFunction/HBoxContainer" unique_id=1857271388]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 15
+
+[node name="Label" type="Label" parent="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer2" unique_id=1289616111]
+layout_mode = 2
+text = "Funktionsliste"
+
+[node name="FuncList" type="ItemList" parent="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer2" unique_id=1811930146]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+item_count = 1
+item_0/text = "Test2"
+
+[node name="PopupSettings" type="PopupPanel" parent="." unique_id=796379025]
+transparent_bg = false
+oversampling_override = 1.0
+title = "Settings"
+initial_position = 1
+size = Vector2i(243, 109)
+transparent = false
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PopupSettings" unique_id=385842997]
+top_level = true
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 239.0
+offset_bottom = 105.0
+size_flags_horizontal = 6
+size_flags_vertical = 6
+alignment = 1
+
+[node name="Label" type="Label" parent="PopupSettings/VBoxContainer" unique_id=601219807]
+layout_mode = 2
+text = "Main-Settings"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="PopupSettings/VBoxContainer" unique_id=1975201783]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PopupSettings/VBoxContainer" unique_id=1273410260]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PopupSettings/VBoxContainer/HBoxContainer" unique_id=969707803]
+layout_mode = 2
+text = "Schwerigkeitsgrad:"
+
+[node name="DifModeButton" type="OptionButton" parent="PopupSettings/VBoxContainer/HBoxContainer" unique_id=770128902]
+unique_name_in_owner = true
+layout_mode = 2
+selected = 0
+item_count = 3
+popup/item_0/text = "Leicht"
+popup/item_0/id = 0
+popup/item_1/text = "Hart"
+popup/item_1/id = 1
+popup/item_2/text = "Horror"
+popup/item_2/id = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="PopupSettings/VBoxContainer" unique_id=1762720176]
+layout_mode = 2
+
+[node name="backToMenu" type="Button" parent="PopupSettings/VBoxContainer/HBoxContainer2" unique_id=1632201480]
+layout_mode = 2
+text = "Exit Game"
+
+[node name="SettingsOkBtn" type="Button" parent="PopupSettings/VBoxContainer/HBoxContainer2" unique_id=720929007]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "OK"
+
+[node name="PopupInfo" type="PopupPanel" parent="." unique_id=1022056431]
+transparent_bg = false
+oversampling_override = 1.0
+initial_position = 1
+size = Vector2i(208, 108)
+visible = true
+transparent = false
+
+[node name="workTaskText" type="RichTextLabel" parent="PopupInfo" unique_id=448736662]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 20)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -50.0
+offset_right = 100.0
+offset_bottom = 50.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 4
+bbcode_enabled = true
+text = "Geh zum weiÃŸen Feld!"
+fit_content = true
+
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ButtonCotainer/PlayButton" to="CodeLayer/Code" method="_on_play_button_pressed"]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ButtonCotainer/StopButton" to="CodeLayer/Code" method="_on_stop_button_pressed"]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ButtonCotainer/CodeDeleteButton" to="CodeLayer/Code" method="_on_code_delete_button_pressed"]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer/ObenButton" to="CodeLayer/Code" method="_on_oben_button_pressed" flags=18]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer/LinksRechtsContainer/LinksButton" to="CodeLayer/Code" method="_on_links_button_pressed" flags=18]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer/LinksRechtsContainer/rechtsButton" to="CodeLayer/Code" method="_on_rechts_button_pressed" flags=18]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer/UntenButton" to="CodeLayer/Code" method="_on_unten_button_pressed" flags=18]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer2/attackeButton" to="CodeLayer/Code" method="_on_attacke_button_pressed" flags=18]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer2/sageButton" to="CodeLayer/Code" method="_on_sage_button_pressed" flags=18]
+[connection signal="item_activated" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer3/ItemList" to="CodeLayer/Code" method="_on_item_list_item_activated"]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer2/createFunction" to="CodeLayer/Code" method="_on_create_function_pressed"]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer2/loadFunction" to="CodeLayer/Code" method="_on_load_function_pressed"]
+[connection signal="item_selected" from="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/SpawnContainer/HBoxContainer/OptionSpawn" to="Builder" method="_on_option_button_item_selected"]
+[connection signal="pressed" from="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer/BtnContainer/CreateBtn" to="CodeLayer/Code" method="_on_create_btn_pressed"]
+[connection signal="item_activated" from="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer2/FuncList" to="FunctionHandler" method="_on_func_list_item_activated"]
+[connection signal="pressed" from="PopupSettings/VBoxContainer/HBoxContainer2/backToMenu" to="." method="_on_back_to_menu_pressed"]
+[connection signal="pressed" from="PopupSettings/VBoxContainer/HBoxContainer2/SettingsOkBtn" to="." method="_on_settings_ok_pressed"]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2/SpeedPlus" to="." method="_on_speed_plus_pressed"]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2/SpeedMinus" to="." method="_on_speed_minus_pressed"]

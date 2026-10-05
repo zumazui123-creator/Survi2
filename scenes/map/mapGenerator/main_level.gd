@@ -53,5 +53,5 @@ func spawnTrees(spawnPos : Vector2i):
 	var objectId = Items.objects.get("tree0").get("id")
 	self.add_child(breakable,true)
 	breakable.objectId = objectId
-	breakable.position = Multihelper.map.tile_map.map_to_local( spawnPos )
+	breakable.position = map.tile_map.map_to_local(spawnPos)
 	

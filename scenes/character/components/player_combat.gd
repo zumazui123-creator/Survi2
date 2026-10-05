@@ -63,14 +63,14 @@ func punchCheckCollision():
 
 @rpc("any_peer", "reliable")
 func sendProjectile(towards):
-	Items.spawnProjectile(player, spawnsProjectile, towards, Strings.GROUP_DAMAGEABLE)
+	WorldEntitySpawner.get_for(self).spawn_projectile(player, spawnsProjectile, towards, Strings.GROUP_DAMAGEABLE)
 
 
 @rpc("authority", "call_local", "reliable")
 func increaseScore(by):
 	# Stats werden jetzt über den Status erhöht
 	player.status.hp += by * 5
-	player.status.maxHP += by * 5
+	player.status.max_hp += by * 5
 	player.status.attack_damage += by
 	player.status.gain_exp(10*by)
 	Multihelper.spawnedPlayers[int(str(player.name))]["score"] += by
@@ -99,7 +99,7 @@ func die():
 		return
 	var peerId := int(str(player.name))
 	Multihelper._deregister_character.rpc(peerId)
-	player.p_items.dropInventory()
+	player.items.dropInventory()
 	Multihelper.showSpawnUI.rpc_id(peerId)
 	player.queue_free()
 

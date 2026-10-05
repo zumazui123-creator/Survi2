@@ -13,7 +13,7 @@ var targetPlayer : CharacterBody2D
 	set(value):
 		enemyId = value
 		var enemyData = Items.mobs[value]
-		%Sprite2D.texture = load("res://assets/characters/enemy/"+value+".png")
+		%Sprite2D.texture = Items.get_actor_texture(value)
 		for stat in enemyData.keys():
 			set(stat, enemyData[stat])
 
@@ -88,4 +88,4 @@ func dropLoots():
 	if not GameTime.is_night_time():
 		return
 	for drop in drops.keys():
-		Items.spawnPickups(drop, position, randi_range(drops[drop]["min"],drops[drop]["max"]))
+		WorldEntitySpawner.get_for(self).spawn_pickups(drop, position, randi_range(drops[drop]["min"], drops[drop]["max"]))

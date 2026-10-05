@@ -8,7 +8,7 @@ var itemId := "":
 	set(value):
 		recipe = Items.recipes[value]
 		itemId = value
-		$TextureRect.texture = load("res://assets/items/"+value+".png")
+		$TextureRect.texture = Items.get_item_icon(value)
 
 func _ready():
 	setState()

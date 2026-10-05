@@ -9,7 +9,7 @@ var itemId : String:
 	set(value):
 		itemId = value
 		if value:
-			$itemTexture.texture = load("res://assets/items/"+value+".png")
+			$itemTexture.texture = Items.get_item_icon(value)
 			setItemDurability()
 		else:
 			$itemTexture.texture = null

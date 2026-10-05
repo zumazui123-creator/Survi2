@@ -146,7 +146,7 @@ func build(cmd,parts) -> void:
 			else:
 				print("player.building is null")
 		elif cmd == Strings.ACTION_PAINT:
-			if player.player_building:
+			if player.building:
 				player.building.paint(type, target_map_pos)
 	else:
 		print("Unknown direction: ", dir_str)

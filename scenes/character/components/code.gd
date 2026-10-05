@@ -3,8 +3,6 @@ extends Node
 @export var code_player : CodePlayer
 @onready var code_edit = %CodeEdit
 @onready var item_list = %ItemList
-@onready var player =  "res://scenes/character/player.gd"
-@onready var net_control = %NetControl
 @onready var inputFuncName = %InputFuncName
 @onready var code_func = $"../PopupFunction/HBoxContainer/VBoxContainer/CodeEdit"
 @onready var funcHandler = $"../../FunctionHandler"

@@ -10,7 +10,7 @@ var projectileId := "":
 		projectileData = Items.projectiles[value]
 		for stat in projectileData.keys():
 			set(stat, projectileData[stat])
-			%Sprite2D.texture = load("res://assets/characters/attacks/"+value+".png")
+			%Sprite2D.texture = Items.get_projectile_texture(value)
 		
 # maxHits, speed, time, curveSpeed
 var targetGroup := "damageable"

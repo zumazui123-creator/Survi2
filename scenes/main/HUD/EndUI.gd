@@ -17,13 +17,14 @@ func next_level():
 		print("DIED")
 		Multihelper.rebornPlayer(playerId)
 
-	if Multihelper.level["type"] == Constants.MAP_LABY and Multihelper.level["level"] < Levels.max_laby_level:
+	if Multihelper.level["type"] == Constants.MAP_LABY and Multihelper.level["level"] < Levels.MAX_LABYRINTH_LEVEL:
 		Multihelper.level = Levels.LabyrinthLevels[Multihelper.level["level"]+1]
 		
-	if Multihelper.level["type"] == Constants.MAP_TOURMENT and Multihelper.level["level"] < Levels.max_tourment_level:
+	if Multihelper.level["type"] == Constants.MAP_TOURMENT and Multihelper.level["level"] < Levels.MAX_TOURNAMENT_LEVEL:
 		Multihelper.level = Levels.TurnierLevels[Multihelper.level["level"]+1]
 		
-	Multihelper.map.generateMap(Multihelper.level)
+	var world_map: Map = get_tree().get_first_node_in_group("world_map")
+	world_map.generateMap(Multihelper.level)
 	Multihelper.spawnPlayers()
 
 func retry():

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scenes/gameplay/definitions/item_definition.gd" id="1_definition"]
+[ext_resource type="Texture2D" path="res://assets/items/magicSpear1.png" id="2_texture"]
+
+[resource]
+script = ExtResource("1_definition")
+item_id = &"magicSpear1"
+icon = ExtResource("2_texture")
+kind = 2
+attack = &"stab"
+damage = 30.0
+damage_type = &"magic"
+durability = 20.0
+projectile_id = &"lightningBolt"
+recipe = {"magicWood": 3,"magicStone": 1,"magicHerb": 1}

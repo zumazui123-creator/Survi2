@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ActorDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scenes/gameplay/definitions/actor_definition.gd" id="1_definition"]
+[ext_resource type="Texture2D" path="res://assets/characters/animal/pig.png" id="2_texture"]
+
+[resource]
+script = ExtResource("1_definition")
+actor_id = &"pig"
+texture = ExtResource("2_texture")
+max_hp = 23.0
+speed = 50.0
+attack = &"slash"
+attack_damage = 1.0
+attack_range = 50.0
+drops = {"food": {"min": 1,"max": 2}}

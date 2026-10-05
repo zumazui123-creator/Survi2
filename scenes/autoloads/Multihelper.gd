@@ -36,16 +36,21 @@ var host_as_player_enabled 	= true
 
 var game : Node
 func setGameNode(gameNode : Node):
-	game.queue_free()
+	if is_instance_valid(game) and game != gameNode:
+		game.queue_free()
 	game = gameNode
 	
 func _ready():
-	game = get_node("/root/Game")
 	multiplayer.peer_connected.connect(_on_player_connected)
 	multiplayer.peer_disconnected.connect(_on_player_disconnected)
 	multiplayer.connected_to_server.connect(_on_connected_ok)
 	multiplayer.connection_failed.connect(_on_connected_fail)
 	multiplayer.server_disconnected.connect(_on_server_disconnected)
+
+func _resolve_game() -> Node:
+	if not is_instance_valid(game):
+		game = get_tree().current_scene
+	return game
 
 func _set_multiplayer_peer(peer):
 	multiplayer.multiplayer_peer = peer
@@ -65,8 +70,7 @@ func join_game(address = ""):
 	print(peer)
 
 func create_game():
-	if not game:
-		game = get_node_or_null("/root/Game")
+	_resolve_game()
 	print("hosting a game")
 	var peer = ENetMultiplayerPeer.new()
 	var error = peer.create_server(PORT)
@@ -110,6 +114,7 @@ func _on_player_disconnected(id):
 
 func _on_connected_ok():
 	print("_on_connected_ok")
+	_resolve_game()
 	game.start_game()
 	var peer_id = multiplayer.get_unique_id()
 	connectedPlayers.append(peer_id)
@@ -125,7 +130,7 @@ func player_loaded():
 	print("player_loaded")
 	var sender_id = multiplayer.get_remote_sender_id()
 	print("remote sender:"+str(sender_id))
-	main = game.get_node("Level/Main")
+	main = get_tree().get_first_node_in_group("world_root")
 	var mapData := {
 		"seed": mapSeed,
 		"level": level,
@@ -140,7 +145,7 @@ func sendGameData(playerData, mapData):
 	spawnedPlayers = playerData
 	mapSeed = mapData["seed"]
 	level 	= mapData["level"]
-	main = game.get_node("Level/Main")
+	main = get_tree().get_first_node_in_group("world_root")
 	loadMap()
 	data_loaded.emit()
 	set_process(true)
@@ -154,8 +159,8 @@ func _on_server_disconnected():
 
 func loadMap():
 	print("loadMap()")
-	main = get_node("/root/Game/Level/Main")
-	map  = main.get_node("Map")
+	main = get_tree().get_first_node_in_group("world_root")
+	map = get_tree().get_first_node_in_group("world_map")
 	map.generateMap(level)
 
 func get_map_position(coords : Vector2i):
@@ -216,7 +221,8 @@ func spawnPlayer(newPlayer):
 			spawnPosition = player1.movement.current_map_position
 		else:
 			spawnPosition = map.spawnable_tiles.pick_random()
-	newPlayer.workTaskText.text = workTask.getWorkTask(self.level)
+	if is_instance_valid(newPlayer.workTaskText):
+		newPlayer.workTaskText.text = workTask.getWorkTask(self.level)
 	newPlayer.sendPos.rpc(map.tile_map.map_to_local( spawnPosition ))
 
 #func rebornPlayer(playerId : String):

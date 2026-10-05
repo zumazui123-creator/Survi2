@@ -6,18 +6,20 @@ const PLAYER_COLOR := Color(1.0, 0.0, 0.0)   # Red color for player
 @export var player: Node2D
 #@export var map: Control
 @onready var coordsLabel := $"../../CoordsLabel"
+@onready var world_map: Map = get_tree().get_first_node_in_group("world_map")
+@onready var players_root: Node2D = get_tree().get_first_node_in_group("players_root")
 
 
 func _process(_delta):
 	queue_redraw()
 
 func _draw():
-	if Multihelper.map == null or Multihelper.map.tile_map == null:
+	if world_map == null or world_map.tile_map == null:
 		return
 	if is_instance_valid(player):
-		var player_pos = player.global_position / Vector2(Multihelper.map.tile_map.tile_set.tile_size) * tile_size
+		var player_pos = player.global_position / Vector2(world_map.tile_map.tile_set.tile_size) * tile_size
 		var player_rect = Rect2(player_pos, tile_size*4)
 		draw_rect(player_rect, PLAYER_COLOR)
 		coordsLabel.text = str(Vector2i(player_pos))
 	else:
-		player = get_node_or_null("../../../../../Players/"+str(multiplayer.get_unique_id()))
+		player = players_root.get_node_or_null(str(multiplayer.get_unique_id()))

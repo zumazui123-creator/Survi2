@@ -1,29 +1,31 @@
 extends Node
 
+const MAIN_TEMPLATE: LevelDefinition = preload("res://assets/data/levels/main_0.tres")
+const LABYRINTH_TEMPLATE: LevelDefinition = preload("res://assets/data/levels/labyrinth_0.tres")
+const TOURNAMENT_TEMPLATE: LevelDefinition = preload("res://assets/data/levels/tournament_0.tres")
+const AI_TEMPLATE: LevelDefinition = preload("res://assets/data/levels/ai_0.tres")
 
-var MainLevels := {
-	0: {"level": 0,"type": Constants.MAP_MAIN, "end": Constants.END_MAIN, },
-	1: {"level": 1,"type": Constants.MAP_MAIN, "end": Constants.END_MAIN }, #"size": Vector2i(16,16) },
-	2: {"level": 2,"type": Constants.MAP_MAIN, "end": Constants.END_MAIN},
-}
+const MAX_MAIN_LEVEL := 2
+const MAX_LABYRINTH_LEVEL := 50
+const MAX_TOURNAMENT_LEVEL := 5
 
-var LabyrinthLevels := {
-	0: {"level": 0,"type": Constants.MAP_LABY, "end": Constants.END_LABY},
-}
-const max_laby_level = 50
-
-var TurnierLevels := {
-	0: {"level": 0,"type": Constants.MAP_TOURMENT, "end": Constants.END_LABY},
-}
-const max_tourment_level = 5
-
-var KiLevels := {
-	0: {"level": 0,"type": Constants.MAP_KI, "end": Constants.END_MAIN},
-}
+var MainLevels: Dictionary = {}
+var LabyrinthLevels: Dictionary = {}
+var TurnierLevels: Dictionary = {}
+var KiLevels: Dictionary = {}
 
 
-func _ready():
-	for i in range(1,max_laby_level+1):
-		LabyrinthLevels.set(i,{"level": i,"type": Constants.MAP_LABY, "end": Constants.END_LABY})
-	for i in range(1,max_tourment_level+1):
-		TurnierLevels.set(i,{"level": i,"type": Constants.MAP_TOURMENT, "end": Constants.END_LABY})
+func _init() -> void:
+	MainLevels = _build_levels(MAIN_TEMPLATE, MAX_MAIN_LEVEL)
+	LabyrinthLevels = _build_levels(LABYRINTH_TEMPLATE, MAX_LABYRINTH_LEVEL)
+	TurnierLevels = _build_levels(TOURNAMENT_TEMPLATE, MAX_TOURNAMENT_LEVEL)
+	KiLevels = _build_levels(AI_TEMPLATE, 0)
+
+
+func _build_levels(template: LevelDefinition, maximum_level: int) -> Dictionary:
+	var result := {}
+	for level_number in range(maximum_level + 1):
+		var data := template.to_dict()
+		data["level"] = level_number
+		result[level_number] = data
+	return result

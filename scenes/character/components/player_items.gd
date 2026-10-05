@@ -23,13 +23,15 @@ func _ready():
 		#Inventory.itemConsumed.connect(_on_item_consumed)
 		
 	if player.name == str(multiplayer.get_unique_id()):
-		inventory = player.get_parent().get_parent().get_node("HUD/Inventory")
-		inventory.player = player
+		inventory = get_tree().get_first_node_in_group("inventory_ui")
+		if inventory:
+			inventory.player = player
 		
 func dropInventory():
 	var inventoryDict = Inventory.inventories
-	for item in inventoryDict.keys():
-		Items.spawnPickups(item, player.position, inventoryDict[item].size() )
+	var player_inventory: Dictionary = inventoryDict.get(str(player.name), {})
+	for item in player_inventory.keys():
+		WorldEntitySpawner.get_for(self).spawn_pickups(item, player.position, player_inventory[item])
 	Inventory.inventories[player.name] = {}
 	Inventory.inventoryUpdated.emit(player.name)
 	Inventory.inventories.erase(player.name)
@@ -43,12 +45,12 @@ func tryEquipItem(id):
 func equipItem(id):
 	equippedItem = id
 	player.combat.hands.visible = false
-	held_item.texture = load(Constants.PATH_ITEMS+id+".png")
-	if multiplayer.is_server() and "scene" in Items.equips[id]:
+	held_item.texture = Items.get_item_icon(id)
+	var item_scene := Items.get_equipment_scene(id)
+	if multiplayer.is_server() and item_scene:
 		for c in equipment.get_children():
 			c.queue_free()
-		var itemScene := load(Constants.PATH_EQUIPMENT_SCENES+Items.equips[id]["scene"]+".tscn")
-		var item = itemScene.instantiate()
+		var item = item_scene.instantiate()
 		equipment.add_child(item)
 		item.data = {"player": str(player.name), "item": id}
 

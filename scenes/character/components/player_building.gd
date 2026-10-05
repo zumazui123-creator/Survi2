@@ -2,6 +2,8 @@ extends Node
 
 
 @export var player : CharacterBody2D
+@onready var world_map: Map = get_tree().get_first_node_in_group("world_map")
+@onready var buildings: Buildings = get_tree().get_first_node_in_group("buildings")
 
 # supports two building modes, one is painting tiles in tilemap in Map,
 # the other is placing building scenes in the world
@@ -26,7 +28,7 @@ func build(building_type: String, tile_position: Vector2i) -> void:
 @rpc("call_local", "any_peer", "reliable")
 func execute_build(building_type: String, tile_position: Vector2i) -> void:
 	if building_type in building_scenes:
-		Multihelper.main.buildings.place_building(building_scenes[building_type], tile_position)
+		buildings.place_building(building_scenes[building_type], tile_position)
 	else:
 		print("Building type ", building_type, " not found.")
 
@@ -36,7 +38,7 @@ func paint(tile_type: String, tile_pos: Vector2i) -> void:
 @rpc("call_local", "any_peer", "reliable")
 func execute_paint(tile_type: String, tile_pos: Vector2i) -> void:
 	if tile_type in paintable_tiles:
-		Multihelper.map.set_field(tile_pos, paintable_tiles[tile_type])
+		world_map.set_field(tile_pos, paintable_tiles[tile_type])
 		print("Painted ", tile_type, " at ", tile_pos)
 	else:
 		print("Tile type ", tile_type, " not found.")

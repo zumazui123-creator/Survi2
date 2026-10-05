@@ -1,6 +1,8 @@
 extends Node2D
 class_name Objects
 
+@export var world_map: Map
+
 var initialSpawnObjects := Constants.INITAL_OBJECTS
 var maxObjects 	  		:= Constants.MAX_OBJECTS
 var objectWaveCount 	:= 10
@@ -21,8 +23,8 @@ func spawnObjects(amount):
 	var breakableScene := preload("res://scenes/spawn/object/breakable.tscn")
 	var spawnedThisWave := 0
 	for i in range(amount):
-		var spawnPos = Multihelper.map.tile_map.map_to_local(
-							Multihelper.map.spawnable_tiles.pick_random())
+		var spawnPos = world_map.tile_map.map_to_local(
+							world_map.spawnable_tiles.pick_random())
 		var breakable := breakableScene.instantiate()
 		var objectId = Items.objects.keys().pick_random()
 		self.add_child(breakable,true)

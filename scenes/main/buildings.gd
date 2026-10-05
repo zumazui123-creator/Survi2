@@ -1,6 +1,8 @@
 extends Node2D
 class_name Buildings
 
+@export var world_map: Map
+
 var placed_buildings : Dictionary[Vector2i, Node] = {}
 
 func place_building(building_scene: PackedScene, tile_pos: Vector2i) -> void:
@@ -12,7 +14,7 @@ func place_building(building_scene: PackedScene, tile_pos: Vector2i) -> void:
 	self.add_child(building,true)
 	
 	building.objectId = "rock1"
-	building.position = Multihelper.map.tile_map.map_to_local(tile_pos)
+	building.position = world_map.tile_map.map_to_local(tile_pos)
 	building.spawner = self
 	
 	placed_buildings[tile_pos] = building

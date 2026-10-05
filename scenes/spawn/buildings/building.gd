@@ -6,7 +6,7 @@ extends StaticBody2D
 			objectId = value
 			data = Items.objects[value]
 			hp = data["hp"]
-			$Sprite.texture = load("res://assets/objects/"+data["id"]+".png")
+			$Sprite.texture = Items.get_object_texture(value)
 			loaded = true
 
 var data := {}
@@ -40,4 +40,4 @@ func breakObject():
 
 func spawnDrops():
 	for drop in data["drops"].keys():
-		Items.spawnPickups(drop, position, randi_range(data["drops"][drop]["min"], data["drops"][drop]["max"]))
+		WorldEntitySpawner.get_for(self).spawn_pickups(drop, position, randi_range(data["drops"][drop]["min"], data["drops"][drop]["max"]))

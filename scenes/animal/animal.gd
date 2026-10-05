@@ -14,7 +14,7 @@ var targetPlayer : CharacterBody2D
 	set(value):
 		animalId = value
 		var animalData = Items.animals[value]
-		%Sprite2D.texture = load("res://assets/characters/animal/"+value+".png")
+		%Sprite2D.texture = Items.get_actor_texture(value)
 		for stat in animalData.keys():
 			set(stat, animalData[stat])
 
@@ -96,4 +96,4 @@ func die(dropLoot):
 
 func dropLoots():
 	for drop in drops.keys(): 
-		Items.spawnPickups(drop, position, randi_range(drops[drop]["min"],drops[drop]["max"]))
+		WorldEntitySpawner.get_for(self).spawn_pickups(drop, position, randi_range(drops[drop]["min"], drops[drop]["max"]))

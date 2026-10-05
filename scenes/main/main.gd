@@ -2,6 +2,7 @@ extends Node2D
 
 @export var breakables : Objects
 @export var buildings : Buildings
+@export var entity_spawner: WorldEntitySpawner
 
 func _ready():
 	if multiplayer.is_server():

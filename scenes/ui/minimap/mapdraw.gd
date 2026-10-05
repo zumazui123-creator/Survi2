@@ -10,27 +10,28 @@ const DEFAULT_COLOR := Color(0, 0, 1, 0.6) #Color(1.0, 1.0, 1.0, 0.2)   # White 
 @export var tile_size: Vector2 = Vector2(1, 1)
 
 var drawn = false
+@onready var world_map: Map = get_tree().get_first_node_in_group("world_map")
 
 func _ready():
 	custom_minimum_size = minimap_size
 	
 	
 func _draw():
-	if Multihelper.map == null or Multihelper.map.tile_map == null:
+	if world_map == null or world_map.tile_map == null:
 		return
-	var used_rect = Multihelper.map.tile_map.get_used_rect()
+	var used_rect = world_map.tile_map.get_used_rect()
 	for x in range(used_rect.size.x):
 		for y in range(used_rect.size.y):
-			var cell = Multihelper.map.tile_map.get_cell_source_id(Vector2i(x, y))
+			var cell = world_map.tile_map.get_cell_source_id(Vector2i(x, y))
 			if cell != -1:
-				var cell_atlas_coords = Multihelper.map.tile_map.get_cell_atlas_coords(Vector2i(x, y))
+				var cell_atlas_coords = world_map.tile_map.get_cell_atlas_coords(Vector2i(x, y))
 				var tile_color = WALKABLE_COLOR if cell_atlas_coords in WALKABLE_TILES else DEFAULT_COLOR
 				var tile_rect = Rect2(Vector2(x, y) * tile_size, tile_size)
 				draw_rect(tile_rect, tile_color)
 
 func _process(_delta):
-	if Multihelper.map == null:
+	if world_map == null:
 		return
-	if not drawn and Multihelper.map.tile_map != null and Multihelper.map.tile_map.get_used_rect().size != Vector2i(0,0):
+	if not drawn and world_map.tile_map != null and world_map.tile_map.get_used_rect().size != Vector2i(0,0):
 		queue_redraw()
 		drawn = true

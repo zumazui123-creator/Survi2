@@ -4,17 +4,12 @@ const WALKABLE_TILES = [Vector2i(0, 0), Vector2i(1, 0), Vector2i(2, 0), Vector2i
 const MIN_DISTANCE = 8  # Minimum distance in tiles
 const MAX_DISTANCE = 9  # Maximum distance in tiles
 
-@onready var tilemap = $"../Map/TileMap"
-#@onready var map = $"../Map"
-var map
-var main: Node2D
-
-func _ready() -> void:
-	main = get_node("/root/Game/Level/Main")
-	map  = main.get_node("Map")
+@export var tilemap: TileMapLayer
+@export var map: Map
+@export var players_root: Node2D
 
 func getNavigableTiles(playerId, minR, maxR):
-	var player = get_parent().get_node_or_null("Players/"+str(playerId))
+	var player = players_root.get_node_or_null(str(playerId))
 	if !player:
 		return
 	var player_tile_pos = tilemap.local_to_map(player.global_position) #todo better pos

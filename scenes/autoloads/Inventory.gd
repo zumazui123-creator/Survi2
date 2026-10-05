@@ -11,11 +11,7 @@ var durabilities := {}
 
 
 func getItems(id :String):
-	if inventories.size() == 0:
-		return {}
-	if inventories[id].size() == 0:
-		return {}
-	return inventories[id]
+	return inventories.get(id, {})
 
 func _ready():
 	#if !multiplayer.is_server():

@@ -1,23 +1,7 @@
 extends Node
 @onready var spawn_list : OptionButton =  %OptionSpawn
 @onready var spawn_texture : TextureRect = %TextureSpawn
-var mobs = ["spider","zombie"]
-
-
-func get_files_in_folder(path: String) -> Array:
-	var files := []
-	var dir := DirAccess.open(path)
-	if dir == null:
-		push_error("Ordner existiert nicht: " + path)
-		return files
-
-	dir.list_dir_begin()  # skip_dots = true, skip_hidden = true
-	for file in dir.get_files():
-		if file.ends_with(".import"):
-			var png_file := file.get_basename()
-			if png_file.ends_with(".png"):
-				files.append(png_file.get_basename())
-	return files
+var mobs: Array = []
 
 
 func init_spawn_list() -> void:
@@ -26,12 +10,11 @@ func init_spawn_list() -> void:
 		
 func update_incon(text : String):
 	print("update icon")
-	spawn_texture.texture = load("res://assets/characters/enemy/"+text+".png")
+	spawn_texture.texture = Items.get_actor_texture(text)
 	spawn_texture.tooltip_text = text
 	
 func _ready() -> void:
-	var enemy_folder := "res://assets/characters/enemy/"
-	mobs = get_files_in_folder(enemy_folder)
+	mobs = Items.mobs.keys()
 	init_spawn_list()
 
 func _on_option_button_item_selected(index: int) -> void:

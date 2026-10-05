@@ -3,20 +3,23 @@ extends CharacterBody2D
 
 var act : String = ""
 
-@export var status : Control 
+@export var status: PlayerStats
+@export var status_view: PlayerStatusView
 @export var ai_control : Node
-@export var workTaskText : Node 
+var workTaskText: RichTextLabel
 @export var net_control : Node 
 @export var movement : Node 
 @export var animation: AnimationPlayer 
 @export var combat : Node 
 @export var building: Node
 @export  var items : Node 
-@export  var code_edit : Node
+var code_edit: CodeEdit
+var local_ui: PlayerLocalUI
 @export var playerName : String:
 	set(value):
 		playerName = value
-		status.setPlayerName(value)
+		if status_view:
+			status_view.set_player_name(value)
 
 var characterFile : String:
 	set(value):
@@ -26,12 +29,10 @@ var characterFile : String:
 
 var EndUI     : Control
 var local_setup_done := false
+@onready var world_map: Map = get_tree().get_first_node_in_group("world_map")
 
 func _enter_tree():
 	set_multiplayer_authority(name.to_int())
-	if str(multiplayer.get_unique_id()) != name:
-		$CodeLayer.hide()
-		$CodeLayer.process_mode = Node.PROCESS_MODE_DISABLED
 
 func _ready():
 	# ... (existing code)
@@ -91,8 +92,12 @@ func _setup_local_player():
 		return
 	local_setup_done = true
 	print("player HUD")
-	var main = get_parent().get_parent()
-	EndUI = main.get_node("HUD/EndUI")
+	EndUI = get_tree().get_first_node_in_group("end_ui")
+	var hud := get_tree().get_first_node_in_group("world_hud")
+	var local_ui_scene := preload("res://scenes/ui/player_workspace/player_local_ui.tscn")
+	local_ui = local_ui_scene.instantiate()
+	hud.add_child(local_ui)
+	local_ui.bind_player(self)
 	$Camera2D.enabled = true
 
 @rpc("any_peer", "call_local", "reliable")
@@ -127,21 +132,21 @@ func _physics_process(_delta: float) -> void:
 	win_condition()
 
 func win_condition():
-	status.char_info["terminated"] = false
+	status.terminated = false
 	win_laby()
 
 func win_laby():
 	if Multihelper.level["end"] == Constants.END_LABY:
-		var current_map_position = Multihelper.map.tile_map.local_to_map( position )
-		var end_goal_position = Multihelper.map.endPosition
+		var current_map_position = world_map.tile_map.local_to_map(position)
+		var end_goal_position = world_map.endPosition
 		if current_map_position == end_goal_position:
 			current_map_position = Vector2i()
 			EndUI.setLabel("Level Abgeschlossen!")
-			status.char_info["terminated"] = true
+			status.terminated = true
 			EndUI.visible = true
 			
 func resetPlayer():
-	var difLevelMode = %DifModeButton.get_selected_id()
+	var difLevelMode = local_ui.get_difficulty_mode() if is_instance_valid(local_ui) else 0
 	if difLevelMode > 0:
 		Multihelper.spawnPlayers()
 
@@ -149,9 +154,10 @@ func resetPlayer():
 @rpc("any_peer", "call_local", "reliable")
 func sendPos(pos):
 	position = pos
-	movement.current_map_position = Multihelper.map.tile_map.local_to_map( position )
+	movement.current_map_position = world_map.tile_map.local_to_map(position)
 
-func _on_back_to_menu_pressed() -> void:
-	var game_scene: PackedScene = load(Constants.PATH_GAME_SCENE)
-	get_tree().change_scene_to_packed(game_scene)
+
+func _exit_tree() -> void:
+	if is_instance_valid(local_ui):
+		local_ui.queue_free()
 	

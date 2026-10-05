@@ -1,9 +1,10 @@
 extends Node
 
+signal speed_changed(value: float)
+
 @export_group("References")
 @export var player: CharacterBody2D
-
-@onready var speedLabel = $"../CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2/Speed"
+@onready var world_map: Map = get_tree().get_first_node_in_group("world_map")
 
 const default_move_speed_factor : float = 2.5
 var move_speed_factor : float = default_move_speed_factor
@@ -14,8 +15,7 @@ var is_speed_boost_active := false
 var path_line : Line2D
 
 func _ready():
-	
-	speedLabel.text = str(move_speed_factor)
+	speed_changed.emit(move_speed_factor)
 	if path_line:
 		path_line.points = PackedVector2Array([Vector2.ZERO, Vector2.ZERO])
 
@@ -51,7 +51,7 @@ func tile_move() -> Vector2:
 		if path_line:
 			path_line.points = PackedVector2Array([Vector2.ZERO, Vector2.ZERO])
 
-		current_map_position = Multihelper.map.tile_map.local_to_map( player.position )
+		current_map_position = world_map.tile_map.local_to_map(player.position)
 		snap_to_tiles_position()
 		player.act = ""
 
@@ -59,7 +59,7 @@ func tile_move() -> Vector2:
 	return direction
 
 func snap_to_tiles_position():
-	var snap_position = Multihelper.map.tile_map.map_to_local( current_map_position )
+	var snap_position = world_map.tile_map.map_to_local(current_map_position)
 	player.position = snap_position
 
 func apply_speed_boost(multiplier, duration):
@@ -125,7 +125,7 @@ func press_action(inp_action : String):
 
 func set_speed( player_speed : float):
 	move_speed_factor += player_speed
-	speedLabel.text = str(player.move_speed_factor)
+	speed_changed.emit(move_speed_factor)
 
 func _on_speed_plus_pressed() -> void:
 	set_speed(0.2)

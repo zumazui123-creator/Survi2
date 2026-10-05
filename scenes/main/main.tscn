@@ -16,18 +16,20 @@
 [ext_resource type="Texture2D" uid="uid://d4iknbe05uwaj" path="res://scenes/main/daynightcycle-gradient-texture.tres" id="8_le63a"]
 [ext_resource type="Script" uid="uid://bysoe6stvcca4" path="res://scenes/main/NavHelper.gd" id="10_40gnc"]
 [ext_resource type="PackedScene" uid="uid://xisgglhsre7n" path="res://scenes/main/HUD/EndUI.tscn" id="13_raeie"]
+[ext_resource type="Script" path="res://scenes/main/world_entity_spawner.gd" id="14_spawner"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_dr53p"]
 properties/0/path = NodePath("dayNight:time")
 properties/0/spawn = true
 properties/0/replication_mode = 2
 
-[node name="Main" type="Node2D" unique_id=1930195944 node_paths=PackedStringArray("breakables", "buildings")]
+[node name="Main" type="Node2D" unique_id=1930195944 node_paths=PackedStringArray("breakables", "buildings", "entity_spawner") groups=["world_root"]]
 script = ExtResource("1_5kenc")
 breakables = NodePath("Objects")
 buildings = NodePath("Buildings")
+entity_spawner = NodePath("EntitySpawner")
 
-[node name="Map" parent="." unique_id=1142803009 instance=ExtResource("1_vj1jr")]
+[node name="Map" parent="." unique_id=1142803009 groups=["world_map"] instance=ExtResource("1_vj1jr")]
 unique_name_in_owner = true
 anchors_preset = 15
 anchor_right = 1.0
@@ -39,12 +41,13 @@ grow_vertical = 2
 size_flags_horizontal = 1
 size_flags_vertical = 1
 
-[node name="Creator" type="Node" parent="." unique_id=524279930]
+[node name="Creator" type="Node" parent="." unique_id=524279930 node_paths=PackedStringArray("world_map")]
 script = ExtResource("2_raeie")
+world_map = NodePath("../Map")
 
 [node name="Pickups" type="Node2D" parent="." unique_id=1773571447]
 
-[node name="Players" type="Node2D" parent="." unique_id=566366385]
+[node name="Players" type="Node2D" parent="." unique_id=566366385 groups=["players_root"]]
 
 [node name="Enemies" type="Node2D" parent="." unique_id=1946773943]
 unique_name_in_owner = true
@@ -56,19 +59,30 @@ script = ExtResource("4_th5th")
 
 [node name="Projectiles" type="Node2D" parent="." unique_id=614943988]
 
-[node name="Objects" type="Node2D" parent="." unique_id=1525263792]
-script = ExtResource("5_7smn1")
+[node name="EntitySpawner" type="Node" parent="." node_paths=PackedStringArray("pickups_root", "projectiles_root") groups=["world_entity_spawner"]]
+script = ExtResource("14_spawner")
+pickups_root = NodePath("../Pickups")
+projectiles_root = NodePath("../Projectiles")
 
-[node name="Buildings" type="Node2D" parent="." unique_id=376389143]
+[node name="Objects" type="Node2D" parent="." unique_id=1525263792 node_paths=PackedStringArray("world_map")]
+script = ExtResource("5_7smn1")
+world_map = NodePath("../Map")
+
+[node name="Buildings" type="Node2D" parent="." unique_id=376389143 node_paths=PackedStringArray("world_map") groups=["buildings"]]
 script = ExtResource("6_hxu8e")
+world_map = NodePath("../Map")
 
-[node name="Breakables" type="Node2D" parent="." unique_id=629876086]
+[node name="Breakables" type="Node2D" parent="." unique_id=629876086 node_paths=PackedStringArray("world_map")]
 script = ExtResource("5_7smn1")
+world_map = NodePath("../Map")
 
-[node name="NavHelper" type="Node2D" parent="." unique_id=244153116]
+[node name="NavHelper" type="Node2D" parent="." unique_id=244153116 node_paths=PackedStringArray("tilemap", "map", "players_root")]
 script = ExtResource("10_40gnc")
+tilemap = NodePath("../Map/TileMap")
+map = NodePath("../Map")
+players_root = NodePath("../Players")
 
-[node name="HUD" type="CanvasLayer" parent="." unique_id=461272148]
+[node name="HUD" type="CanvasLayer" parent="." unique_id=461272148 groups=["world_hud"]]
 
 [node name="DayNightCycleUI" parent="HUD" unique_id=1938933947 instance=ExtResource("7_c4hjm")]
 unique_name_in_owner = true
@@ -83,7 +97,7 @@ offset_top = -1.0
 offset_right = 1.0
 offset_bottom = -1.0
 
-[node name="Inventory" parent="HUD" unique_id=1512725673 instance=ExtResource("6_tq15c")]
+[node name="Inventory" parent="HUD" unique_id=1512725673 groups=["inventory_ui"] instance=ExtResource("6_tq15c")]
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
@@ -100,7 +114,7 @@ offset_bottom = -30.0
 [node name="SpawnPlayer" parent="HUD" unique_id=161453860 instance=ExtResource("2_ajc02")]
 z_index = 1000
 
-[node name="EndUI" parent="HUD" unique_id=1789217077 instance=ExtResource("13_raeie")]
+[node name="EndUI" parent="HUD" unique_id=1789217077 groups=["end_ui"] instance=ExtResource("13_raeie")]
 visible = false
 
 [node name="PlayerSpawner" type="MultiplayerSpawner" parent="." unique_id=108049658]

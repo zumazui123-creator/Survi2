@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scenes/gameplay/definitions/item_definition.gd" id="1_definition"]
+[ext_resource type="Texture2D" path="res://assets/items/axe2.png" id="2_texture"]
+
+[resource]
+script = ExtResource("1_definition")
+item_id = &"axe2"
+icon = ExtResource("2_texture")
+kind = 2
+attack = &"swing"
+damage = 40.0
+damage_type = &"axe"
+durability = 30.0
+recipe = {"wood": 3,"iron": 2}

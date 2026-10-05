@@ -2,7 +2,7 @@ extends Area2D
 
 @export var itemId : String:
 	set(value):
-		$Sprite2D.texture = load(Constants.PATH_ITEMS+value+".png")
+		$Sprite2D.texture = Items.get_item_icon(value)
 		itemId = value
 
 @export var stackCount := 1

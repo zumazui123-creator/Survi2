@@ -75,7 +75,7 @@ func full_terrain_with_water_fields():
 	for y in range(height):
 		for x in range(width):
 			tile_coord = waterCoors[rng.randi() % waterCoors.size()]
-			Multihelper.map.tile_map.set_cell(Vector2i(x, y), tileset_source, tile_coord, 0)
+			tile_map.set_cell(Vector2i(x, y), tileset_source, tile_coord, 0)
 
 func generate_borders():
 	var rng = RandomNumberGenerator.new()
