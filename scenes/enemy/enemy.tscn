@@ -2,25 +2,29 @@
 
 [ext_resource type="Script" uid="uid://gncc76jm6lpk" path="res://scenes/enemy/enemy.gd" id="1_afvkb"]
 [ext_resource type="Texture2D" uid="uid://cmgqoo4d6mewa" path="res://assets/characters/enemy/zombie.png" id="2_dxtpn"]
+[ext_resource type="Script" path="res://scenes/enemy/components/enemy_navigation.gd" id="3_navigation"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_m76gk"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_tx4kn"]
-properties/0/path = NodePath("..:position")
+properties/0/path = NodePath(".:position")
 properties/0/spawn = true
 properties/0/replication_mode = 2
-properties/1/path = NodePath("..:targetPlayer")
+properties/1/path = NodePath(".:targetPlayerId")
 properties/1/spawn = true
 properties/1/replication_mode = 2
-properties/2/path = NodePath("..:hp")
+properties/2/path = NodePath(".:hp")
 properties/2/spawn = true
 properties/2/replication_mode = 2
-properties/3/path = NodePath("../MovingParts:rotation")
+properties/3/path = NodePath("MovingParts:rotation")
 properties/3/spawn = true
 properties/3/replication_mode = 2
-properties/4/path = NodePath("..:enemyId")
+properties/4/path = NodePath(".:enemyId")
 properties/4/spawn = true
 properties/4/replication_mode = 2
+properties/5/path = NodePath(".:ai_state")
+properties/5/spawn = true
+properties/5/replication_mode = 2
 
 [sub_resource type="Curve" id="Curve_popii"]
 _data = [Vector2(0.00279329, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
@@ -53,10 +57,11 @@ texture = ExtResource("2_dxtpn")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2117654563]
 shape = SubResource("CircleShape2D_m76gk")
 
-[node name="NavigationAgent2D" type="NavigationAgent2D" parent="." unique_id=308028348]
+[node name="EnemyNavigation" type="Node2D" parent="."]
+script = ExtResource("3_navigation")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=1852702099]
-root_path = NodePath("../NavigationAgent2D")
+root_path = NodePath("..")
 replication_config = SubResource("SceneReplicationConfig_tx4kn")
 
 [node name="AttackCooldown" type="Timer" parent="." unique_id=810027838]

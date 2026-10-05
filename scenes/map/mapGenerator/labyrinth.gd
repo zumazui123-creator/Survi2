@@ -29,18 +29,20 @@ func generateLabyrinth( level_no : int) -> Array[Vector2i] :
 	map.full_terrain_with_water_fields()
 	walkable_tiles = []
 
-	var walkVec = Vector2i(int(map.height/2),int(map.width/2)) 
+	var walkVec = Vector2i(int(map.width / 2.0), int(map.height / 2.0))
 	var randomVec = Vector2i()
+	map.set_grass_field(walkVec)
+	walkable_tiles.append(walkVec)
 	for tile in range(level_hard_count): 
 		
 		randomVec = randomDirection[rng.randi() % randomDirection.size()]
-		var wide = rng.randi() % way_size
+		var wide = rng.randi_range(1, way_size)
 		for i in range(wide):
-			walkVec += randomVec
+			walkVec = _clamp_to_map(walkVec + randomVec)
 			#print("tile:"+str(tile)+str(walkVec))
 			map.set_grass_field(walkVec)
-			walkable_tiles.append(walkVec)
-	# TODO : walkable tiles come empty sometimes
+			if walkVec not in walkable_tiles:
+				walkable_tiles.append(walkVec)
 	map.spawnPosition = walkable_tiles[0]
 	map.endPosition = walkable_tiles[-1]
 	map.set_field(map.endPosition, atlasCoorWhiteField)
@@ -61,22 +63,32 @@ func generateLabyrinthWithSeed( level_no : int, rnd_seed : int)-> Array[Vector2i
 	map.full_terrain_with_water_fields()
 	walkable_tiles = []
 
-	var walkVec = Vector2i(int(map.map_height/2),int(map.map_width/2)) 
+	var walkVec = Vector2i(int(map.width / 2.0), int(map.height / 2.0))
 	var randomVec = Vector2i()
+	map.set_grass_field(walkVec)
+	walkable_tiles.append(walkVec)
 	for tile in range(level_hard_count): 
 		randomVec = randomDirection[rng.randi() % randomDirection.size()]
-		var wide = rng.randi() % way_size
+		var wide = rng.randi_range(1, way_size)
 		for i in range(wide):
-			walkVec += randomVec
+			walkVec = _clamp_to_map(walkVec + randomVec)
 			map.set_grass_field(walkVec)
 			var animal = animals.spawn(walkVec)
 			animals.add_child(animal)
-			walkable_tiles.append(walkVec)
+			if walkVec not in walkable_tiles:
+				walkable_tiles.append(walkVec)
 		
 	map.spawnPosition = walkable_tiles[0]
 	map.endPosition = walkable_tiles[-1]
 	map.set_field(map.endPosition, atlasCoorWhiteField)
 	return walkable_tiles
+
+
+func _clamp_to_map(tile: Vector2i) -> Vector2i:
+	return Vector2i(
+		clampi(tile.x, 0, map.width - 1),
+		clampi(tile.y, 0, map.height - 1)
+	)
 	
 
 	

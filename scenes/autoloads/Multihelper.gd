@@ -248,7 +248,7 @@ func get_goal():
 	if map.level_type == Constants.MAP_KI:
 		return goal_tile
 	else: 
-		return map.laby_map.endPosition
+		return map.endPosition
 		
 func setMobs(initialSpawnObjects : int , maxObjects : int ,
 			maxEnemiesPerPlayer : int,

@@ -1,4 +1,5 @@
 extends StaticBody2D
+class_name NavigationBreakable
 
 @export var objectId := "":
 	set(value):
@@ -35,10 +36,24 @@ func startBreaking():
 func breakObject():
 	if !multiplayer.is_server():
 		return
+	$NavigationBlocker.release()
 	queue_free()
-	#spawner.spawnedObjects -= 1
+	if is_instance_valid(spawner):
+		spawner.spawnedObjects = maxi(0, spawner.spawnedObjects - 1)
 	spawnDrops()
 
 func spawnDrops():
 	for drop in data["drops"].keys():
-		WorldEntitySpawner.get_for(self).spawn_pickups(drop, position, randi_range(data["drops"][drop]["min"], data["drops"][drop]["max"]))
+		WorldEntitySpawner.get_for(self).spawn_pickups(drop, global_position, randi_range(data["drops"][drop]["min"], data["drops"][drop]["max"]))
+
+
+func register_navigation_blockers(tiles: Array[Vector2i]) -> void:
+	$NavigationBlocker.register_tiles(tiles)
+
+
+func get_navigation_tiles(origin: Vector2i) -> Array[Vector2i]:
+	var result: Array[Vector2i] = []
+	for y_offset in range(-1, 2):
+		for x_offset in range(-1, 2):
+			result.append(origin + Vector2i(x_offset, y_offset))
+	return result

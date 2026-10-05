@@ -16,17 +16,17 @@ func spawn_pickups(item_id: String, world_position: Vector2, amount: int) -> voi
 	for _index in range(amount):
 		var pickup = PICKUP_SCENE.instantiate()
 		pickup.itemId = item_id
-		pickup.position = world_position + Vector2(randf_range(-15.0, 15.0), randf_range(-15.0, 15.0))
 		pickups_root.add_child(pickup, true)
+		pickup.global_position = world_position + Vector2(randf_range(-15.0, 15.0), randf_range(-15.0, 15.0))
 
 
 func spawn_projectile(spawner, projectile_id: String, target_position: Vector2, target_group: StringName) -> void:
 	var projectile = PROJECTILE_SCENE.instantiate()
 	projectile.projectileId = projectile_id
 	projectile.targetGroup = target_group
-	projectile.position = spawner.position
+	projectiles_root.add_child(projectile, true)
+	projectile.global_position = spawner.global_position
 	projectile.get_node("MovingParts").rotation = spawner.get_node("MovingParts").rotation
 	projectile.hitPlayer.connect(spawner.combat.projectileHit)
 	projectile.targetPos = target_position
 	projectile.spawner = spawner
-	projectiles_root.add_child(projectile, true)

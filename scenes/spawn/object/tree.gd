@@ -34,9 +34,15 @@ func startBreaking():
 func breakObject():
 	if !multiplayer.is_server():
 		return
+	$NavigationBlocker.release()
 	queue_free()
 	spawnDrops()
 
 func spawnDrops():
 	for drop in data["drops"].keys():
-		WorldEntitySpawner.get_for(self).spawn_pickups(drop, position, randi_range(data["drops"][drop]["min"], data["drops"][drop]["max"]))
+		WorldEntitySpawner.get_for(self).spawn_pickups(drop, global_position, randi_range(data["drops"][drop]["min"], data["drops"][drop]["max"]))
+
+
+func register_navigation_blocker(tile: Vector2i) -> void:
+	var tiles: Array[Vector2i] = [tile]
+	$NavigationBlocker.register_tiles(tiles)

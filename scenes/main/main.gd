@@ -5,6 +5,7 @@ extends Node2D
 @export var entity_spawner: WorldEntitySpawner
 
 func _ready():
+	%Map.generation_started.connect(_clear_dynamic_world)
 	if multiplayer.is_server():
 		print(Multihelper.level)
 		Multihelper.loadMap()
@@ -46,3 +47,13 @@ func _on_enemy_spawn_timer_timeout():
 func _on_animal_spawn_timer_timeout() -> void:
 	if multiplayer.is_server():
 		$Animals.trySpawnAnimals()
+
+
+func _clear_dynamic_world() -> void:
+	for container in [$Enemies, $Animals, $Projectiles, $Objects, $Buildings, $Pickups]:
+		for child in container.get_children():
+			container.remove_child(child)
+			child.queue_free()
+	breakables.spawnedObjects = 0
+	buildings.placed_buildings.clear()
+	$Enemies.spawnedEnemies.clear()

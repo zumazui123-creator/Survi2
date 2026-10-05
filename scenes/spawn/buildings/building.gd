@@ -1,4 +1,5 @@
 extends StaticBody2D
+class_name NavigationBuilding
 
 @export var objectId := "":
 	set(value):
@@ -13,6 +14,12 @@ var data := {}
 var hp = 40
 var spawner : Node2D
 var loaded = false
+var navigation_tiles: Array[Vector2i] = []
+@export var navigation_footprint: Array[Vector2i] = [
+	Vector2i(-1, -1), Vector2i(0, -1), Vector2i(1, -1),
+	Vector2i(-1, 0), Vector2i.ZERO, Vector2i(1, 0),
+	Vector2i(-1, 1), Vector2i(0, 1), Vector2i(1, 1),
+]
 
 func getDamage(causer, amount, type):
 	if !loaded:
@@ -34,10 +41,24 @@ func startBreaking():
 func breakObject():
 	if !multiplayer.is_server():
 		return
+	$NavigationBlocker.release()
+	if is_instance_valid(spawner):
+		spawner.remove_building(self, navigation_tiles)
 	queue_free()
-	spawner.spawnedObjects -= 1
 	spawnDrops()
 
 func spawnDrops():
 	for drop in data["drops"].keys():
-		WorldEntitySpawner.get_for(self).spawn_pickups(drop, position, randi_range(data["drops"][drop]["min"], data["drops"][drop]["max"]))
+		WorldEntitySpawner.get_for(self).spawn_pickups(drop, global_position, randi_range(data["drops"][drop]["min"], data["drops"][drop]["max"]))
+
+
+func register_navigation_blockers(tiles: Array[Vector2i]) -> void:
+	navigation_tiles = tiles.duplicate()
+	$NavigationBlocker.register_tiles(navigation_tiles)
+
+
+func get_navigation_tiles(origin: Vector2i) -> Array[Vector2i]:
+	var result: Array[Vector2i] = []
+	for offset in navigation_footprint:
+		result.append(origin + offset)
+	return result

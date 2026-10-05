@@ -49,11 +49,11 @@ world_map = NodePath("../Map")
 
 [node name="Players" type="Node2D" parent="." unique_id=566366385 groups=["players_root"]]
 
-[node name="Enemies" type="Node2D" parent="." unique_id=1946773943]
+[node name="Enemies" type="Node2D" parent="." unique_id=1946773943 groups=["enemies_root"]]
 unique_name_in_owner = true
 script = ExtResource("3_th5th")
 
-[node name="Animals" type="Node2D" parent="." unique_id=943993284]
+[node name="Animals" type="Node2D" parent="." unique_id=943993284 groups=["animals_root"]]
 unique_name_in_owner = true
 script = ExtResource("4_th5th")
 
@@ -135,11 +135,11 @@ spawn_path = NodePath("../Projectiles")
 
 [node name="ObjectSpawner" type="MultiplayerSpawner" parent="." unique_id=114748828]
 _spawnable_scenes = PackedStringArray("uid://dagsu16arm3mv")
-spawn_path = NodePath("../Breakables")
+spawn_path = NodePath("../Objects")
 
 [node name="BuildingSpawner" type="MultiplayerSpawner" parent="." unique_id=1419203123]
-_spawnable_scenes = PackedStringArray("uid://dagsu16arm3mv")
-spawn_path = NodePath("../Objects")
+_spawnable_scenes = PackedStringArray("uid://c5vhr2saulowe")
+spawn_path = NodePath("../Buildings")
 
 [node name="PickupSpawner" type="MultiplayerSpawner" parent="." unique_id=406642788]
 _spawnable_scenes = PackedStringArray("uid://bfq4kkw8jhqay")

@@ -3,11 +3,14 @@ extends Node
 
 @onready var map : Map = $".."
 
-var walkable_tiles = []
-var spawnable_tiles = []
+var walkable_tiles: Array[Vector2i] = []
+var spawnable_tiles: Array[Vector2i] = []
 var noise = FastNoiseLite.new()
 
 func generateMainMap(levelData : Dictionary):
+	clear_generated_objects()
+	walkable_tiles.clear()
+	spawnable_tiles.clear()
 	generate_terrain(levelData)
 	map.set_level_options(1)
 	map.generate_borders()
@@ -47,11 +50,18 @@ func generate_terrain(levelData : Dictionary):
 			map.tile_map.set_cell(Vector2i(x, y), map.tileset_source, tile_coord, 0)
 				
 func spawnTrees(spawnPos : Vector2i):
-	var tile_map: TileMapLayer = map.tile_map
 	var breakableScene := preload("res://scenes/spawn/object/tree.tscn")
 	var breakable := breakableScene.instantiate()
 	var objectId = Items.objects.get("tree0").get("id")
 	self.add_child(breakable,true)
 	breakable.objectId = objectId
-	breakable.position = map.tile_map.map_to_local(spawnPos)
+	breakable.global_position = map.navigation_tile_to_world(spawnPos)
+	breakable.register_navigation_blocker(spawnPos)
+
+
+func clear_generated_objects() -> void:
+	for child in get_children():
+		if child is StaticBody2D:
+			remove_child(child)
+			child.queue_free()
 	

@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cxdh77bwwe5u2" path="res://scenes/spawn/object/breakable.gd" id="1_2ysco"]
 [ext_resource type="Texture2D" uid="uid://i17mwgyr2rqe" path="res://assets/objects/tree1.png" id="1_dsonf"]
+[ext_resource type="Script" path="res://scenes/navigation/navigation_blocker.gd" id="3_navigation"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_sene2"]
 radius = 48.8365
@@ -98,6 +99,9 @@ texture = ExtResource("1_dsonf")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=869055359]
 shape = SubResource("CircleShape2D_sene2")
+
+[node name="NavigationBlocker" type="Node" parent="."]
+script = ExtResource("3_navigation")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=1897248292]
 replication_config = SubResource("SceneReplicationConfig_a5lig")

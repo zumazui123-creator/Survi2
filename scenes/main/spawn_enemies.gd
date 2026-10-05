@@ -16,7 +16,7 @@ func _ready() -> void:
 
 #enemy spawn
 func trySpawnEnemies():
-	if not GameTime.is_night_time():
+	if not multiplayer.is_server() or not GameTime.is_night_time():
 		return
 	print("SpawnEnemies at hour: "+str( GameTime.get_hour()) )	
 	var enemyScene := preload("res://scenes/enemy/enemy.tscn")
@@ -32,21 +32,24 @@ func trySpawnEnemies():
 				print("add Enemy position:"+str(pos))
 				var enemy = enemyScene.instantiate()
 				add_child(enemy,true)
-				enemy.position = pos
+				enemy.global_position = pos
 				enemy.spawner = self
 				enemy.targetPlayerId = player
 				enemy.enemyId = enemyTypes.pick_random()
 				increasePlayerEnemyCount(player)
 
 func spawn(pos,text):
+	if not multiplayer.is_server():
+		return null
 	var enemyScene := preload("res://scenes/enemy/enemy.tscn")
 	print("add Enemy position:"+str(pos))
 	var enemy = enemyScene.instantiate()
 	add_child(enemy,true)
-	enemy.position = pos
+	enemy.global_position = pos
 	enemy.spawner = self
 	enemy.targetPlayerId = 1
 	enemy.enemyId = text
+	return enemy
 
 
 
@@ -63,6 +66,4 @@ func increasePlayerEnemyCount(pId) -> void:
 
 func decreasePlayerEnemyCount(pId) -> void:
 	if pId in spawnedEnemies:
-		spawnedEnemies[pId] -= 1
-	else:
-		spawnedEnemies[pId] = 1
+		spawnedEnemies[pId] = maxi(0, spawnedEnemies[pId] - 1)

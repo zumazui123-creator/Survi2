@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dvx7viv8cimqx" path="res://scenes/spawn/object/tree.gd" id="1_okgaj"]
 [ext_resource type="Texture2D" uid="uid://c0h6d8x4eedoy" path="res://assets/objects/tree0.png" id="2_okgaj"]
+[ext_resource type="Script" path="res://scenes/navigation/navigation_blocker.gd" id="3_navigation"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_sene2"]
 radius = 16.0
@@ -97,6 +98,9 @@ texture = ExtResource("2_okgaj")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=506121183]
 shape = SubResource("CircleShape2D_sene2")
+
+[node name="NavigationBlocker" type="Node" parent="."]
+script = ExtResource("3_navigation")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=32553806]
 replication_config = SubResource("SceneReplicationConfig_a5lig")

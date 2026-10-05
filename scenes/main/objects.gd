@@ -22,15 +22,33 @@ func _ready() -> void:
 func spawnObjects(amount):
 	var breakableScene := preload("res://scenes/spawn/object/breakable.tscn")
 	var spawnedThisWave := 0
-	for i in range(amount):
-		var spawnPos = world_map.tile_map.map_to_local(
-							world_map.spawnable_tiles.pick_random())
-		var breakable := breakableScene.instantiate()
+	var candidates: Array[Vector2i] = []
+	for tile: Vector2i in world_map.spawnable_tiles:
+		if world_map.is_navigation_tile_walkable(tile, true):
+			candidates.append(tile)
+	candidates.shuffle()
+	for spawn_tile in candidates:
+		if spawnedThisWave >= amount:
+			break
+		var breakable := breakableScene.instantiate() as NavigationBreakable
+		if breakable == null:
+			push_warning("Breakable scene must use NavigationBreakable")
+			return spawnedThisWave
+		var occupied_tiles := breakable.get_navigation_tiles(spawn_tile)
+		var can_spawn := true
+		for occupied_tile in occupied_tiles:
+			if not world_map.is_navigation_tile_walkable(occupied_tile, true):
+				can_spawn = false
+				break
+		if not can_spawn:
+			breakable.free()
+			continue
 		var objectId = Items.objects.keys().pick_random()
 		self.add_child(breakable,true)
 		breakable.objectId = objectId
-		breakable.position = spawnPos
+		breakable.global_position = world_map.navigation_tile_to_world(spawn_tile)
 		breakable.spawner = self
+		breakable.register_navigation_blockers(occupied_tiles)
 		spawnedObjects += 1
 		spawnedThisWave += 1
 	return spawnedThisWave

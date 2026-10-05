@@ -11,8 +11,8 @@ const MAX_DISTANCE = 9  # Maximum distance in tiles
 func getNavigableTiles(playerId, minR, maxR):
 	var player = players_root.get_node_or_null(str(playerId))
 	if !player:
-		return
-	var player_tile_pos = tilemap.local_to_map(player.global_position) #todo better pos
+		return []
+	var player_tile_pos = map.world_to_navigation_tile(player.global_position)
 	var walkable_tiles = get_walkable_tiles_in_distance(player_tile_pos, minR, maxR)
 	
 	return walkable_tiles
@@ -23,9 +23,17 @@ func getNRandomNavigableTileInPlayerRadius(playerId, n, minR, maxR) -> Array:
 	var randomPositions := []
 	if tiles == null or tiles.is_empty():
 		return []
-	for i in range(n):
-		randomPositions.append(tilemap.map_to_local(tiles.pick_random()))
-	print(randomPositions)
+	tiles.shuffle()
+	var player := players_root.get_node_or_null(str(playerId)) as Node2D
+	if player == null:
+		return []
+	var player_tile := map.world_to_navigation_tile(player.global_position)
+	for tile: Vector2i in tiles:
+		if map.get_navigation_path(tile, player_tile).is_empty():
+			continue
+		randomPositions.append(map.navigation_tile_to_world(tile))
+		if randomPositions.size() >= n:
+			break
 	return randomPositions
 
 func get_walkable_tiles_in_distance(player_tile_pos: Vector2i, 
@@ -33,16 +41,15 @@ func get_walkable_tiles_in_distance(player_tile_pos: Vector2i,
 	var walkable_tiles = []
 	#var visited = {}
 	#var queue = []
-	var x_dist = 100
-	var y_dist = 100
-	
-	
+	var x_dist: int
+	var y_dist: int
 	for vec in map.walkable_tiles:
+		if not map.is_navigation_tile_walkable(vec, true):
+			continue
 		x_dist = abs(player_tile_pos.x-vec.x)
 		y_dist = abs(player_tile_pos.y-vec.y)
-		if   x_dist > min_distance && x_dist <= max_distance && y_dist == min_distance:
-			walkable_tiles.append(vec)
-		elif y_dist > min_distance && y_dist <= max_distance && x_dist == min_distance:
+		var tile_distance := maxi(x_dist, y_dist)
+		if tile_distance > min_distance and tile_distance <= max_distance:
 			walkable_tiles.append(vec)
 				
 	
@@ -69,9 +76,7 @@ func get_walkable_tiles_in_distance(player_tile_pos: Vector2i,
 	return walkable_tiles
 
 func is_walkable(tile_pos: Vector2i) -> bool:
-	var atlas_coord = tilemap.get_cell_atlas_coords(tile_pos)
-	return atlas_coord in map.walkable_tiles
-	#return atlas_coord in WALKABLE_TILES
+	return map.is_navigation_tile_walkable(tile_pos, true)
 
 func get_neighbors(tile_pos: Vector2i) -> Array:
 	var neighbors = [
@@ -83,7 +88,7 @@ func get_neighbors(tile_pos: Vector2i) -> Array:
 
 	var valid_neighbors = []
 	for neighbor in neighbors:
-		if tilemap.get_cell_source_id(neighbor) != -1:  # Check if the cell is valid
+		if is_walkable(neighbor):
 			valid_neighbors.append(neighbor)
 
 	return valid_neighbors
