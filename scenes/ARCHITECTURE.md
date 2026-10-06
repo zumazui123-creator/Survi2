@@ -18,10 +18,31 @@
 - Movement, combat, inventory, and building remain independent components.
 - `CodeParser` only turns source text into validated commands; `CodePlayer`
   executes those commands against the player components.
-- `PlayerSensor` produces request-driven AI observations in tile coordinates.
-  Sensor groups keep entity discovery independent from scene-tree containers.
+- `PlayerSensor` produces the fixed AI observation directly. Its flattened
+  `8 x 21 x 21` byte tensor contains visibility, walkability, water, objects,
+  items, animals, enemies, and the level goal. Stats, goal delta, and the
+  four-action mask are returned beside that tensor.
+- Sensor groups keep entity discovery independent from scene-tree containers.
+- `Survi2NavigationEnv` mirrors the relevant Gymnasium concepts in GDScript:
+  `action_space`, `observation_space`, `observe()`, and asynchronous `step()`.
+  It has no reset yet; goal, death, or the step limit finish its only episode.
+- Manual input, `CodePlayer`, and AI movement share one tile-step API and use
+  mutually exclusive movement control modes. Code speed and particles remain
+  owned exclusively by `CodePlayer`.
 - Code editor and settings nodes are local-only and are removed from remote
   player instances during `_enter_tree`.
+
+## Player AI contract
+
+- Actions are `0 = up`, `1 = down`, `2 = left`, and `3 = right`.
+- `Player/AI` contains sibling `Sensor`, `Environment`, `RLAgent`, and
+  `RLTrainer` nodes. The environment does not own the agent or trainer.
+- `EnvStepResult` carries `observation`, `reward`, `terminated`, `truncated`,
+  and diagnostic `info` fields.
+- Navigation rewards are `+10` for the goal, `-10` for death, `-0.2` for a
+  blocked tile, and `-0.01` for a successful ordinary step.
+- `terminated` means goal or death. `truncated` means the configured maximum
+  number of steps was reached. A finished environment rejects further steps.
 
 ## Content data
 

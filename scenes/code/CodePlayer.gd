@@ -39,6 +39,9 @@ func play(code: String, functions: Dictionary = {}) -> void:
 	if parse_result.has_error():
 		_report_error(parse_result.error_message)
 		return
+	if not player.movement.set_code_input_active(true):
+		_report_error("Der Player wird gerade von einer anderen Steuerung kontrolliert.")
+		return
 
 	is_running = true
 	execution_started.emit(parse_result.commands.size())
@@ -139,7 +142,6 @@ func say(arguments: PackedStringArray) -> void:
 
 
 func _apply_execution_effects(command_count: int) -> void:
-	player.movement.set_code_input_active(true)
 	player.movement.apply_code_speed_bonus(1.0 + command_count * 0.05)
 
 	if code_particles:

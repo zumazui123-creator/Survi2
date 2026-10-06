@@ -1,73 +1,64 @@
 extends Node
 class_name PlayerSensor
 
-signal scan_completed(snapshot: Dictionary)
+signal scan_completed(observation: Dictionary)
+
+const CHANNEL_VISIBLE := 0
+const CHANNEL_WALKABLE := 1
+const CHANNEL_WATER := 2
+const CHANNEL_OBJECT := 3
+const CHANNEL_ITEM := 4
+const CHANNEL_ANIMAL := 5
+const CHANNEL_ENEMY := 6
+const CHANNEL_GOAL := 7
+const CHANNEL_COUNT := 8
+const STAT_COUNT := 3
 
 const GROUP_OBJECT := &"sensor_object"
 const GROUP_ITEM := &"sensor_item"
 const GROUP_ANIMAL := &"sensor_animal"
 const GROUP_ENEMY := &"sensor_enemy"
 
+const ACTION_DIRECTIONS: Array[Vector2i] = [
+	Vector2i.UP,
+	Vector2i.DOWN,
+	Vector2i.LEFT,
+	Vector2i.RIGHT,
+]
+
 @export_group("References")
 @export var player: CharacterBody2D
 @export var movement: PlayerMovement
+@export var stats: PlayerStats
 
 @export_group("Sensor")
 @export_range(1, 64, 1) var scan_radius_tiles := 10
 
 @onready var world_map: Map = get_tree().get_first_node_in_group("world_map")
 
-var last_snapshot: Dictionary = {}
+var last_observation: Dictionary = {}
 
 
-## Returns a deterministic snapshot in tile coordinates. Entity entries contain
-## category, id, tile, relative_tile, Manhattan distance, occupied tiles and
-## instance_id. Water entries contain the same positional fields without a node.
+## Returns the fixed-size observation consumed directly by the AI environment.
+## local_map is a flattened CHANNEL_COUNT x side x side byte tensor.
 func scan() -> Dictionary:
-	var origin_tile := get_origin_tile()
-	var snapshot := _create_empty_snapshot(origin_tile)
-	if not is_ready_to_scan():
-		last_snapshot = snapshot
-		scan_completed.emit(snapshot)
-		return snapshot
+	var observation := _create_empty_observation()
+	if is_ready_to_scan():
+		var origin_tile := get_origin_tile()
+		var local_map: PackedByteArray = observation["local_map"]
+		_fill_terrain_layers(local_map, origin_tile)
+		_mark_entity_group(local_map, GROUP_OBJECT, CHANNEL_OBJECT, origin_tile, true)
+		_mark_entity_group(local_map, GROUP_ITEM, CHANNEL_ITEM, origin_tile, false)
+		_mark_entity_group(local_map, GROUP_ANIMAL, CHANNEL_ANIMAL, origin_tile, false)
+		_mark_entity_group(local_map, GROUP_ENEMY, CHANNEL_ENEMY, origin_tile, false)
+		observation["local_map"] = local_map
+		observation["stats"] = _scan_stats()
+		observation["goal_delta"] = _scan_goal_delta(origin_tile)
+		observation["action_mask"] = _scan_action_mask(origin_tile)
 
-	snapshot.objects = _scan_entity_group(
-		GROUP_OBJECT,
-		&"objectId",
-		&"object",
-		origin_tile,
-		true,
-		[&"hp"]
-	)
-	snapshot.items = _scan_entity_group(
-		GROUP_ITEM,
-		&"itemId",
-		&"item",
-		origin_tile,
-		false,
-		[&"stackCount"]
-	)
-	snapshot.animals = _scan_entity_group(
-		GROUP_ANIMAL,
-		&"actor_id",
-		&"animal",
-		origin_tile,
-		false,
-		[&"hp", &"maxhp"]
-	)
-	snapshot.enemies = _scan_entity_group(
-		GROUP_ENEMY,
-		&"actor_id",
-		&"enemy",
-		origin_tile,
-		false,
-		[&"hp", &"maxhp"]
-	)
-	snapshot.water = _scan_water_tiles(origin_tile)
-
-	last_snapshot = snapshot
-	scan_completed.emit(snapshot)
-	return snapshot
+	last_observation = observation
+	scan_completed.emit(observation)
+	return observation
 
 
 func get_origin_tile() -> Vector2i:
@@ -78,113 +69,137 @@ func get_origin_tile() -> Vector2i:
 	return Vector2i.ZERO
 
 
+func get_map_side_length() -> int:
+	return scan_radius_tiles * 2 + 1
+
+
+func get_observation_shape() -> PackedInt32Array:
+	var side := get_map_side_length()
+	return PackedInt32Array([CHANNEL_COUNT, side, side])
+
+
+func get_local_map_value_count() -> int:
+	var side := get_map_side_length()
+	return CHANNEL_COUNT * side * side
+
+
 func is_ready_to_scan() -> bool:
 	return is_instance_valid(player) \
+		and is_instance_valid(movement) \
 		and is_instance_valid(world_map) \
 		and is_instance_valid(world_map.tile_map)
 
 
-func _create_empty_snapshot(origin_tile: Vector2i) -> Dictionary:
+func _create_empty_observation() -> Dictionary:
+	var local_map := PackedByteArray()
+	local_map.resize(get_local_map_value_count())
+	var stat_values := PackedFloat32Array()
+	stat_values.resize(STAT_COUNT)
+	var goal_delta := PackedFloat32Array()
+	goal_delta.resize(2)
+	var action_mask := PackedByteArray()
+	action_mask.resize(ACTION_DIRECTIONS.size())
 	return {
-		"origin": origin_tile,
-		"radius": scan_radius_tiles,
-		"objects": [],
-		"items": [],
-		"animals": [],
-		"enemies": [],
-		"water": [],
+		"local_map": local_map,
+		"stats": stat_values,
+		"goal_delta": goal_delta,
+		"action_mask": action_mask,
 	}
 
 
-func _scan_entity_group(
+func _fill_terrain_layers(local_map: PackedByteArray, origin_tile: Vector2i) -> void:
+	for y_offset in range(-scan_radius_tiles, scan_radius_tiles + 1):
+		for x_offset in range(-scan_radius_tiles, scan_radius_tiles + 1):
+			var relative_tile := Vector2i(x_offset, y_offset)
+			if not _is_visible_offset(relative_tile):
+				continue
+
+			var tile := origin_tile + relative_tile
+			_set_channel(local_map, CHANNEL_VISIBLE, relative_tile)
+			if world_map.is_navigation_tile_walkable(tile):
+				_set_channel(local_map, CHANNEL_WALKABLE, relative_tile)
+			if _is_water_tile(tile):
+				_set_channel(local_map, CHANNEL_WATER, relative_tile)
+			if _has_navigation_goal() and tile == world_map.endPosition:
+				_set_channel(local_map, CHANNEL_GOAL, relative_tile)
+
+
+func _mark_entity_group(
+		local_map: PackedByteArray,
 		group: StringName,
-		id_property: StringName,
-		category: StringName,
+		channel: int,
 		origin_tile: Vector2i,
-		include_footprint: bool,
-		extra_properties: Array[StringName]
-	) -> Array[Dictionary]:
-	var detections: Array[Dictionary] = []
+		include_footprint: bool
+	) -> void:
 	for candidate in get_tree().get_nodes_in_group(group):
 		var entity := candidate as Node2D
 		if not is_instance_valid(entity) or entity == player or entity.is_queued_for_deletion():
 			continue
 
 		var anchor_tile := world_map.world_to_navigation_tile(entity.global_position)
-		var entity_tiles: Array[Vector2i] = [anchor_tile]
+		var occupied_tiles: Array[Vector2i] = [anchor_tile]
 		if include_footprint and entity.has_method("get_navigation_tiles"):
-			entity_tiles = _to_tile_array(entity.call("get_navigation_tiles", anchor_tile))
-
-		var visible_tiles := _filter_tiles_in_radius(entity_tiles, origin_tile)
-		if visible_tiles.is_empty():
-			continue
-
-		var distance := _minimum_tile_distance(visible_tiles, origin_tile)
-		var detection := {
-			"category": category,
-			"id": StringName(str(entity.get(id_property))),
-			"tile": anchor_tile,
-			"relative_tile": anchor_tile - origin_tile,
-			"distance": distance,
-			"tiles": visible_tiles,
-			"instance_id": entity.get_instance_id(),
-		}
-		for property_name in extra_properties:
-			detection[String(property_name).to_snake_case()] = entity.get(property_name)
-		detections.append(detection)
-
-	detections.sort_custom(_sort_detections)
-	return detections
+			occupied_tiles = _to_tile_array(entity.call("get_navigation_tiles", anchor_tile))
+		for tile in occupied_tiles:
+			_set_channel(local_map, channel, tile - origin_tile)
 
 
-func _scan_water_tiles(origin_tile: Vector2i) -> Array[Dictionary]:
-	var water_tiles: Array[Dictionary] = []
-	for y_offset in range(-scan_radius_tiles, scan_radius_tiles + 1):
-		for x_offset in range(-scan_radius_tiles, scan_radius_tiles + 1):
-			var relative_tile := Vector2i(x_offset, y_offset)
-			var distance := _tile_distance(Vector2i.ZERO, relative_tile)
-			if distance > scan_radius_tiles:
-				continue
-
-			var tile := origin_tile + relative_tile
-			if world_map.tile_map.get_cell_source_id(tile) < 0:
-				continue
-			var atlas_coordinates := world_map.tile_map.get_cell_atlas_coords(tile)
-			if atlas_coordinates not in world_map.waterCoors:
-				continue
-			water_tiles.append({
-				"category": &"water",
-				"id": &"water",
-				"tile": tile,
-				"relative_tile": relative_tile,
-				"distance": distance,
-			})
-
-	water_tiles.sort_custom(_sort_detections)
-	return water_tiles
-
-
-func _filter_tiles_in_radius(
-		tiles: Array[Vector2i],
-		origin_tile: Vector2i
-	) -> Array[Vector2i]:
-	var result: Array[Vector2i] = []
-	for tile in tiles:
-		if _tile_distance(origin_tile, tile) <= scan_radius_tiles:
-			result.append(tile)
+func _scan_stats() -> PackedFloat32Array:
+	var result := PackedFloat32Array([0.0, 0.0, 0.0])
+	if not is_instance_valid(stats):
+		return result
+	result[0] = clampf(stats.hp / maxf(stats.max_hp, 1.0), 0.0, 1.0)
+	result[1] = clampf(stats.hydration / 100.0, 0.0, 1.0)
+	result[2] = clampf(stats.food / 100.0, 0.0, 1.0)
 	return result
 
 
-func _minimum_tile_distance(tiles: Array[Vector2i], origin_tile: Vector2i) -> int:
-	var minimum_distance := scan_radius_tiles + 1
-	for tile in tiles:
-		minimum_distance = mini(minimum_distance, _tile_distance(origin_tile, tile))
-	return minimum_distance
+func _scan_goal_delta(origin_tile: Vector2i) -> PackedFloat32Array:
+	var result := PackedFloat32Array([0.0, 0.0])
+	if not _has_navigation_goal():
+		return result
+	var delta := world_map.endPosition - origin_tile
+	result[0] = float(delta.x)
+	result[1] = float(delta.y)
+	return result
 
 
-func _tile_distance(from_tile: Vector2i, to_tile: Vector2i) -> int:
-	var difference := to_tile - from_tile
-	return absi(difference.x) + absi(difference.y)
+func _scan_action_mask(origin_tile: Vector2i) -> PackedByteArray:
+	var result := PackedByteArray()
+	result.resize(ACTION_DIRECTIONS.size())
+	for action in range(ACTION_DIRECTIONS.size()):
+		var target_tile := origin_tile + ACTION_DIRECTIONS[action]
+		result[action] = 1 if world_map.is_navigation_tile_walkable(target_tile) else 0
+	return result
+
+
+func _is_water_tile(tile: Vector2i) -> bool:
+	if world_map.tile_map.get_cell_source_id(tile) < 0:
+		return false
+	return world_map.tile_map.get_cell_atlas_coords(tile) in world_map.waterCoors
+
+
+func _has_navigation_goal() -> bool:
+	return is_instance_valid(world_map) \
+		and world_map.is_navigation_tile_in_bounds(world_map.endPosition)
+
+
+func _set_channel(
+		local_map: PackedByteArray,
+		channel: int,
+		relative_tile: Vector2i
+	) -> void:
+	if channel < 0 or channel >= CHANNEL_COUNT or not _is_visible_offset(relative_tile):
+		return
+	var side := get_map_side_length()
+	var local_x := relative_tile.x + scan_radius_tiles
+	var local_y := relative_tile.y + scan_radius_tiles
+	var index := channel * side * side + local_y * side + local_x
+	local_map[index] = 1
+
+
+func _is_visible_offset(relative_tile: Vector2i) -> bool:
+	return absi(relative_tile.x) + absi(relative_tile.y) <= scan_radius_tiles
 
 
 func _to_tile_array(value: Variant) -> Array[Vector2i]:
@@ -194,17 +209,3 @@ func _to_tile_array(value: Variant) -> Array[Vector2i]:
 			if tile is Vector2i:
 				result.append(tile)
 	return result
-
-
-func _sort_detections(left: Dictionary, right: Dictionary) -> bool:
-	var left_distance := int(left.distance)
-	var right_distance := int(right.distance)
-	if left_distance != right_distance:
-		return left_distance < right_distance
-	var left_tile: Vector2i = left.tile
-	var right_tile: Vector2i = right.tile
-	if left_tile.y != right_tile.y:
-		return left_tile.y < right_tile.y
-	if left_tile.x != right_tile.x:
-		return left_tile.x < right_tile.x
-	return String(left.get("id", "")) < String(right.get("id", ""))

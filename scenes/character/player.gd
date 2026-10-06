@@ -16,6 +16,7 @@ var workTaskText: RichTextLabel
 @export var code_player: CodePlayer
 @export var goal_tracker: PlayerGoalTracker
 @export var sensor: PlayerSensor
+@export var environment: Survi2NavigationEnv
 var code_edit: CodeEdit
 var local_ui: PlayerLocalUI
 @export var playerName : String:

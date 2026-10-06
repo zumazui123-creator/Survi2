@@ -5,6 +5,13 @@ signal speed_changed(value: float)
 signal tile_step_finished(map_position: Vector2i)
 signal tile_step_blocked(map_position: Vector2i, attempted_position: Vector2i)
 signal tile_step_resolved(map_position: Vector2i, succeeded: bool)
+signal control_mode_changed(mode: int)
+
+enum ControlMode {
+	MANUAL,
+	CODE,
+	AI,
+}
 
 @export_group("References")
 @export var player: CharacterBody2D
@@ -22,7 +29,7 @@ var path_line : Line2D
 var _base_move_speed_factor := default_move_speed_factor
 var _speed_boost_multiplier := 1.0
 var _code_speed_multiplier := 1.0
-var _code_input_active := false
+var control_mode := ControlMode.MANUAL
 var _grid_position_initialized := false
 var _step_start_global_position := Vector2.ZERO
 var _step_target_global_position := Vector2.ZERO
@@ -41,7 +48,7 @@ func is_moving() -> bool:
 
 
 func input() -> void:
-	if is_moving() or _code_input_active:
+	if is_moving() or control_mode != ControlMode.MANUAL:
 		return
 
 	var input_direction := Vector2i.ZERO
@@ -55,7 +62,7 @@ func input() -> void:
 		input_direction = Vector2i.DOWN
 
 	if input_direction != Vector2i.ZERO:
-		_start_tile_step(input_direction)
+		request_tile_step(input_direction, ControlMode.MANUAL)
 
 
 func tile_move(delta: float) -> Vector2:
@@ -194,8 +201,32 @@ func reset_code_speed_bonus():
 	_update_move_speed()
 	print("Code Speed Bonus reset: ", move_speed_factor)
 
-func set_code_input_active(value: bool) -> void:
-	_code_input_active = value
+func acquire_control(requested_mode: int) -> bool:
+	if requested_mode == ControlMode.MANUAL:
+		return control_mode == ControlMode.MANUAL
+	if control_mode == requested_mode:
+		return true
+	if control_mode != ControlMode.MANUAL or is_moving():
+		return false
+	control_mode = requested_mode
+	control_mode_changed.emit(control_mode)
+	return true
+
+
+func release_control(requested_mode: int) -> bool:
+	if requested_mode == ControlMode.MANUAL or control_mode != requested_mode:
+		return false
+	control_mode = ControlMode.MANUAL
+	control_mode_changed.emit(control_mode)
+	return true
+
+
+func set_code_input_active(value: bool) -> bool:
+	if value:
+		return acquire_control(ControlMode.CODE)
+	if control_mode == ControlMode.CODE:
+		return release_control(ControlMode.CODE)
+	return true
 
 func _update_move_speed() -> void:
 	move_speed_factor = _base_move_speed_factor * _speed_boost_multiplier * _code_speed_multiplier
@@ -226,10 +257,19 @@ func _update_move_speed() -> void:
 		#player.animation.handleAnims(vel,doingAction)
 
 func request_code_step(input_action: String) -> bool:
-	if is_moving() or not Strings.direction_map.has(input_action):
+	if not Strings.direction_map.has(input_action):
 		return false
 
-	return _start_tile_step(Vector2i(Strings.direction_map[input_action]))
+	return request_tile_step(
+		Vector2i(Strings.direction_map[input_action]),
+		ControlMode.CODE
+	)
+
+
+func request_tile_step(tile_direction: Vector2i, requested_mode: int) -> bool:
+	if requested_mode != control_mode:
+		return false
+	return _start_tile_step(tile_direction)
 
 func set_speed( player_speed : float):
 	_base_move_speed_factor = maxf(_base_move_speed_factor + player_speed, 0.1)

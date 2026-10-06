@@ -365,7 +365,7 @@ _data = {
 _data = [Vector2(0.00279329, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 2
 
-[node name="Player" type="CharacterBody2D" unique_id=699968112 node_paths=PackedStringArray("status", "status_view", "ai_control", "movement", "animation", "combat", "building", "items", "code_player", "goal_tracker", "sensor") groups=["damageable", "player"]]
+[node name="Player" type="CharacterBody2D" unique_id=699968112 node_paths=PackedStringArray("status", "status_view", "ai_control", "movement", "animation", "combat", "building", "items", "code_player", "goal_tracker", "sensor", "environment") groups=["damageable", "player"]]
 collision_layer = 3
 collision_mask = 3
 script = ExtResource("1_7xvi4")
@@ -380,25 +380,33 @@ items = NodePath("Gameplay/PlayerItems")
 code_player = NodePath("Gameplay/CodePlayer")
 goal_tracker = NodePath("Gameplay/PlayerGoalTracker")
 sensor = NodePath("AI/Sensor")
+environment = NodePath("AI/Environment")
 
 [node name="AI" type="Node" parent="." unique_id=1856201777]
 
-[node name="Sensor" type="Node" parent="AI" node_paths=PackedStringArray("player", "movement")]
+[node name="Sensor" type="Node" parent="AI" node_paths=PackedStringArray("player", "movement", "stats")]
 script = ExtResource("30_player_sensor")
 player = NodePath("../..")
 movement = NodePath("../../Gameplay/PlayerMovement")
+stats = NodePath("../../Gameplay/PlayerStats")
 scan_radius_tiles = 10
+
+[node name="Environment" type="Node" parent="AI" unique_id=1785568005 node_paths=PackedStringArray("player", "sensor", "movement", "stats", "goal_tracker")]
+script = ExtResource("3_pygui")
+player = NodePath("../..")
+sensor = NodePath("../Sensor")
+movement = NodePath("../../Gameplay/PlayerMovement")
+stats = NodePath("../../Gameplay/PlayerStats")
+goal_tracker = NodePath("../../Gameplay/PlayerGoalTracker")
+max_steps = 500
+
+[node name="RLAgent" type="Node" parent="AI" unique_id=1911412211]
+script = ExtResource("2_x06ku")
 
 [node name="RLTrainer" type="Node" parent="AI" unique_id=839086992 node_paths=PackedStringArray("agent", "environment")]
 script = ExtResource("4_okkwj")
-agent = NodePath("RLAgent")
-environment = NodePath("Environment")
-
-[node name="RLAgent" type="Node" parent="AI/RLTrainer" unique_id=1911412211]
-script = ExtResource("2_x06ku")
-
-[node name="Environment" type="Node" parent="AI/RLTrainer" unique_id=1785568005]
-script = ExtResource("3_pygui")
+agent = NodePath("../RLAgent")
+environment = NodePath("../Environment")
 
 [node name="Networking" type="Node" parent="."]
 

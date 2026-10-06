@@ -1,96 +1,90 @@
 extends Node
+class_name RLTrainer
 
+signal training_started()
+signal training_finished(steps: int, total_reward: float)
 
 @export var agent: RLAgent
-@export var environment: RLEnvironment
+@export var environment: Survi2NavigationEnv
+@export_range(0.0, 1.0, 0.001) var epsilon_decay := 0.995
+@export_range(0.0, 1.0, 0.001) var min_epsilon := 0.01
 
-# --- Training config ---
-@export var max_steps_per_episode := 100
-@export var episodes := 1000
-@export var epsilon_decay := 0.995
-@export var min_epsilon := 0.01
-
-# --- Runtime ---
-var current_episode := 0
 var training := false
 var total_reward := 0.0
+var completed_steps := 0
 
 
-func _ready():
-	randomize()
+func start_training() -> void:
+	_start_episode(false)
 
 
-# --- Public API ---
+func start_random_policy() -> void:
+	_start_episode(true)
 
-func start_training():
-	if not agent or not environment:
+
+func stop_training() -> void:
+	training = false
+	if is_instance_valid(environment) and not environment.is_finished():
+		environment.close()
+
+
+func _start_episode(random_policy: bool) -> void:
+	if training:
+		return
+	if not is_instance_valid(agent) or not is_instance_valid(environment):
 		push_error("RLTrainer: Agent or Environment not assigned")
+		return
+	if environment.is_finished():
+		push_error("RLTrainer: Environment is finished and has no reset yet")
+		return
+	if not (environment.action_space is DiscreteSpace):
+		push_error("RLTrainer: Environment requires a DiscreteSpace")
 		return
 
 	training = true
-	current_episode = 0
-	_run_training_loop()
-
-
-func stop_training():
-	training = false
-
-
-# --- Core Loop ---
-
-func _run_training_loop() -> void:
-	while training and current_episode < episodes:
-		await _run_episode()
-		current_episode += 1
-
-	training = false
-	print("✅ Training finished")
-
-
-func _run_episode() -> void:
-	var state = environment.reset()
-	var done := false
-	var step := 0
 	total_reward = 0.0
+	completed_steps = 0
+	training_started.emit()
+	_run_episode(random_policy)
 
-	while not done and step < max_steps_per_episode:
-		var action = agent.choose_action(state)
-		var result = environment.step(action)
+
+func _run_episode(random_policy: bool) -> void:
+	var state := environment.observe()
+	var available_actions := environment.action_space as DiscreteSpace
+
+	while training and not environment.is_finished():
+		var action := int(available_actions.sample()) if random_policy else agent.choose_action(
+			state,
+			available_actions
+		)
+		var result: EnvStepResult = await environment.step(action)
+		if result.info.has("error"):
+			push_error("RLTrainer: " + String(result.info.error))
+			break
 
 		agent.learn(
 			state,
 			action,
 			result.reward,
-			result.state
+			result.observation,
+			result.terminated,
+			available_actions.size
 		)
-
-		state = result.state
-		done = result.done
+		state = result.observation
 		total_reward += result.reward
-		step += 1
+		completed_steps += 1
 
-		# Optional: slow down for visualization
+		if result.is_done():
+			break
 		await get_tree().process_frame
 
-	# --- Epsilon decay ---
-	agent.epsilon = max(
-		min_epsilon,
-		agent.epsilon * epsilon_decay
-	)
-
-	# --- Debug ---
-	_log_episode(step)
-
-
-# --- Debug / Monitoring ---
-
-func _log_episode(steps: int):
+	agent.epsilon = maxf(min_epsilon, agent.epsilon * epsilon_decay)
+	training = false
+	training_finished.emit(completed_steps, total_reward)
 	print(
-		"Episode ",
-		current_episode,
-		" | Steps: ",
-		steps,
-		" | Total Reward: ",
+		"AI episode finished | Steps: ",
+		completed_steps,
+		" | Total reward: ",
 		total_reward,
 		" | Epsilon: ",
 		agent.epsilon
