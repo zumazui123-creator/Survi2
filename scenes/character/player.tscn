@@ -22,10 +22,10 @@
 [ext_resource type="Script" path="res://scenes/character/components/player_death_handler.gd" id="29_death_handler"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_1pknd"]
-properties/0/path = NodePath("AnimationPlayer:current_animation")
+properties/0/path = NodePath("Visuals/AnimationPlayer:current_animation")
 properties/0/spawn = true
 properties/0/replication_mode = 2
-properties/1/path = NodePath("MovingParts:rotation")
+properties/1/path = NodePath("Visuals/MovingParts:rotation")
 properties/1/spawn = true
 properties/1/replication_mode = 2
 properties/2/path = NodePath(".:playerName")
@@ -34,34 +34,34 @@ properties/2/replication_mode = 2
 properties/3/path = NodePath(".:characterFile")
 properties/3/spawn = true
 properties/3/replication_mode = 2
-properties/4/path = NodePath("PlayerStats:max_hp")
+properties/4/path = NodePath("Gameplay/PlayerStats:max_hp")
 properties/4/spawn = true
 properties/4/replication_mode = 2
-properties/5/path = NodePath("PlayerMovement:move_speed_factor")
+properties/5/path = NodePath("Gameplay/PlayerMovement:move_speed_factor")
 properties/5/spawn = true
 properties/5/replication_mode = 2
-properties/6/path = NodePath("PlayerStats:attack_damage")
+properties/6/path = NodePath("Gameplay/PlayerStats:attack_damage")
 properties/6/spawn = true
 properties/6/replication_mode = 2
 properties/7/path = NodePath(".:position")
 properties/7/spawn = true
 properties/7/replication_mode = 2
-properties/8/path = NodePath("PlayerStats:hp")
+properties/8/path = NodePath("Gameplay/PlayerStats:hp")
 properties/8/spawn = true
 properties/8/replication_mode = 2
-properties/9/path = NodePath("PlayerStats:exp")
+properties/9/path = NodePath("Gameplay/PlayerStats:exp")
 properties/9/spawn = true
 properties/9/replication_mode = 2
-properties/10/path = NodePath("PlayerStats:hydration")
+properties/10/path = NodePath("Gameplay/PlayerStats:hydration")
 properties/10/spawn = true
 properties/10/replication_mode = 2
-properties/11/path = NodePath("PlayerStats:food")
+properties/11/path = NodePath("Gameplay/PlayerStats:food")
 properties/11/spawn = true
 properties/11/replication_mode = 2
-properties/12/path = NodePath("PlayerStats:max_exp")
+properties/12/path = NodePath("Gameplay/PlayerStats:max_exp")
 properties/12/spawn = true
 properties/12/replication_mode = 2
-properties/13/path = NodePath("PlayerStats:level")
+properties/13/path = NodePath("Gameplay/PlayerStats:level")
 properties/13/spawn = true
 properties/13/replication_mode = 2
 
@@ -165,7 +165,7 @@ tracks/1/use_blend = true
 tracks/2/type = "method"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("PlayerCombat")
+tracks/2/path = NodePath("../Gameplay/PlayerCombat")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
@@ -226,7 +226,7 @@ tracks/2/use_blend = true
 tracks/3/type = "method"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("PlayerCombat")
+tracks/3/path = NodePath("../Gameplay/PlayerCombat")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
@@ -284,7 +284,7 @@ tracks/2/use_blend = true
 tracks/3/type = "method"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("PlayerCombat")
+tracks/3/path = NodePath("../Gameplay/PlayerCombat")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
@@ -368,16 +368,16 @@ point_count = 2
 collision_layer = 3
 collision_mask = 3
 script = ExtResource("1_7xvi4")
-status = NodePath("PlayerStats")
-status_view = NodePath("PlayerStatus")
+status = NodePath("Gameplay/PlayerStats")
+status_view = NodePath("WorldUI/PlayerStatus")
 ai_control = NodePath("AI")
-movement = NodePath("PlayerMovement")
-animation = NodePath("AnimationPlayer")
-combat = NodePath("PlayerCombat")
-building = NodePath("PlayerBuilding")
-items = NodePath("PlayerItems")
-code_player = NodePath("CodePlayer")
-goal_tracker = NodePath("PlayerGoalTracker")
+movement = NodePath("Gameplay/PlayerMovement")
+animation = NodePath("Visuals/AnimationPlayer")
+combat = NodePath("Gameplay/PlayerCombat")
+building = NodePath("Gameplay/PlayerBuilding")
+items = NodePath("Gameplay/PlayerItems")
+code_player = NodePath("Gameplay/CodePlayer")
+goal_tracker = NodePath("Gameplay/PlayerGoalTracker")
 
 [node name="AI" type="Node" parent="." unique_id=1856201777]
 
@@ -392,53 +392,61 @@ script = ExtResource("2_x06ku")
 [node name="Environment" type="Node" parent="AI/RLTrainer" unique_id=1785568005]
 script = ExtResource("3_pygui")
 
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=199353045]
+[node name="Networking" type="Node" parent="."]
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Networking" unique_id=199353045]
+root_path = NodePath("../..")
 replication_config = SubResource("SceneReplicationConfig_1pknd")
 visibility_update_mode = 2
 
-[node name="PlayerMovement" type="Node" parent="." unique_id=242878014 node_paths=PackedStringArray("player")]
-script = ExtResource("6_7r6u0")
-player = NodePath("..")
+[node name="Gameplay" type="Node" parent="."]
 
-[node name="PlayerCombat" type="Node" parent="." unique_id=1291276715 node_paths=PackedStringArray("player", "hit_area") groups=["player"]]
+[node name="PlayerMovement" type="Node" parent="Gameplay" unique_id=242878014 node_paths=PackedStringArray("player")]
+script = ExtResource("6_7r6u0")
+player = NodePath("../..")
+
+[node name="PlayerCombat" type="Node" parent="Gameplay" unique_id=1291276715 node_paths=PackedStringArray("player", "hit_area") groups=["player"]]
 unique_name_in_owner = true
 script = ExtResource("8_ba010")
-player = NodePath("..")
-hit_area = NodePath("../MovingParts/HitArea")
+player = NodePath("../..")
+hit_area = NodePath("../../Visuals/MovingParts/HitArea")
 
-[node name="PlayerBuilding" type="Node" parent="." unique_id=1139544709 node_paths=PackedStringArray("player")]
+[node name="PlayerBuilding" type="Node" parent="Gameplay" unique_id=1139544709 node_paths=PackedStringArray("player")]
 script = ExtResource("10_x06ku")
-player = NodePath("..")
+player = NodePath("../..")
 
-[node name="PlayerItems" type="Node" parent="." unique_id=533001143 node_paths=PackedStringArray("player")]
+[node name="PlayerItems" type="Node" parent="Gameplay" unique_id=533001143 node_paths=PackedStringArray("player")]
 script = ExtResource("9_e5n5u")
-player = NodePath("..")
+player = NodePath("../..")
 
-[node name="CodePlayer" type="Node" parent="." node_paths=PackedStringArray("player")]
+[node name="CodePlayer" type="Node" parent="Gameplay" node_paths=PackedStringArray("player", "code_particles")]
 script = ExtResource("26_code_player")
-player = NodePath("..")
+player = NodePath("../..")
+code_particles = NodePath("../../Visuals/codeParticles")
 
-[node name="PlayerStats" type="Node" parent="."]
+[node name="PlayerStats" type="Node" parent="Gameplay"]
 script = ExtResource("25_stats")
 
-[node name="PlayerGoalTracker" type="Node" parent="." node_paths=PackedStringArray("player", "movement", "stats")]
+[node name="PlayerGoalTracker" type="Node" parent="Gameplay" node_paths=PackedStringArray("player", "movement", "stats")]
 script = ExtResource("27_goal_tracker")
-player = NodePath("..")
+player = NodePath("../..")
 movement = NodePath("../PlayerMovement")
 stats = NodePath("../PlayerStats")
 
-[node name="PlayerSurvival" type="Node" parent="." node_paths=PackedStringArray("player", "stats")]
+[node name="PlayerSurvival" type="Node" parent="Gameplay" node_paths=PackedStringArray("player", "stats")]
 script = ExtResource("28_survival")
-player = NodePath("..")
+player = NodePath("../..")
 stats = NodePath("../PlayerStats")
 
-[node name="PlayerDeathHandler" type="Node" parent="." node_paths=PackedStringArray("stats", "combat", "blood_particles")]
+[node name="PlayerDeathHandler" type="Node" parent="Gameplay" node_paths=PackedStringArray("stats", "combat", "blood_particles")]
 script = ExtResource("29_death_handler")
 stats = NodePath("../PlayerStats")
 combat = NodePath("../PlayerCombat")
-blood_particles = NodePath("../bloodParticles")
+blood_particles = NodePath("../../Visuals/bloodParticles")
 
-[node name="PlayerStatus" type="Control" parent="." unique_id=381426310 node_paths=PackedStringArray("hp_bar", "exp_bar", "hydration_bar", "food_bar", "name_label", "player", "stats")]
+[node name="WorldUI" type="Node2D" parent="."]
+
+[node name="PlayerStatus" type="Control" parent="WorldUI" unique_id=381426310 node_paths=PackedStringArray("hp_bar", "exp_bar", "hydration_bar", "food_bar", "name_label", "player", "stats")]
 unique_name_in_owner = true
 layout_mode = 3
 anchors_preset = 8
@@ -459,10 +467,10 @@ exp_bar = NodePath("NameTag/VBoxContainer/expBar")
 hydration_bar = NodePath("Bar/HydrationBar")
 food_bar = NodePath("Bar/FoodBar")
 name_label = NodePath("NameTag/VBoxContainer/nameLabel")
-player = NodePath("..")
-stats = NodePath("../PlayerStats")
+player = NodePath("../..")
+stats = NodePath("../../Gameplay/PlayerStats")
 
-[node name="NameTag" type="PanelContainer" parent="PlayerStatus" unique_id=1692831233]
+[node name="NameTag" type="PanelContainer" parent="WorldUI/PlayerStatus" unique_id=1692831233]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -474,11 +482,11 @@ grow_horizontal = 2
 layout_direction = 1
 theme_override_styles/panel = SubResource("StyleBoxEmpty_5y66v")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PlayerStatus/NameTag" unique_id=3770290]
+[node name="VBoxContainer" type="VBoxContainer" parent="WorldUI/PlayerStatus/NameTag" unique_id=3770290]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="hpBar" type="ProgressBar" parent="PlayerStatus/NameTag/VBoxContainer" unique_id=1506261142]
+[node name="hpBar" type="ProgressBar" parent="WorldUI/PlayerStatus/NameTag/VBoxContainer" unique_id=1506261142]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 4)
 layout_mode = 2
@@ -489,7 +497,7 @@ max_value = 1.0
 value = 1.0
 show_percentage = false
 
-[node name="expBar" type="ProgressBar" parent="PlayerStatus/NameTag/VBoxContainer" unique_id=123456789]
+[node name="expBar" type="ProgressBar" parent="WorldUI/PlayerStatus/NameTag/VBoxContainer" unique_id=123456789]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 2)
 layout_mode = 2
@@ -498,7 +506,7 @@ theme_override_styles/fill = SubResource("StyleBoxFlat_exp")
 step = 1.0
 show_percentage = false
 
-[node name="nameLabel" type="Label" parent="PlayerStatus/NameTag/VBoxContainer" unique_id=1397500899]
+[node name="nameLabel" type="Label" parent="WorldUI/PlayerStatus/NameTag/VBoxContainer" unique_id=1397500899]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 10)
 layout_mode = 2
@@ -509,7 +517,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 1
 
-[node name="Bar" type="GridContainer" parent="PlayerStatus" unique_id=99468987]
+[node name="Bar" type="GridContainer" parent="WorldUI/PlayerStatus" unique_id=99468987]
 z_index = 100
 layout_mode = 0
 offset_left = -596.0
@@ -517,14 +525,14 @@ offset_top = -59.0
 offset_right = -496.0
 offset_bottom = -1.0
 
-[node name="HydrationBar" type="ProgressBar" parent="PlayerStatus/Bar" unique_id=301583031]
+[node name="HydrationBar" type="ProgressBar" parent="WorldUI/PlayerStatus/Bar" unique_id=301583031]
 modulate = Color(0, 0.491312, 0.491312, 1)
 self_modulate = Color(0.0216716, 0, 0.829495, 1)
 layout_mode = 2
 size_flags_horizontal = 3
 rounded = true
 
-[node name="WasserLabel" type="Label" parent="PlayerStatus/Bar/HydrationBar" unique_id=20246718]
+[node name="WasserLabel" type="Label" parent="WorldUI/PlayerStatus/Bar/HydrationBar" unique_id=20246718]
 modulate = Color(0.00130165, 0.129496, 0.566333, 1)
 layout_mode = 1
 offset_left = 112.0
@@ -533,13 +541,13 @@ offset_right = 169.0
 offset_bottom = 25.0
 text = "Wasser"
 
-[node name="FoodBar" type="ProgressBar" parent="PlayerStatus/Bar" unique_id=351694071]
+[node name="FoodBar" type="ProgressBar" parent="WorldUI/PlayerStatus/Bar" unique_id=351694071]
 modulate = Color(0.227451, 0.12549, 0.0588235, 1)
 layout_mode = 2
 size_flags_horizontal = 3
 rounded = true
 
-[node name="FoodLabel" type="Label" parent="PlayerStatus/Bar/FoodBar" unique_id=1029477792]
+[node name="FoodLabel" type="Label" parent="WorldUI/PlayerStatus/Bar/FoodBar" unique_id=1029477792]
 modulate = Color(0.22673, 0.127422, 0.0601467, 1)
 layout_mode = 1
 offset_left = 112.0
@@ -548,7 +556,7 @@ offset_right = 169.0
 offset_bottom = 25.0
 text = "Essen"
 
-[node name="WorkContainer" type="PanelContainer" parent="PlayerStatus" unique_id=1271707983]
+[node name="WorkContainer" type="PanelContainer" parent="WorldUI/PlayerStatus" unique_id=1271707983]
 z_index = 100
 layout_mode = 0
 offset_left = -568.0
@@ -558,32 +566,34 @@ offset_bottom = -134.0
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_wmtbp")
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="PlayerStatus/WorkContainer" unique_id=2047578385]
+[node name="VBoxContainer2" type="VBoxContainer" parent="WorldUI/PlayerStatus/WorkContainer" unique_id=2047578385]
 layout_mode = 2
 
-[node name="HBoxContainer2" type="VBoxContainer" parent="PlayerStatus/WorkContainer/VBoxContainer2" unique_id=1745333666]
+[node name="HBoxContainer2" type="VBoxContainer" parent="WorldUI/PlayerStatus/WorkContainer/VBoxContainer2" unique_id=1745333666]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="PlayerStatus/WorkContainer/VBoxContainer2/HBoxContainer2" unique_id=229846487]
+[node name="Label" type="Label" parent="WorldUI/PlayerStatus/WorkContainer/VBoxContainer2/HBoxContainer2" unique_id=229846487]
 layout_mode = 2
 text = "Main-Menu"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="SettingsButton" type="Button" parent="PlayerStatus/WorkContainer/VBoxContainer2/HBoxContainer2" unique_id=1508724194]
+[node name="SettingsButton" type="Button" parent="WorldUI/PlayerStatus/WorkContainer/VBoxContainer2/HBoxContainer2" unique_id=1508724194]
 layout_mode = 2
 text = "Settings"
 
-[node name="InfoButton" type="Button" parent="PlayerStatus/WorkContainer/VBoxContainer2/HBoxContainer2" unique_id=181675464]
+[node name="InfoButton" type="Button" parent="WorldUI/PlayerStatus/WorkContainer/VBoxContainer2/HBoxContainer2" unique_id=181675464]
 layout_mode = 2
 text = "Info"
 
-[node name="MovingParts" type="Node2D" parent="." unique_id=1677369711]
+[node name="Visuals" type="Node2D" parent="."]
 
-[node name="Sprite2D" type="Sprite2D" parent="MovingParts" unique_id=1577559968]
+[node name="MovingParts" type="Node2D" parent="Visuals" unique_id=1677369711]
+
+[node name="Sprite2D" type="Sprite2D" parent="Visuals/MovingParts" unique_id=1577559968]
 scale = Vector2(0.833333, 0.825581)
 
-[node name="Hands" type="Sprite2D" parent="MovingParts" unique_id=863491252]
+[node name="Hands" type="Sprite2D" parent="Visuals/MovingParts" unique_id=863491252]
 unique_name_in_owner = true
 scale = Vector2(0.9, 0.848837)
 texture = ExtResource("4_yjkcj")
@@ -591,33 +601,33 @@ offset = Vector2(6, 0)
 hframes = 12
 frame = 4
 
-[node name="HeldItem" type="Sprite2D" parent="MovingParts" unique_id=800330785]
+[node name="HeldItem" type="Sprite2D" parent="Visuals/MovingParts" unique_id=800330785]
 unique_name_in_owner = true
 texture_filter = 1
 offset = Vector2(16, 7)
 
-[node name="HitArea" type="Area2D" parent="MovingParts" unique_id=623606295]
+[node name="HitArea" type="Area2D" parent="Visuals/MovingParts" unique_id=623606295]
 unique_name_in_owner = true
 
-[node name="HitCollision" type="CollisionShape2D" parent="MovingParts/HitArea" unique_id=1096221125]
+[node name="HitCollision" type="CollisionShape2D" parent="Visuals/MovingParts/HitArea" unique_id=1096221125]
 unique_name_in_owner = true
 position = Vector2(25, 0)
 rotation = 1.5708
 shape = SubResource("CircleShape2D_wmtbp")
 
-[node name="Equipment" type="Node2D" parent="MovingParts" unique_id=766952440]
+[node name="Equipment" type="Node2D" parent="Visuals/MovingParts" unique_id=766952440]
 unique_name_in_owner = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1001149962]
 shape = SubResource("CircleShape2D_5y66v")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=507196032]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Visuals" unique_id=507196032]
 libraries/ = SubResource("AnimationLibrary_4vloy")
 script = ExtResource("21_okkwj")
 
-[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="." unique_id=1581309287]
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="Visuals" unique_id=1581309287]
 
-[node name="bloodParticles" type="CPUParticles2D" parent="." unique_id=1922889635]
+[node name="bloodParticles" type="CPUParticles2D" parent="Visuals" unique_id=1922889635]
 emitting = false
 lifetime = 0.25
 one_shot = true
@@ -633,7 +643,7 @@ scale_amount_max = 4.0
 scale_amount_curve = SubResource("Curve_s5j1r")
 color = Color(1, 0.172549, 0.113725, 1)
 
-[node name="codeParticles" type="CPUParticles2D" parent="." unique_id=1028374655]
+[node name="codeParticles" type="CPUParticles2D" parent="Visuals" unique_id=1028374655]
 emitting = false
 amount = 20
 lifetime = 0.5
@@ -647,15 +657,15 @@ initial_velocity_max = 20.0
 scale_amount_max = 2.0
 color = Color(0, 0.8, 1, 0.8)
 
-[node name="EquipmentSpawner" type="MultiplayerSpawner" parent="." unique_id=1930399837]
+[node name="EquipmentSpawner" type="MultiplayerSpawner" parent="Networking" unique_id=1930399837]
 _spawnable_scenes = PackedStringArray("uid://cv01pg7l0b1q8")
-spawn_path = NodePath("../MovingParts/Equipment")
+spawn_path = NodePath("../../Visuals/MovingParts/Equipment")
 
-[node name="MessageSpawner" type="MultiplayerSpawner" parent="." unique_id=63859563]
+[node name="MessageSpawner" type="MultiplayerSpawner" parent="Networking" unique_id=63859563]
 _spawnable_scenes = PackedStringArray("uid://cv8fbx1drgjch")
-spawn_path = NodePath("../PlayerMessages")
+spawn_path = NodePath("../../WorldUI/PlayerMessages")
 
-[node name="PlayerMessages" type="VBoxContainer" parent="." unique_id=965107711]
+[node name="PlayerMessages" type="VBoxContainer" parent="WorldUI" unique_id=965107711]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(140, 50)
 anchors_preset = 7
@@ -683,5 +693,5 @@ script = ExtResource("17_jb4us")
 enabled = false
 script = ExtResource("13_e5n5u")
 
-[connection signal="pressed" from="PlayerStatus/WorkContainer/VBoxContainer2/HBoxContainer2/SettingsButton" to="PlayerStatus" method="_on_settings_button_pressed"]
-[connection signal="pressed" from="PlayerStatus/WorkContainer/VBoxContainer2/HBoxContainer2/InfoButton" to="PlayerStatus" method="_on_info_button_pressed"]
+[connection signal="pressed" from="WorldUI/PlayerStatus/WorkContainer/VBoxContainer2/HBoxContainer2/SettingsButton" to="WorldUI/PlayerStatus" method="_on_settings_button_pressed"]
+[connection signal="pressed" from="WorldUI/PlayerStatus/WorkContainer/VBoxContainer2/HBoxContainer2/InfoButton" to="WorldUI/PlayerStatus" method="_on_info_button_pressed"]

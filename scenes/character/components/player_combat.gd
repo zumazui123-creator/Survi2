@@ -108,8 +108,8 @@ func getDamage(causer: Node, amount: float, _damage_type: StringName) -> void:
 func _resolve_attacking_combat(causer: Node) -> PlayerCombat:
 	if causer is PlayerCombat:
 		return causer as PlayerCombat
-	if causer is CharacterBody2D:
-		return causer.get_node_or_null("PlayerCombat") as PlayerCombat
+	if causer is CharacterBody2D and causer.is_in_group(Strings.GROUP_PLAYER):
+		return causer.get("combat") as PlayerCombat
 	return null
 
 func die():

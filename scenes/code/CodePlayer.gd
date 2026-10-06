@@ -10,6 +10,7 @@ signal runtime_error(message: String)
 const MAX_EXPANDED_LINES := 1000
 
 @export var player: CharacterBody2D
+@export var code_particles: CPUParticles2D
 
 var is_running := false
 var _execution_id := 0
@@ -213,7 +214,6 @@ func _apply_execution_effects(command_count: int) -> void:
 	player.movement.set_code_input_active(true)
 	player.movement.apply_code_speed_bonus(1.0 + command_count * 0.05)
 
-	var code_particles := player.get_node_or_null("codeParticles") as CPUParticles2D
 	if code_particles:
 		code_particles.emitting = true
 		code_particles.amount = 10 + command_count * 2
@@ -225,7 +225,6 @@ func _reset_execution_effects() -> void:
 		return
 	player.movement.set_code_input_active(false)
 	player.movement.reset_code_speed_bonus()
-	var code_particles := player.get_node_or_null("codeParticles") as CPUParticles2D
 	if code_particles:
 		code_particles.emitting = false
 
