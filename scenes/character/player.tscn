@@ -17,6 +17,9 @@
 [ext_resource type="Script" uid="uid://c3ethito73x3e" path="res://scenes/character/components/animation_player.gd" id="21_okkwj"]
 [ext_resource type="Script" path="res://scenes/character/components/player_stats.gd" id="25_stats"]
 [ext_resource type="Script" uid="uid://3u5wolperx1b" path="res://scenes/code/CodePlayer.gd" id="26_code_player"]
+[ext_resource type="Script" path="res://scenes/character/components/player_goal_tracker.gd" id="27_goal_tracker"]
+[ext_resource type="Script" path="res://scenes/character/components/player_survival.gd" id="28_survival"]
+[ext_resource type="Script" path="res://scenes/character/components/player_death_handler.gd" id="29_death_handler"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_1pknd"]
 properties/0/path = NodePath("AnimationPlayer:current_animation")
@@ -31,34 +34,34 @@ properties/2/replication_mode = 2
 properties/3/path = NodePath(".:characterFile")
 properties/3/spawn = true
 properties/3/replication_mode = 2
-properties/4/path = NodePath("PlayerStatus:rotation")
+properties/4/path = NodePath("PlayerStats:max_hp")
 properties/4/spawn = true
 properties/4/replication_mode = 2
-properties/5/path = NodePath("PlayerStats:max_hp")
+properties/5/path = NodePath("PlayerMovement:move_speed_factor")
 properties/5/spawn = true
 properties/5/replication_mode = 2
-properties/6/path = NodePath("PlayerMovement:move_speed_factor")
+properties/6/path = NodePath("PlayerStats:attack_damage")
 properties/6/spawn = true
 properties/6/replication_mode = 2
-properties/7/path = NodePath("PlayerStats:attack_damage")
+properties/7/path = NodePath(".:position")
 properties/7/spawn = true
 properties/7/replication_mode = 2
-properties/8/path = NodePath(".:position")
+properties/8/path = NodePath("PlayerStats:hp")
 properties/8/spawn = true
 properties/8/replication_mode = 2
-properties/9/path = NodePath("PlayerStatus/NameTag/hpBar:value")
+properties/9/path = NodePath("PlayerStats:exp")
 properties/9/spawn = true
 properties/9/replication_mode = 2
-properties/10/path = NodePath("PlayerStats:hp")
+properties/10/path = NodePath("PlayerStats:hydration")
 properties/10/spawn = true
 properties/10/replication_mode = 2
-properties/11/path = NodePath("PlayerStats:exp")
+properties/11/path = NodePath("PlayerStats:food")
 properties/11/spawn = true
 properties/11/replication_mode = 2
-properties/12/path = NodePath("PlayerStats:hydration")
+properties/12/path = NodePath("PlayerStats:max_exp")
 properties/12/spawn = true
 properties/12/replication_mode = 2
-properties/13/path = NodePath("PlayerStats:food")
+properties/13/path = NodePath("PlayerStats:level")
 properties/13/spawn = true
 properties/13/replication_mode = 2
 
@@ -361,7 +364,7 @@ _data = {
 _data = [Vector2(0.00279329, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 2
 
-[node name="Player" type="CharacterBody2D" unique_id=699968112 node_paths=PackedStringArray("status", "status_view", "ai_control", "movement", "animation", "combat", "building", "items", "code_player") groups=["damageable", "player"]]
+[node name="Player" type="CharacterBody2D" unique_id=699968112 node_paths=PackedStringArray("status", "status_view", "ai_control", "movement", "animation", "combat", "building", "items", "code_player", "goal_tracker") groups=["damageable", "player"]]
 collision_layer = 3
 collision_mask = 3
 script = ExtResource("1_7xvi4")
@@ -374,6 +377,7 @@ combat = NodePath("PlayerCombat")
 building = NodePath("PlayerBuilding")
 items = NodePath("PlayerItems")
 code_player = NodePath("CodePlayer")
+goal_tracker = NodePath("PlayerGoalTracker")
 
 [node name="AI" type="Node" parent="." unique_id=1856201777]
 
@@ -414,9 +418,25 @@ player = NodePath("..")
 script = ExtResource("26_code_player")
 player = NodePath("..")
 
-[node name="PlayerStats" type="Node" parent="." node_paths=PackedStringArray("player")]
+[node name="PlayerStats" type="Node" parent="."]
 script = ExtResource("25_stats")
+
+[node name="PlayerGoalTracker" type="Node" parent="." node_paths=PackedStringArray("player", "movement", "stats")]
+script = ExtResource("27_goal_tracker")
 player = NodePath("..")
+movement = NodePath("../PlayerMovement")
+stats = NodePath("../PlayerStats")
+
+[node name="PlayerSurvival" type="Node" parent="." node_paths=PackedStringArray("player", "stats")]
+script = ExtResource("28_survival")
+player = NodePath("..")
+stats = NodePath("../PlayerStats")
+
+[node name="PlayerDeathHandler" type="Node" parent="." node_paths=PackedStringArray("stats", "combat", "blood_particles")]
+script = ExtResource("29_death_handler")
+stats = NodePath("../PlayerStats")
+combat = NodePath("../PlayerCombat")
+blood_particles = NodePath("../bloodParticles")
 
 [node name="PlayerStatus" type="Control" parent="." unique_id=381426310 node_paths=PackedStringArray("hp_bar", "exp_bar", "hydration_bar", "food_bar", "name_label", "player", "stats")]
 unique_name_in_owner = true

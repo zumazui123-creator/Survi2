@@ -1,4 +1,5 @@
 extends Node
+class_name PlayerItems
 @export var player: CharacterBody2D
 
 @onready var held_item = %HeldItem  #get_parent().get_node("%HeldItem")
@@ -106,5 +107,5 @@ func use_item(cmd: PackedStringArray):
 @rpc("any_peer", "call_local", "reliable")
 func consumeItem(item, item_prop):
 	if "hp" in item_prop:
-		player.status.get_heal.rpc( 100 )#item["hp"])
+		player.status.heal(float(item_prop["hp"]))
 	Inventory.removeItem(str(player.name),item)

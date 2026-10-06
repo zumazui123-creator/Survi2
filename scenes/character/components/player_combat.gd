@@ -1,4 +1,5 @@
 extends Node
+class_name PlayerCombat
 
 signal mob_killed
 signal object_destroyed
@@ -7,6 +8,7 @@ signal player_killed
 @export_group("References")
 @export var player: CharacterBody2D
 @export var hit_area: Area2D
+@export var allow_player_damage := true
 
 @onready var hands = %Hands if has_node("%Hands") else null
 
@@ -69,8 +71,8 @@ func sendProjectile(towards):
 @rpc("authority", "call_local", "reliable")
 func increaseScore(by):
 	# Stats werden jetzt über den Status erhöht
-	player.status.hp += by * 5
 	player.status.max_hp += by * 5
+	player.status.hp += by * 5
 	player.status.attack_damage += by
 	player.status.gain_exp(10*by)
 	Multihelper.spawnedPlayers[int(str(player.name))]["score"] += by
@@ -86,13 +88,29 @@ func mobKilled():
 func enemyPlayerKilled():
 	increaseScore.rpc(Constants.PK_SCORE_GAIN)
 
-func getDamage(causer, amount, _type):
-	if causer.is_in_group("player"):
+func getDamage(causer: Node, amount: float, _damage_type: StringName) -> void:
+	if amount <= 0.0 or player.status.hp <= 0.0:
 		return
 
-	player.status.hp -= amount
-	if player.status.hp <= 0 and causer.is_in_group(Strings.GROUP_PLAYER):
-		causer.get_node("PlayerCombat").player_killed.emit()
+	var attacker_combat := _resolve_attacking_combat(causer)
+	if attacker_combat != null:
+		if attacker_combat.player == player:
+			return
+		if not allow_player_damage:
+			return
+
+	var was_alive := player.status.hp > 0.0
+	player.status.apply_damage(amount)
+	if was_alive and player.status.hp <= 0.0 and attacker_combat != null:
+		attacker_combat.player_killed.emit()
+
+
+func _resolve_attacking_combat(causer: Node) -> PlayerCombat:
+	if causer is PlayerCombat:
+		return causer as PlayerCombat
+	if causer is CharacterBody2D:
+		return causer.get_node_or_null("PlayerCombat") as PlayerCombat
+	return null
 
 func die():
 	if not multiplayer.is_server():

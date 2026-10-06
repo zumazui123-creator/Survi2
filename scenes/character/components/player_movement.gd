@@ -1,4 +1,5 @@
 extends Node
+class_name PlayerMovement
 
 signal speed_changed(value: float)
 signal tile_step_finished(map_position: Vector2i)

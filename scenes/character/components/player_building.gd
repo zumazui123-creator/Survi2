@@ -1,4 +1,5 @@
 extends Node
+class_name PlayerBuilding
 
 
 @export var player : CharacterBody2D

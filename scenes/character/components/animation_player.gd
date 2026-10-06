@@ -1,4 +1,5 @@
 extends AnimationPlayer
+class_name PlayerAnimationController
 
 @export_group("References")
 @export var player: CharacterBody2D
@@ -41,7 +42,7 @@ func handleAnims(vel, doing_action):
 	else:
 		stop()
 		
-func _play_level_up_animation(level : int ):
+func play_level_up_animation(level: int) -> void:
 	if not is_inside_tree():
 		return
 	var label = Label.new()

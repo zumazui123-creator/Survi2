@@ -8,12 +8,13 @@ var act : String = ""
 @export var ai_control : Node
 var workTaskText: RichTextLabel
 @export var net_control : Node 
-@export var movement : Node 
-@export var animation: AnimationPlayer 
-@export var combat : Node 
-@export var building: Node
-@export  var items : Node 
+@export var movement: PlayerMovement
+@export var animation: PlayerAnimationController
+@export var combat: PlayerCombat
+@export var building: PlayerBuilding
+@export var items: PlayerItems
 @export var code_player: CodePlayer
+@export var goal_tracker: PlayerGoalTracker
 var code_edit: CodeEdit
 var local_ui: PlayerLocalUI
 @export var playerName : String:
@@ -36,7 +37,6 @@ func _enter_tree():
 	set_multiplayer_authority(name.to_int())
 
 func _ready():
-	# ... (existing code)
 	var line = Line2D.new()
 	line.name = "PathLine"
 	line.default_color = Color(1, 1, 1, 0.3)
@@ -45,6 +45,8 @@ func _ready():
 	line.z_index = -1 # Draw behind other elements
 	add_child(line)
 	movement.path_line = line
+	goal_tracker.goal_reached.connect(_on_goal_reached)
+	status.leveled_up.connect(_on_level_up)
 	
 	Multihelper.data_loaded.connect(_on_multidata_received)
 	Multihelper.player_spawned.connect(_on_player_spawned_info)
@@ -89,7 +91,7 @@ func try_recover_body():
 	_setup_local_player()
 
 func _setup_local_player():
-	if local_setup_done or name != str(multiplayer.get_unique_id()):
+	if local_setup_done or not is_multiplayer_authority():
 		return
 	local_setup_done = true
 	print("player HUD")
@@ -102,8 +104,8 @@ func _setup_local_player():
 	$Camera2D.enabled = true
 
 @rpc("any_peer", "call_local", "reliable")
-func getDamage(causer, amount, _type):
-	combat.getDamage(causer, amount, _type)
+func getDamage(causer: Node, amount: float, damage_type: StringName) -> void:
+	combat.getDamage(causer, amount, damage_type)
 		
 func visibilityFilter(id):
 	if id == int(str(name)):
@@ -120,31 +122,27 @@ func sendMessage(text):
 
 func disconnected(id):
 	if str(id) == name:
-		var p_combat_node = get_node("PlayerCombat")
-		if p_combat_node:
-			p_combat_node.die()
+		combat.die()
 
 
 func _physics_process(_delta: float) -> void:
-	if str(multiplayer.get_unique_id()) != name:
+	if not is_multiplayer_authority():
 		return
 	movement.input()
 	movement.tile_move()
-	win_condition()
 
-func win_condition():
-	status.terminated = false
-	win_laby()
 
-func win_laby():
-	if Multihelper.level["end"] == Constants.END_LABY:
-		var current_map_position = world_map.tile_map.local_to_map(position)
-		var end_goal_position = world_map.endPosition
-		if current_map_position == end_goal_position:
-			current_map_position = Vector2i()
-			EndUI.setLabel("Level Abgeschlossen!")
-			status.terminated = true
-			EndUI.visible = true
+func _on_goal_reached() -> void:
+	if not is_instance_valid(EndUI):
+		EndUI = get_tree().get_first_node_in_group("end_ui")
+	if not is_instance_valid(EndUI):
+		return
+	EndUI.setLabel("Level Abgeschlossen!")
+	EndUI.visible = true
+
+
+func _on_level_up(new_level: int) -> void:
+	animation.play_level_up_animation(new_level)
 			
 func resetPlayer():
 	var difLevelMode = local_ui.get_difficulty_mode() if is_instance_valid(local_ui) else 0
