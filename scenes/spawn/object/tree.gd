@@ -1,4 +1,8 @@
 extends StaticBody2D
+class_name TreeEntity
+
+signal health_changed(tile: Vector2i, current_hp: float)
+signal tree_destroyed(tile: Vector2i)
 
 @export var objectId := "":
 	set(value):
@@ -12,6 +16,13 @@ extends StaticBody2D
 var data := {}
 var hp = 40
 var loaded = false
+var tree_tile := Vector2i.ZERO
+
+
+func configure_managed_tree(tile: Vector2i, tree_object_id: String, current_hp: float) -> void:
+	tree_tile = tile
+	objectId = tree_object_id
+	hp = current_hp
 
 func getDamage(causer, amount, type):
 	if !loaded:
@@ -22,6 +33,7 @@ func getDamage(causer, amount, type):
 	$AnimationPlayer.play("shake")
 	$hitParticle.emitting = true
 	hp -= totalDamage
+	health_changed.emit(tree_tile, float(hp))
 	if hp <= 0:
 		if causer.is_in_group("player"):
 			causer.object_destroyed.emit()
@@ -34,6 +46,7 @@ func startBreaking():
 func breakObject():
 	if !multiplayer.is_server():
 		return
+	tree_destroyed.emit(tree_tile)
 	$NavigationBlocker.release()
 	queue_free()
 	spawnDrops()

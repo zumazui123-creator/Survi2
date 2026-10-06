@@ -23,6 +23,7 @@ var height = Constants.MAP_SIZE.y
 @onready var animals : Node2D 
 #@export var tile_map : TileMapLayer 
 var tile_map : TileMapLayer 
+@onready var tree_manager: TreeManager = $TreeManager
 
 var map_type : Node
 var spawnPosition = Vector2i(0,0)
@@ -57,9 +58,6 @@ func _ready():
 func generateMap(level_dict : Dictionary):
 	print("generated:"+str(level_dict))
 	generation_started.emit()
-	var main_generator := get_node_or_null("MainLevelGenerator")
-	if main_generator:
-		main_generator.clear_generated_objects()
 	level_no 	= level_dict["level"]
 	level_type 	= level_dict["type"]
 	tile_map 		 = $TileMap
@@ -73,12 +71,15 @@ func generateMap(level_dict : Dictionary):
 	spawnPosition = Vector2i.ZERO
 	endPosition = Vector2i(-10, -10)
 	_reset_navigation_state()
+	tree_manager.clear_trees(false)
+	var generated_trees: Array[TreeSpawnData] = []
 	
 	if level_type == Constants.MAP_MAIN:
 		map_type  		=  get_node_or_null("MainLevelGenerator")
 		var tiles: Array = map_type.generateMainMap(level_dict)
 		walkable_tiles = tiles[0]
 		spawnable_tiles = tiles[1]
+		generated_trees.assign(tiles[2])
 		set_level_options(level_no)
 	elif level_type == Constants.MAP_LABY:
 		map_type  		 =  get_node_or_null("LabyrinthGenerator")
@@ -91,12 +92,14 @@ func generateMap(level_dict : Dictionary):
 		var tiles: Array = map_type.generateMainMap(level_dict)
 		walkable_tiles = tiles[0]
 		spawnable_tiles = tiles[1]
+		generated_trees.assign(tiles[2])
 	else:
 		push_warning("Unsupported map type: %s" % level_type)
 		return
 
 	if spawnable_tiles.is_empty():
 		spawnable_tiles = walkable_tiles.duplicate()
+	tree_manager.load_spawn_data(generated_trees)
 	rebuild_navigation_grid()
 
 

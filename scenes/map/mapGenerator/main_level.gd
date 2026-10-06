@@ -1,20 +1,20 @@
 extends Node
 
-const TREE_SCENE: PackedScene = preload("res://scenes/spawn/object/tree.tscn")
-
 @onready var map : Map = $".."
 
 var walkable_tiles: Array[Vector2i] = []
 var spawnable_tiles: Array[Vector2i] = []
+var tree_spawn_data: Array[TreeSpawnData] = []
 var noise = FastNoiseLite.new()
 
 func generateMainMap(levelData : Dictionary):
 	walkable_tiles.clear()
 	spawnable_tiles.clear()
+	tree_spawn_data.clear()
 	generate_terrain(levelData)
 	map.set_level_options(1)
 	map.generate_borders()
-	return [ walkable_tiles, spawnable_tiles ]
+	return [walkable_tiles, spawnable_tiles, tree_spawn_data]
 	
 func generate_terrain(levelData : Dictionary):
 	
@@ -35,32 +35,18 @@ func generate_terrain(levelData : Dictionary):
 		for x in range(map.width):
 			var noise_value = noise.get_noise_2d(x, y)
 			var tile_coord = Vector2i()
+			var tile := Vector2i(x, y)
 			if noise_value < 0.13:
 				tile_coord = map.grassAtlasCoords[rng.randi() % map.grassAtlasCoords.size()]
-				walkable_tiles.append(Vector2i(x,y))
-				spawnable_tiles.append(Vector2i(x,y))
+				walkable_tiles.append(tile)
+				spawnable_tiles.append(tile)
 				
 			elif noise_value > 0.13 and noise_value < 0.40 : 
 				tile_coord = map.treeCoors
-				walkable_tiles.append(Vector2i(x,y))
-				spawnTrees(Vector2i(x, y))
+				walkable_tiles.append(tile)
+				tree_spawn_data.append(TreeSpawnData.new(tile))
 				
 			else:
 				tile_coord = map.waterCoors[rng.randi() % map.waterCoors.size()]
-			map.tile_map.set_cell(Vector2i(x, y), map.tileset_source, tile_coord, 0)
-				
-func spawnTrees(spawnPos : Vector2i):
-	var breakable := TREE_SCENE.instantiate()
-	var objectId = Items.objects.get("tree0").get("id")
-	self.add_child(breakable,true)
-	breakable.objectId = objectId
-	breakable.global_position = map.navigation_tile_to_world(spawnPos)
-	breakable.register_navigation_blocker(spawnPos)
-
-
-func clear_generated_objects() -> void:
-	for child in get_children():
-		if child is StaticBody2D:
-			remove_child(child)
-			child.queue_free()
+			map.tile_map.set_cell(tile, map.tileset_source, tile_coord, 0)
 	
