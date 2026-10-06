@@ -8,6 +8,8 @@ var code_player: CodePlayer
 @onready var code_func = $"../PopupFunction/HBoxContainer/VBoxContainer/CodeEdit"
 @onready var popup = %PopupFunction
 @onready var exit_btn = $"../PopupFunction/HBoxContainer/VBoxContainer/BtnContainer/ExitBtn"
+@onready var play_button: Button = $TabContainer/Code/ButtonCotainer/PlayButton
+@onready var stop_button: Button = $TabContainer/Code/ButtonCotainer/StopButton
 
 @onready var tab_container = $TabContainer
 @onready var function_handler = $"../../FunctionHandler"
@@ -15,6 +17,20 @@ var highlighter : MyCodeHighLighter
 
 func bind_code_player(value: CodePlayer) -> void:
 	code_player = value
+	code_player.execution_started.connect(_on_execution_started)
+	code_player.execution_finished.connect(_on_execution_ended)
+	code_player.execution_cancelled.connect(_on_execution_ended)
+	_set_execution_buttons(code_player.is_running)
+
+func _on_execution_started(_command_count: int) -> void:
+	_set_execution_buttons(true)
+
+func _on_execution_ended() -> void:
+	_set_execution_buttons(false)
+
+func _set_execution_buttons(running: bool) -> void:
+	play_button.disabled = running
+	stop_button.disabled = not running
 
 func init_tab_container() -> void:
 	item_list.add_item("wiederhole 3 mal")

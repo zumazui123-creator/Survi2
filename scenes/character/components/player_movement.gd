@@ -1,6 +1,7 @@
 extends Node
 
 signal speed_changed(value: float)
+signal tile_step_finished(map_position: Vector2i)
 
 @export_group("References")
 @export var player: CharacterBody2D
@@ -58,9 +59,13 @@ func tile_move() -> Vector2:
 		current_map_position = world_map.tile_map.local_to_map(player.position)
 		snap_to_tiles_position()
 		player.act = ""
+		call_deferred("_emit_tile_step_finished", current_map_position)
 
 	player.animation.animate_player(direction)
 	return direction
+
+func _emit_tile_step_finished(map_position: Vector2i) -> void:
+	tile_step_finished.emit(map_position)
 
 func snap_to_tiles_position():
 	var snap_position = world_map.tile_map.map_to_local(current_map_position)
@@ -128,9 +133,14 @@ func _update_move_speed() -> void:
 	#if player.animation:
 		#player.animation.handleAnims(vel,doingAction)
 
-func press_action(input_action: String) -> void:
-	if Strings.direction_map.has(input_action):
-		direction = Vector2(Strings.direction_map[input_action])
+func request_code_step(input_action: String) -> bool:
+	if is_moving() or not Strings.direction_map.has(input_action):
+		return false
+
+	direction = Vector2(Strings.direction_map[input_action])
+	if path_line:
+		path_line.points = PackedVector2Array([Vector2.ZERO, direction * Constants.TILE_SIZE])
+	return true
 
 func set_speed( player_speed : float):
 	_base_move_speed_factor = maxf(_base_move_speed_factor + player_speed, 0.1)

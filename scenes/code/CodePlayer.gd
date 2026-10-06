@@ -191,15 +191,15 @@ func move_step(action: String, execution_id: int) -> void:
 	while player.movement.is_moving():
 		if not _is_current_execution(execution_id):
 			return
-		await get_tree().process_frame
+		await player.movement.tile_step_finished
 
-	player.movement.press_action(action)
-	await get_tree().process_frame
+	if not _is_current_execution(execution_id):
+		return
+	if not player.movement.request_code_step(action):
+		_report_error("Bewegung konnte nicht gestartet werden: " + action)
+		return
 
-	while player.movement.is_moving():
-		if not _is_current_execution(execution_id):
-			return
-		await get_tree().process_frame
+	await player.movement.tile_step_finished
 
 
 func say(parts: PackedStringArray) -> void:
