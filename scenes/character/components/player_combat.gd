@@ -8,6 +8,8 @@ signal player_killed
 @export_group("References")
 @export var player: CharacterBody2D
 @export var hit_area: Area2D
+@export var stats: PlayerStats
+@export var blood_particles: CPUParticles2D
 @export var allow_player_damage := true
 
 @onready var hands = %Hands if has_node("%Hands") else null
@@ -24,13 +26,15 @@ func _ready():
 	mob_killed.connect(mobKilled)
 	player_killed.connect(enemyPlayerKilled)
 	object_destroyed.connect(objectDestroyed)
+	if not stats.died.is_connected(_on_player_died):
+		stats.died.connect(_on_player_died)
 
 func hit(_inp_action : String):
-	player.animation.speed_scale = player.status.attack_rate
+	player.animation.speed_scale = stats.attack_rate
 	var action_anim = Items.equips[player.items.equippedItem]["attack"] if player.items.equippedItem else Strings.ANIM_PUNCHING
 	if not player.animation.is_playing() or player.animation.current_animation != action_anim:
 		player.animation.play(action_anim)
-		var delay : float = 0.8 / player.status.attack_rate
+		var delay : float = 0.8 / stats.attack_rate
 		await get_tree().create_timer(delay).timeout
 		player.animation.stop()
 
@@ -53,14 +57,14 @@ func punchCheckCollision():
 
 	for body in hit_area.get_overlapping_bodies():
 		if body != player and body.is_in_group(Strings.GROUP_DAMAGEABLE):
-			var base_damage = player.status.attack_damage
+			var base_damage = stats.attack_damage
 			if player.items.equippedItem:
 				base_damage += Items.equips[player.items.equippedItem]["damage"]
 			
 			# Apply combo multiplier
 			var damage = base_damage * (1.0 + (combo_count - 1) * COMBO_MULTIPLIER)
 
-			var damage_type = Items.equips[player.items.equippedItem]["damageType"] if player.items.equippedItem else player.status.damage_type
+			var damage_type = Items.equips[player.items.equippedItem]["damageType"] if player.items.equippedItem else stats.damage_type
 			body.getDamage(self, damage, damage_type)
 
 @rpc("any_peer", "reliable")
@@ -71,10 +75,10 @@ func sendProjectile(towards):
 @rpc("authority", "call_local", "reliable")
 func increaseScore(by):
 	# Stats werden jetzt über den Status erhöht
-	player.status.max_hp += by * 5
-	player.status.hp += by * 5
-	player.status.attack_damage += by
-	player.status.gain_exp(10*by)
+	stats.max_hp += by * 5
+	stats.hp += by * 5
+	stats.attack_damage += by
+	stats.gain_exp(10*by)
 	Multihelper.spawnedPlayers[int(str(player.name))]["score"] += by
 	Multihelper.player_score_updated.emit()
 
@@ -89,7 +93,7 @@ func enemyPlayerKilled():
 	increaseScore.rpc(Constants.PK_SCORE_GAIN)
 
 func getDamage(causer: Node, amount: float, _damage_type: StringName) -> void:
-	if amount <= 0.0 or player.status.hp <= 0.0:
+	if amount <= 0.0 or stats.hp <= 0.0:
 		return
 
 	var attacker_combat := _resolve_attacking_combat(causer)
@@ -99,9 +103,9 @@ func getDamage(causer: Node, amount: float, _damage_type: StringName) -> void:
 		if not allow_player_damage:
 			return
 
-	var was_alive: bool = player.status.hp > 0.0
-	player.status.apply_damage(amount)
-	if was_alive and player.status.hp <= 0.0 and attacker_combat != null:
+	var was_alive := stats.hp > 0.0
+	stats.apply_damage(amount)
+	if was_alive and stats.hp <= 0.0 and attacker_combat != null:
 		attacker_combat.player_killed.emit()
 
 
@@ -121,9 +125,16 @@ func die():
 	Multihelper.showSpawnUI.rpc_id(peerId)
 	player.queue_free()
 
+
+func _on_player_died() -> void:
+	if is_instance_valid(blood_particles):
+		blood_particles.restart()
+		blood_particles.emitting = true
+	die()
+
 @rpc("any_peer", "reliable")
 func projectileHit(body):
-	var damage = player.status.attack_damage
+	var damage = stats.attack_damage
 	if player.items.equippedItem:
 		damage += Items.equips[player.items.equippedItem]["damage"]
-	body.getDamage(player, damage, player.status.damage_type)
+	body.getDamage(player, damage, stats.damage_type)

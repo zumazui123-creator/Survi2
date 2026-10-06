@@ -17,6 +17,8 @@ var workTaskText: RichTextLabel
 @export var goal_tracker: PlayerGoalTracker
 @export var sensor: PlayerSensor
 @export var environment: Survi2NavigationEnv
+@export var rl_agent: RLAgent
+@export var rl_trainer: RLTrainer
 var code_edit: CodeEdit
 var local_ui: PlayerLocalUI
 @export var playerName : String:
@@ -145,6 +147,13 @@ func _on_goal_reached() -> void:
 
 func _on_level_up(new_level: int) -> void:
 	animation.play_level_up_animation(new_level)
+
+
+func set_rl_agent(value: RLAgent) -> bool:
+	if not is_instance_valid(rl_trainer) or not rl_trainer.set_agent(value):
+		return false
+	rl_agent = value
+	return true
 			
 func resetPlayer():
 	var difLevelMode = local_ui.get_difficulty_mode() if is_instance_valid(local_ui) else 0

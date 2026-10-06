@@ -33,7 +33,7 @@ const ACTION_NAMES: Array[StringName] = [
 
 @export_group("Episode")
 @export_range(1, 100000, 1) var max_steps := 500
-@export var reward_policy := NavigationRewardPolicy.new()
+@export var reward_policy: NavigationRewardPolicy = NavigationRewardPolicy.new()
 
 var step_count := 0
 var _goal_reached := false
@@ -142,9 +142,13 @@ func step(action: Variant) -> EnvStepResult:
 
 
 func close() -> void:
+	release_ai_control()
+	super()
+
+
+func release_ai_control() -> void:
 	if is_instance_valid(movement):
 		movement.release_control(PlayerMovement.ControlMode.AI)
-	super()
 
 
 func _finish_without_action() -> EnvStepResult:

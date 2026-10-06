@@ -1,10 +1,25 @@
 extends Resource
 class_name NavigationRewardPolicy
 
-@export var goal_reward := 10.0
-@export var death_reward := -10.0
-@export var blocked_reward := -0.2
-@export var step_reward := -0.01
+@export var goal_reward: float = 10.0:
+	set(value):
+		goal_reward = value
+		emit_changed()
+
+@export var death_reward: float = -10.0:
+	set(value):
+		death_reward = value
+		emit_changed()
+
+@export var blocked_reward: float = -0.2:
+	set(value):
+		blocked_reward = value
+		emit_changed()
+
+@export var step_reward: float = -0.01:
+	set(value):
+		step_reward = value
+		emit_changed()
 
 
 func calculate(movement_succeeded: bool, goal_reached: bool, player_died: bool) -> float:

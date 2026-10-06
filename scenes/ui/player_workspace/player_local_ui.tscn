@@ -1,12 +1,10 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://scenes/ui/player_workspace/player_local_ui.gd" id="1_ui"]
-[ext_resource type="Script" uid="uid://dukylmcbt25lk" path="res://scenes/character/builder.gd" id="2_builder"]
+[ext_resource type="Script" path="res://scenes/ui/player_workspace/rl_playground_ui.gd" id="2_rl_playground"]
 [ext_resource type="Script" uid="uid://ddrqxuc43a4rn" path="res://scenes/character/components/function_handler.gd" id="3_function"]
 [ext_resource type="Script" uid="uid://dsnm03bgpmori" path="res://scenes/character/components/code.gd" id="4_code"]
-[ext_resource type="Script" uid="uid://dngrh67x5tj38" path="res://scenes/character/components/texture_rect.gd" id="5_texture_rect"]
-[ext_resource type="Texture2D" uid="uid://ctsuis1o5sca5" path="res://assets/ui/itemSlotSelected.png" id="6_selected_texture"]
-[ext_resource type="Script" uid="uid://jwr2prr58xmw" path="res://scenes/character/ui/goal_texture_rect.gd" id="7_goal_texture"]
+[ext_resource type="Script" path="res://scenes/ui/player_workspace/navigation_reward_policy_editor.gd" id="5_reward_editor"]
 [sub_resource type="CodeHighlighter" id="CodeHighlighter_vreni"]
 number_color = Color(0.16078432, 0.5294118, 0.36862746, 1)
 
@@ -15,9 +13,6 @@ script = ExtResource("1_ui")
 
 [node name="FunctionHandler" type="Node" parent="."]
 script = ExtResource("3_function")
-
-[node name="Builder" type="Node" parent="."]
-script = ExtResource("2_builder")
 
 [node name="CodeLayer" type="CanvasLayer" parent="." unique_id=336348594]
 offset = Vector2(640, 360)
@@ -172,225 +167,322 @@ text = "Lade Funktionen"
 [node name="KI Playground" type="MarginContainer" parent="CodeLayer/Code/TabContainer" unique_id=1000470522]
 visible = false
 layout_mode = 2
-theme_override_constants/margin_left = 15
-theme_override_constants/margin_top = 5
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+script = ExtResource("2_rl_playground")
 metadata/_tab_index = 1
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground" unique_id=717277918]
+[node name="ScrollContainer" type="ScrollContainer" parent="CodeLayer/Code/TabContainer/KI Playground"]
 layout_mode = 2
-theme_override_constants/separation = 25
+size_flags_horizontal = 3
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
 
-[node name="Paramcontainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer" unique_id=1034550588]
+[node name="Content" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer"]
+custom_minimum_size = Vector2(315, 0)
 layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 12
 
-[node name="KIConfLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer" unique_id=792466002]
+[node name="Title" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content"]
 layout_mode = 2
-text = "KI Configurationen"
+theme_override_font_sizes/font_size = 20
+text = "KI Playground"
 horizontal_alignment = 1
 
-[node name="KiModelLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer" unique_id=1749922437]
-layout_mode = 2
-text = "Model: Neural Network"
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer" unique_id=1688024044]
-layout_mode = 2
-
-[node name="stepsLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/HBoxContainer2" unique_id=1045248903]
-layout_mode = 2
-text = "Action-Schritte: "
-
-[node name="stepsEdit" type="LineEdit" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/HBoxContainer2" unique_id=1894936392]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "100"
-
-[node name="GridContainer" type="GridContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer" unique_id=1291591006]
-layout_mode = 2
-theme_override_constants/h_separation = 12
-columns = 3
-
-[node name="learnRateLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/GridContainer" unique_id=1493848835]
-layout_mode = 2
-text = "Lernrate: 0.004"
-
-[node name="learnRateBtnPlus" type="Button" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/GridContainer" unique_id=2016231900]
-layout_mode = 2
-text = "+"
-
-[node name="learnRateBtnMinus" type="Button" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/GridContainer" unique_id=1461493371]
-layout_mode = 2
-text = "-"
-
-[node name="exploreRateLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/GridContainer" unique_id=342505418]
-layout_mode = 2
-text = "Erforschungrate: 0.004"
-
-[node name="Button" type="Button" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/GridContainer" unique_id=846524826]
-layout_mode = 2
-text = "+"
-
-[node name="Button6" type="Button" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/Paramcontainer/GridContainer" unique_id=91335276]
-layout_mode = 2
-text = "-"
-
-[node name="RewardContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer" unique_id=1761456200]
-layout_mode = 2
-
-[node name="KiModelLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/RewardContainer" unique_id=2014271528]
-layout_mode = 2
-size_flags_horizontal = 4
-text = "Belohnungssystem"
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/RewardContainer" unique_id=1848092692]
-layout_mode = 2
-
-[node name="WayLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/RewardContainer/HBoxContainer2" unique_id=1744230220]
-layout_mode = 2
-text = "nur moegliche Wege"
-
-[node name="WayCheckBox" type="CheckBox" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/RewardContainer/HBoxContainer2" unique_id=1338347329]
-layout_mode = 2
-button_pressed = true
-
-[node name="Label" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/RewardContainer" unique_id=883916502]
-visible = false
-layout_mode = 2
-text = "Kekse platzieren"
-
-[node name="GameSetContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer" unique_id=1191880012]
-layout_mode = 2
-
-[node name="GameSetLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer" unique_id=1397285321]
-layout_mode = 2
-size_flags_horizontal = 4
-text = "Game-Settings"
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer" unique_id=118195405]
-layout_mode = 2
-
-[node name="SpeedLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2" unique_id=179140846]
-layout_mode = 2
-text = "Game-Speed: "
-
-[node name="Speed" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2" unique_id=664526434]
-layout_mode = 2
-text = "1"
-
-[node name="SpeedPlus" type="Button" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2" unique_id=1938951500]
-layout_mode = 2
-text = "+"
-
-[node name="SpeedMinus" type="Button" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2" unique_id=1024851392]
-layout_mode = 2
-text = "-"
-
-[node name="SpawnContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer" unique_id=507567459]
-layout_mode = 2
-
-[node name="SpawnTitle" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/SpawnContainer" unique_id=2015383879]
-layout_mode = 2
-size_flags_horizontal = 4
-text = "Spawn-Settings"
-
-[node name="HBoxContainer" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/SpawnContainer" unique_id=1285579958]
-layout_mode = 2
-
-[node name="TextureSpawn" type="TextureRect" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/SpawnContainer/HBoxContainer" unique_id=185019145]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-script = ExtResource("5_texture_rect")
-
-[node name="Label" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/SpawnContainer/HBoxContainer" unique_id=1974657243]
-layout_mode = 2
-text = "Spawn Mob: "
-
-[node name="OptionSpawn" type="OptionButton" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/SpawnContainer/HBoxContainer" unique_id=54962371]
+[node name="AgentDescription" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content"]
 unique_name_in_owner = true
 layout_mode = 2
+text = "Austauschbarer RL-Agent auf dem TileMap-Environment"
+horizontal_alignment = 1
+autowrap_mode = 2
 
-[node name="MoveContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer" unique_id=209659878]
+[node name="StatusPanel" type="PanelContainer" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content"]
 layout_mode = 2
 
-[node name="Title" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/MoveContainer" unique_id=575204912]
+[node name="VBox" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/StatusPanel"]
 layout_mode = 2
-size_flags_horizontal = 4
-text = "Move-Settings"
+theme_override_constants/separation = 6
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/MoveContainer" unique_id=2002526501]
+[node name="Title" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/StatusPanel/VBox"]
 layout_mode = 2
+text = "Live-Status"
+horizontal_alignment = 1
 
-[node name="TextureRect" type="TextureRect" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/MoveContainer/HBoxContainer" unique_id=926680482]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-tooltip_text = "goal_tile"
-texture = ExtResource("6_selected_texture")
-script = ExtResource("7_goal_texture")
-
-[node name="Label" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/MoveContainer/HBoxContainer" unique_id=32377616]
-layout_mode = 2
-text = "   Bewegung Ziel "
-
-[node name="FuncContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer" unique_id=1735334161]
+[node name="Separator" type="HSeparator" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/StatusPanel/VBox"]
 layout_mode = 2
 
-[node name="FuncLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/FuncContainer" unique_id=1996348255]
+[node name="Grid" type="GridContainer" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/StatusPanel/VBox"]
 layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 0
-text = "KI "
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 4
+columns = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/FuncContainer" unique_id=1643646615]
+[node name="AIStatusLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/StatusPanel/VBox/Grid"]
+layout_mode = 2
+text = "Agent"
+
+[node name="AIStatusValue" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/StatusPanel/VBox/Grid"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 4
+text = "Wird verbunden …"
+horizontal_alignment = 2
+autowrap_mode = 2
 
-[node name="StartKiButton" type="Button" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/FuncContainer/HBoxContainer" unique_id=316282103]
+[node name="EnvironmentStatusLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/StatusPanel/VBox/Grid"]
 layout_mode = 2
-size_flags_horizontal = 6
-size_flags_vertical = 4
-text = "Start"
+text = "Environment"
 
-[node name="StopKiButton" type="Button" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/FuncContainer/HBoxContainer" unique_id=695888154]
+[node name="EnvironmentStatusValue" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/StatusPanel/VBox/Grid"]
+unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 6
-size_flags_vertical = 4
+size_flags_horizontal = 3
+text = "Nicht verbunden"
+horizontal_alignment = 2
+autowrap_mode = 2
+
+[node name="EpisodeStepsLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/StatusPanel/VBox/Grid"]
+layout_mode = 2
+text = "Schritte"
+
+[node name="EpisodeStepsValue" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/StatusPanel/VBox/Grid"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "0 / 500"
+horizontal_alignment = 2
+
+[node name="EpisodeRewardLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/StatusPanel/VBox/Grid"]
+layout_mode = 2
+text = "Episode-Reward"
+
+[node name="EpisodeRewardValue" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/StatusPanel/VBox/Grid"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "0.000"
+horizontal_alignment = 2
+
+[node name="AlgorithmLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/StatusPanel/VBox/Grid"]
+layout_mode = 2
+text = "Algorithmus"
+
+[node name="AlgorithmValue" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/StatusPanel/VBox/Grid"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Nicht verbunden"
+horizontal_alignment = 2
+autowrap_mode = 2
+
+[node name="ModelSummaryLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/StatusPanel/VBox/Grid"]
+layout_mode = 2
+text = "Modell"
+
+[node name="ModelSummaryValue" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/StatusPanel/VBox/Grid"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "–"
+horizontal_alignment = 2
+
+[node name="LastActionLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/StatusPanel/VBox/Grid"]
+layout_mode = 2
+text = "Letzte Aktion"
+
+[node name="LastActionValue" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/StatusPanel/VBox/Grid"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "–"
+horizontal_alignment = 2
+
+[node name="AgentMetricsTitle" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/StatusPanel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Agent-Metriken"
+horizontal_alignment = 1
+
+[node name="AgentMetricsGrid" type="GridContainer" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/StatusPanel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 4
+columns = 2
+
+[node name="AgentSettingsPanel" type="PanelContainer" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content"]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/AgentSettingsPanel"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Title" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/AgentSettingsPanel/VBox"]
+layout_mode = 2
+text = "Agent & Episode"
+horizontal_alignment = 1
+
+[node name="EpisodeGrid" type="GridContainer" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/AgentSettingsPanel/VBox"]
+layout_mode = 2
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 5
+columns = 2
+
+[node name="MaxStepsLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/AgentSettingsPanel/VBox/EpisodeGrid"]
+layout_mode = 2
+tooltip_text = "Maximale Aktionen, bevor die Episode abgeschnitten wird."
+text = "Max. Schritte"
+
+[node name="MaxStepsInput" type="SpinBox" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/AgentSettingsPanel/VBox/EpisodeGrid"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(135, 0)
+layout_mode = 2
+min_value = 1.0
+max_value = 100000.0
+step = 1.0
+value = 500.0
+
+[node name="AgentParametersLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/AgentSettingsPanel/VBox"]
+layout_mode = 2
+text = "Algorithmus-Parameter"
+horizontal_alignment = 1
+
+[node name="AgentSettingsGrid" type="GridContainer" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/AgentSettingsPanel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 5
+columns = 2
+
+[node name="RewardSettingsPanel" type="PanelContainer" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("5_reward_editor")
+
+[node name="VBox" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/RewardSettingsPanel"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Title" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/RewardSettingsPanel/VBox"]
+layout_mode = 2
+text = "Reward-Policy"
+horizontal_alignment = 1
+
+[node name="RewardPolicyTypeValue" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/RewardSettingsPanel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "NavigationRewardPolicy"
+horizontal_alignment = 1
+
+[node name="Grid" type="GridContainer" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/RewardSettingsPanel/VBox"]
+layout_mode = 2
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 5
+columns = 2
+
+[node name="GoalRewardLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/RewardSettingsPanel/VBox/Grid"]
+layout_mode = 2
+text = "Ziel erreicht"
+
+[node name="GoalRewardInput" type="SpinBox" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/RewardSettingsPanel/VBox/Grid"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(135, 0)
+layout_mode = 2
+min_value = -1000.0
+max_value = 1000.0
+step = 0.1
+value = 10.0
+
+[node name="DeathRewardLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/RewardSettingsPanel/VBox/Grid"]
+layout_mode = 2
+text = "Player stirbt"
+
+[node name="DeathRewardInput" type="SpinBox" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/RewardSettingsPanel/VBox/Grid"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(135, 0)
+layout_mode = 2
+min_value = -1000.0
+max_value = 1000.0
+step = 0.1
+value = -10.0
+
+[node name="BlockedRewardLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/RewardSettingsPanel/VBox/Grid"]
+layout_mode = 2
+text = "Blockiertes Tile"
+
+[node name="BlockedRewardInput" type="SpinBox" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/RewardSettingsPanel/VBox/Grid"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(135, 0)
+layout_mode = 2
+min_value = -1000.0
+max_value = 1000.0
+step = 0.01
+value = -0.2
+
+[node name="StepRewardLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/RewardSettingsPanel/VBox/Grid"]
+layout_mode = 2
+text = "Normaler Schritt"
+
+[node name="StepRewardInput" type="SpinBox" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/RewardSettingsPanel/VBox/Grid"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(135, 0)
+layout_mode = 2
+min_value = -1000.0
+max_value = 1000.0
+step = 0.01
+value = -0.01
+
+[node name="ActionsPanel" type="PanelContainer" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content"]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/ActionsPanel"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Title" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/ActionsPanel/VBox"]
+layout_mode = 2
+text = "Episode steuern"
+horizontal_alignment = 1
+
+[node name="RunButtons" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/ActionsPanel/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="StartTrainingButton" type="Button" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/ActionsPanel/VBox/RunButtons"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "Führt die aktuelle Policy des verbundenen RL-Agenten aus und trainiert sie."
+text = "Agent starten"
+
+[node name="RandomPolicyButton" type="Button" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/ActionsPanel/VBox/RunButtons"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "Führt eine Episode mit zufälligen Aktionen aus; der Agent lernt trotzdem aus den Schritten."
+text = "Zufällige Policy"
+
+[node name="ManageButtons" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/ActionsPanel/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="StopTrainingButton" type="Button" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/ActionsPanel/VBox/ManageButtons"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+disabled = true
 text = "Stop"
 
-[node name="SaveKiButton" type="Button" parent="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/FuncContainer/HBoxContainer" unique_id=593696690]
+[node name="ClearPolicyButton" type="Button" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/ActionsPanel/VBox/ManageButtons"]
+unique_name_in_owner = true
 layout_mode = 2
-text = "Speicher Ki Verhalten"
+size_flags_horizontal = 3
+tooltip_text = "Setzt das Modell des aktuell verbundenen Agenten zurück."
+text = "Modell zurücksetzen"
 
-[node name="Belohnung" type="MarginContainer" parent="CodeLayer/Code/TabContainer" unique_id=752890000]
-visible = false
+[node name="EpisodeHint" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/ActionsPanel/VBox"]
 layout_mode = 2
-metadata/_tab_index = 2
-
-[node name="MoveContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/Belohnung" unique_id=1410167063]
-layout_mode = 2
-
-[node name="Title" type="Label" parent="CodeLayer/Code/TabContainer/Belohnung/MoveContainer" unique_id=303420302]
-layout_mode = 2
-size_flags_horizontal = 4
-text = "Belohnung-Settings"
-
-[node name="HBoxContainer" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/Belohnung/MoveContainer" unique_id=1529662817]
-layout_mode = 2
-
-[node name="TextureRect" type="TextureRect" parent="CodeLayer/Code/TabContainer/Belohnung/MoveContainer/HBoxContainer" unique_id=1727016986]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-texture = ExtResource("6_selected_texture")
-script = ExtResource("5_texture_rect")
-
-[node name="Label" type="Label" parent="CodeLayer/Code/TabContainer/Belohnung/MoveContainer/HBoxContainer" unique_id=1503944505]
-layout_mode = 2
-text = "Bewegung Ziel Belohnung : "
-
-[node name="LineEdit" type="LineEdit" parent="CodeLayer/Code/TabContainer/Belohnung/MoveContainer/HBoxContainer" unique_id=832260504]
-layout_mode = 2
-text = "0.7"
+text = "Ziel, Tod oder Schrittlimit beenden die Episode. Danach muss das Level für eine neue Episode neu geladen werden."
+horizontal_alignment = 1
+autowrap_mode = 2
 
 [node name="PopupFunction" type="PopupPanel" parent="CodeLayer" unique_id=1573069857]
 unique_name_in_owner = true
@@ -567,10 +659,16 @@ fit_content = true
 [connection signal="item_activated" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer3/ItemList" to="CodeLayer/Code" method="_on_item_list_item_activated"]
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer2/createFunction" to="CodeLayer/Code" method="_on_create_function_pressed"]
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer2/loadFunction" to="CodeLayer/Code" method="_on_load_function_pressed"]
-[connection signal="item_selected" from="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/SpawnContainer/HBoxContainer/OptionSpawn" to="Builder" method="_on_option_button_item_selected"]
+[connection signal="value_changed" from="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/AgentSettingsPanel/VBox/EpisodeGrid/MaxStepsInput" to="CodeLayer/Code/TabContainer/KI Playground" method="_on_max_steps_changed"]
+[connection signal="value_changed" from="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/RewardSettingsPanel/VBox/Grid/GoalRewardInput" to="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/RewardSettingsPanel" method="_on_goal_reward_changed"]
+[connection signal="value_changed" from="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/RewardSettingsPanel/VBox/Grid/DeathRewardInput" to="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/RewardSettingsPanel" method="_on_death_reward_changed"]
+[connection signal="value_changed" from="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/RewardSettingsPanel/VBox/Grid/BlockedRewardInput" to="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/RewardSettingsPanel" method="_on_blocked_reward_changed"]
+[connection signal="value_changed" from="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/RewardSettingsPanel/VBox/Grid/StepRewardInput" to="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/RewardSettingsPanel" method="_on_step_reward_changed"]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/ActionsPanel/VBox/RunButtons/StartTrainingButton" to="CodeLayer/Code/TabContainer/KI Playground" method="_on_start_training_pressed"]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/ActionsPanel/VBox/RunButtons/RandomPolicyButton" to="CodeLayer/Code/TabContainer/KI Playground" method="_on_random_policy_pressed"]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/ActionsPanel/VBox/ManageButtons/StopTrainingButton" to="CodeLayer/Code/TabContainer/KI Playground" method="_on_stop_training_pressed"]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/ActionsPanel/VBox/ManageButtons/ClearPolicyButton" to="CodeLayer/Code/TabContainer/KI Playground" method="_on_reset_agent_pressed"]
 [connection signal="pressed" from="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer/BtnContainer/CreateBtn" to="CodeLayer/Code" method="_on_create_btn_pressed"]
 [connection signal="item_activated" from="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer2/FuncList" to="FunctionHandler" method="_on_func_list_item_activated"]
 [connection signal="pressed" from="PopupSettings/VBoxContainer/HBoxContainer2/backToMenu" to="." method="_on_back_to_menu_pressed"]
 [connection signal="pressed" from="PopupSettings/VBoxContainer/HBoxContainer2/SettingsOkBtn" to="." method="_on_settings_ok_pressed"]
-[connection signal="pressed" from="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2/SpeedPlus" to="." method="_on_speed_plus_pressed"]
-[connection signal="pressed" from="CodeLayer/Code/TabContainer/KI Playground/VBoxContainer/GameSetContainer/HBoxContainer2/SpeedMinus" to="." method="_on_speed_minus_pressed"]

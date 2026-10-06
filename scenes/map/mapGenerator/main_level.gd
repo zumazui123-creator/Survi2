@@ -1,5 +1,6 @@
 extends Node
 
+const TREE_SCENE: PackedScene = preload("res://scenes/spawn/object/tree.tscn")
 
 @onready var map : Map = $".."
 
@@ -8,7 +9,6 @@ var spawnable_tiles: Array[Vector2i] = []
 var noise = FastNoiseLite.new()
 
 func generateMainMap(levelData : Dictionary):
-	clear_generated_objects()
 	walkable_tiles.clear()
 	spawnable_tiles.clear()
 	generate_terrain(levelData)
@@ -50,8 +50,7 @@ func generate_terrain(levelData : Dictionary):
 			map.tile_map.set_cell(Vector2i(x, y), map.tileset_source, tile_coord, 0)
 				
 func spawnTrees(spawnPos : Vector2i):
-	var breakableScene := preload("res://scenes/spawn/object/tree.tscn")
-	var breakable := breakableScene.instantiate()
+	var breakable := TREE_SCENE.instantiate()
 	var objectId = Items.objects.get("tree0").get("id")
 	self.add_child(breakable,true)
 	breakable.objectId = objectId

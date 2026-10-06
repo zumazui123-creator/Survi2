@@ -37,6 +37,18 @@
 - Actions are `0 = up`, `1 = down`, `2 = left`, and `3 = right`.
 - `Player/AI` contains sibling `Sensor`, `Environment`, `RLAgent`, and
   `RLTrainer` nodes. The environment does not own the agent or trainer.
+- `RLAgent` is the algorithm-independent contract used by `RLTrainer` and the
+  local UI. `QLearningAgent` is the current implementation; another learning
+  algorithm can replace its script as long as it implements that contract.
+- Agents describe their own editable parameters and runtime metrics. The
+  `RLPlaygroundUI` builds those controls dynamically and therefore contains no
+  Q-learning-specific property access.
+- Runtime replacements go through `Player.set_rl_agent()` and
+  `RLTrainer.set_agent()`. The playground listens for `agent_changed` and
+  rebuilds its parameter and metric controls for the new implementation.
+- `NavigationRewardPolicyEditor` owns the reward controls and binds them
+  directly to the `NavigationRewardPolicy` resource. `PlayerLocalUI` only
+  coordinates the local player, code editor, popups, and playground binding.
 - `EnvStepResult` carries `observation`, `reward`, `terminated`, `truncated`,
   and diagnostic `info` fields.
 - Navigation rewards are `+10` for the goal, `-10` for death, `-0.2` for a
