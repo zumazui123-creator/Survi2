@@ -40,7 +40,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[node name="Animal" type="CharacterBody2D" unique_id=933039823 groups=["damageable"]]
+[node name="Animal" type="CharacterBody2D" unique_id=933039823 groups=["damageable", "sensor_animal"]]
 collision_layer = 3
 script = ExtResource("1_428fe")
 

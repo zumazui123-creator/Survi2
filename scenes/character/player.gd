@@ -15,6 +15,7 @@ var workTaskText: RichTextLabel
 @export var items: PlayerItems
 @export var code_player: CodePlayer
 @export var goal_tracker: PlayerGoalTracker
+@export var sensor: PlayerSensor
 var code_edit: CodeEdit
 var local_ui: PlayerLocalUI
 @export var playerName : String:

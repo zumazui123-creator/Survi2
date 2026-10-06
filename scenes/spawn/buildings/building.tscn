@@ -90,7 +90,7 @@ _data = {
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 2
 
-[node name="Buildings" type="StaticBody2D" unique_id=46637213 groups=["damageable"]]
+[node name="Buildings" type="StaticBody2D" unique_id=46637213 groups=["damageable", "sensor_object"]]
 collision_layer = 3
 script = ExtResource("1_rvqm1")
 

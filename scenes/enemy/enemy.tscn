@@ -44,7 +44,7 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[node name="Enemy" type="CharacterBody2D" unique_id=748561879 groups=["damageable"]]
+[node name="Enemy" type="CharacterBody2D" unique_id=748561879 groups=["damageable", "sensor_enemy"]]
 collision_layer = 3
 script = ExtResource("1_afvkb")
 

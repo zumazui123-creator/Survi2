@@ -38,7 +38,7 @@ _data = {
 &"appear": SubResource("Animation_n3n0q")
 }
 
-[node name="Pickup" type="Area2D" unique_id=1609978997]
+[node name="Pickup" type="Area2D" unique_id=1609978997 groups=["sensor_item"]]
 collision_layer = 0
 collision_mask = 3
 script = ExtResource("1_4sb31")

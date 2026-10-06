@@ -90,7 +90,7 @@ _data = {
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 2
 
-[node name="Tree" type="StaticBody2D" unique_id=857030220 groups=["damageable"]]
+[node name="Tree" type="StaticBody2D" unique_id=857030220 groups=["damageable", "sensor_object"]]
 script = ExtResource("1_okgaj")
 
 [node name="Sprite" type="Sprite2D" parent="." unique_id=1355780665]
