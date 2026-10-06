@@ -319,10 +319,10 @@ func release_navigation_actor(actor_id: int) -> void:
 			navigation_occupants.erase(tile)
 
 
-func is_navigation_tile_reserved(tile: Vector2i, except_actor_id := -1) -> bool:
-	var step_reserved := navigation_reservations.has(tile) \
+func is_navigation_tile_reserved(tile: Vector2i, except_actor_id: int = -1) -> bool:
+	var step_reserved: bool = navigation_reservations.has(tile) \
 		and navigation_reservations[tile] != except_actor_id
-	var destination_reserved := navigation_destinations.has(tile) \
+	var destination_reserved: bool = navigation_destinations.has(tile) \
 		and navigation_destinations[tile] != except_actor_id
 	return step_reserved or destination_reserved
 
