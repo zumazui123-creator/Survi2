@@ -19,7 +19,7 @@ properties/2/replication_mode = 2
 properties/3/path = NodePath("MovingParts:rotation")
 properties/3/spawn = true
 properties/3/replication_mode = 2
-properties/4/path = NodePath(".:enemyId")
+properties/4/path = NodePath(".:actor_id")
 properties/4/spawn = true
 properties/4/replication_mode = 2
 properties/5/path = NodePath(".:ai_state")
@@ -90,6 +90,7 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="HPBar" type="ProgressBar" parent="EnemyUI" unique_id=1204761343]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(60, 10)
 layout_mode = 0
 offset_left = -30.0

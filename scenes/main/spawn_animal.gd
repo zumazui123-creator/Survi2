@@ -1,5 +1,7 @@
 extends Node2D
 
+const ANIMAL_SCENE := preload("res://scenes/animal/animal.tscn")
+
 var animalTypes := Items.animals.keys()
 const animalWaveCount := 1
 var maxAnimalsPerPlayer :int = Constants.MAX_ANIMALS_PER_PLAYER
@@ -13,13 +15,12 @@ func _ready() -> void:
 	print("ready  Enemies")
 
 #animal spawn
-func spawn(postion : Vector2i) -> Node:
+func spawn(position_to_spawn: Vector2) -> Animal:
 	print("Spawn")
-	var animalScene := preload("res://scenes/animal/animal.tscn")
-	var animal : Node = animalScene.instantiate()
-	animal.position = postion
+	var animal := ANIMAL_SCENE.instantiate() as Animal
+	animal.position = position_to_spawn
 	animal.spawner = self
-	animal.animalId = animalTypes.pick_random()
+	animal.actor_id = animalTypes.pick_random()
 	return animal 
 	
 func trySpawnAnimals():
@@ -31,7 +32,7 @@ func trySpawnAnimals():
 			var spawnPositions = navHelper.getNRandomNavigableTileInPlayerRadius(
 							player, toSpawn, animalSpawnRadiusMin, animalSpawnRadiusMax)
 			for pos in spawnPositions:
-				var animal : Node = spawn(pos)
+				var animal := spawn(pos) as Animal
 				animal.targetPlayerId = player
 				add_child(animal,true)
 				increasePlayerAnimalCount(player)
@@ -49,6 +50,4 @@ func increasePlayerAnimalCount(pId) -> void:
 
 func decreasePlayerAnimalCount(pId) -> void:
 	if pId in spawnedAnimals:
-		spawnedAnimals[pId] -= 1
-	else:
-		spawnedAnimals[pId] = 1
+		spawnedAnimals[pId] = maxi(0, spawnedAnimals[pId] - 1)

@@ -1,5 +1,7 @@
 extends Node2D
 
+const ENEMY_SCENE := preload("res://scenes/enemy/enemy.tscn")
+
 var enemyTypes := Items.mobs.keys()
 const enemyWaveCount := 1
 var maxEnemiesPerPlayer :int = Constants.MAX_ENEMIES_PER_PLAYER
@@ -19,7 +21,6 @@ func trySpawnEnemies():
 	if not multiplayer.is_server() or not GameTime.is_night_time():
 		return
 	print("SpawnEnemies at hour: "+str( GameTime.get_hour()) )	
-	var enemyScene := preload("res://scenes/enemy/enemy.tscn")
 	var players = Multihelper.spawnedPlayers.keys()
 	for player in players:
 		var playerEnemies := getPlayerEnemyCount(player)
@@ -30,25 +31,24 @@ func trySpawnEnemies():
 			#print(spawnPositions)				
 			for pos in spawnPositions:
 				print("add Enemy position:"+str(pos))
-				var enemy = enemyScene.instantiate()
-				add_child(enemy,true)
+				var enemy := ENEMY_SCENE.instantiate() as Enemy
 				enemy.global_position = pos
 				enemy.spawner = self
 				enemy.targetPlayerId = player
-				enemy.enemyId = enemyTypes.pick_random()
+				enemy.actor_id = enemyTypes.pick_random()
+				add_child(enemy,true)
 				increasePlayerEnemyCount(player)
 
-func spawn(pos,text):
+func spawn(pos: Vector2, text: StringName) -> Enemy:
 	if not multiplayer.is_server():
 		return null
-	var enemyScene := preload("res://scenes/enemy/enemy.tscn")
 	print("add Enemy position:"+str(pos))
-	var enemy = enemyScene.instantiate()
-	add_child(enemy,true)
+	var enemy := ENEMY_SCENE.instantiate() as Enemy
 	enemy.global_position = pos
 	enemy.spawner = self
 	enemy.targetPlayerId = 1
-	enemy.enemyId = text
+	enemy.actor_id = text
+	add_child(enemy,true)
 	return enemy
 
 
