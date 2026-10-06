@@ -99,7 +99,7 @@ func getDamage(causer: Node, amount: float, _damage_type: StringName) -> void:
 		if not allow_player_damage:
 			return
 
-	var was_alive := player.status.hp > 0.0
+	var was_alive: bool = player.status.hp > 0.0
 	player.status.apply_damage(amount)
 	if was_alive and player.status.hp <= 0.0 and attacker_combat != null:
 		attacker_combat.player_killed.emit()
