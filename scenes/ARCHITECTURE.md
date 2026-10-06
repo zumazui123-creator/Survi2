@@ -16,6 +16,8 @@
 - `PlayerStats` owns gameplay state and emits changes.
 - `PlayerStatusView` only renders stats and opens local UI.
 - Movement, combat, inventory, and building remain independent components.
+- `CodeParser` only turns source text into validated commands; `CodePlayer`
+  executes those commands against the player components.
 - Code editor and settings nodes are local-only and are removed from remote
   player instances during `_enter_tree`.
 
