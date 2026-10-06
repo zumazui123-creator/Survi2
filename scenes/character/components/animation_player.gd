@@ -2,7 +2,7 @@ extends AnimationPlayer
 class_name PlayerAnimationController
 
 @export_group("References")
-@export var player: CharacterBody2D
+@export var player: Node2D
 
 
 @onready var moving_parts = $"../MovingParts"

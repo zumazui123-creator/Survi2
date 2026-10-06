@@ -158,7 +158,7 @@ func _scan_goal_delta(origin_tile: Vector2i) -> PackedFloat32Array:
 	var result := PackedFloat32Array([0.0, 0.0])
 	if not _has_navigation_goal():
 		return result
-	var delta := world_map.endPosition - origin_tile
+	var delta = world_map.endPosition - origin_tile
 	result[0] = float(delta.x)
 	result[1] = float(delta.y)
 	return result

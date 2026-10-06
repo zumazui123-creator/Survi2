@@ -16,7 +16,7 @@
 [ext_resource type="Texture2D" uid="uid://d4iknbe05uwaj" path="res://scenes/main/daynightcycle-gradient-texture.tres" id="8_le63a"]
 [ext_resource type="Script" uid="uid://bysoe6stvcca4" path="res://scenes/main/NavHelper.gd" id="10_40gnc"]
 [ext_resource type="PackedScene" uid="uid://xisgglhsre7n" path="res://scenes/main/HUD/EndUI.tscn" id="13_raeie"]
-[ext_resource type="Script" path="res://scenes/main/world_entity_spawner.gd" id="14_spawner"]
+[ext_resource type="Script" uid="uid://c4ai745s7sera" path="res://scenes/main/world_entity_spawner.gd" id="14_spawner"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_dr53p"]
 properties/0/path = NodePath("dayNight:time")
@@ -41,9 +41,8 @@ grow_vertical = 2
 size_flags_horizontal = 1
 size_flags_vertical = 1
 
-[node name="Creator" type="Node" parent="." unique_id=524279930 node_paths=PackedStringArray("world_map")]
+[node name="Creator" type="Node" parent="." unique_id=524279930]
 script = ExtResource("2_raeie")
-world_map = NodePath("../Map")
 
 [node name="Pickups" type="Node2D" parent="." unique_id=1773571447]
 
@@ -59,7 +58,7 @@ script = ExtResource("4_th5th")
 
 [node name="Projectiles" type="Node2D" parent="." unique_id=614943988]
 
-[node name="EntitySpawner" type="Node" parent="." node_paths=PackedStringArray("pickups_root", "projectiles_root") groups=["world_entity_spawner"]]
+[node name="EntitySpawner" type="Node" parent="." unique_id=1016876485 node_paths=PackedStringArray("pickups_root", "projectiles_root") groups=["world_entity_spawner"]]
 script = ExtResource("14_spawner")
 pickups_root = NodePath("../Pickups")
 projectiles_root = NodePath("../Projectiles")
