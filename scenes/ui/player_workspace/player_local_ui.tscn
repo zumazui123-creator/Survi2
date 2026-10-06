@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://scenes/ui/player_workspace/player_local_ui.gd" id="1_ui"]
 [ext_resource type="Script" uid="uid://dukylmcbt25lk" path="res://scenes/character/builder.gd" id="2_builder"]
@@ -7,8 +7,6 @@
 [ext_resource type="Script" uid="uid://dngrh67x5tj38" path="res://scenes/character/components/texture_rect.gd" id="5_texture_rect"]
 [ext_resource type="Texture2D" uid="uid://ctsuis1o5sca5" path="res://assets/ui/itemSlotSelected.png" id="6_selected_texture"]
 [ext_resource type="Script" uid="uid://jwr2prr58xmw" path="res://scenes/character/ui/goal_texture_rect.gd" id="7_goal_texture"]
-[ext_resource type="Script" uid="uid://3u5wolperx1b" path="res://scenes/code/CodePlayer.gd" id="8_code_player"]
-
 [sub_resource type="CodeHighlighter" id="CodeHighlighter_vreni"]
 number_color = Color(0.16078432, 0.5294118, 0.36862746, 1)
 
@@ -25,12 +23,11 @@ script = ExtResource("2_builder")
 offset = Vector2(640, 360)
 transform = Transform2D(1, 0, 0, 1, 640, 360)
 
-[node name="Code" type="Node2D" parent="CodeLayer" unique_id=52590820 node_paths=PackedStringArray("code_player")]
+[node name="Code" type="Node2D" parent="CodeLayer" unique_id=52590820]
 z_index = 6
 z_as_relative = false
 position = Vector2(218, -371)
 script = ExtResource("4_code")
-code_player = NodePath("CodePlayer")
 
 [node name="TabContainer" type="TabContainer" parent="CodeLayer/Code" unique_id=1538183637]
 offset_left = 67.0
@@ -394,10 +391,6 @@ text = "Bewegung Ziel Belohnung : "
 [node name="LineEdit" type="LineEdit" parent="CodeLayer/Code/TabContainer/Belohnung/MoveContainer/HBoxContainer" unique_id=832260504]
 layout_mode = 2
 text = "0.7"
-
-[node name="CodePlayer" type="Node" parent="CodeLayer/Code" unique_id=1473287517]
-script = ExtResource("8_code_player")
-metadata/_custom_type_script = "uid://3u5wolperx1b"
 
 [node name="PopupFunction" type="PopupPanel" parent="CodeLayer" unique_id=1573069857]
 unique_name_in_owner = true

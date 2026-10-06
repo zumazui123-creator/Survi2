@@ -1,4 +1,5 @@
 extends Node
+class_name FunctionHandler
 
 @onready var item_list = %ItemList
 @onready var func_list = %FuncList

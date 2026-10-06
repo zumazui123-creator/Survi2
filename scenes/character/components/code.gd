@@ -1,17 +1,20 @@
 extends Node
+class_name CodeEditorController
 
-@export var code_player : CodePlayer
+var code_player: CodePlayer
 @onready var code_edit = %CodeEdit
 @onready var item_list = %ItemList
 @onready var inputFuncName = %InputFuncName
 @onready var code_func = $"../PopupFunction/HBoxContainer/VBoxContainer/CodeEdit"
-@onready var funcHandler = $"../../FunctionHandler"
 @onready var popup = %PopupFunction
 @onready var exit_btn = $"../PopupFunction/HBoxContainer/VBoxContainer/BtnContainer/ExitBtn"
 
 @onready var tab_container = $TabContainer
 @onready var function_handler = $"../../FunctionHandler"
 var highlighter : MyCodeHighLighter
+
+func bind_code_player(value: CodePlayer) -> void:
+	code_player = value
 
 func init_tab_container() -> void:
 	item_list.add_item("wiederhole 3 mal")
@@ -69,14 +72,14 @@ func _on_code_delete_button_pressed() -> void:
 
 func _on_play_button_pressed() -> void:
 	if code_player != null && Multihelper.code_player_enabled:
-		Multihelper.is_stopped = false
-		code_player.play(code_edit.text)
+		code_player.play(code_edit.text, function_handler.functions)
 		return
 	#net_control.send_rpc_request(Strings.RPC_METHOD_PLAY_SEQUENCE, {"message": code_edit.text})
 
 func _on_stop_button_pressed() -> void:
 	print("_on_stop_button_pressed")
-	Multihelper.is_stopped = true
+	if code_player != null:
+		code_player.cancel()
 	#net_control.send_text(Strings.CMD_END_SEQUENCE + "\n")
 	#net_control.send_text(Strings.CMD_STOP_SEQUENCE + "\n")
 

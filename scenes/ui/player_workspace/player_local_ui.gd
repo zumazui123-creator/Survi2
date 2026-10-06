@@ -4,7 +4,7 @@ class_name PlayerLocalUI
 var player: CharacterBody2D
 
 @onready var code_editor: CodeEdit = $CodeLayer/Code/TabContainer/Code/CodeEdit
-@onready var code_player: CodePlayer = $CodeLayer/Code/CodePlayer
+@onready var code_controller: CodeEditorController = $CodeLayer/Code
 @onready var work_task_text: RichTextLabel = $PopupInfo/workTaskText
 @onready var difficulty_button: OptionButton = $PopupSettings/VBoxContainer/HBoxContainer/DifModeButton
 @onready var settings_popup: PopupPanel = $PopupSettings
@@ -14,7 +14,7 @@ var player: CharacterBody2D
 
 func bind_player(value: CharacterBody2D) -> void:
 	player = value
-	code_player.player = player
+	code_controller.bind_code_player(player.code_player)
 	player.local_ui = self
 	player.code_edit = code_editor
 	player.workTaskText = work_task_text

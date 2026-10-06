@@ -118,11 +118,15 @@ func translate_building_names(lang:String, line : String) -> String:
 	return ""
 
 func remap_code_cmd_to_action(lang:String, line : String) -> String:
-	line = line.strip_edges();
-	for action in Strings.ACTION_NAMES[lang].keys():
-		if line.begins_with(action):
-			line = line.replace(action, Strings.ACTION_NAMES[lang][action]) ;
-			return line
+	line = line.strip_edges()
+	if not Strings.ACTION_NAMES.has(lang):
+		return ""
+
+	var actions: Array = Strings.ACTION_NAMES[lang].keys()
+	actions.sort_custom(func(left, right): return left.length() > right.length())
+	for action: String in actions:
+		if line == action or line.begins_with(action + " "):
+			return Strings.ACTION_NAMES[lang][action] + line.substr(action.length())
 	return ""
 
 	# var code_cmd = sperated_line

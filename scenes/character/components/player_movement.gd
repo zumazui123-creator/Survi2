@@ -13,6 +13,10 @@ var direction = Vector2.ZERO
 var _pixels_moved: int = 0
 var is_speed_boost_active := false
 var path_line : Line2D
+var _base_move_speed_factor := default_move_speed_factor
+var _speed_boost_multiplier := 1.0
+var _code_speed_multiplier := 1.0
+var _code_input_active := false
 
 func _ready():
 	speed_changed.emit(move_speed_factor)
@@ -24,7 +28,7 @@ func is_moving() -> bool:
 
 func input():
 	if is_moving(): return
-	if Multihelper.is_stopped: return
+	if _code_input_active: return
 	if Input.is_action_pressed("walkRight"):
 		direction = Vector2(1, 0)
 	elif Input.is_action_pressed("walkLeft"):
@@ -67,26 +71,38 @@ func apply_speed_boost(multiplier, duration):
 		return # Don't stack speed boosts
 
 	is_speed_boost_active = true
-	move_speed_factor = default_move_speed_factor * multiplier
+	_speed_boost_multiplier = multiplier
+	_update_move_speed()
 
 	var timer = Timer.new()
 	timer.wait_time = duration
 	timer.one_shot = true
 	timer.timeout.connect(_on_speed_boost_timeout)
+	timer.timeout.connect(timer.queue_free)
 	add_child(timer)
 	timer.start()
 
 func _on_speed_boost_timeout():
-	move_speed_factor = default_move_speed_factor
+	_speed_boost_multiplier = 1.0
 	is_speed_boost_active = false
+	_update_move_speed()
 
 func apply_code_speed_bonus(bonus_multiplier: float):
-	move_speed_factor = default_move_speed_factor * bonus_multiplier
+	_code_speed_multiplier = bonus_multiplier
+	_update_move_speed()
 	print("Code Speed Bonus applied: ", move_speed_factor)
 
 func reset_code_speed_bonus():
-	move_speed_factor = default_move_speed_factor
+	_code_speed_multiplier = 1.0
+	_update_move_speed()
 	print("Code Speed Bonus reset: ", move_speed_factor)
+
+func set_code_input_active(value: bool) -> void:
+	_code_input_active = value
+
+func _update_move_speed() -> void:
+	move_speed_factor = _base_move_speed_factor * _speed_boost_multiplier * _code_speed_multiplier
+	speed_changed.emit(move_speed_factor)
 
 # GODOT Server
 #var last_angle = 0.0 # für godot server nötig
@@ -112,20 +128,13 @@ func reset_code_speed_bonus():
 	#if player.animation:
 		#player.animation.handleAnims(vel,doingAction)
 
-func press_action(inp_action : String):
-	if "walk" in inp_action:
-		if inp_action == "walkRight":
-			direction = Vector2(1, 0)
-		elif inp_action == "walkLeft":
-			direction = Vector2(-1, 0)
-		elif inp_action == "walkUp":
-			direction = Vector2(0, -1)
-		elif inp_action == "walkDown":
-			direction = Vector2(0, 1)
+func press_action(input_action: String) -> void:
+	if Strings.direction_map.has(input_action):
+		direction = Vector2(Strings.direction_map[input_action])
 
 func set_speed( player_speed : float):
-	move_speed_factor += player_speed
-	speed_changed.emit(move_speed_factor)
+	_base_move_speed_factor = maxf(_base_move_speed_factor + player_speed, 0.1)
+	_update_move_speed()
 
 func _on_speed_plus_pressed() -> void:
 	set_speed(0.2)

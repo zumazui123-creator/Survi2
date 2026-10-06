@@ -13,6 +13,7 @@ var workTaskText: RichTextLabel
 @export var combat : Node 
 @export var building: Node
 @export  var items : Node 
+@export var code_player: CodePlayer
 var code_edit: CodeEdit
 var local_ui: PlayerLocalUI
 @export var playerName : String:
