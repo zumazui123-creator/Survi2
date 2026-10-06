@@ -3,74 +3,165 @@ class_name PlayerMovement
 
 signal speed_changed(value: float)
 signal tile_step_finished(map_position: Vector2i)
+signal tile_step_blocked(map_position: Vector2i, attempted_position: Vector2i)
+signal tile_step_resolved(map_position: Vector2i, succeeded: bool)
 
 @export_group("References")
 @export var player: CharacterBody2D
 @onready var world_map: Map = get_tree().get_first_node_in_group("world_map")
 
 const default_move_speed_factor : float = 2.5
+const MOVE_SPEED_SCALE := 60.0
+const TARGET_EPSILON := 0.01
+
 var move_speed_factor : float = default_move_speed_factor
 var current_map_position : Vector2i
-var direction = Vector2.ZERO
-var _pixels_moved: int = 0
+var direction := Vector2.ZERO
 var is_speed_boost_active := false
 var path_line : Line2D
 var _base_move_speed_factor := default_move_speed_factor
 var _speed_boost_multiplier := 1.0
 var _code_speed_multiplier := 1.0
 var _code_input_active := false
+var _grid_position_initialized := false
+var _step_start_global_position := Vector2.ZERO
+var _step_target_global_position := Vector2.ZERO
+var _step_target_map_position := Vector2i.ZERO
 
-func _ready():
+
+func _ready() -> void:
+	synchronize_to_player_position()
 	speed_changed.emit(move_speed_factor)
 	if path_line:
 		path_line.points = PackedVector2Array([Vector2.ZERO, Vector2.ZERO])
 
+
 func is_moving() -> bool:
 	return direction != Vector2.ZERO
 
-func input():
-	if is_moving(): return
-	if _code_input_active: return
-	if Input.is_action_pressed("walkRight"):
-		direction = Vector2(1, 0)
-	elif Input.is_action_pressed("walkLeft"):
-		direction = Vector2(-1, 0)
-	elif Input.is_action_pressed("walkUp"):
-		direction = Vector2(0, -1)
-	elif Input.is_action_pressed("walkDown"):
-		direction = Vector2(0, 1)
 
-	if direction != Vector2.ZERO and path_line:
-		path_line.points = PackedVector2Array([Vector2.ZERO, direction * Constants.TILE_SIZE])
+func input() -> void:
+	if is_moving() or _code_input_active:
+		return
 
-func tile_move() -> Vector2:
+	var input_direction := Vector2i.ZERO
+	if Input.is_action_just_pressed("walkRight"):
+		input_direction = Vector2i.RIGHT
+	elif Input.is_action_just_pressed("walkLeft"):
+		input_direction = Vector2i.LEFT
+	elif Input.is_action_just_pressed("walkUp"):
+		input_direction = Vector2i.UP
+	elif Input.is_action_just_pressed("walkDown"):
+		input_direction = Vector2i.DOWN
+
+	if input_direction != Vector2i.ZERO:
+		_start_tile_step(input_direction)
+
+
+func tile_move(delta: float) -> Vector2:
 	if not is_moving():
+		player.velocity = Vector2.ZERO
 		return Vector2.ZERO
 
-	_pixels_moved += 1
-	player.velocity = direction * move_speed_factor
-	player.move_and_collide(player.velocity)
+	var movement_direction := direction
+	var target_delta := _step_target_global_position - player.global_position
+	var remaining_distance := target_delta.length()
+	if remaining_distance <= TARGET_EPSILON:
+		_finish_tile_step(true)
+		return movement_direction
 
-	if _pixels_moved >= Constants.TILE_SIZE/move_speed_factor:
-		direction = Vector2.ZERO
-		_pixels_moved = 0
-		if path_line:
-			path_line.points = PackedVector2Array([Vector2.ZERO, Vector2.ZERO])
+	var pixels_per_second := move_speed_factor * MOVE_SPEED_SCALE
+	var motion_distance := minf(pixels_per_second * delta, remaining_distance)
+	player.velocity = movement_direction * pixels_per_second
+	var collision := player.move_and_collide(target_delta.normalized() * motion_distance)
+	if collision != null:
+		_finish_tile_step(false)
+		return Vector2.ZERO
 
-		current_map_position = world_map.tile_map.local_to_map(player.position)
-		snap_to_tiles_position()
-		player.act = ""
-		call_deferred("_emit_tile_step_finished", current_map_position)
+	if player.global_position.distance_to(_step_target_global_position) <= TARGET_EPSILON:
+		_finish_tile_step(true)
+	else:
+		player.animation.animate_player(movement_direction)
+	return movement_direction
 
-	player.animation.animate_player(direction)
-	return direction
 
-func _emit_tile_step_finished(map_position: Vector2i) -> void:
-	tile_step_finished.emit(map_position)
+func synchronize_to_player_position(snap_to_center := false) -> bool:
+	if not is_instance_valid(world_map):
+		world_map = get_tree().get_first_node_in_group("world_map") as Map
+	if not is_instance_valid(world_map):
+		return false
 
-func snap_to_tiles_position():
-	var snap_position = world_map.tile_map.map_to_local(current_map_position)
-	player.position = snap_position
+	current_map_position = world_map.world_to_navigation_tile(player.global_position)
+	_step_start_global_position = world_map.navigation_tile_to_world(current_map_position)
+	_step_target_global_position = _step_start_global_position
+	_step_target_map_position = current_map_position
+	_grid_position_initialized = true
+	direction = Vector2.ZERO
+	player.velocity = Vector2.ZERO
+	if snap_to_center:
+		player.global_position = _step_start_global_position
+	_clear_path_line()
+	return true
+
+
+func snap_to_tiles_position() -> void:
+	synchronize_to_player_position(true)
+
+
+func _start_tile_step(tile_direction: Vector2i) -> bool:
+	if is_moving() or abs(tile_direction.x) + abs(tile_direction.y) != 1:
+		return false
+	if not _grid_position_initialized and not synchronize_to_player_position(true):
+		return false
+
+	var target_map_position := current_map_position + tile_direction
+	if not world_map.is_navigation_tile_walkable(target_map_position):
+		return false
+
+	_step_start_global_position = world_map.navigation_tile_to_world(current_map_position)
+	_step_target_global_position = world_map.navigation_tile_to_world(target_map_position)
+	_step_target_map_position = target_map_position
+	player.global_position = _step_start_global_position
+	direction = Vector2(tile_direction)
+	if path_line:
+		path_line.points = PackedVector2Array([
+			Vector2.ZERO,
+			_step_target_global_position - player.global_position,
+		])
+	return true
+
+
+func _finish_tile_step(succeeded: bool) -> void:
+	var attempted_position := _step_target_map_position
+	if succeeded:
+		player.global_position = _step_target_global_position
+		current_map_position = _step_target_map_position
+	else:
+		player.global_position = _step_start_global_position
+
+	direction = Vector2.ZERO
+	player.velocity = Vector2.ZERO
+	player.act = ""
+	player.animation.animate_player(Vector2.ZERO)
+	_clear_path_line()
+	call_deferred("_emit_tile_step_result", current_map_position, succeeded, attempted_position)
+
+
+func _emit_tile_step_result(
+		map_position: Vector2i,
+		succeeded: bool,
+		attempted_position: Vector2i
+	) -> void:
+	if succeeded:
+		tile_step_finished.emit(map_position)
+	else:
+		tile_step_blocked.emit(map_position, attempted_position)
+	tile_step_resolved.emit(map_position, succeeded)
+
+
+func _clear_path_line() -> void:
+	if path_line:
+		path_line.points = PackedVector2Array([Vector2.ZERO, Vector2.ZERO])
 
 func apply_speed_boost(multiplier, duration):
 	if is_speed_boost_active:
@@ -138,10 +229,7 @@ func request_code_step(input_action: String) -> bool:
 	if is_moving() or not Strings.direction_map.has(input_action):
 		return false
 
-	direction = Vector2(Strings.direction_map[input_action])
-	if path_line:
-		path_line.points = PackedVector2Array([Vector2.ZERO, direction * Constants.TILE_SIZE])
-	return true
+	return _start_tile_step(Vector2i(Strings.direction_map[input_action]))
 
 func set_speed( player_speed : float):
 	_base_move_speed_factor = maxf(_base_move_speed_factor + player_speed, 0.1)

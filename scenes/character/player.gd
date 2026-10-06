@@ -125,11 +125,11 @@ func disconnected(id):
 		combat.die()
 
 
-func _physics_process(_delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	if not is_multiplayer_authority():
 		return
 	movement.input()
-	movement.tile_move()
+	movement.tile_move(delta)
 
 
 func _on_goal_reached() -> void:
@@ -153,7 +153,7 @@ func resetPlayer():
 @rpc("any_peer", "call_local", "reliable")
 func sendPos(pos):
 	position = pos
-	movement.current_map_position = world_map.tile_map.local_to_map(position)
+	movement.synchronize_to_player_position(true)
 
 
 func _exit_tree() -> void:

@@ -185,22 +185,30 @@ func walk(parts: PackedStringArray, execution_id: int) -> void:
 	for _step in range(count):
 		if not _is_current_execution(execution_id):
 			return
-		await move_step(parts[0], execution_id)
+		var step_succeeded: bool = await move_step(parts[0], execution_id)
+		if not step_succeeded:
+			return
 
 
-func move_step(action: String, execution_id: int) -> void:
+func move_step(action: String, execution_id: int) -> bool:
 	while player.movement.is_moving():
 		if not _is_current_execution(execution_id):
-			return
-		await player.movement.tile_step_finished
+			return false
+		await player.movement.tile_step_resolved
 
 	if not _is_current_execution(execution_id):
-		return
+		return false
 	if not player.movement.request_code_step(action):
-		_report_error("Bewegung konnte nicht gestartet werden: " + action)
-		return
+		_report_error("Das Ziel-Tile ist blockiert: " + action)
+		return false
 
-	await player.movement.tile_step_finished
+	var step_result: Array = await player.movement.tile_step_resolved
+	if not _is_current_execution(execution_id):
+		return false
+	if step_result.size() < 2 or not bool(step_result[1]):
+		_report_error("Die Bewegung wurde durch eine Kollision blockiert: " + action)
+		return false
+	return true
 
 
 func say(parts: PackedStringArray) -> void:
