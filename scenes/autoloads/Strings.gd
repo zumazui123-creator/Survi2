@@ -79,19 +79,6 @@ const KEYWORD_REPEAT = "wiederhole 3 mal"
 const KEYWORD_REPEAT_FULL = "wiederhole 3 mal\n\nende"
 const KEYWORD_IF = "wenn"
 const KEYWORD_IF_FULL = "wenn gegner rechts\n\nende"
-const KEYWORD_COMBO_SOUND_WAVE = "combo links attacke rechts attacke"
-const KEYWORD_COMBO_EARTHQUAKE = "combo unten attacke oben attacke"
-const KEYWORD_COMBO_DOUBLE_STRIKE = "combo links attacke links attacke rechts attacke"
-const KEYWORD_COMBO_CROSS_EXPLOSION = "combo oben attacke unten attacke links attacke rechts attacke"
-const KEYWORD_COMBO_WHIRLWIND = "combo links attacke rechts attacke oben attacke unten attacke"
-const KEYWORD_COMBO = KEYWORD_COMBO_SOUND_WAVE
-const KEYWORD_COMBOS: PackedStringArray = PackedStringArray([
-	KEYWORD_COMBO_SOUND_WAVE,
-	KEYWORD_COMBO_EARTHQUAKE,
-	KEYWORD_COMBO_DOUBLE_STRIKE,
-	KEYWORD_COMBO_CROSS_EXPLOSION,
-	KEYWORD_COMBO_WHIRLWIND,
-])
 const KEYWORD_USE_ITEM = "nutze item 3"
 
 const CONDITION_ENEMY: StringName = &"enemy"

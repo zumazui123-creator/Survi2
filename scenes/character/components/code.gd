@@ -92,10 +92,10 @@ func _refresh_function_lists() -> void:
 
 func _get_combo_commands() -> PackedStringArray:
 	if not is_instance_valid(code_player) or not is_instance_valid(code_player.player):
-		return Strings.KEYWORD_COMBOS
+		return PackedStringArray()
 	var player_combo: PlayerComboController = code_player.player.get("combo") as PlayerComboController
 	if not is_instance_valid(player_combo):
-		return Strings.KEYWORD_COMBOS
+		return PackedStringArray()
 	return player_combo.get_code_commands()
 
 
