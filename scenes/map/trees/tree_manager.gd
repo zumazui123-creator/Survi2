@@ -17,7 +17,7 @@ const HIDDEN_COLOR: Color = Color(1.0, 1.0, 1.0, 0.0)
 @export_range(1, 64, 1) var activation_radius_tiles: int = 14
 @export_range(0, 32, 1) var deactivation_margin_tiles: int = 4
 @export_range(0.05, 5.0, 0.05) var activation_check_interval: float = 0.5
-@export_range(25, 100, 1) var active_tree_batch_size: int = 50
+@export_range(25, 200, 1) var active_tree_batch_size: int = 50
 @export_range(0.1, 30.0, 0.1) var active_tree_batch_interval: float = 5.0
 
 @export_group("Storage")
