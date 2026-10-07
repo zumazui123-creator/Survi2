@@ -74,6 +74,12 @@ properties/12/replication_mode = 2
 properties/13/path = NodePath("Gameplay/PlayerStats:level")
 properties/13/spawn = true
 properties/13/replication_mode = 2
+properties/14/path = NodePath("Gameplay/PlayerStats:max_mana")
+properties/14/spawn = true
+properties/14/replication_mode = 2
+properties/15/path = NodePath("Gameplay/PlayerStats:mana")
+properties/15/spawn = true
+properties/15/replication_mode = 2
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5y66v"]
 
@@ -108,6 +114,18 @@ expand_margin_bottom = 2.0
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_exp"]
 bg_color = Color(0.69803923, 0.68235296, 0.019607844, 1)
 border_color = Color(0.701961, 0.701961, 0.701961, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+expand_margin_left = 2.0
+expand_margin_top = 2.0
+expand_margin_right = 2.0
+expand_margin_bottom = 2.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mana"]
+bg_color = Color(0.0784314, 0.392157, 0.905882, 1)
+border_color = Color(0.545098, 0.803922, 1, 1)
 corner_radius_top_left = 3
 corner_radius_top_right = 3
 corner_radius_bottom_right = 3
@@ -455,10 +473,11 @@ blood_particles = NodePath("../../Visuals/bloodParticles")
 action_audio = NodePath("../../Visuals/AudioStreamPlayer2D")
 drink_audio = NodePath("../../Visuals/DrinkAudioStreamPlayer2D")
 
-[node name="PlayerCombo" type="Node" parent="Gameplay" node_paths=PackedStringArray("player", "combat", "effects")]
+[node name="PlayerCombo" type="Node" parent="Gameplay" node_paths=PackedStringArray("player", "combat", "stats", "effects")]
 script = ExtResource("32_combo_controller")
 player = NodePath("../..")
 combat = NodePath("../PlayerCombat")
+stats = NodePath("../PlayerStats")
 effects = NodePath("../../Visuals/ComboEffects")
 combo_definitions = Array[ExtResource("36_combo_definition")]([ExtResource("34_sound_wave"), ExtResource("37_earthquake"), ExtResource("38_double_strike"), ExtResource("39_cross_explosion"), ExtResource("35_whirlwind")])
 
@@ -491,7 +510,7 @@ stats = NodePath("../PlayerStats")
 
 [node name="WorldUI" type="Node2D" parent="."]
 
-[node name="PlayerStatus" type="Control" parent="WorldUI" unique_id=381426310 node_paths=PackedStringArray("hp_bar", "exp_bar", "hydration_bar", "food_bar", "name_label", "player", "stats")]
+[node name="PlayerStatus" type="Control" parent="WorldUI" unique_id=381426310 node_paths=PackedStringArray("hp_bar", "mana_bar", "exp_bar", "hydration_bar", "food_bar", "name_label", "player", "stats")]
 unique_name_in_owner = true
 layout_mode = 3
 anchors_preset = 8
@@ -508,6 +527,7 @@ grow_vertical = 2
 size_flags_horizontal = 10
 script = ExtResource("7_wmtbp")
 hp_bar = NodePath("NameTag/VBoxContainer/hpBar")
+mana_bar = NodePath("NameTag/VBoxContainer/manaBar")
 exp_bar = NodePath("NameTag/VBoxContainer/expBar")
 hydration_bar = NodePath("Bar/HydrationBar")
 food_bar = NodePath("Bar/FoodBar")
@@ -540,6 +560,16 @@ theme_override_styles/background = SubResource("StyleBoxFlat_uicah")
 theme_override_styles/fill = SubResource("StyleBoxFlat_g2qfr")
 max_value = 1.0
 value = 1.0
+show_percentage = false
+
+[node name="manaBar" type="ProgressBar" parent="WorldUI/PlayerStatus/NameTag/VBoxContainer"]
+custom_minimum_size = Vector2(0, 3)
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_styles/background = SubResource("StyleBoxFlat_uicah")
+theme_override_styles/fill = SubResource("StyleBoxFlat_mana")
+max_value = 100.0
+value = 100.0
 show_percentage = false
 
 [node name="expBar" type="ProgressBar" parent="WorldUI/PlayerStatus/NameTag/VBoxContainer" unique_id=123456789]

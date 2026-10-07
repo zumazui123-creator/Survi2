@@ -6,8 +6,11 @@
 script = ExtResource("1_combo")
 combo_id = &"sound_wave"
 display_name = "Schallwelle"
+code_command = "combo links attacke rechts attacke"
+description = "Eine schnelle Welle trifft alle damageable Ziele je ein Tile links und rechts vom Spieler. Kostet 25 Mana."
 input_sequence = PackedStringArray("walkLeft", "attack", "walkRight", "attack")
 target_directions = PackedStringArray("walkLeft", "walkRight")
 damage_multiplier = 1.25
+mana_cost = 25.0
 visual_effect = &"sound_wave"
 effect_duration = 0.38

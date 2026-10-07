@@ -80,7 +80,7 @@ func _refresh_function_lists() -> void:
 	function_list.clear()
 	item_list.add_item(Strings.KEYWORD_REPEAT)
 	item_list.add_item(Strings.KEYWORD_IF)
-	for combo_command: String in Strings.KEYWORD_COMBOS:
+	for combo_command: String in _get_combo_commands():
 		item_list.add_item(combo_command)
 	item_list.add_item(Strings.KEYWORD_USE_ITEM)
 	if not is_instance_valid(function_library):
@@ -88,6 +88,15 @@ func _refresh_function_lists() -> void:
 	for function_name: String in function_library.get_function_names():
 		item_list.add_item(function_name)
 		function_list.add_item(function_name)
+
+
+func _get_combo_commands() -> PackedStringArray:
+	if not is_instance_valid(code_player) or not is_instance_valid(code_player.player):
+		return Strings.KEYWORD_COMBOS
+	var player_combo: PlayerComboController = code_player.player.get("combo") as PlayerComboController
+	if not is_instance_valid(player_combo):
+		return Strings.KEYWORD_COMBOS
+	return player_combo.get_code_commands()
 
 
 func _insert_text(text: String) -> void:

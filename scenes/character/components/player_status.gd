@@ -6,6 +6,7 @@ signal info_requested
 
 @export_group("UI References")
 @export var hp_bar: ProgressBar
+@export var mana_bar: ProgressBar
 @export var exp_bar: ProgressBar
 @export var hydration_bar: ProgressBar
 @export var food_bar: ProgressBar
@@ -17,6 +18,7 @@ signal info_requested
 
 func _ready() -> void:
 	stats.hp_changed.connect(_update_hp_ui)
+	stats.mana_changed.connect(_update_mana_ui)
 	stats.exp_changed.connect(_update_exp_ui)
 	stats.level_changed.connect(_update_level_ui)
 	stats.hydration_changed.connect(_update_hydration_ui)
@@ -29,6 +31,7 @@ func _ready() -> void:
 			$WorkContainer.visible = false
 
 	_update_hp_ui(stats.hp, stats.max_hp)
+	_update_mana_ui(stats.mana, stats.max_mana)
 	_update_exp_ui(stats.exp, stats.max_exp)
 	_update_hydration_ui(stats.hydration)
 	_update_food_ui(stats.food)
@@ -54,6 +57,12 @@ func _update_hp_ui(current: float, maximum: float) -> void:
 	if hp_bar:
 		hp_bar.max_value = maximum
 		hp_bar.value = current
+
+
+func _update_mana_ui(current: float, maximum: float) -> void:
+	if mana_bar:
+		mana_bar.max_value = maximum
+		mana_bar.value = current
 
 
 func _update_exp_ui(current: float, maximum: float) -> void:

@@ -6,8 +6,11 @@
 script = ExtResource("1_combo")
 combo_id = &"earthquake"
 display_name = "Erdbeben"
+code_command = "combo unten attacke oben attacke"
+description = "Ein kurzer Bodenschlag trifft alle damageable Ziele je ein Tile über und unter dem Spieler. Kostet 20 Mana."
 input_sequence = PackedStringArray("walkDown", "attack", "walkUp", "attack")
 target_directions = PackedStringArray("walkUp", "walkDown")
 damage_multiplier = 1.1
+mana_cost = 20.0
 visual_effect = &"earthquake"
 effect_duration = 0.5

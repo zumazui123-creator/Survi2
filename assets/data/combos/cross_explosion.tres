@@ -6,8 +6,11 @@
 script = ExtResource("1_combo")
 combo_id = &"cross_explosion"
 display_name = "Kreuzexplosion"
+code_command = "combo oben attacke unten attacke links attacke rechts attacke"
+description = "Ein sehr kurzer, starker Burst trifft alle vier direkt benachbarten Tiles. Kostet 50 Mana."
 input_sequence = PackedStringArray("walkUp", "attack", "walkDown", "attack", "walkLeft", "attack", "walkRight", "attack")
 target_directions = PackedStringArray("walkUp", "walkDown", "walkLeft", "walkRight")
 damage_multiplier = 2.0
+mana_cost = 50.0
 visual_effect = &"cross_explosion"
 effect_duration = 0.18

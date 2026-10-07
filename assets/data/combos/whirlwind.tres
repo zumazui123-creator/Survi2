@@ -6,9 +6,12 @@
 script = ExtResource("1_combo")
 combo_id = &"whirlwind"
 display_name = "Wirbelsturm"
+code_command = "combo links attacke rechts attacke oben attacke unten attacke"
+description = "Ein längerer rotierender Angriff trifft alle vier Nachbartiles dreimal mit schwächeren Schadenspulsen. Kostet 65 Mana."
 input_sequence = PackedStringArray("walkLeft", "attack", "walkRight", "attack", "walkUp", "attack", "walkDown", "attack")
 target_directions = PackedStringArray("walkLeft", "walkRight", "walkUp", "walkDown")
 damage_multiplier = 0.75
+mana_cost = 65.0
 damage_pulse_count = 3
 damage_pulse_interval = 0.35
 visual_effect = &"whirlwind"

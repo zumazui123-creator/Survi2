@@ -14,7 +14,12 @@ const CHANNEL_ANIMAL: int = 5
 const CHANNEL_ENEMY: int = 6
 const CHANNEL_GOAL: int = 7
 const CHANNEL_COUNT: int = 8
-const STAT_COUNT: int = 3
+## Observation stats are normalized to [0, 1] in this stable order.
+const STAT_HP: int = 0
+const STAT_HYDRATION: int = 1
+const STAT_FOOD: int = 2
+const STAT_MANA: int = 3
+const STAT_COUNT: int = 4
 const MAX_INVENTORY_ITEM_COUNT: float = 999.0
 
 const GROUP_OBJECT: StringName = &"sensor_object"
@@ -307,12 +312,13 @@ func _mark_tree_data(local_map: PackedByteArray, origin_tile: Vector2i) -> void:
 
 
 func _scan_stats() -> PackedFloat32Array:
-	var result: PackedFloat32Array = PackedFloat32Array([0.0, 0.0, 0.0])
+	var result: PackedFloat32Array = PackedFloat32Array([0.0, 0.0, 0.0, 0.0])
 	if not is_instance_valid(stats):
 		return result
-	result[0] = clampf(stats.hp / maxf(stats.max_hp, 1.0), 0.0, 1.0)
-	result[1] = clampf(stats.hydration / 100.0, 0.0, 1.0)
-	result[2] = clampf(stats.food / 100.0, 0.0, 1.0)
+	result[STAT_HP] = clampf(stats.hp / maxf(stats.max_hp, 1.0), 0.0, 1.0)
+	result[STAT_HYDRATION] = clampf(stats.hydration / 100.0, 0.0, 1.0)
+	result[STAT_FOOD] = clampf(stats.food / 100.0, 0.0, 1.0)
+	result[STAT_MANA] = clampf(stats.mana / maxf(stats.max_mana, 1.0), 0.0, 1.0)
 	return result
 
 

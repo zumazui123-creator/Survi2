@@ -3,12 +3,21 @@ class_name ComboDefinition
 
 @export var combo_id: StringName
 @export var display_name: String
+
+@export_group("Code UI")
+## The localized command inserted into the Player code editor.
+@export_multiline var code_command: String
+## A concise, player-facing explanation of the combo's effect.
+@export_multiline var description: String
+
+@export_group("Execution")
 @export var input_sequence: PackedStringArray = PackedStringArray()
 @export var target_directions: PackedStringArray = PackedStringArray()
 ## Optional damage pulse count for each matching target direction.  Values align
 ## with target_directions; omitted values use one pulse.
 @export var target_hit_counts: PackedInt32Array = PackedInt32Array()
 @export_range(0.0, 100.0, 0.1) var damage_multiplier: float = 1.0
+@export_range(0.0, 1000.0, 1.0) var mana_cost: float = 0.0
 @export_range(1, 10, 1) var damage_pulse_count: int = 1
 @export_range(0.0, 5.0, 0.01) var damage_pulse_interval: float = 0.0
 @export var visual_effect: StringName

@@ -4,6 +4,7 @@ class_name PlayerComboController
 @export_group("References")
 @export var player: CharacterBody2D
 @export var combat: PlayerCombat
+@export var stats: PlayerStats
 @export var effects: PlayerComboEffects
 
 @export_group("Definitions")
@@ -12,24 +13,55 @@ class_name PlayerComboController
 @onready var world_map: Map = get_tree().get_first_node_in_group("world_map") as Map
 
 
+func _ready() -> void:
+	# This component is server-owned even though the Player node itself belongs to
+	# its controlling peer. It lets the server authoritatively broadcast effects.
+	set_multiplayer_authority(1, false)
+
+
 func try_execute_combo(sequence: PackedStringArray) -> bool:
 	var definition: ComboDefinition = _find_combo(sequence)
 	if definition == null:
 		return false
-	execute_combo.rpc(definition.combo_id)
+	if multiplayer.is_server():
+		_execute_authorized_combo(definition)
+	else:
+		request_combo.rpc_id(1, definition.combo_id)
 	return true
 
 
-@rpc("any_peer", "call_local", "reliable")
-func execute_combo(combo_id: StringName) -> void:
-	if multiplayer.is_server() and not _is_authorized_sender():
+func get_code_commands() -> PackedStringArray:
+	var code_commands: PackedStringArray = PackedStringArray()
+	for definition: ComboDefinition in combo_definitions:
+		if definition == null or definition.code_command.is_empty():
+			continue
+		code_commands.append(definition.code_command)
+	return code_commands
+
+
+@rpc("any_peer", "reliable")
+func request_combo(combo_id: StringName) -> void:
+	if not multiplayer.is_server() or not _is_authorized_sender():
 		return
 	var definition: ComboDefinition = _find_combo_by_id(combo_id)
 	if definition == null:
 		return
+	_execute_authorized_combo(definition)
+
+
+func _execute_authorized_combo(definition: ComboDefinition) -> void:
+	if not is_instance_valid(stats) or not stats.try_consume_mana(definition.mana_cost):
+		return
+	_apply_damage(definition)
+	play_combo_effect.rpc(definition.combo_id)
+
+
+@rpc("authority", "call_local", "reliable")
+func play_combo_effect(combo_id: StringName) -> void:
+	var definition: ComboDefinition = _find_combo_by_id(combo_id)
+	if definition == null:
+		return
 	var directions: Array[Vector2i] = _get_target_directions(definition)
-	if multiplayer.is_server():
-		_apply_damage(definition)
 	if is_instance_valid(effects):
 		effects.play_effect(definition.visual_effect, directions, definition.effect_duration)
 

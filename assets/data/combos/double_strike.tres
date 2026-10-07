@@ -6,9 +6,12 @@
 script = ExtResource("1_combo")
 combo_id = &"double_strike"
 display_name = "Doppelschlag"
+code_command = "combo links attacke links attacke rechts attacke"
+description = "Trifft das linke Nachbartile zweimal und das rechte Nachbartile einmal. Kostet 30 Mana."
 input_sequence = PackedStringArray("walkLeft", "attack", "walkLeft", "attack", "walkRight", "attack")
 target_directions = PackedStringArray("walkLeft", "walkRight")
 target_hit_counts = PackedInt32Array(2, 1)
 damage_multiplier = 1.0
+mana_cost = 30.0
 visual_effect = &"double_strike"
 effect_duration = 0.34
