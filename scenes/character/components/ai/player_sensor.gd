@@ -157,6 +157,57 @@ func is_ready_to_scan() -> bool:
 		and is_instance_valid(world_map.tile_map)
 
 
+## Evaluates one adjacent code-editor condition through the same TileMap-based data
+## that is exported in scan().
+func matches_code_condition(subject: StringName, direction_action: StringName) -> bool:
+	if not is_ready_to_scan() or not Strings.direction_map.has(String(direction_action)):
+		return false
+
+	var direction: Vector2i = Strings.direction_map[String(direction_action)]
+	var target_tile: Vector2i = get_origin_tile() + direction
+	if subject == Strings.CONDITION_FREE:
+		return world_map.is_navigation_tile_walkable(target_tile, true, player.get_instance_id())
+
+	var channel: int = _get_code_condition_channel(subject)
+	if channel < 0:
+		return false
+
+	var observation: Dictionary = scan()
+	var local_map: PackedByteArray = observation["local_map"]
+	return _has_channel_at_offset(local_map, channel, direction)
+
+
+func _get_code_condition_channel(subject: StringName) -> int:
+	match subject:
+		Strings.CONDITION_OBJECT:
+			return CHANNEL_OBJECT
+		Strings.CONDITION_ITEM:
+			return CHANNEL_ITEM
+		Strings.CONDITION_ANIMAL:
+			return CHANNEL_ANIMAL
+		Strings.CONDITION_ENEMY:
+			return CHANNEL_ENEMY
+		Strings.CONDITION_WATER:
+			return CHANNEL_WATER
+		Strings.CONDITION_GOAL:
+			return CHANNEL_GOAL
+	return -1
+
+
+func _has_channel_at_offset(
+		local_map: PackedByteArray,
+		channel: int,
+		relative_tile: Vector2i
+	) -> bool:
+	if channel < 0 or channel >= CHANNEL_COUNT or not _is_visible_offset(relative_tile):
+		return false
+	var side: int = get_map_side_length()
+	var local_x: int = relative_tile.x + scan_radius_tiles
+	var local_y: int = relative_tile.y + scan_radius_tiles
+	var index: int = channel * side * side + local_y * side + local_x
+	return index >= 0 and index < local_map.size() and local_map[index] != 0
+
+
 func _create_empty_observation() -> Dictionary:
 	var local_map: PackedByteArray = PackedByteArray()
 	local_map.resize(get_local_map_value_count())

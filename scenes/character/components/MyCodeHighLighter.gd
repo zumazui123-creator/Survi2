@@ -4,25 +4,25 @@ class_name MyCodeHighLighter
 # ------------------------------
 # Keyword-Gruppen
 # ------------------------------
-const MOVEMENT_KEYWORDS := [
+const MOVEMENT_KEYWORDS: Array[String] = [
 	"oben", "rechts", "unten", "links", "attacke", "sage"
 ]
 
-const LOOP_KEYWORDS := [
-	"wiederhole", "mal", "ende", "nutze", "item"
+const LOOP_KEYWORDS: Array[String] = [
+	"wiederhole", "mal", "ende", "wenn", "gegner", "tier", "item", "objekt", "wasser", "frei", "ziel", "nutze"
 ]
 
-const FUNC_KEYWORDS := [
+const FUNC_KEYWORDS: Array[String] = [
 	
 ]
 
 # Farbe für Zahlen
-const NUMBER_COLOR := Color(1.0, 0.5, 0.0) # Orange
+const NUMBER_COLOR: Color = Color(1.0, 0.5, 0.0) # Orange
 
 func setup_custom_highlighter(code_edit: CodeEdit) -> void:
 	assert(code_edit != null, "code_edit darf nicht null sein.")
 
-	var highlighter = code_edit.syntax_highlighter
+	var highlighter: CodeHighlighter = code_edit.syntax_highlighter
 	if highlighter == null:
 		push_error("CodeEdit hat keinen syntax_highlighter. Setze zuerst einen CodeHighlighter im Inspector oder via Script.")
 		return
@@ -47,8 +47,8 @@ func _clear_existing_highlight_rules(highlighter: CodeHighlighter) -> void:
 	highlighter.update_cache()
 
 func _apply_keywords(highlighter: CodeHighlighter, keywords: Array, color: Color) -> void:
-	var trimmed = ""
-	for keyword in keywords:
+	var trimmed: String = ""
+	for keyword: String in keywords:
 		trimmed = keyword.strip_edges()
 		if trimmed == "":
 			continue

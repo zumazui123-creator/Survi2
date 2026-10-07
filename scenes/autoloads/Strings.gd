@@ -71,7 +71,38 @@ const KEYWORD_END = "ende"
 const KEYWORD_END_FUNC = "end_func"
 const KEYWORD_REPEAT = "wiederhole 3 mal"
 const KEYWORD_REPEAT_FULL = "wiederhole 3 mal\n\nende"
+const KEYWORD_IF = "wenn"
+const KEYWORD_IF_FULL = "wenn gegner rechts\n\nende"
 const KEYWORD_USE_ITEM = "nutze item 3"
+
+const CONDITION_ENEMY: StringName = &"enemy"
+const CONDITION_ANIMAL: StringName = &"animal"
+const CONDITION_ITEM: StringName = &"item"
+const CONDITION_OBJECT: StringName = &"object"
+const CONDITION_WATER: StringName = &"water"
+const CONDITION_FREE: StringName = &"free"
+const CONDITION_GOAL: StringName = &"goal"
+
+const CONDITION_NAMES: Dictionary = {
+	"de": {
+		"gegner": CONDITION_ENEMY,
+		"tier": CONDITION_ANIMAL,
+		"item": CONDITION_ITEM,
+		"objekt": CONDITION_OBJECT,
+		"wasser": CONDITION_WATER,
+		"frei": CONDITION_FREE,
+		"ziel": CONDITION_GOAL,
+	},
+	"en": {
+		"enemy": CONDITION_ENEMY,
+		"animal": CONDITION_ANIMAL,
+		"item": CONDITION_ITEM,
+		"object": CONDITION_OBJECT,
+		"water": CONDITION_WATER,
+		"free": CONDITION_FREE,
+		"goal": CONDITION_GOAL,
+	},
+}
 
 # --- Network Commands ---
 # Sent from Godot to Python
@@ -131,6 +162,14 @@ func remap_code_cmd_to_action(lang:String, line : String) -> String:
 		if line == action or line.begins_with(action + " "):
 			return Strings.ACTION_NAMES[lang][action] + line.substr(action.length())
 	return ""
+
+
+func translate_condition_name(lang: String, value: String) -> StringName:
+	var condition_names: Dictionary = CONDITION_NAMES.get(lang, {})
+	var normalized_value: String = value.strip_edges().to_lower()
+	if not condition_names.has(normalized_value):
+		return &""
+	return StringName(condition_names[normalized_value])
 
 	# var code_cmd = sperated_line
 	# var parameter = "" inp_action.trim_prefix(Strings.ACTION_USE_ITEM).strip_edges()Z

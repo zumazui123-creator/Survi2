@@ -79,6 +79,7 @@ func _refresh_function_lists() -> void:
 	item_list.clear()
 	function_list.clear()
 	item_list.add_item(Strings.KEYWORD_REPEAT)
+	item_list.add_item(Strings.KEYWORD_IF)
 	item_list.add_item(Strings.KEYWORD_USE_ITEM)
 	if not is_instance_valid(function_library):
 		return
@@ -123,6 +124,8 @@ func _on_item_list_item_activated(index: int) -> void:
 	var item_text: String = item_list.get_item_text(index)
 	if item_text == Strings.KEYWORD_REPEAT:
 		item_text = Strings.KEYWORD_REPEAT_FULL
+	elif item_text == Strings.KEYWORD_IF:
+		item_text = Strings.KEYWORD_IF_FULL
 	code_edit.insert_text_at_caret(item_text + "\n")
 
 

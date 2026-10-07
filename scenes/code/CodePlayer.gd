@@ -10,8 +10,9 @@ signal runtime_error(message: String)
 @export var player: CharacterBody2D
 @export var code_particles: CPUParticles2D
 
-var is_running := false
-var _execution_id := 0
+var is_running: bool = false
+var _execution_id: int = 0
+var _executed_command_count: int = 0
 var _parser: CodeParser = CodeParser.new()
 
 
@@ -34,8 +35,8 @@ func play(code: String, functions: Dictionary = {}) -> void:
 		cancel()
 
 	_execution_id += 1
-	var current_execution_id := _execution_id
-	var parse_result := _parser.parse(code, functions, Strings.current_locale)
+	var current_execution_id: int = _execution_id
+	var parse_result: CodeParser.ParseResult = _parser.parse(code, functions, Strings.current_locale)
 	if parse_result.has_error():
 		_report_error(parse_result.error_message)
 		return
@@ -44,25 +45,51 @@ func play(code: String, functions: Dictionary = {}) -> void:
 		return
 
 	is_running = true
-	execution_started.emit(parse_result.commands.size())
-	_apply_execution_effects(parse_result.commands.size())
+	_executed_command_count = 0
+	var maximum_command_count: int = parse_result.get_max_command_count()
+	execution_started.emit(maximum_command_count)
+	_apply_execution_effects(maximum_command_count)
 
-	for command_index in range(parse_result.commands.size()):
+	for node: CodeParser.ParsedNode in parse_result.commands:
 		if not _is_current_execution(current_execution_id):
 			return
-
-		var parsed_command: CodeParser.ParsedCommand = parse_result.commands[command_index]
-		command_started.emit(command_index, parsed_command.source_text)
-		await execute_command(parsed_command, current_execution_id)
+		await execute_node(node, current_execution_id)
 
 	_finish_execution(current_execution_id)
+
+
+func execute_node(node: CodeParser.ParsedNode, execution_id: int) -> void:
+	if node == null or not _is_current_execution(execution_id):
+		return
+
+	if node is CodeParser.ParsedCommand:
+		var command: CodeParser.ParsedCommand = node as CodeParser.ParsedCommand
+		command_started.emit(_executed_command_count, command.source_text)
+		_executed_command_count += 1
+		await execute_command(command, execution_id)
+		return
+
+	if node is CodeParser.ConditionalBlock:
+		var conditional_block: CodeParser.ConditionalBlock = node as CodeParser.ConditionalBlock
+		if not _matches_condition(conditional_block.condition):
+			return
+		for child: CodeParser.ParsedNode in conditional_block.body:
+			if not _is_current_execution(execution_id):
+				return
+			await execute_node(child, execution_id)
+
+
+func _matches_condition(condition: CodeParser.CodeCondition) -> bool:
+	if condition == null or not is_instance_valid(player) or not is_instance_valid(player.sensor):
+		return false
+	return player.sensor.matches_code_condition(condition.subject, condition.direction_action)
 
 
 func execute_command(command: CodeParser.ParsedCommand, execution_id: int) -> void:
 	if command == null or not _is_current_execution(execution_id):
 		return
 
-	var action := String(command.action)
+	var action: String = String(command.action)
 	if action in [Strings.ACTION_WALK_LEFT, Strings.ACTION_WALK_RIGHT, Strings.ACTION_WALK_UP, Strings.ACTION_WALK_DOWN]:
 		await walk(action, command.arguments, execution_id)
 	elif action == Strings.ACTION_ATTACK:
@@ -83,8 +110,8 @@ func build(action: String, arguments: PackedStringArray) -> void:
 		_report_error("Dem Bau-Befehl fehlen Argumente.")
 		return
 
-	var building_type := arguments[0]
-	var direction_action := arguments[1]
+	var building_type: String = arguments[0]
+	var direction_action: String = arguments[1]
 	if not Strings.direction_map.has(direction_action):
 		_report_error("Unbekannte Richtung: " + direction_action)
 		return
@@ -101,11 +128,11 @@ func build(action: String, arguments: PackedStringArray) -> void:
 
 
 func walk(action: String, arguments: PackedStringArray, execution_id: int) -> void:
-	var count := 1
+	var count: int = 1
 	if not arguments.is_empty():
 		count = arguments[0].to_int()
 
-	for _step in range(count):
+	for step_index: int in range(count):
 		if not _is_current_execution(execution_id):
 			return
 		var step_succeeded: bool = await move_step(action, execution_id)
