@@ -8,7 +8,7 @@ var placed_buildings : Dictionary[Vector2i, Node] = {}
 func place_building(building_scene: PackedScene, tile_pos: Vector2i) -> bool:
 	if not multiplayer.is_server():
 		return false
-	var building := building_scene.instantiate() as NavigationBuilding
+	var building: NavigationBuilding = building_scene.instantiate() as NavigationBuilding
 	if building == null:
 		push_warning("Building scene must use NavigationBuilding")
 		return false
@@ -19,9 +19,9 @@ func place_building(building_scene: PackedScene, tile_pos: Vector2i) -> bool:
 			print("Cannot place a building at ", tile_pos)
 			building.free()
 			return false
-	self.add_child(building,true)
-	
-	building.objectId = "rock1"
+	self.add_child(building, true)
+	if building.objectId.is_empty():
+		building.objectId = "rock1"
 	building.global_position = world_map.navigation_tile_to_world(tile_pos)
 	building.spawner = self
 	building.register_navigation_blockers(occupied_tiles)

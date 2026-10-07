@@ -137,7 +137,7 @@ _spawnable_scenes = PackedStringArray("uid://dagsu16arm3mv")
 spawn_path = NodePath("../Objects")
 
 [node name="BuildingSpawner" type="MultiplayerSpawner" parent="." unique_id=1419203123]
-_spawnable_scenes = PackedStringArray("uid://c5vhr2saulowe")
+_spawnable_scenes = PackedStringArray("uid://c5vhr2saulowe", "res://scenes/spawn/buildings/defense_tower.tscn")
 spawn_path = NodePath("../Buildings")
 
 [node name="PickupSpawner" type="MultiplayerSpawner" parent="." unique_id=406642788]

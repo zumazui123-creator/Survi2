@@ -51,6 +51,7 @@ const OBJECT_DEFINITIONS: Array[WorldObjectDefinition] = [
 	preload("res://assets/data/world_objects/crystal_1.tres"),
 	preload("res://assets/data/world_objects/magic_tree_1.tres"),
 	preload("res://assets/data/world_objects/magic_rock_1.tres"),
+	preload("res://assets/data/world_objects/defense_tower.tres"),
 ]
 
 const PROJECTILE_DEFINITIONS: Array[ProjectileDefinition] = [
@@ -84,7 +85,7 @@ func _init() -> void:
 
 func _build_indexes() -> void:
 	for definition in ITEM_DEFINITIONS:
-		var id := String(definition.item_id)
+		var id: String = String(definition.item_id)
 		item_definitions[id] = definition
 		match definition.kind:
 			ItemDefinition.Kind.CONSUMABLE:
@@ -95,22 +96,22 @@ func _build_indexes() -> void:
 			recipes[id] = definition.recipe.duplicate(true)
 
 	for definition in ENEMY_DEFINITIONS:
-		var id := String(definition.actor_id)
+		var id: String = String(definition.actor_id)
 		actor_definitions[id] = definition
 		mobs[id] = definition.to_legacy_dict()
 
 	for definition in ANIMAL_DEFINITIONS:
-		var id := String(definition.actor_id)
+		var id: String = String(definition.actor_id)
 		actor_definitions[id] = definition
 		animals[id] = definition.to_legacy_dict()
 
 	for definition in OBJECT_DEFINITIONS:
-		var id := String(definition.object_id)
+		var id: String = String(definition.object_id)
 		object_definitions[id] = definition
 		objects[id] = definition.to_legacy_dict()
 
 	for definition in PROJECTILE_DEFINITIONS:
-		var id := String(definition.projectile_id)
+		var id: String = String(definition.projectile_id)
 		projectile_definitions[id] = definition
 		projectiles[id] = definition.to_legacy_dict()
 

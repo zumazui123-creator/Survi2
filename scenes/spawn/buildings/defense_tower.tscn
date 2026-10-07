@@ -1,0 +1,145 @@
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://scenes/spawn/buildings/defense_tower.gd" id="1_tower"]
+[ext_resource type="Texture2D" path="res://assets/objects/rock1.png" id="2_texture"]
+[ext_resource type="Script" path="res://scenes/navigation/navigation_blocker.gd" id="3_navigation"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_tower"]
+radius = 27.0
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_tower"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+properties/1/path = NodePath("AnimationPlayer:current_animation")
+properties/1/spawn = true
+properties/1/replication_mode = 2
+properties/2/path = NodePath(".:objectId")
+properties/2/spawn = true
+properties/2/replication_mode = 2
+properties/3/path = NodePath("MovingParts:rotation")
+properties/3/spawn = true
+properties/3/replication_mode = 2
+
+[sub_resource type="Animation" id="Animation_break"]
+resource_name = "break"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(0.7, 0.7), Vector2(0.05, 0.05)]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.4),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"breakObject"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_shake"]
+resource_name = "shake"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite:offset")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(3, -1), Vector2(-3, 1), Vector2(0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_spawn"]
+resource_name = "spawn"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0.05, 0.05), Vector2(0.8, 0.8), Vector2(0.7, 0.7)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_tower"]
+_data = {
+&"break": SubResource("Animation_break"),
+&"shake": SubResource("Animation_shake"),
+&"spawn": SubResource("Animation_spawn")
+}
+
+[sub_resource type="Curve" id="Curve_particles"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[node name="DefenseTower" type="StaticBody2D" groups=["damageable", "sensor_object"]]
+collision_layer = 3
+script = ExtResource("1_tower")
+objectId = "defense_tower"
+
+[node name="Sprite" type="Sprite2D" parent="."]
+scale = Vector2(0.7, 0.7)
+texture = ExtResource("2_texture")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_tower")
+
+[node name="MovingParts" type="Node2D" parent="."]
+
+[node name="Barrel" type="Line2D" parent="MovingParts"]
+points = PackedVector2Array(0, 0, 34, 0)
+width = 7.0
+default_color = Color(0.18, 0.2, 0.24, 1)
+
+[node name="Head" type="Polygon2D" parent="MovingParts"]
+polygon = PackedVector2Array(-13, -10, 9, -10, 15, 0, 9, 10, -13, 10, -17, 0)
+color = Color(0.34, 0.38, 0.45, 1)
+
+[node name="NavigationBlocker" type="Node" parent="."]
+script = ExtResource("3_navigation")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_tower")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries/ = SubResource("AnimationLibrary_tower")
+autoplay = &"spawn"
+
+[node name="hitParticle" type="CPUParticles2D" parent="."]
+emitting = false
+lifetime = 0.5
+one_shot = true
+explosiveness = 1.0
+emission_shape = 1
+emission_sphere_radius = 24.0
+initial_velocity_min = 35.0
+initial_velocity_max = 120.0
+scale_amount_max = 2.5
+scale_amount_curve = SubResource("Curve_particles")
+color = Color(0.45, 0.5, 0.58, 1)
+
+[node name="AttackCooldown" type="Timer" parent="."]
+wait_time = 1.25
+one_shot = true

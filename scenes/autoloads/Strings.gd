@@ -50,13 +50,16 @@ const ACTION_NAMES = {
 
 
 const BUILDING_WALL = "wall"
+const BUILDING_TOWER = "tower"
 const BUILDING_NAMES = {
 	"de": {
 		"mauer":  BUILDING_WALL,
+		"turm":   BUILDING_TOWER,
 
 	},
 	"en": {
 		"wall":   BUILDING_WALL,
+		"tower":  BUILDING_TOWER,
 
 	}
 }
