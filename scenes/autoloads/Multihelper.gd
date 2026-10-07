@@ -86,7 +86,7 @@ func _on_player_connected(id):
 	print("player connected with id "+str(id)+" to "+str(multiplayer.get_unique_id()))
 
 @rpc("call_local" ,"any_peer", "reliable")
-func _register_character(new_player_info, requested_id := 0):
+func _register_character(new_player_info, requested_id: int = 0):
 	print("player register:"+str(new_player_info))
 	var new_player_id = multiplayer.get_remote_sender_id()
 	if new_player_id == 0:
@@ -129,7 +129,7 @@ func player_loaded():
 	var sender_id = multiplayer.get_remote_sender_id()
 	print("remote sender:"+str(sender_id))
 	main = get_tree().get_first_node_in_group("world_root")
-	var mapData := {
+	var mapData: Dictionary = {
 		"seed": mapSeed,
 		"level": level,
 	}
@@ -186,7 +186,10 @@ func requestSpawn(playerName, id, characterFile):
 @rpc("any_peer", "call_local", "reliable")
 func addPlayer(playerName, id, characterFile):
 	print("addPlayer: "+str(characterFile))
-	var newPlayer 		:= playerScenePath.instantiate()
+	var newPlayer: Survi2Player = playerScenePath.instantiate() as Survi2Player
+	if not is_instance_valid(newPlayer):
+		push_error("Multihelper: player scene did not instantiate Survi2Player")
+		return
 	newPlayer.playerName = playerName
 	newPlayer.characterFile = characterFile
 	newPlayer.name = str(id)
@@ -219,8 +222,8 @@ func spawnPlayer(newPlayer):
 			spawnPosition = player1.movement.current_map_position
 		else:
 			spawnPosition = map.spawnable_tiles.pick_random()
-	if is_instance_valid(newPlayer.workTaskText):
-		newPlayer.workTaskText.text = workTask.getWorkTask(self.level)
+	if newPlayer.has_method("set_work_task_text"):
+		newPlayer.set_work_task_text(String(workTask.getWorkTask(self.level)))
 	newPlayer.sendPos.rpc(map.tile_map.map_to_local( spawnPosition ))
 
 #func rebornPlayer(playerId : String):
@@ -233,7 +236,7 @@ func spawnPlayer(newPlayer):
 @rpc("any_peer", "call_remote", "reliable") #Server maybe copy method showSpawnUI and make 2 ways local and remote
 func showSpawnUI():
 	print("showSpawnUI")
-	var spawnPlayerScene := preload("res://scenes/ui/spawn/spawnPlayer.tscn")
+	var spawnPlayerScene: PackedScene = preload("res://scenes/ui/spawn/spawnPlayer.tscn")
 	var retry 	  = spawnPlayerScene.instantiate()
 	retry.retry   = true
 	retry.visible = true

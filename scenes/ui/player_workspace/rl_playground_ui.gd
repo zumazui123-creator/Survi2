@@ -4,16 +4,17 @@ class_name RLPlaygroundUI
 var agent: RLAgent
 var trainer: RLTrainer
 var environment: Survi2NavigationEnv
-var sensor: PlayerSensor
-var _episode_reward: float = 0.0
+var _run_reward: float = 0.0
 var _last_terminated: bool = false
 var _last_truncated: bool = false
 var _requested_run_status: String = "Agent läuft"
 var _parameter_controls: Dictionary = {}
+var _available_agents: Array[RLAgent] = []
 
 @onready var description_label: Label = %AgentDescription
 @onready var ai_status_label: Label = %AIStatusValue
 @onready var environment_status_label: Label = %EnvironmentStatusValue
+@onready var rollout_progress_label: Label = %RolloutProgressValue
 @onready var algorithm_label: Label = %AlgorithmValue
 @onready var episode_steps_label: Label = %EpisodeStepsValue
 @onready var episode_reward_label: Label = %EpisodeRewardValue
@@ -22,10 +23,9 @@ var _parameter_controls: Dictionary = {}
 @onready var agent_metrics_title: Label = %AgentMetricsTitle
 @onready var agent_metrics_grid: GridContainer = %AgentMetricsGrid
 @onready var max_steps_input: SpinBox = %MaxStepsInput
+@onready var rollout_count_input: SpinBox = %RolloutCountInput
+@onready var agent_selector: OptionButton = %AgentSelector
 @onready var agent_settings_grid: GridContainer = %AgentSettingsGrid
-@onready var sensor_visualization_toggle: CheckButton = %SensorVisualizationToggle
-@onready var sensor_radius_input: SpinBox = %SensorRadiusInput
-@onready var reward_policy_editor: NavigationRewardPolicyEditor = %RewardSettingsPanel
 @onready var start_training_button: Button = %StartTrainingButton
 @onready var random_policy_button: Button = %RandomPolicyButton
 @onready var stop_training_button: Button = %StopTrainingButton
@@ -41,13 +41,11 @@ func bind_components(
 	agent = value_agent
 	trainer = value_trainer
 	environment = value_environment
-	sensor = environment.sensor if is_instance_valid(environment) else null
-	_sync_sensor_controls()
 
 	if not _has_valid_components():
+		_rebuild_agent_selector()
 		_set_ai_status("Nicht verfügbar")
 		environment_status_label.text = "Player-AI ist nicht vollständig verbunden"
-		reward_policy_editor.bind_policy(null)
 		_set_controls_enabled(false)
 		return
 
@@ -56,10 +54,11 @@ func bind_components(
 		_set_controls_enabled(false)
 		return
 	_connect_components()
-	reward_policy_editor.bind_policy(environment.reward_policy)
+	_rebuild_agent_selector()
 	algorithm_label.text = agent.get_algorithm_name()
 	description_label.text = "%s auf dem TileMap-Environment" % agent.get_algorithm_name()
 	max_steps_input.value = float(environment.max_steps)
+	rollout_count_input.value = float(trainer.rollout_count)
 	_build_agent_parameter_editor()
 	_refresh_metrics()
 	_set_ai_status("Bereit")
@@ -83,13 +82,12 @@ func _connect_components() -> void:
 		trainer.training_failed.connect(_on_training_failed)
 	if not trainer.agent_changed.is_connected(_on_trainer_agent_changed):
 		trainer.agent_changed.connect(_on_trainer_agent_changed)
+	if not trainer.rollout_started.is_connected(_on_rollout_started):
+		trainer.rollout_started.connect(_on_rollout_started)
+	if not trainer.rollout_finished.is_connected(_on_rollout_finished):
+		trainer.rollout_finished.connect(_on_rollout_finished)
 	if not environment.step_completed.is_connected(_on_step_completed):
 		environment.step_completed.connect(_on_step_completed)
-	if is_instance_valid(sensor):
-		if not sensor.radius_changed.is_connected(_on_bound_sensor_radius_changed):
-			sensor.radius_changed.connect(_on_bound_sensor_radius_changed)
-		if not sensor.visualization_changed.is_connected(_on_bound_sensor_visualization_changed):
-			sensor.visualization_changed.connect(_on_bound_sensor_visualization_changed)
 	if not agent.configuration_changed.is_connected(_on_agent_configuration_changed):
 		agent.configuration_changed.connect(_on_agent_configuration_changed)
 	if not agent.model_changed.is_connected(_on_agent_model_changed):
@@ -108,13 +106,12 @@ func _disconnect_components() -> void:
 			trainer.training_failed.disconnect(_on_training_failed)
 		if trainer.agent_changed.is_connected(_on_trainer_agent_changed):
 			trainer.agent_changed.disconnect(_on_trainer_agent_changed)
+		if trainer.rollout_started.is_connected(_on_rollout_started):
+			trainer.rollout_started.disconnect(_on_rollout_started)
+		if trainer.rollout_finished.is_connected(_on_rollout_finished):
+			trainer.rollout_finished.disconnect(_on_rollout_finished)
 	if is_instance_valid(environment) and environment.step_completed.is_connected(_on_step_completed):
 		environment.step_completed.disconnect(_on_step_completed)
-	if is_instance_valid(sensor):
-		if sensor.radius_changed.is_connected(_on_bound_sensor_radius_changed):
-			sensor.radius_changed.disconnect(_on_bound_sensor_radius_changed)
-		if sensor.visualization_changed.is_connected(_on_bound_sensor_visualization_changed):
-			sensor.visualization_changed.disconnect(_on_bound_sensor_visualization_changed)
 	if is_instance_valid(agent):
 		if agent.configuration_changed.is_connected(_on_agent_configuration_changed):
 			agent.configuration_changed.disconnect(_on_agent_configuration_changed)
@@ -135,6 +132,7 @@ func _on_trainer_agent_changed(value: RLAgent) -> void:
 	agent.model_changed.connect(_on_agent_model_changed)
 	algorithm_label.text = agent.get_algorithm_name()
 	description_label.text = "%s auf dem TileMap-Environment" % agent.get_algorithm_name()
+	_rebuild_agent_selector()
 	_build_agent_parameter_editor()
 	_refresh_metrics()
 	_refresh_controls()
@@ -153,6 +151,34 @@ func _build_agent_parameter_editor() -> void:
 
 	for definition: Dictionary in definitions:
 		_add_agent_parameter(definition)
+
+
+func _rebuild_agent_selector() -> void:
+	_available_agents.clear()
+	agent_selector.clear()
+	if is_instance_valid(trainer):
+		_available_agents = trainer.get_available_agents()
+	for available_agent: RLAgent in _available_agents:
+		agent_selector.add_item(available_agent.get_algorithm_name())
+	_select_active_agent_in_ui()
+
+
+func _select_active_agent_in_ui() -> void:
+	var selected_index: int = _available_agents.find(agent)
+	if selected_index >= 0:
+		agent_selector.select(selected_index)
+
+
+func _on_agent_selected(index: int) -> void:
+	if index < 0 or index >= _available_agents.size() \
+			or not is_instance_valid(trainer) or trainer.training:
+		_select_active_agent_in_ui()
+		return
+	var selected_agent: RLAgent = _available_agents[index]
+	if selected_agent == agent:
+		return
+	if not trainer.set_agent(selected_agent):
+		_select_active_agent_in_ui()
 
 
 func _add_agent_parameter(definition: Dictionary) -> void:
@@ -238,7 +264,8 @@ func _refresh_metrics() -> void:
 	if not _has_valid_components():
 		return
 	episode_steps_label.text = "%d / %d" % [environment.step_count, environment.max_steps]
-	episode_reward_label.text = "%.3f" % _episode_reward
+	episode_reward_label.text = "%.3f" % _run_reward
+	rollout_progress_label.text = "%d / %d" % [trainer.current_rollout, trainer.rollout_count]
 	model_summary_label.text = agent.get_model_summary()
 	environment_status_label.text = _environment_state_text()
 	_render_agent_metrics()
@@ -249,13 +276,15 @@ func _refresh_controls() -> void:
 		_set_controls_enabled(false)
 		return
 	var is_training: bool = trainer.training
-	var can_start: bool = not is_training and environment.state == Env.State.READY
+	var can_start: bool = not is_training and not environment.has_terminated() and (
+		environment.state == Env.State.READY or environment.can_continue_after_truncation()
+	)
 	start_training_button.disabled = not can_start
 	random_policy_button.disabled = not can_start
 	stop_training_button.disabled = not is_training
 	reset_agent_button.disabled = is_training
+	agent_selector.disabled = is_training or _available_agents.size() < 2
 	_set_inputs_editable(can_start)
-	_refresh_sensor_controls()
 
 
 func _set_controls_enabled(value: bool) -> void:
@@ -263,65 +292,28 @@ func _set_controls_enabled(value: bool) -> void:
 	random_policy_button.disabled = not value
 	stop_training_button.disabled = true
 	reset_agent_button.disabled = not value
+	agent_selector.disabled = not value or _available_agents.size() < 2
 	_set_inputs_editable(value)
-	_refresh_sensor_controls()
 
 
 func _set_inputs_editable(value: bool) -> void:
 	max_steps_input.editable = value
+	rollout_count_input.editable = value
 	for control_value: Variant in _parameter_controls.values():
 		var control: Control = control_value as Control
 		if control is SpinBox:
 			(control as SpinBox).editable = value
 		elif control is CheckBox:
 			(control as CheckBox).disabled = not value
-	reward_policy_editor.set_editable(value)
-	if is_instance_valid(sensor_radius_input):
-		sensor_radius_input.editable = value and is_instance_valid(sensor)
-
-
-func _sync_sensor_controls() -> void:
-	var sensor_available: bool = is_instance_valid(sensor)
-	sensor_visualization_toggle.disabled = not sensor_available
-	sensor_radius_input.editable = sensor_available \
-		and (not is_instance_valid(trainer) or not trainer.training)
-	if not sensor_available:
-		sensor_visualization_toggle.set_pressed_no_signal(false)
-		return
-	sensor_visualization_toggle.set_pressed_no_signal(sensor.is_visualization_enabled())
-	sensor_radius_input.set_value_no_signal(float(sensor.scan_radius_tiles))
-
-
-func _refresh_sensor_controls() -> void:
-	var sensor_available: bool = is_instance_valid(sensor)
-	sensor_visualization_toggle.disabled = not sensor_available
-	sensor_radius_input.editable = sensor_available \
-		and (not is_instance_valid(trainer) or not trainer.training)
-
-
-func _on_sensor_visualization_toggled(value: bool) -> void:
-	if is_instance_valid(sensor):
-		sensor.set_visualization_enabled(value)
-
-
-func _on_sensor_radius_changed(value: float) -> void:
-	if is_instance_valid(sensor):
-		sensor.set_scan_radius(int(value))
-
-
-func _on_bound_sensor_radius_changed(value: int) -> void:
-	sensor_radius_input.set_value_no_signal(float(value))
-
-
-func _on_bound_sensor_visualization_changed(value: bool) -> void:
-	sensor_visualization_toggle.set_pressed_no_signal(value)
 
 
 func _environment_state_text() -> String:
 	if not is_instance_valid(environment):
 		return "Nicht verbunden"
 	if is_instance_valid(trainer) and trainer.training:
-		return "Aktion wird ausgeführt" if environment.state == Env.State.STEPPING else "Episode aktiv"
+		return "Aktion wird ausgeführt" if environment.state == Env.State.STEPPING else "Training aktiv"
+	if environment.has_terminated():
+		return "Episode endgültig beendet"
 	match environment.state:
 		Env.State.NOT_READY:
 			return "Nicht bereit"
@@ -330,7 +322,9 @@ func _environment_state_text() -> String:
 		Env.State.STEPPING:
 			return "Aktion wird ausgeführt"
 		Env.State.FINISHED:
-			return "Episode beendet"
+			return "Abschnitt beendet – Welt läuft weiter" \
+					if environment.can_continue_after_truncation() \
+					else "Episode endgültig beendet"
 		Env.State.CLOSED:
 			return "Geschlossen"
 	return "Unbekannt"
@@ -344,10 +338,18 @@ func _can_start() -> bool:
 	if not _has_valid_components():
 		_set_ai_status("Player-AI ist nicht verbunden")
 		return false
-	if environment.state == Env.State.FINISHED or environment.state == Env.State.CLOSED:
-		_set_ai_status("Episode beendet – Level für eine neue Episode neu laden")
+	if environment.state == Env.State.CLOSED:
+		_set_ai_status("Environment ist geschlossen")
 		return false
-	if environment.state != Env.State.READY:
+	if environment.has_terminated():
+		_set_ai_status("Episode durch Ziel oder Tod endgültig beendet")
+		return false
+	if environment.state == Env.State.FINISHED \
+			and not environment.can_continue_after_truncation():
+		_set_ai_status("Episode durch Ziel oder Tod endgültig beendet")
+		return false
+	if environment.state != Env.State.READY \
+			and not environment.can_continue_after_truncation():
 		_set_ai_status("Environment ist noch nicht bereit")
 		return false
 	if not is_instance_valid(environment.sensor) or not environment.sensor.is_ready_to_scan():
@@ -384,7 +386,7 @@ func _on_reset_agent_pressed() -> void:
 
 
 func _on_training_started() -> void:
-	_episode_reward = trainer.total_reward
+	_run_reward = 0.0
 	_last_terminated = false
 	_last_truncated = false
 	if trainer.completed_steps == 0:
@@ -395,7 +397,7 @@ func _on_training_started() -> void:
 
 
 func _on_step_completed(result: EnvStepResult) -> void:
-	_episode_reward += result.reward
+	_run_reward += result.reward
 	_last_terminated = result.terminated
 	_last_truncated = result.truncated
 	var action_name: StringName = StringName(result.info.get("action_name", &"none"))
@@ -421,11 +423,11 @@ func _localized_action_name(action_name: StringName) -> String:
 
 
 func _on_training_finished(steps: int, total_reward: float) -> void:
-	_episode_reward = total_reward
+	_run_reward = total_reward
 	if _last_terminated:
-		_set_ai_status("Episode regulär beendet")
+		_set_ai_status("Episode durch Ziel oder Tod nach %d Aktionen beendet" % steps)
 	elif _last_truncated:
-		_set_ai_status("Schrittlimit nach %d Aktionen erreicht" % steps)
+		_set_ai_status("%d Trainingsabschnitte abgeschlossen" % trainer.completed_rollouts)
 	else:
 		_set_ai_status("Episode beendet")
 	_refresh_metrics()
@@ -433,7 +435,7 @@ func _on_training_finished(steps: int, total_reward: float) -> void:
 
 
 func _on_training_stopped(steps: int, total_reward: float) -> void:
-	_episode_reward = total_reward
+	_run_reward = total_reward
 	_set_ai_status("Nach %d Aktionen angehalten" % steps)
 	_refresh_metrics()
 	_refresh_controls()
@@ -451,7 +453,30 @@ func _on_max_steps_changed(value: float) -> void:
 		_refresh_metrics()
 
 
+func _on_rollout_count_changed(value: float) -> void:
+	if is_instance_valid(trainer):
+		trainer.rollout_count = maxi(1, int(value))
+		_refresh_metrics()
+
+
+func _on_rollout_started(_index: int, _total: int) -> void:
+	_last_terminated = false
+	_last_truncated = false
+	_refresh_metrics()
+
+
+func _on_rollout_finished(
+		_index: int,
+		_total: int,
+		_steps: int,
+		_reward: float,
+		terminated: bool,
+		truncated: bool
+	) -> void:
+	_last_terminated = terminated
+	_last_truncated = truncated
+	_refresh_metrics()
+
+
 func _exit_tree() -> void:
-	if is_instance_valid(sensor):
-		sensor.set_visualization_enabled(false)
 	_disconnect_components()

@@ -1,6 +1,9 @@
 extends Control
 class_name PlayerStatusView
 
+signal settings_requested
+signal info_requested
+
 @export_group("UI References")
 @export var hp_bar: ProgressBar
 @export var exp_bar: ProgressBar
@@ -41,7 +44,7 @@ func set_player_name(new_name: String) -> void:
 func _resize_name_to_fit() -> void:
 	if not name_label:
 		return
-	var font_size := 14
+	var font_size: int = 14
 	while name_label.get_line_count() > 1 and font_size > 8:
 		font_size -= 1
 		name_label.set("theme_override_font_sizes/font_size", font_size)
@@ -76,10 +79,8 @@ func _update_food_ui(value: float) -> void:
 
 
 func _on_settings_button_pressed() -> void:
-	if is_instance_valid(player.local_ui):
-		player.local_ui.show_settings()
+	settings_requested.emit()
 
 
 func _on_info_button_pressed() -> void:
-	if is_instance_valid(player.local_ui):
-		player.local_ui.show_info()
+	info_requested.emit()

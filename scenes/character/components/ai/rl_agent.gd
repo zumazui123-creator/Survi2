@@ -43,6 +43,10 @@ func reset_model() -> void:
 	model_changed.emit()
 
 
+func on_training_started() -> void:
+	pass
+
+
 func on_episode_finished(_terminated: bool, _truncated: bool) -> void:
 	pass
 

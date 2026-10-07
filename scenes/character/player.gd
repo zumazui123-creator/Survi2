@@ -1,12 +1,15 @@
 extends CharacterBody2D
+class_name Survi2Player
 
+const PLAYER_LOCAL_UI_SCENE: PackedScene = preload(
+	"res://scenes/ui/player_workspace/player_local_ui.tscn"
+)
 
 var act : String = ""
 
 @export var status: PlayerStats
 @export var status_view: PlayerStatusView
 @export var ai_control : Node
-var workTaskText: RichTextLabel
 @export var net_control : Node 
 @export var movement: PlayerMovement
 @export var animation: PlayerAnimationController
@@ -19,8 +22,8 @@ var workTaskText: RichTextLabel
 @export var environment: Survi2NavigationEnv
 @export var rl_agent: RLAgent
 @export var rl_trainer: RLTrainer
-var code_edit: CodeEdit
 var local_ui: PlayerLocalUI
+var _work_task_text: String = ""
 @export var playerName : String:
 	set(value):
 		playerName = value
@@ -34,7 +37,7 @@ var characterFile : String:
 			animation.set_character_sprite(characterFile)
 
 var EndUI     : Control
-var local_setup_done := false
+var local_setup_done: bool = false
 @onready var world_map: Map = get_tree().get_first_node_in_group("world_map")
 
 func _enter_tree():
@@ -51,6 +54,9 @@ func _ready():
 	movement.path_line = line
 	goal_tracker.goal_reached.connect(_on_goal_reached)
 	status.leveled_up.connect(_on_level_up)
+	if not rl_trainer.agent_changed.is_connected(_on_rl_agent_changed):
+		rl_trainer.agent_changed.connect(_on_rl_agent_changed)
+	rl_agent = rl_trainer.agent
 	
 	Multihelper.data_loaded.connect(_on_multidata_received)
 	Multihelper.player_spawned.connect(_on_player_spawned_info)
@@ -97,15 +103,30 @@ func try_recover_body():
 func _setup_local_player():
 	if local_setup_done or not is_multiplayer_authority():
 		return
-	local_setup_done = true
-	print("player HUD")
-	EndUI = get_tree().get_first_node_in_group("end_ui")
-	var hud := get_tree().get_first_node_in_group("world_hud")
-	var local_ui_scene := preload("res://scenes/ui/player_workspace/player_local_ui.tscn")
-	local_ui = local_ui_scene.instantiate()
+	var hud: Node = get_tree().get_first_node_in_group("world_hud")
+	if not is_instance_valid(hud):
+		push_error("Player: world_hud is unavailable; local UI cannot be created")
+		return
+	local_ui = PLAYER_LOCAL_UI_SCENE.instantiate() as PlayerLocalUI
+	if not is_instance_valid(local_ui):
+		push_error("Player: player_local_ui.tscn does not instantiate PlayerLocalUI")
+		return
 	hud.add_child(local_ui)
-	local_ui.bind_player(self)
+	local_ui.bind_components(code_player, rl_agent, rl_trainer, environment)
+	local_ui.set_work_task_text(_work_task_text)
+	if not status_view.settings_requested.is_connected(local_ui.show_settings):
+		status_view.settings_requested.connect(local_ui.show_settings)
+	if not status_view.info_requested.is_connected(local_ui.show_info):
+		status_view.info_requested.connect(local_ui.show_info)
+	local_setup_done = true
+	EndUI = get_tree().get_first_node_in_group("end_ui")
 	$Camera2D.enabled = true
+
+
+func set_work_task_text(value: String) -> void:
+	_work_task_text = value
+	if is_instance_valid(local_ui):
+		local_ui.set_work_task_text(value)
 
 @rpc("any_peer", "call_local", "reliable")
 func getDamage(causer: Node, amount: float, damage_type: StringName) -> void:
@@ -119,10 +140,10 @@ func visibilityFilter(id):
 @rpc("any_peer", "call_local", "reliable")
 func sendMessage(text):
 	#if multiplayer.is_server():
-		var messageBoxScene := preload(Constants.PATH_CHAT_MESSAGE_SCENE)
-		var messageBox := messageBoxScene.instantiate()
-		%PlayerMessages.add_child(messageBox, true)
-		messageBox.text = str(text)
+		var message_box_scene: PackedScene = preload(Constants.PATH_CHAT_MESSAGE_SCENE)
+		var message_box: Variant = message_box_scene.instantiate()
+		%PlayerMessages.add_child(message_box, true)
+		message_box.text = str(text)
 
 func disconnected(id):
 	if str(id) == name:
@@ -154,9 +175,13 @@ func set_rl_agent(value: RLAgent) -> bool:
 		return false
 	rl_agent = value
 	return true
+
+
+func _on_rl_agent_changed(value: RLAgent) -> void:
+	rl_agent = value
 			
 func resetPlayer():
-	var difLevelMode = local_ui.get_difficulty_mode() if is_instance_valid(local_ui) else 0
+	var difLevelMode: int = local_ui.get_difficulty_mode() if is_instance_valid(local_ui) else 0
 	if difLevelMode > 0:
 		Multihelper.spawnPlayers()
 

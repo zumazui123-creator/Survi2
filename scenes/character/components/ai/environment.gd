@@ -38,6 +38,8 @@ const ACTION_NAMES: Array[StringName] = [
 var step_count: int = 0
 var _goal_reached: bool = false
 var _player_died: bool = false
+var _last_transition_terminated: bool = false
+var _last_transition_truncated: bool = false
 
 
 func _ready() -> void:
@@ -135,6 +137,8 @@ func step(action: Variant) -> EnvStepResult:
 		truncated,
 		_build_info(action_index, movement_succeeded)
 	)
+	_last_transition_terminated = terminated
+	_last_transition_truncated = truncated
 
 	if result.is_done():
 		state = State.FINISHED
@@ -156,6 +160,28 @@ func release_ai_control() -> void:
 		movement.release_control(PlayerMovement.ControlMode.AI)
 
 
+func can_continue_after_truncation() -> bool:
+	if state != State.FINISHED \
+			or not _last_transition_truncated \
+			or _last_transition_terminated:
+		return false
+	return not _is_terminated()
+
+
+func continue_after_truncation() -> bool:
+	if not can_continue_after_truncation():
+		return false
+	step_count = 0
+	_last_transition_terminated = false
+	_last_transition_truncated = false
+	state = State.READY
+	return true
+
+
+func has_terminated() -> bool:
+	return _is_terminated()
+
+
 func _finish_without_action() -> EnvStepResult:
 	state = State.FINISHED
 	movement.release_control(PlayerMovement.ControlMode.AI)
@@ -166,6 +192,8 @@ func _finish_without_action() -> EnvStepResult:
 		false,
 		_build_info(-1, false)
 	)
+	_last_transition_terminated = true
+	_last_transition_truncated = false
 	environment_finished.emit(true, false)
 	step_completed.emit(result)
 	return result

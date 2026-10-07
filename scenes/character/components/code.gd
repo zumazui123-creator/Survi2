@@ -2,126 +2,176 @@ extends Node
 class_name CodeEditorController
 
 var code_player: CodePlayer
-@onready var code_edit = %CodeEdit
-@onready var item_list = %ItemList
-@onready var inputFuncName = %InputFuncName
-@onready var code_func = $"../PopupFunction/HBoxContainer/VBoxContainer/CodeEdit"
-@onready var popup = %PopupFunction
-@onready var exit_btn = $"../PopupFunction/HBoxContainer/VBoxContainer/BtnContainer/ExitBtn"
+var function_library: FunctionHandler
+var highlighter: MyCodeHighLighter
+
+@onready var code_edit: CodeEdit = %CodeEdit
+@onready var item_list: ItemList = %ItemList
+@onready var function_name_input: LineEdit = %InputFuncName
+@onready var function_code_edit: CodeEdit = %FunctionCodeEdit
+@onready var function_list: ItemList = %FuncList
+@onready var function_popup: PopupPanel = %PopupFunction
+@onready var function_exit_button: Button = %ExitBtn
 @onready var play_button: Button = $TabContainer/Code/ButtonCotainer/PlayButton
 @onready var stop_button: Button = $TabContainer/Code/ButtonCotainer/StopButton
 
-@onready var tab_container = $TabContainer
-@onready var function_handler = $"../../FunctionHandler"
-var highlighter : MyCodeHighLighter
 
-func bind_code_player(value: CodePlayer) -> void:
-	code_player = value
-	code_player.execution_started.connect(_on_execution_started)
-	code_player.execution_finished.connect(_on_execution_ended)
-	code_player.execution_cancelled.connect(_on_execution_ended)
-	_set_execution_buttons(code_player.is_running)
+func _ready() -> void:
+	function_exit_button.pressed.connect(_on_exit_button_pressed)
+	highlighter = MyCodeHighLighter.new()
+	highlighter.setup_custom_highlighter(code_edit)
+	_refresh_function_lists()
+	_set_execution_buttons(false)
+	if Multihelper.code_player_enabled:
+		print("Debug Code Playing enabled.")
+
+
+func bind_components(value_code_player: CodePlayer, value_function_library: FunctionHandler) -> void:
+	_disconnect_components()
+	code_player = value_code_player
+	function_library = value_function_library
+	if is_instance_valid(code_player):
+		code_player.execution_started.connect(_on_execution_started)
+		code_player.execution_finished.connect(_on_execution_ended)
+		code_player.execution_cancelled.connect(_on_execution_ended)
+	if is_instance_valid(function_library):
+		function_library.functions_changed.connect(_refresh_function_lists)
+	_refresh_function_lists()
+	_set_execution_buttons(is_instance_valid(code_player) and code_player.is_running)
+
+
+func unbind_components() -> void:
+	_disconnect_components()
+	code_player = null
+	function_library = null
+	_set_execution_buttons(false)
+
+
+func _disconnect_components() -> void:
+	if is_instance_valid(code_player):
+		if code_player.execution_started.is_connected(_on_execution_started):
+			code_player.execution_started.disconnect(_on_execution_started)
+		if code_player.execution_finished.is_connected(_on_execution_ended):
+			code_player.execution_finished.disconnect(_on_execution_ended)
+		if code_player.execution_cancelled.is_connected(_on_execution_ended):
+			code_player.execution_cancelled.disconnect(_on_execution_ended)
+	if is_instance_valid(function_library) \
+			and function_library.functions_changed.is_connected(_refresh_function_lists):
+		function_library.functions_changed.disconnect(_refresh_function_lists)
+
 
 func _on_execution_started(_command_count: int) -> void:
 	_set_execution_buttons(true)
 
+
 func _on_execution_ended() -> void:
 	_set_execution_buttons(false)
 
+
 func _set_execution_buttons(running: bool) -> void:
-	play_button.disabled = running
-	stop_button.disabled = not running
+	play_button.disabled = running or not is_instance_valid(code_player)
+	stop_button.disabled = not running or not is_instance_valid(code_player)
 
-func init_tab_container() -> void:
-	item_list.add_item("wiederhole 3 mal")
-	item_list.add_item("nutze item 3")
-		
-func _ready():
-	if Multihelper.code_player_enabled:
-		print("Debug Code Playing enabled.")
-	exit_btn.pressed.connect(_on_exit_btn_pressed)
-	highlighter = MyCodeHighLighter.new()
-	highlighter.setup_custom_highlighter(code_edit)
-	init_tab_container()
 
-func _on_exit_btn_pressed():
-	popup.hide()
+func _refresh_function_lists() -> void:
+	if not is_instance_valid(item_list) or not is_instance_valid(function_list):
+		return
+	item_list.clear()
+	function_list.clear()
+	item_list.add_item(Strings.KEYWORD_REPEAT)
+	item_list.add_item(Strings.KEYWORD_USE_ITEM)
+	if not is_instance_valid(function_library):
+		return
+	for function_name: String in function_library.get_function_names():
+		item_list.add_item(function_name)
+		function_list.add_item(function_name)
 
-func _insert_text(text : String):
+
+func _insert_text(text: String) -> void:
 	code_edit.insert_text_at_caret(text + "\n")
-	
-func _on_links_button_pressed(button: Button) -> void:
-	_insert_text(button.text)
 
-func _on_oben_button_pressed(button: Button) -> void:
-	_insert_text(button.text)
 
-func _on_rechts_button_pressed(button: Button) -> void:
-	_insert_text(button.text)
-	
-func _on_unten_button_pressed(button: Button) -> void:
-	_insert_text(button.text)
+func _on_exit_button_pressed() -> void:
+	function_popup.hide()
 
-func _on_attacke_button_pressed(button: Button) -> void:
-	_insert_text(button.text)
 
-func _on_sage_button_pressed(button: Button) -> void:
-	_insert_text(button.text)
+func _on_links_button_pressed() -> void:
+	_insert_text("links")
+
+
+func _on_oben_button_pressed() -> void:
+	_insert_text("oben")
+
+
+func _on_rechts_button_pressed() -> void:
+	_insert_text("rechts")
+
+
+func _on_unten_button_pressed() -> void:
+	_insert_text("unten")
+
+
+func _on_attacke_button_pressed() -> void:
+	_insert_text("attacke")
+
+
+func _on_sage_button_pressed() -> void:
+	_insert_text("sage")
+
 
 func _on_item_list_item_activated(index: int) -> void:
-	var item_text = item_list.get_item_text(index)
+	var item_text: String = item_list.get_item_text(index)
 	if item_text == Strings.KEYWORD_REPEAT:
 		item_text = Strings.KEYWORD_REPEAT_FULL
-	if item_text == Strings.KEYWORD_USE_ITEM:
-		item_text = Strings.KEYWORD_USE_ITEM
-	code_edit.insert_text_at_caret(item_text+"\n")
+	code_edit.insert_text_at_caret(item_text + "\n")
+
 
 func _on_create_function_pressed() -> void:
-	popup.popup_centered()
+	function_popup.popup_centered()
+
 
 func _on_load_function_pressed() -> void:
 	print("todo load func")
-	#net_control.send_rpc_request(Strings.RPC_METHOD_LOAD_FUNCTIONS, {})
-	
+
+
 func _on_code_delete_button_pressed() -> void:
 	code_edit.text = ""
 
+
 func _on_play_button_pressed() -> void:
-	if code_player != null && Multihelper.code_player_enabled:
-		code_player.play(code_edit.text, function_handler.functions)
+	if not is_instance_valid(code_player) or not Multihelper.code_player_enabled:
 		return
-	#net_control.send_rpc_request(Strings.RPC_METHOD_PLAY_SEQUENCE, {"message": code_edit.text})
+	var functions: Dictionary = function_library.functions if is_instance_valid(function_library) else {}
+	code_player.play(code_edit.text, functions)
+
 
 func _on_stop_button_pressed() -> void:
-	print("_on_stop_button_pressed")
-	if code_player != null:
+	if is_instance_valid(code_player):
 		code_player.cancel()
-	#net_control.send_text(Strings.CMD_END_SEQUENCE + "\n")
-	#net_control.send_text(Strings.CMD_STOP_SEQUENCE + "\n")
 
-func checkInputFuncName():
-	print("checkInputFuncName")
 
 func _on_create_btn_pressed() -> void:
-	if Multihelper.code_player_enabled:
-		print("create func")
-		var funcName = inputFuncName.text
-		var data := {
-			inputFuncName.text: code_func.text ,
-			}
-		function_handler.set_func( data )
-		highlighter._apply_keywords(code_edit.syntax_highlighter, [funcName], Color.CHARTREUSE)
-	#var message = (
-		#Strings.RPC_METHOD_CREATE_FUNCTION
-		#+ "\n"
-		#+ Strings.KEYWORD_FUNC
-		#+ " "
-		#+ inputFuncName.text
-		#+ "\n"
-		#+ code_func.text
-		#+ "\n"
-		#+ Strings.KEYWORD_END_FUNC
-	#)
+	if not Multihelper.code_player_enabled or not is_instance_valid(function_library):
+		return
+	var function_name: String = function_name_input.text.strip_edges()
+	if function_name.is_empty():
+		return
+	var data: Dictionary = {function_name: function_code_edit.text}
+	if function_library.set_func(data):
+		highlighter._apply_keywords(
+			code_edit.syntax_highlighter,
+			[function_name],
+			Color.CHARTREUSE
+		)
 
-	
-	#net_control.send_rpc_request(Strings.RPC_METHOD_CREATE_FUNCTION, {"message": message})
+
+func _on_func_list_item_activated(index: int) -> void:
+	if not is_instance_valid(function_library):
+		return
+	var function_name: String = function_list.get_item_text(index)
+	function_name_input.text = function_name
+	function_code_edit.text = "\n".join(function_library.get_function_body(function_name))
+
+
+func _exit_tree() -> void:
+	_disconnect_components()

@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://ddrqxuc43a4rn" path="res://scenes/character/components/function_handler.gd" id="3_function"]
 [ext_resource type="Script" uid="uid://dsnm03bgpmori" path="res://scenes/character/components/code.gd" id="4_code"]
 [ext_resource type="Script" uid="uid://cq4ykx1tbo4pp" path="res://scenes/ui/player_workspace/navigation_reward_policy_editor.gd" id="5_reward_editor"]
+[ext_resource type="Script" path="res://scenes/ui/player_workspace/ai_environment_settings_ui.gd" id="6_environment_settings"]
 
 [sub_resource type="CodeHighlighter" id="CodeHighlighter_vreni"]
 number_color = Color(0.16078432, 0.5294118, 0.36862746, 1)
@@ -12,7 +13,7 @@ number_color = Color(0.16078432, 0.5294118, 0.36862746, 1)
 [node name="PlayerLocalUI" type="Node" unique_id=72987237]
 script = ExtResource("1_ui")
 
-[node name="FunctionHandler" type="Node" parent="." unique_id=1453966637]
+[node name="FunctionLibrary" type="Node" parent="." unique_id=1453966637]
 script = ExtResource("3_function")
 
 [node name="CodeLayer" type="CanvasLayer" parent="." unique_id=336348594]
@@ -167,6 +168,7 @@ layout_mode = 2
 text = "Lade Funktionen"
 
 [node name="KI Playground" type="MarginContainer" parent="CodeLayer/Code/TabContainer" unique_id=1000470522]
+unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
@@ -246,9 +248,19 @@ text = "Nicht verbunden"
 horizontal_alignment = 1
 autowrap_mode = 2
 
+[node name="RolloutProgressLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/StatusPanel/VBox/Grid"]
+layout_mode = 2
+text = "Trainingsabschnitt"
+
+[node name="RolloutProgressValue" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/StatusPanel/VBox/Grid"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "0 / 10"
+horizontal_alignment = 1
+
 [node name="EpisodeStepsLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/StatusPanel/VBox/Grid" unique_id=1372734128]
 layout_mode = 2
-text = "Schritte"
+text = "Abschnitt-Schritte"
 
 [node name="EpisodeStepsValue" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/StatusPanel/VBox/Grid" unique_id=451140101]
 unique_name_in_owner = true
@@ -258,7 +270,7 @@ horizontal_alignment = 1
 
 [node name="EpisodeRewardLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/StatusPanel/VBox/Grid" unique_id=1293492337]
 layout_mode = 2
-text = "Episode-Reward"
+text = "Gesamt-Reward"
 
 [node name="EpisodeRewardValue" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/StatusPanel/VBox/Grid" unique_id=1576228853]
 unique_name_in_owner = true
@@ -319,7 +331,7 @@ theme_override_constants/separation = 6
 
 [node name="Title" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/AgentSettingsPanel/VBox" unique_id=1406784778]
 layout_mode = 2
-text = "Agent & Episode"
+text = "Agent & Training"
 horizontal_alignment = 1
 
 [node name="EpisodeGrid" type="GridContainer" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/AgentSettingsPanel/VBox" unique_id=101282691]
@@ -328,9 +340,20 @@ theme_override_constants/h_separation = 10
 theme_override_constants/v_separation = 5
 columns = 2
 
+[node name="AgentSelectorLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/AgentSettingsPanel/VBox/EpisodeGrid"]
+layout_mode = 2
+tooltip_text = "Wechselt den aktiven Lernalgorithmus. Jeder Agent behält sein eigenes Modell."
+text = "Lernalgorithmus"
+
+[node name="AgentSelector" type="OptionButton" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/AgentSettingsPanel/VBox/EpisodeGrid"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(135, 0)
+layout_mode = 2
+tooltip_text = "Während eines laufenden Trainings kann der Agent nicht gewechselt werden."
+
 [node name="MaxStepsLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/AgentSettingsPanel/VBox/EpisodeGrid" unique_id=1358339567]
 layout_mode = 2
-tooltip_text = "Maximale Aktionen, bevor die Episode abgeschnitten wird."
+tooltip_text = "Maximale Aktionen pro Trainingsabschnitt. Die Spielwelt wird danach nicht zurückgesetzt."
 text = "Max. Schritte"
 
 [node name="MaxStepsInput" type="SpinBox" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/AgentSettingsPanel/VBox/EpisodeGrid" unique_id=1195047410]
@@ -340,6 +363,19 @@ layout_mode = 2
 min_value = 1.0
 max_value = 100000.0
 value = 500.0
+
+[node name="RolloutCountLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/AgentSettingsPanel/VBox/EpisodeGrid"]
+layout_mode = 2
+tooltip_text = "Anzahl automatisch ausgeführter Trainingsabschnitte. Ziel oder Tod beendet den Lauf sofort."
+text = "Abschnitte"
+
+[node name="RolloutCountInput" type="SpinBox" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/AgentSettingsPanel/VBox/EpisodeGrid"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(135, 0)
+layout_mode = 2
+min_value = 1.0
+max_value = 1000.0
+value = 10.0
 
 [node name="AgentParametersLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/AgentSettingsPanel/VBox" unique_id=1407499776]
 layout_mode = 2
@@ -353,40 +389,74 @@ theme_override_constants/h_separation = 10
 theme_override_constants/v_separation = 5
 columns = 2
 
-[node name="SensorPanel" type="PanelContainer" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content" unique_id=1665827828]
+[node name="Umgebung" type="MarginContainer" parent="CodeLayer/Code/TabContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+script = ExtResource("6_environment_settings")
+metadata/_tab_index = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="CodeLayer/Code/TabContainer/Umgebung"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="Content" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/Umgebung/ScrollContainer"]
+custom_minimum_size = Vector2(315, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="CodeLayer/Code/TabContainer/Umgebung/ScrollContainer/Content"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Sensor & Belohnung"
+horizontal_alignment = 1
+
+[node name="Description" type="Label" parent="CodeLayer/Code/TabContainer/Umgebung/ScrollContainer/Content"]
+layout_mode = 2
+text = "Beobachtungsradius, Visualisierung und Reward-Policy des Environments"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="SensorPanel" type="PanelContainer" parent="CodeLayer/Code/TabContainer/Umgebung/ScrollContainer/Content" unique_id=1665827828]
 layout_mode = 2
 
-[node name="VBox" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/SensorPanel" unique_id=597447562]
+[node name="VBox" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/Umgebung/ScrollContainer/Content/SensorPanel" unique_id=597447562]
 layout_mode = 2
 theme_override_constants/separation = 6
 
-[node name="Title" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/SensorPanel/VBox" unique_id=1185487417]
+[node name="Title" type="Label" parent="CodeLayer/Code/TabContainer/Umgebung/ScrollContainer/Content/SensorPanel/VBox" unique_id=1185487417]
 layout_mode = 2
 text = "Sensor-Visualisierung"
 horizontal_alignment = 1
 
-[node name="Grid" type="GridContainer" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/SensorPanel/VBox" unique_id=1443110383]
+[node name="Grid" type="GridContainer" parent="CodeLayer/Code/TabContainer/Umgebung/ScrollContainer/Content/SensorPanel/VBox" unique_id=1443110383]
 layout_mode = 2
 theme_override_constants/h_separation = 10
 theme_override_constants/v_separation = 5
 columns = 2
 
-[node name="VisualizationLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/SensorPanel/VBox/Grid" unique_id=127623193]
+[node name="VisualizationLabel" type="Label" parent="CodeLayer/Code/TabContainer/Umgebung/ScrollContainer/Content/SensorPanel/VBox/Grid" unique_id=127623193]
 layout_mode = 2
 tooltip_text = "Zeigt den Tile-Radius und hebt erkannte Entitäten hervor."
 text = "Anzeige"
 
-[node name="SensorVisualizationToggle" type="CheckButton" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/SensorPanel/VBox/Grid" unique_id=1124844552]
+[node name="SensorVisualizationToggle" type="CheckButton" parent="CodeLayer/Code/TabContainer/Umgebung/ScrollContainer/Content/SensorPanel/VBox/Grid" unique_id=1124844552]
 unique_name_in_owner = true
 layout_mode = 2
 text = "An / Aus"
 
-[node name="RadiusLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/SensorPanel/VBox/Grid" unique_id=2007625574]
+[node name="RadiusLabel" type="Label" parent="CodeLayer/Code/TabContainer/Umgebung/ScrollContainer/Content/SensorPanel/VBox/Grid" unique_id=2007625574]
 layout_mode = 2
 tooltip_text = "Sensorreichweite in Tiles. Verändert zugleich die Größe der KI-Observation."
 text = "Radius (Tiles)"
 
-[node name="SensorRadiusInput" type="SpinBox" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/SensorPanel/VBox/Grid" unique_id=1677346614]
+[node name="SensorRadiusInput" type="SpinBox" parent="CodeLayer/Code/TabContainer/Umgebung/ScrollContainer/Content/SensorPanel/VBox/Grid" unique_id=1677346614]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(135, 0)
 layout_mode = 2
@@ -394,43 +464,43 @@ min_value = 1.0
 max_value = 64.0
 value = 10.0
 
-[node name="Hint" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/SensorPanel/VBox" unique_id=827824254]
+[node name="Hint" type="Label" parent="CodeLayer/Code/TabContainer/Umgebung/ScrollContainer/Content/SensorPanel/VBox" unique_id=827824254]
 layout_mode = 2
 text = "Erkannte Objekte, Items, Tiere und Gegner pulsieren gelb."
 horizontal_alignment = 1
 autowrap_mode = 2
 
-[node name="RewardSettingsPanel" type="PanelContainer" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content" unique_id=33344649]
+[node name="RewardSettingsPanel" type="PanelContainer" parent="CodeLayer/Code/TabContainer/Umgebung/ScrollContainer/Content" unique_id=33344649]
 unique_name_in_owner = true
 layout_mode = 2
 script = ExtResource("5_reward_editor")
 
-[node name="VBox" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/RewardSettingsPanel" unique_id=2002715830]
+[node name="VBox" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/Umgebung/ScrollContainer/Content/RewardSettingsPanel" unique_id=2002715830]
 layout_mode = 2
 theme_override_constants/separation = 6
 
-[node name="Title" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/RewardSettingsPanel/VBox" unique_id=2036120865]
+[node name="Title" type="Label" parent="CodeLayer/Code/TabContainer/Umgebung/ScrollContainer/Content/RewardSettingsPanel/VBox" unique_id=2036120865]
 layout_mode = 2
 text = "Reward-Policy"
 horizontal_alignment = 1
 
-[node name="RewardPolicyTypeValue" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/RewardSettingsPanel/VBox" unique_id=137829380]
+[node name="RewardPolicyTypeValue" type="Label" parent="CodeLayer/Code/TabContainer/Umgebung/ScrollContainer/Content/RewardSettingsPanel/VBox" unique_id=137829380]
 unique_name_in_owner = true
 layout_mode = 2
 text = "NavigationRewardPolicy"
 horizontal_alignment = 1
 
-[node name="Grid" type="GridContainer" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/RewardSettingsPanel/VBox" unique_id=1505753778]
+[node name="Grid" type="GridContainer" parent="CodeLayer/Code/TabContainer/Umgebung/ScrollContainer/Content/RewardSettingsPanel/VBox" unique_id=1505753778]
 layout_mode = 2
 theme_override_constants/h_separation = 10
 theme_override_constants/v_separation = 5
 columns = 2
 
-[node name="GoalRewardLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/RewardSettingsPanel/VBox/Grid" unique_id=1630638815]
+[node name="GoalRewardLabel" type="Label" parent="CodeLayer/Code/TabContainer/Umgebung/ScrollContainer/Content/RewardSettingsPanel/VBox/Grid" unique_id=1630638815]
 layout_mode = 2
 text = "Ziel erreicht"
 
-[node name="GoalRewardInput" type="SpinBox" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/RewardSettingsPanel/VBox/Grid" unique_id=239617504]
+[node name="GoalRewardInput" type="SpinBox" parent="CodeLayer/Code/TabContainer/Umgebung/ScrollContainer/Content/RewardSettingsPanel/VBox/Grid" unique_id=239617504]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(135, 0)
 layout_mode = 2
@@ -439,11 +509,11 @@ max_value = 1000.0
 step = 0.1
 value = 10.0
 
-[node name="DeathRewardLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/RewardSettingsPanel/VBox/Grid" unique_id=1434604654]
+[node name="DeathRewardLabel" type="Label" parent="CodeLayer/Code/TabContainer/Umgebung/ScrollContainer/Content/RewardSettingsPanel/VBox/Grid" unique_id=1434604654]
 layout_mode = 2
 text = "Player stirbt"
 
-[node name="DeathRewardInput" type="SpinBox" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/RewardSettingsPanel/VBox/Grid" unique_id=1635544379]
+[node name="DeathRewardInput" type="SpinBox" parent="CodeLayer/Code/TabContainer/Umgebung/ScrollContainer/Content/RewardSettingsPanel/VBox/Grid" unique_id=1635544379]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(135, 0)
 layout_mode = 2
@@ -452,11 +522,11 @@ max_value = 1000.0
 step = 0.1
 value = -10.0
 
-[node name="BlockedRewardLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/RewardSettingsPanel/VBox/Grid" unique_id=1327669332]
+[node name="BlockedRewardLabel" type="Label" parent="CodeLayer/Code/TabContainer/Umgebung/ScrollContainer/Content/RewardSettingsPanel/VBox/Grid" unique_id=1327669332]
 layout_mode = 2
 text = "Blockiertes Tile"
 
-[node name="BlockedRewardInput" type="SpinBox" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/RewardSettingsPanel/VBox/Grid" unique_id=1101750966]
+[node name="BlockedRewardInput" type="SpinBox" parent="CodeLayer/Code/TabContainer/Umgebung/ScrollContainer/Content/RewardSettingsPanel/VBox/Grid" unique_id=1101750966]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(135, 0)
 layout_mode = 2
@@ -465,11 +535,11 @@ max_value = 1000.0
 step = 0.01
 value = -0.20000000000004547
 
-[node name="StepRewardLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/RewardSettingsPanel/VBox/Grid" unique_id=1111798779]
+[node name="StepRewardLabel" type="Label" parent="CodeLayer/Code/TabContainer/Umgebung/ScrollContainer/Content/RewardSettingsPanel/VBox/Grid" unique_id=1111798779]
 layout_mode = 2
 text = "Normaler Schritt"
 
-[node name="StepRewardInput" type="SpinBox" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/RewardSettingsPanel/VBox/Grid" unique_id=200096894]
+[node name="StepRewardInput" type="SpinBox" parent="CodeLayer/Code/TabContainer/Umgebung/ScrollContainer/Content/RewardSettingsPanel/VBox/Grid" unique_id=200096894]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(135, 0)
 layout_mode = 2
@@ -498,14 +568,14 @@ theme_override_constants/separation = 6
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "Führt die aktuelle Policy des verbundenen RL-Agenten aus und trainiert sie."
+tooltip_text = "Trainiert die aktuelle Policy über mehrere fortlaufende Abschnitte."
 text = "Agent starten"
 
 [node name="RandomPolicyButton" type="Button" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/ActionsPanel/VBox/RunButtons" unique_id=1966067137]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "Führt eine Episode mit zufälligen Aktionen aus; der Agent lernt trotzdem aus den Schritten."
+tooltip_text = "Führt fortlaufende Abschnitte mit zufälligen Aktionen aus; der Agent lernt trotzdem."
 text = "Zufällige Policy"
 
 [node name="ManageButtons" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/ActionsPanel/VBox" unique_id=553554939]
@@ -528,7 +598,7 @@ text = "Modell zurücksetzen"
 
 [node name="EpisodeHint" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/ActionsPanel/VBox" unique_id=786500599]
 layout_mode = 2
-text = "Ziel, Tod oder Schrittlimit beenden die Episode. Danach muss das Level für eine neue Episode neu geladen werden."
+text = "Das Schrittlimit trennt nur Trainingsabschnitte; Welt und Player laufen unverändert weiter. Ziel oder Tod beendet die Player-Episode endgültig."
 horizontal_alignment = 1
 autowrap_mode = 2
 
@@ -569,7 +639,8 @@ layout_mode = 2
 size_flags_horizontal = 3
 max_length = 30
 
-[node name="CodeEdit" type="CodeEdit" parent="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer" unique_id=881055132]
+[node name="FunctionCodeEdit" type="CodeEdit" parent="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer" unique_id=881055132]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(400, 400)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -592,6 +663,7 @@ layout_mode = 2
 text = "Erstellen"
 
 [node name="ExitBtn" type="Button" parent="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer/BtnContainer" unique_id=913988223]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Abbrechen"
 
@@ -612,6 +684,7 @@ item_count = 1
 item_0/text = "Test2"
 
 [node name="PopupSettings" type="PopupPanel" parent="." unique_id=796379025]
+unique_name_in_owner = true
 transparent_bg = false
 oversampling_override = 1.0
 title = "Settings"
@@ -669,6 +742,7 @@ size_flags_horizontal = 3
 text = "OK"
 
 [node name="PopupInfo" type="PopupPanel" parent="." unique_id=1022056431]
+unique_name_in_owner = true
 transparent_bg = false
 oversampling_override = 1.0
 initial_position = 1
@@ -676,7 +750,7 @@ size = Vector2i(208, 108)
 visible = true
 transparent = false
 
-[node name="workTaskText" type="RichTextLabel" parent="PopupInfo" unique_id=448736662]
+[node name="WorkTaskText" type="RichTextLabel" parent="PopupInfo" unique_id=448736662]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 20)
 anchors_preset = 8
@@ -708,17 +782,19 @@ fit_content = true
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer2/createFunction" to="CodeLayer/Code" method="_on_create_function_pressed"]
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer2/loadFunction" to="CodeLayer/Code" method="_on_load_function_pressed"]
 [connection signal="value_changed" from="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/AgentSettingsPanel/VBox/EpisodeGrid/MaxStepsInput" to="CodeLayer/Code/TabContainer/KI Playground" method="_on_max_steps_changed"]
-[connection signal="toggled" from="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/SensorPanel/VBox/Grid/SensorVisualizationToggle" to="CodeLayer/Code/TabContainer/KI Playground" method="_on_sensor_visualization_toggled"]
-[connection signal="value_changed" from="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/SensorPanel/VBox/Grid/SensorRadiusInput" to="CodeLayer/Code/TabContainer/KI Playground" method="_on_sensor_radius_changed"]
-[connection signal="value_changed" from="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/RewardSettingsPanel/VBox/Grid/GoalRewardInput" to="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/RewardSettingsPanel" method="_on_goal_reward_changed"]
-[connection signal="value_changed" from="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/RewardSettingsPanel/VBox/Grid/DeathRewardInput" to="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/RewardSettingsPanel" method="_on_death_reward_changed"]
-[connection signal="value_changed" from="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/RewardSettingsPanel/VBox/Grid/BlockedRewardInput" to="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/RewardSettingsPanel" method="_on_blocked_reward_changed"]
-[connection signal="value_changed" from="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/RewardSettingsPanel/VBox/Grid/StepRewardInput" to="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/RewardSettingsPanel" method="_on_step_reward_changed"]
+[connection signal="value_changed" from="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/AgentSettingsPanel/VBox/EpisodeGrid/RolloutCountInput" to="CodeLayer/Code/TabContainer/KI Playground" method="_on_rollout_count_changed"]
+[connection signal="item_selected" from="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/AgentSettingsPanel/VBox/EpisodeGrid/AgentSelector" to="CodeLayer/Code/TabContainer/KI Playground" method="_on_agent_selected"]
+[connection signal="toggled" from="CodeLayer/Code/TabContainer/Umgebung/ScrollContainer/Content/SensorPanel/VBox/Grid/SensorVisualizationToggle" to="CodeLayer/Code/TabContainer/Umgebung" method="_on_sensor_visualization_toggled"]
+[connection signal="value_changed" from="CodeLayer/Code/TabContainer/Umgebung/ScrollContainer/Content/SensorPanel/VBox/Grid/SensorRadiusInput" to="CodeLayer/Code/TabContainer/Umgebung" method="_on_sensor_radius_changed"]
+[connection signal="value_changed" from="CodeLayer/Code/TabContainer/Umgebung/ScrollContainer/Content/RewardSettingsPanel/VBox/Grid/GoalRewardInput" to="CodeLayer/Code/TabContainer/Umgebung/ScrollContainer/Content/RewardSettingsPanel" method="_on_goal_reward_changed"]
+[connection signal="value_changed" from="CodeLayer/Code/TabContainer/Umgebung/ScrollContainer/Content/RewardSettingsPanel/VBox/Grid/DeathRewardInput" to="CodeLayer/Code/TabContainer/Umgebung/ScrollContainer/Content/RewardSettingsPanel" method="_on_death_reward_changed"]
+[connection signal="value_changed" from="CodeLayer/Code/TabContainer/Umgebung/ScrollContainer/Content/RewardSettingsPanel/VBox/Grid/BlockedRewardInput" to="CodeLayer/Code/TabContainer/Umgebung/ScrollContainer/Content/RewardSettingsPanel" method="_on_blocked_reward_changed"]
+[connection signal="value_changed" from="CodeLayer/Code/TabContainer/Umgebung/ScrollContainer/Content/RewardSettingsPanel/VBox/Grid/StepRewardInput" to="CodeLayer/Code/TabContainer/Umgebung/ScrollContainer/Content/RewardSettingsPanel" method="_on_step_reward_changed"]
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/ActionsPanel/VBox/RunButtons/StartTrainingButton" to="CodeLayer/Code/TabContainer/KI Playground" method="_on_start_training_pressed"]
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/ActionsPanel/VBox/RunButtons/RandomPolicyButton" to="CodeLayer/Code/TabContainer/KI Playground" method="_on_random_policy_pressed"]
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/ActionsPanel/VBox/ManageButtons/StopTrainingButton" to="CodeLayer/Code/TabContainer/KI Playground" method="_on_stop_training_pressed"]
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/ActionsPanel/VBox/ManageButtons/ClearPolicyButton" to="CodeLayer/Code/TabContainer/KI Playground" method="_on_reset_agent_pressed"]
 [connection signal="pressed" from="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer/BtnContainer/CreateBtn" to="CodeLayer/Code" method="_on_create_btn_pressed"]
-[connection signal="item_activated" from="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer2/FuncList" to="FunctionHandler" method="_on_func_list_item_activated"]
+[connection signal="item_activated" from="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer2/FuncList" to="CodeLayer/Code" method="_on_func_list_item_activated"]
 [connection signal="pressed" from="PopupSettings/VBoxContainer/HBoxContainer2/backToMenu" to="." method="_on_back_to_menu_pressed"]
 [connection signal="pressed" from="PopupSettings/VBoxContainer/HBoxContainer2/SettingsOkBtn" to="." method="_on_settings_ok_pressed"]

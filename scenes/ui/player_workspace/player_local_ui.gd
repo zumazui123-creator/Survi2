@@ -1,24 +1,29 @@
 extends Node
 class_name PlayerLocalUI
 
-var player: CharacterBody2D
-
-@onready var code_editor: CodeEdit = $CodeLayer/Code/TabContainer/Code/CodeEdit
 @onready var code_controller: CodeEditorController = $CodeLayer/Code
-@onready var work_task_text: RichTextLabel = $PopupInfo/workTaskText
-@onready var difficulty_button: OptionButton = $PopupSettings/VBoxContainer/HBoxContainer/DifModeButton
-@onready var settings_popup: PopupPanel = $PopupSettings
-@onready var info_popup: PopupPanel = $PopupInfo
-@onready var ai_playground: RLPlaygroundUI = $"CodeLayer/Code/TabContainer/KI Playground"
+@onready var function_library: FunctionHandler = $FunctionLibrary
+@onready var work_task_text: RichTextLabel = %WorkTaskText
+@onready var difficulty_button: OptionButton = %DifModeButton
+@onready var settings_popup: PopupPanel = %PopupSettings
+@onready var info_popup: PopupPanel = %PopupInfo
+@onready var ai_playground: RLPlaygroundUI = get_node("%KI Playground") as RLPlaygroundUI
+@onready var environment_settings: AIEnvironmentSettingsUI = %Umgebung
 
 
-func bind_player(value: CharacterBody2D) -> void:
-	player = value
-	code_controller.bind_code_player(player.code_player)
-	player.local_ui = self
-	player.code_edit = code_editor
-	player.workTaskText = work_task_text
-	ai_playground.bind_components(player.rl_agent, player.rl_trainer, player.environment)
+func bind_components(
+		code_player: CodePlayer,
+		rl_agent: RLAgent,
+		rl_trainer: RLTrainer,
+		environment: Survi2NavigationEnv
+	) -> void:
+	code_controller.bind_components(code_player, function_library)
+	ai_playground.bind_components(rl_agent, rl_trainer, environment)
+	environment_settings.bind_components(environment, rl_trainer)
+
+
+func set_work_task_text(value: String) -> void:
+	work_task_text.text = value
 
 
 func show_settings() -> void:

@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bruqpv3kpycof" path="res://scenes/character/player.gd" id="1_7xvi4"]
 [ext_resource type="Script" path="res://scenes/character/components/ai/q_learning_agent.gd" id="2_x06ku"]
+[ext_resource type="Script" path="res://scenes/character/components/ai/expected_sarsa_agent.gd" id="2_expected_sarsa"]
 [ext_resource type="Script" uid="uid://cklljf6dkq1ch" path="res://scenes/character/components/ai/environment.gd" id="3_pygui"]
 [ext_resource type="AudioStream" uid="uid://cqi2ycda0odwm" path="res://assets/sfx/step.ogg" id="4_bflkw"]
 [ext_resource type="Script" uid="uid://c5vvg50hpvd0s" path="res://scenes/character/components/ai/rl_trainer.gd" id="4_okkwj"]
@@ -381,7 +382,7 @@ code_player = NodePath("Gameplay/CodePlayer")
 goal_tracker = NodePath("Gameplay/PlayerGoalTracker")
 sensor = NodePath("AI/Sensor")
 environment = NodePath("AI/Environment")
-rl_agent = NodePath("AI/RLAgent")
+rl_agent = NodePath("AI/Agents/ExpectedSARSAAgent")
 rl_trainer = NodePath("AI/RLTrainer")
 
 [node name="AI" type="Node" parent="." unique_id=1856201777]
@@ -403,13 +404,19 @@ stats = NodePath("../../Gameplay/PlayerStats")
 goal_tracker = NodePath("../../Gameplay/PlayerGoalTracker")
 max_steps = 500
 
-[node name="RLAgent" type="Node" parent="AI" unique_id=1911412211]
+[node name="Agents" type="Node" parent="AI"]
+
+[node name="QLearningAgent" type="Node" parent="AI/Agents" unique_id=1911412211]
 script = ExtResource("2_x06ku")
 
-[node name="RLTrainer" type="Node" parent="AI" unique_id=839086992 node_paths=PackedStringArray("agent", "environment")]
+[node name="ExpectedSARSAAgent" type="Node" parent="AI/Agents"]
+script = ExtResource("2_expected_sarsa")
+
+[node name="RLTrainer" type="Node" parent="AI" unique_id=839086992 node_paths=PackedStringArray("agent", "environment", "agents_root")]
 script = ExtResource("4_okkwj")
-agent = NodePath("../RLAgent")
+agent = NodePath("../Agents/ExpectedSARSAAgent")
 environment = NodePath("../Environment")
+agents_root = NodePath("../Agents")
 
 [node name="SensorDebugView" type="Node2D" parent="."]
 visible = false
