@@ -30,6 +30,7 @@ func encode(observation: Dictionary) -> String:
 	var parts: Array[String] = []
 	_encode_stats(observation, parts)
 	_encode_action_mask(observation, parts)
+	_encode_inventory(observation, parts)
 
 	var local_map: PackedByteArray = observation.get("local_map", PackedByteArray())
 	var side: int = _get_map_side(local_map)
@@ -68,6 +69,22 @@ func _encode_action_mask(observation: Dictionary, parts: Array[String]) -> void:
 		if action_mask[action] != 0:
 			mask_bits |= 1 << action
 	parts.append("mask=%d" % mask_bits)
+
+
+func _encode_inventory(observation: Dictionary, parts: Array[String]) -> void:
+	var inventory: PackedFloat32Array = observation.get("inventory", PackedFloat32Array())
+	var equipped_item: PackedByteArray = observation.get("equipped_item", PackedByteArray())
+	var inventory_parts: Array[String] = []
+	var equipped_item_id: String = "none"
+	for item_index: int in range(Items.ITEM_DEFINITIONS.size()):
+		var item_id: String = String(Items.ITEM_DEFINITIONS[item_index].item_id)
+		var count: int = floori(inventory[item_index]) if item_index < inventory.size() else 0
+		if count > 0:
+			inventory_parts.append("%s:%d" % [item_id, count])
+		if item_index < equipped_item.size() and equipped_item[item_index] != 0:
+			equipped_item_id = item_id
+	parts.append("inventory=%s" % ",".join(inventory_parts) if not inventory_parts.is_empty() else "inventory=empty")
+	parts.append("equipped=%s" % equipped_item_id)
 
 
 func _encode_goal_delta(observation: Dictionary, parts: Array[String]) -> void:

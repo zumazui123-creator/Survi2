@@ -14,6 +14,7 @@ var act : String = ""
 @export var movement: PlayerMovement
 @export var animation: PlayerAnimationController
 @export var combat: PlayerCombat
+@export var combo: PlayerComboController
 @export var building: PlayerBuilding
 @export var items: PlayerItems
 @export var code_player: CodePlayer

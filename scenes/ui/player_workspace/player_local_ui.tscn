@@ -132,6 +132,12 @@ size_flags_horizontal = 0
 size_flags_vertical = 8
 text = "attacke"
 
+[node name="trinkeButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+text = "trinke"
+
 [node name="sageButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer2" unique_id=568166206]
 layout_mode = 2
 size_flags_horizontal = 0
@@ -777,6 +783,7 @@ fit_content = true
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer/LinksRechtsContainer/rechtsButton" to="CodeLayer/Code" method="_on_rechts_button_pressed" flags=18]
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer/UntenButton" to="CodeLayer/Code" method="_on_unten_button_pressed" flags=18]
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer2/attackeButton" to="CodeLayer/Code" method="_on_attacke_button_pressed" flags=18]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer2/trinkeButton" to="CodeLayer/Code" method="_on_trinke_button_pressed" flags=18]
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer2/sageButton" to="CodeLayer/Code" method="_on_sage_button_pressed" flags=18]
 [connection signal="item_activated" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer3/ItemList" to="CodeLayer/Code" method="_on_item_list_item_activated"]
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer2/createFunction" to="CodeLayer/Code" method="_on_create_function_pressed"]

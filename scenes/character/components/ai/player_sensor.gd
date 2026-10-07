@@ -15,6 +15,7 @@ const CHANNEL_ENEMY: int = 6
 const CHANNEL_GOAL: int = 7
 const CHANNEL_COUNT: int = 8
 const STAT_COUNT: int = 3
+const MAX_INVENTORY_ITEM_COUNT: float = 999.0
 
 const GROUP_OBJECT: StringName = &"sensor_object"
 const GROUP_ITEM: StringName = &"sensor_item"
@@ -94,6 +95,8 @@ func scan() -> Dictionary:
 		_mark_entity_group(local_map, GROUP_ENEMY, CHANNEL_ENEMY, origin_tile, false)
 		observation["local_map"] = local_map
 		observation["stats"] = _scan_stats()
+		observation["inventory"] = _scan_inventory()
+		observation["equipped_item"] = _scan_equipped_item()
 		observation["goal_delta"] = _scan_goal_delta(origin_tile)
 		observation["action_mask"] = _scan_action_mask(origin_tile)
 
@@ -150,6 +153,10 @@ func get_local_map_value_count() -> int:
 	return CHANNEL_COUNT * side * side
 
 
+func get_inventory_observation_shape() -> PackedInt32Array:
+	return PackedInt32Array([Items.ITEM_DEFINITIONS.size()])
+
+
 func is_ready_to_scan() -> bool:
 	return is_instance_valid(player) \
 		and is_instance_valid(movement) \
@@ -175,6 +182,15 @@ func matches_code_condition(subject: StringName, direction_action: StringName) -
 	var observation: Dictionary = scan()
 	var local_map: PackedByteArray = observation["local_map"]
 	return _has_channel_at_offset(local_map, channel, direction)
+
+
+## Checks the actual TileMap cell under a world-space point. Player interactions
+## use this instead of depending on rendered water nodes.
+func is_water_at_world_position(world_position: Vector2) -> bool:
+	if not is_ready_to_scan():
+		return false
+	var tile: Vector2i = world_map.world_to_navigation_tile(world_position)
+	return _is_water_tile(tile)
 
 
 func _get_code_condition_channel(subject: StringName) -> int:
@@ -213,6 +229,10 @@ func _create_empty_observation() -> Dictionary:
 	local_map.resize(get_local_map_value_count())
 	var stat_values: PackedFloat32Array = PackedFloat32Array()
 	stat_values.resize(STAT_COUNT)
+	var inventory: PackedFloat32Array = PackedFloat32Array()
+	inventory.resize(Items.ITEM_DEFINITIONS.size())
+	var equipped_item: PackedByteArray = PackedByteArray()
+	equipped_item.resize(Items.ITEM_DEFINITIONS.size())
 	var goal_delta: PackedFloat32Array = PackedFloat32Array()
 	goal_delta.resize(2)
 	var action_mask: PackedByteArray = PackedByteArray()
@@ -220,6 +240,8 @@ func _create_empty_observation() -> Dictionary:
 	return {
 		"local_map": local_map,
 		"stats": stat_values,
+		"inventory": inventory,
+		"equipped_item": equipped_item,
 		"goal_delta": goal_delta,
 		"action_mask": action_mask,
 	}
@@ -291,6 +313,39 @@ func _scan_stats() -> PackedFloat32Array:
 	result[0] = clampf(stats.hp / maxf(stats.max_hp, 1.0), 0.0, 1.0)
 	result[1] = clampf(stats.hydration / 100.0, 0.0, 1.0)
 	result[2] = clampf(stats.food / 100.0, 0.0, 1.0)
+	return result
+
+
+## Inventory indexes match Items.ITEM_DEFINITIONS. Counts are clamped only to
+## keep the observation space bounded; the inventory data itself is unchanged.
+func _scan_inventory() -> PackedFloat32Array:
+	var result: PackedFloat32Array = PackedFloat32Array()
+	result.resize(Items.ITEM_DEFINITIONS.size())
+	if not is_instance_valid(player):
+		return result
+
+	var inventory: Dictionary = Inventory.getItems(str(player.name))
+	for item_index: int in range(Items.ITEM_DEFINITIONS.size()):
+		var definition: ItemDefinition = Items.ITEM_DEFINITIONS[item_index]
+		var item_id: String = String(definition.item_id)
+		result[item_index] = clampf(float(inventory.get(item_id, 0)), 0.0, MAX_INVENTORY_ITEM_COUNT)
+	return result
+
+
+func _scan_equipped_item() -> PackedByteArray:
+	var result: PackedByteArray = PackedByteArray()
+	result.resize(Items.ITEM_DEFINITIONS.size())
+	if not is_instance_valid(player) or not is_instance_valid(player.items):
+		return result
+
+	var equipped_item_id: String = player.items.equippedItem
+	if equipped_item_id.is_empty():
+		return result
+	for item_index: int in range(Items.ITEM_DEFINITIONS.size()):
+		var definition: ItemDefinition = Items.ITEM_DEFINITIONS[item_index]
+		if String(definition.item_id) == equipped_item_id:
+			result[item_index] = 1
+			break
 	return result
 
 

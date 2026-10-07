@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ComboDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/gameplay/definitions/combo_definition.gd" id="1_combo"]
+
+[resource]
+script = ExtResource("1_combo")
+combo_id = &"double_strike"
+display_name = "Doppelschlag"
+input_sequence = PackedStringArray("walkLeft", "attack", "walkLeft", "attack", "walkRight", "attack")
+target_directions = PackedStringArray("walkLeft", "walkRight")
+target_hit_counts = PackedInt32Array(2, 1)
+damage_multiplier = 1.0
+visual_effect = &"double_strike"
+effect_duration = 0.34

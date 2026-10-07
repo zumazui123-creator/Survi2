@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ComboDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/gameplay/definitions/combo_definition.gd" id="1_combo"]
+
+[resource]
+script = ExtResource("1_combo")
+combo_id = &"sound_wave"
+display_name = "Schallwelle"
+input_sequence = PackedStringArray("walkLeft", "attack", "walkRight", "attack")
+target_directions = PackedStringArray("walkLeft", "walkRight")
+damage_multiplier = 1.25
+visual_effect = &"sound_wave"
+effect_duration = 0.38

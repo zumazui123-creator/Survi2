@@ -95,6 +95,18 @@ func execute_command(command: CodeParser.ParsedCommand, execution_id: int) -> vo
 	elif action == Strings.ACTION_ATTACK:
 		if player.combat:
 			await player.combat.hit(Strings.ACTION_ATTACK)
+	elif action == Strings.ACTION_COMBO:
+		if not player.combo:
+			_report_error("PlayerCombo ist nicht verfügbar.")
+		elif not player.combo.try_execute_combo(command.arguments):
+			_report_error("Unbekannte Combo: " + " ".join(command.arguments))
+	elif action == Strings.ACTION_DRINK:
+		if not player.combat:
+			_report_error("PlayerCombat ist nicht verfügbar.")
+		else:
+			var drank: bool = await player.combat.drink()
+			if not drank:
+				_report_error("Zum Trinken muss das Hand-Tile Wasser berühren.")
 	elif action == Strings.ACTION_BUILD or action == Strings.ACTION_PAINT:
 		build(action, command.arguments)
 	elif action == Strings.ACTION_USE_ITEM:

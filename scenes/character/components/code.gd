@@ -80,6 +80,8 @@ func _refresh_function_lists() -> void:
 	function_list.clear()
 	item_list.add_item(Strings.KEYWORD_REPEAT)
 	item_list.add_item(Strings.KEYWORD_IF)
+	for combo_command: String in Strings.KEYWORD_COMBOS:
+		item_list.add_item(combo_command)
 	item_list.add_item(Strings.KEYWORD_USE_ITEM)
 	if not is_instance_valid(function_library):
 		return
@@ -114,6 +116,10 @@ func _on_unten_button_pressed() -> void:
 
 func _on_attacke_button_pressed() -> void:
 	_insert_text("attacke")
+
+
+func _on_trinke_button_pressed() -> void:
+	_insert_text("trinke")
 
 
 func _on_sage_button_pressed() -> void:

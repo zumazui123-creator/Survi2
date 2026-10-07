@@ -22,6 +22,14 @@
 [ext_resource type="Script" path="res://scenes/character/components/player_survival.gd" id="28_survival"]
 [ext_resource type="Script" path="res://scenes/character/components/ai/player_sensor.gd" id="30_player_sensor"]
 [ext_resource type="Script" path="res://scenes/character/components/ai/sensor_debug_view.gd" id="31_sensor_debug"]
+[ext_resource type="Script" path="res://scenes/character/components/player_combo_controller.gd" id="32_combo_controller"]
+[ext_resource type="Script" path="res://scenes/character/components/player_combo_effects.gd" id="33_combo_effects"]
+[ext_resource type="Resource" path="res://assets/data/combos/sound_wave.tres" id="34_sound_wave"]
+[ext_resource type="Resource" path="res://assets/data/combos/whirlwind.tres" id="35_whirlwind"]
+[ext_resource type="Script" path="res://scenes/gameplay/definitions/combo_definition.gd" id="36_combo_definition"]
+[ext_resource type="Resource" path="res://assets/data/combos/earthquake.tres" id="37_earthquake"]
+[ext_resource type="Resource" path="res://assets/data/combos/double_strike.tres" id="38_double_strike"]
+[ext_resource type="Resource" path="res://assets/data/combos/cross_explosion.tres" id="39_cross_explosion"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_1pknd"]
 properties/0/path = NodePath("Visuals/AnimationPlayer:current_animation")
@@ -366,7 +374,7 @@ _data = {
 _data = [Vector2(0.00279329, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 2
 
-[node name="Player" type="CharacterBody2D" unique_id=699968112 node_paths=PackedStringArray("status", "status_view", "ai_control", "movement", "animation", "combat", "building", "items", "code_player", "goal_tracker", "sensor", "environment", "rl_agent", "rl_trainer") groups=["damageable", "player"]]
+[node name="Player" type="CharacterBody2D" unique_id=699968112 node_paths=PackedStringArray("status", "status_view", "ai_control", "movement", "animation", "combat", "combo", "building", "items", "code_player", "goal_tracker", "sensor", "environment", "rl_agent", "rl_trainer") groups=["damageable", "player"]]
 collision_layer = 3
 collision_mask = 3
 script = ExtResource("1_7xvi4")
@@ -376,6 +384,7 @@ ai_control = NodePath("AI")
 movement = NodePath("Gameplay/PlayerMovement")
 animation = NodePath("Visuals/AnimationPlayer")
 combat = NodePath("Gameplay/PlayerCombat")
+combo = NodePath("Gameplay/PlayerCombo")
 building = NodePath("Gameplay/PlayerBuilding")
 items = NodePath("Gameplay/PlayerItems")
 code_player = NodePath("Gameplay/CodePlayer")
@@ -436,13 +445,22 @@ visibility_update_mode = 2
 script = ExtResource("6_7r6u0")
 player = NodePath("../..")
 
-[node name="PlayerCombat" type="Node" parent="Gameplay" unique_id=1291276715 node_paths=PackedStringArray("player", "hit_area", "stats", "blood_particles") groups=["player"]]
+[node name="PlayerCombat" type="Node" parent="Gameplay" unique_id=1291276715 node_paths=PackedStringArray("player", "hit_area", "stats", "blood_particles", "action_audio", "drink_audio") groups=["player"]]
 unique_name_in_owner = true
 script = ExtResource("8_ba010")
 player = NodePath("../..")
 hit_area = NodePath("../../Visuals/MovingParts/HitArea")
 stats = NodePath("../PlayerStats")
 blood_particles = NodePath("../../Visuals/bloodParticles")
+action_audio = NodePath("../../Visuals/AudioStreamPlayer2D")
+drink_audio = NodePath("../../Visuals/DrinkAudioStreamPlayer2D")
+
+[node name="PlayerCombo" type="Node" parent="Gameplay" node_paths=PackedStringArray("player", "combat", "effects")]
+script = ExtResource("32_combo_controller")
+player = NodePath("../..")
+combat = NodePath("../PlayerCombat")
+effects = NodePath("../../Visuals/ComboEffects")
+combo_definitions = Array[ExtResource("36_combo_definition")]([ExtResource("34_sound_wave"), ExtResource("37_earthquake"), ExtResource("38_double_strike"), ExtResource("39_cross_explosion"), ExtResource("35_whirlwind")])
 
 [node name="PlayerBuilding" type="Node" parent="Gameplay" unique_id=1139544709 node_paths=PackedStringArray("player")]
 script = ExtResource("10_x06ku")
@@ -653,6 +671,16 @@ libraries/ = SubResource("AnimationLibrary_4vloy")
 script = ExtResource("21_okkwj")
 
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="Visuals" unique_id=1581309287]
+
+[node name="DrinkAudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="Visuals"]
+stream = ExtResource("4_bflkw")
+volume_db = -8.0
+pitch_scale = 0.72
+
+[node name="ComboEffects" type="Node2D" parent="Visuals"]
+visible = false
+z_index = 2
+script = ExtResource("33_combo_effects")
 
 [node name="bloodParticles" type="CPUParticles2D" parent="Visuals" unique_id=1922889635]
 emitting = false

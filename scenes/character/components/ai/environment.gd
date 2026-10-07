@@ -72,6 +72,18 @@ func _rebuild_observation_space() -> void:
 			1.0,
 			BoxSpace.ElementType.FLOAT
 		),
+		"inventory": BoxSpace.new(
+			sensor.get_inventory_observation_shape() if is_instance_valid(sensor) else PackedInt32Array(),
+			0.0,
+			PlayerSensor.MAX_INVENTORY_ITEM_COUNT,
+			BoxSpace.ElementType.FLOAT
+		),
+		"equipped_item": BoxSpace.new(
+			sensor.get_inventory_observation_shape() if is_instance_valid(sensor) else PackedInt32Array(),
+			0.0,
+			1.0,
+			BoxSpace.ElementType.BYTE
+		),
 		"goal_delta": BoxSpace.new(
 			PackedInt32Array([2]),
 			-GOAL_DELTA_LIMIT,

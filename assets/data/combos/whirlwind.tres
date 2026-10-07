@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ComboDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/gameplay/definitions/combo_definition.gd" id="1_combo"]
+
+[resource]
+script = ExtResource("1_combo")
+combo_id = &"whirlwind"
+display_name = "Wirbelsturm"
+input_sequence = PackedStringArray("walkLeft", "attack", "walkRight", "attack", "walkUp", "attack", "walkDown", "attack")
+target_directions = PackedStringArray("walkLeft", "walkRight", "walkUp", "walkDown")
+damage_multiplier = 0.75
+damage_pulse_count = 3
+damage_pulse_interval = 0.35
+visual_effect = &"whirlwind"
+effect_duration = 1.1

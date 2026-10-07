@@ -5,7 +5,7 @@ class_name MyCodeHighLighter
 # Keyword-Gruppen
 # ------------------------------
 const MOVEMENT_KEYWORDS: Array[String] = [
-	"oben", "rechts", "unten", "links", "attacke", "sage"
+	"oben", "rechts", "unten", "links", "attacke", "combo", "trinke", "sage"
 ]
 
 const LOOP_KEYWORDS: Array[String] = [

@@ -391,8 +391,11 @@ func _validate_and_normalize_arguments(
 				return "Die Schrittanzahl darf nicht negativ sein."
 		return ""
 
-	if action == Strings.ACTION_ATTACK:
-		return "" if arguments.is_empty() else "Der Angriffsbefehl akzeptiert keine Argumente."
+	if action == Strings.ACTION_ATTACK or action == Strings.ACTION_DRINK:
+		return "" if arguments.is_empty() else "Dieser Aktionsbefehl akzeptiert keine Argumente."
+
+	if action == Strings.ACTION_COMBO:
+		return _validate_combo_arguments(arguments, locale)
 
 	if action == Strings.ACTION_BUILD or action == Strings.ACTION_PAINT:
 		if arguments.size() != 2:
@@ -418,6 +421,27 @@ func _validate_and_normalize_arguments(
 		return ""
 
 	return "Unbekannte Aktion: %s" % action
+
+
+func _validate_combo_arguments(arguments: PackedStringArray, locale: String) -> String:
+	if arguments.is_empty() or arguments.size() % 2 != 0:
+		return "Eine Combo benötigt Paare aus Richtung und 'attacke'."
+	var localized_actions: Dictionary = Strings.ACTION_NAMES.get(locale, {})
+	for argument_index: int in range(0, arguments.size(), 2):
+		var direction_name: String = arguments[argument_index].to_lower()
+		if not localized_actions.has(direction_name):
+			return "Unbekannte Combo-Richtung: %s" % arguments[argument_index]
+		var direction_action: String = localized_actions[direction_name]
+		if not Strings.direction_map.has(direction_action):
+			return "Unbekannte Combo-Richtung: %s" % arguments[argument_index]
+
+		var attack_name: String = arguments[argument_index + 1].to_lower()
+		if not localized_actions.has(attack_name) \
+				or localized_actions[attack_name] != Strings.ACTION_ATTACK:
+			return "Jede Combo-Richtung muss von 'attacke' gefolgt werden."
+		arguments[argument_index] = direction_action
+		arguments[argument_index + 1] = Strings.ACTION_ATTACK
+	return ""
 
 
 func _error(message: String, line_number: int) -> Dictionary:

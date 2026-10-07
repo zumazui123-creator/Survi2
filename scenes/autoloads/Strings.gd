@@ -11,6 +11,8 @@ const ACTION_WALK_RIGHT = "walkRight"
 const ACTION_WALK_UP    = "walkUp"
 const ACTION_WALK_DOWN  = "walkDown"
 const ACTION_ATTACK     = "attack"
+const ACTION_COMBO      = "combo"
+const ACTION_DRINK      = "drink"
 const ACTION_SAY        = "say"
 const ACTION_BUILD      = "build"
 const ACTION_PAINT      = "paint"
@@ -30,6 +32,8 @@ const ACTION_NAMES = {
 		"oben":   ACTION_WALK_UP,
 		"unten":  ACTION_WALK_DOWN,
 		"attacke": ACTION_ATTACK,
+		"combo": ACTION_COMBO,
+		"trinke": ACTION_DRINK,
 		"sage":   ACTION_SAY,
 		"nutze item" : ACTION_USE_ITEM,
 		"baue":   ACTION_BUILD,
@@ -41,6 +45,8 @@ const ACTION_NAMES = {
 		"up":     ACTION_WALK_UP,
 		"down":   ACTION_WALK_DOWN,
 		"attack": ACTION_ATTACK,
+		"combo":  ACTION_COMBO,
+		"drink":  ACTION_DRINK,
 		"speak":  ACTION_SAY,
 		"use item" : ACTION_USE_ITEM,
 		"build":  ACTION_BUILD,
@@ -73,6 +79,19 @@ const KEYWORD_REPEAT = "wiederhole 3 mal"
 const KEYWORD_REPEAT_FULL = "wiederhole 3 mal\n\nende"
 const KEYWORD_IF = "wenn"
 const KEYWORD_IF_FULL = "wenn gegner rechts\n\nende"
+const KEYWORD_COMBO_SOUND_WAVE = "combo links attacke rechts attacke"
+const KEYWORD_COMBO_EARTHQUAKE = "combo unten attacke oben attacke"
+const KEYWORD_COMBO_DOUBLE_STRIKE = "combo links attacke links attacke rechts attacke"
+const KEYWORD_COMBO_CROSS_EXPLOSION = "combo oben attacke unten attacke links attacke rechts attacke"
+const KEYWORD_COMBO_WHIRLWIND = "combo links attacke rechts attacke oben attacke unten attacke"
+const KEYWORD_COMBO = KEYWORD_COMBO_SOUND_WAVE
+const KEYWORD_COMBOS: PackedStringArray = PackedStringArray([
+	KEYWORD_COMBO_SOUND_WAVE,
+	KEYWORD_COMBO_EARTHQUAKE,
+	KEYWORD_COMBO_DOUBLE_STRIKE,
+	KEYWORD_COMBO_CROSS_EXPLOSION,
+	KEYWORD_COMBO_WHIRLWIND,
+])
 const KEYWORD_USE_ITEM = "nutze item 3"
 
 const CONDITION_ENEMY: StringName = &"enemy"

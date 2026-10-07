@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ComboDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/gameplay/definitions/combo_definition.gd" id="1_combo"]
+
+[resource]
+script = ExtResource("1_combo")
+combo_id = &"cross_explosion"
+display_name = "Kreuzexplosion"
+input_sequence = PackedStringArray("walkUp", "attack", "walkDown", "attack", "walkLeft", "attack", "walkRight", "attack")
+target_directions = PackedStringArray("walkUp", "walkDown", "walkLeft", "walkRight")
+damage_multiplier = 2.0
+visual_effect = &"cross_explosion"
+effect_duration = 0.18
