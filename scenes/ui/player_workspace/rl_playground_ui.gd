@@ -4,6 +4,7 @@ class_name RLPlaygroundUI
 var agent: RLAgent
 var trainer: RLTrainer
 var environment: Survi2NavigationEnv
+var sensor: PlayerSensor
 var _episode_reward: float = 0.0
 var _last_terminated: bool = false
 var _last_truncated: bool = false
@@ -22,6 +23,8 @@ var _parameter_controls: Dictionary = {}
 @onready var agent_metrics_grid: GridContainer = %AgentMetricsGrid
 @onready var max_steps_input: SpinBox = %MaxStepsInput
 @onready var agent_settings_grid: GridContainer = %AgentSettingsGrid
+@onready var sensor_visualization_toggle: CheckButton = %SensorVisualizationToggle
+@onready var sensor_radius_input: SpinBox = %SensorRadiusInput
 @onready var reward_policy_editor: NavigationRewardPolicyEditor = %RewardSettingsPanel
 @onready var start_training_button: Button = %StartTrainingButton
 @onready var random_policy_button: Button = %RandomPolicyButton
@@ -38,6 +41,8 @@ func bind_components(
 	agent = value_agent
 	trainer = value_trainer
 	environment = value_environment
+	sensor = environment.sensor if is_instance_valid(environment) else null
+	_sync_sensor_controls()
 
 	if not _has_valid_components():
 		_set_ai_status("Nicht verfügbar")
@@ -80,6 +85,11 @@ func _connect_components() -> void:
 		trainer.agent_changed.connect(_on_trainer_agent_changed)
 	if not environment.step_completed.is_connected(_on_step_completed):
 		environment.step_completed.connect(_on_step_completed)
+	if is_instance_valid(sensor):
+		if not sensor.radius_changed.is_connected(_on_bound_sensor_radius_changed):
+			sensor.radius_changed.connect(_on_bound_sensor_radius_changed)
+		if not sensor.visualization_changed.is_connected(_on_bound_sensor_visualization_changed):
+			sensor.visualization_changed.connect(_on_bound_sensor_visualization_changed)
 	if not agent.configuration_changed.is_connected(_on_agent_configuration_changed):
 		agent.configuration_changed.connect(_on_agent_configuration_changed)
 	if not agent.model_changed.is_connected(_on_agent_model_changed):
@@ -100,6 +110,11 @@ func _disconnect_components() -> void:
 			trainer.agent_changed.disconnect(_on_trainer_agent_changed)
 	if is_instance_valid(environment) and environment.step_completed.is_connected(_on_step_completed):
 		environment.step_completed.disconnect(_on_step_completed)
+	if is_instance_valid(sensor):
+		if sensor.radius_changed.is_connected(_on_bound_sensor_radius_changed):
+			sensor.radius_changed.disconnect(_on_bound_sensor_radius_changed)
+		if sensor.visualization_changed.is_connected(_on_bound_sensor_visualization_changed):
+			sensor.visualization_changed.disconnect(_on_bound_sensor_visualization_changed)
 	if is_instance_valid(agent):
 		if agent.configuration_changed.is_connected(_on_agent_configuration_changed):
 			agent.configuration_changed.disconnect(_on_agent_configuration_changed)
@@ -240,6 +255,7 @@ func _refresh_controls() -> void:
 	stop_training_button.disabled = not is_training
 	reset_agent_button.disabled = is_training
 	_set_inputs_editable(can_start)
+	_refresh_sensor_controls()
 
 
 func _set_controls_enabled(value: bool) -> void:
@@ -248,6 +264,7 @@ func _set_controls_enabled(value: bool) -> void:
 	stop_training_button.disabled = true
 	reset_agent_button.disabled = not value
 	_set_inputs_editable(value)
+	_refresh_sensor_controls()
 
 
 func _set_inputs_editable(value: bool) -> void:
@@ -259,6 +276,45 @@ func _set_inputs_editable(value: bool) -> void:
 		elif control is CheckBox:
 			(control as CheckBox).disabled = not value
 	reward_policy_editor.set_editable(value)
+	if is_instance_valid(sensor_radius_input):
+		sensor_radius_input.editable = value and is_instance_valid(sensor)
+
+
+func _sync_sensor_controls() -> void:
+	var sensor_available: bool = is_instance_valid(sensor)
+	sensor_visualization_toggle.disabled = not sensor_available
+	sensor_radius_input.editable = sensor_available \
+		and (not is_instance_valid(trainer) or not trainer.training)
+	if not sensor_available:
+		sensor_visualization_toggle.set_pressed_no_signal(false)
+		return
+	sensor_visualization_toggle.set_pressed_no_signal(sensor.is_visualization_enabled())
+	sensor_radius_input.set_value_no_signal(float(sensor.scan_radius_tiles))
+
+
+func _refresh_sensor_controls() -> void:
+	var sensor_available: bool = is_instance_valid(sensor)
+	sensor_visualization_toggle.disabled = not sensor_available
+	sensor_radius_input.editable = sensor_available \
+		and (not is_instance_valid(trainer) or not trainer.training)
+
+
+func _on_sensor_visualization_toggled(value: bool) -> void:
+	if is_instance_valid(sensor):
+		sensor.set_visualization_enabled(value)
+
+
+func _on_sensor_radius_changed(value: float) -> void:
+	if is_instance_valid(sensor):
+		sensor.set_scan_radius(int(value))
+
+
+func _on_bound_sensor_radius_changed(value: int) -> void:
+	sensor_radius_input.set_value_no_signal(float(value))
+
+
+func _on_bound_sensor_visualization_changed(value: bool) -> void:
+	sensor_visualization_toggle.set_pressed_no_signal(value)
 
 
 func _environment_state_text() -> String:
@@ -396,4 +452,6 @@ func _on_max_steps_changed(value: float) -> void:
 
 
 func _exit_tree() -> void:
+	if is_instance_valid(sensor):
+		sensor.set_visualization_enabled(false)
 	_disconnect_components()

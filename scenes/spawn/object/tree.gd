@@ -4,7 +4,7 @@ class_name TreeEntity
 signal health_changed(tile: Vector2i, current_hp: float)
 signal tree_destroyed(tile: Vector2i)
 
-@export var objectId := "":
+@export var objectId: String = "":
 	set(value):
 		if value:
 			objectId = value
@@ -13,16 +13,18 @@ signal tree_destroyed(tile: Vector2i)
 			$Sprite.texture = Items.get_object_texture(value)
 			loaded = true
 
-var data := {}
-var hp = 40
-var loaded = false
-var tree_tile := Vector2i.ZERO
+var data: Dictionary = {}
+var hp: float = 40.0
+var loaded: bool = false
+var tree_tile: Vector2i = Vector2i.ZERO
 
 
 func configure_managed_tree(tile: Vector2i, tree_object_id: String, current_hp: float) -> void:
 	tree_tile = tile
 	objectId = tree_object_id
 	hp = current_hp
+	$AnimationPlayer.stop()
+	$Sprite.scale = Vector2.ONE
 
 func getDamage(causer, amount, type):
 	if !loaded:

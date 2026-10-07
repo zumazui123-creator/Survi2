@@ -20,6 +20,7 @@
 [ext_resource type="Script" path="res://scenes/character/components/player_goal_tracker.gd" id="27_goal_tracker"]
 [ext_resource type="Script" path="res://scenes/character/components/player_survival.gd" id="28_survival"]
 [ext_resource type="Script" path="res://scenes/character/components/ai/player_sensor.gd" id="30_player_sensor"]
+[ext_resource type="Script" path="res://scenes/character/components/ai/sensor_debug_view.gd" id="31_sensor_debug"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_1pknd"]
 properties/0/path = NodePath("Visuals/AnimationPlayer:current_animation")
@@ -385,11 +386,12 @@ rl_trainer = NodePath("AI/RLTrainer")
 
 [node name="AI" type="Node" parent="." unique_id=1856201777]
 
-[node name="Sensor" type="Node" parent="AI" node_paths=PackedStringArray("player", "movement", "stats")]
+[node name="Sensor" type="Node" parent="AI" node_paths=PackedStringArray("player", "movement", "stats", "debug_view")]
 script = ExtResource("30_player_sensor")
 player = NodePath("../..")
 movement = NodePath("../../Gameplay/PlayerMovement")
 stats = NodePath("../../Gameplay/PlayerStats")
+debug_view = NodePath("../../SensorDebugView")
 scan_radius_tiles = 10
 
 [node name="Environment" type="Node" parent="AI" unique_id=1785568005 node_paths=PackedStringArray("player", "sensor", "movement", "stats", "goal_tracker")]
@@ -408,6 +410,11 @@ script = ExtResource("2_x06ku")
 script = ExtResource("4_okkwj")
 agent = NodePath("../RLAgent")
 environment = NodePath("../Environment")
+
+[node name="SensorDebugView" type="Node2D" parent="."]
+visible = false
+z_index = 1
+script = ExtResource("31_sensor_debug")
 
 [node name="Networking" type="Node" parent="."]
 

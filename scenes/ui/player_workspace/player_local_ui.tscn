@@ -352,6 +352,54 @@ theme_override_constants/h_separation = 10
 theme_override_constants/v_separation = 5
 columns = 2
 
+[node name="SensorPanel" type="PanelContainer" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content"]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/SensorPanel"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Title" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/SensorPanel/VBox"]
+layout_mode = 2
+text = "Sensor-Visualisierung"
+horizontal_alignment = 1
+
+[node name="Grid" type="GridContainer" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/SensorPanel/VBox"]
+layout_mode = 2
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 5
+columns = 2
+
+[node name="VisualizationLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/SensorPanel/VBox/Grid"]
+layout_mode = 2
+tooltip_text = "Zeigt den Tile-Radius und hebt erkannte Entitäten hervor."
+text = "Anzeige"
+
+[node name="SensorVisualizationToggle" type="CheckButton" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/SensorPanel/VBox/Grid"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "An / Aus"
+
+[node name="RadiusLabel" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/SensorPanel/VBox/Grid"]
+layout_mode = 2
+tooltip_text = "Sensorreichweite in Tiles. Verändert zugleich die Größe der KI-Observation."
+text = "Radius (Tiles)"
+
+[node name="SensorRadiusInput" type="SpinBox" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/SensorPanel/VBox/Grid"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(135, 0)
+layout_mode = 2
+min_value = 1.0
+max_value = 64.0
+step = 1.0
+value = 10.0
+
+[node name="Hint" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/SensorPanel/VBox"]
+layout_mode = 2
+text = "Erkannte Objekte, Items, Tiere und Gegner pulsieren gelb."
+horizontal_alignment = 1
+autowrap_mode = 2
+
 [node name="RewardSettingsPanel" type="PanelContainer" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content"]
 unique_name_in_owner = true
 layout_mode = 2
@@ -660,6 +708,8 @@ fit_content = true
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer2/createFunction" to="CodeLayer/Code" method="_on_create_function_pressed"]
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer2/loadFunction" to="CodeLayer/Code" method="_on_load_function_pressed"]
 [connection signal="value_changed" from="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/AgentSettingsPanel/VBox/EpisodeGrid/MaxStepsInput" to="CodeLayer/Code/TabContainer/KI Playground" method="_on_max_steps_changed"]
+[connection signal="toggled" from="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/SensorPanel/VBox/Grid/SensorVisualizationToggle" to="CodeLayer/Code/TabContainer/KI Playground" method="_on_sensor_visualization_toggled"]
+[connection signal="value_changed" from="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/SensorPanel/VBox/Grid/SensorRadiusInput" to="CodeLayer/Code/TabContainer/KI Playground" method="_on_sensor_radius_changed"]
 [connection signal="value_changed" from="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/RewardSettingsPanel/VBox/Grid/GoalRewardInput" to="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/RewardSettingsPanel" method="_on_goal_reward_changed"]
 [connection signal="value_changed" from="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/RewardSettingsPanel/VBox/Grid/DeathRewardInput" to="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/RewardSettingsPanel" method="_on_death_reward_changed"]
 [connection signal="value_changed" from="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/RewardSettingsPanel/VBox/Grid/BlockedRewardInput" to="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/RewardSettingsPanel" method="_on_blocked_reward_changed"]

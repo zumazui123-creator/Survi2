@@ -13,6 +13,8 @@ var max_hp: float
 var current_hp: float
 var representation: Representation = Representation.PASSIVE
 var active_node: TreeEntity
+var passive_instance_index: int = -1
+var highlighted: bool = false
 
 
 func _init(spawn_data: TreeSpawnData, initial_hp: float) -> void:
@@ -36,6 +38,12 @@ func mark_destroyed() -> void:
 	current_hp = 0.0
 	active_node = null
 	representation = Representation.DESTROYED
+
+
+func restore() -> void:
+	current_hp = max_hp
+	active_node = null
+	representation = Representation.PASSIVE
 
 
 func is_destroyed() -> bool:

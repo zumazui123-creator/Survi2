@@ -25,3 +25,5 @@ script = ExtResource("5_qci3n")
 
 [node name="TreeManager" type="Node2D" parent="." groups=["tree_manager"]]
 script = ExtResource("6_tree_manager")
+
+[node name="PassiveTrees" type="MultiMeshInstance2D" parent="TreeManager"]
