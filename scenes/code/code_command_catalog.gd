@@ -15,40 +15,54 @@ static func get_examples(locale: String = "de") -> Array[Dictionary]:
 		return [
 			{
 				"name": "First steps",
-				"code": "repeat 3 times\n    right\nend\nattack",
+				"code": "repeat 3 times\n    right\nend\nrepeat 3 times\n    left\nend\nattack",
 			},
 		]
 	return [
 		{
-			"name": "Erste Schritte",
-			"code": "wiederhole 3 mal\n    rechts\nende\nattacke",
+			"name": "Hin und zurück",
+			"code": "schritte = 3\nwiederhole schritte mal\n    rechts\nende\nwiederhole schritte mal\n    links\nende\nsage Wieder am Start",
+			"description": "Definiert schritte und läuft dieselbe Strecke hin und zurück.",
 		},
 		{
 			"name": "Sicher trinken",
-			"code": "wenn wasser rechts\n    rechts\n    trinke\nende",
+			"code": "wasser_abstand = abstand zu wasser\nwenn wasser_abstand kleiner 3\n    wenn wasser rechts\n        sage Wasser gefunden\n        rechts\n        trinke\n        links\n    ende\nende",
+			"description": "Prüft Abstand und Richtung, richtet sich zum Wasser aus und trinkt.",
 		},
 		{
-			"name": "Gegner abwehren",
-			"code": "wenn gegner links\n    links\n    attacke\nende",
+			"name": "Patrouille mit Angriff",
+			"code": "wiederhole 2 mal\n    links\n    wenn gegner links\n        attacke\n    ende\n    rechts\n    wenn gegner rechts\n        attacke\n    ende\nende",
+			"description": "Patrouilliert links und rechts und greift erkannte Gegner an.",
 		},
 		{
-			"name": "Mauer und Turm",
-			"code": "baue mauer links\nbaue turm rechts",
+			"name": "Kleine Verteidigung",
+			"code": "links\nbaue mauer links\nrechts\noben\nbaue turm oben\nunten",
+			"description": "Bewegt sich zwischen zwei Baupositionen und errichtet Mauer und Turm.",
 		},
 		{
-			"name": "Schallwellen-Combo",
-			"code": "combo links attacke rechts attacke",
+			"name": "Ausweichen und Schallwelle",
+			"code": "links\nrechts\ncombo links attacke rechts attacke\noben\nunten",
+			"description": "Weicht seitlich aus, führt die Schallwelle aus und kehrt zurück.",
 		},
 		{
-			"name": "Variablen und Wiederholung",
-			"code": "schritte = 3\nwiederhole schritte mal\n    rechts\nende\nsage schritte",
+			"name": "Variable Laufstrecke",
+			"code": "schritte = 2\nrunden = 2\nwiederhole runden mal\n    wiederhole schritte mal\n        rechts\n    ende\n    wiederhole schritte mal\n        links\n    ende\nende\nsage Training beendet",
+			"description": "Verwendet zwei Variablen und verschachtelte Schleifen für mehrere Runden.",
 		},
 		{
-			"name": "Wasser suchen",
-			"code": "wasser_abstand = abstand zu wasser\nwenn wasser_abstand kleiner 3\n    sage Wasser ist nah\nende",
-			"description": "Definiert wasser_abstand, bevor die Variable verwendet wird.",
+			"name": "Mana beobachten",
+			"code": "mein_mana = spieler mana\nwenn mein_mana größer 30\n    sage Genug Mana für eine Combo\n    combo links attacke rechts attacke\nende",
+			"description": "Liest das aktuelle Mana in eine Variable und setzt eine Combo nur bei genügend Mana ein.",
 		},
 	]
+
+
+static func get_function_templates(locale: String = "de") -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for entry: Dictionary in get_entries(locale):
+		if bool(entry.get("show_in_functions", false)):
+			result.append(entry)
+	return result
 
 
 static func get_description(symbol: String, locale: String = "de") -> String:
@@ -99,21 +113,27 @@ static func _get_german_entries() -> Array[Dictionary]:
 			"schritte = 3",
 			"Speichert eine Zahl, einen Text, eine andere Variable oder einen berechneten Wert.",
 			["spieler", "abstand", "zu"],
-			"control"
+			"control",
+			true,
+			"Variable"
 		),
 		_entry(
 			"spielerwert =",
 			"mein_mana = spieler mana",
 			"Liest Mana, Leben, Wasser oder Essen des Players in eine Variable.",
 			["spieler", "mana", "leben", "wasser", "essen"],
-			"control"
+			"control",
+			true,
+			"Spielerwert"
 		),
 		_entry(
 			"wiederhole",
 			"wiederhole 3 mal\n    \nende",
 			"Wiederholt den eingerückten Block mit einer Zahl oder ganzzahligen Variable.",
 			["wiederhole", "mal", "ende"],
-			"control"
+			"control",
+			true,
+			"Schleife: wiederhole"
 		),
 		_entry(
 			"wenn",
@@ -154,7 +174,15 @@ static func _get_english_entries() -> Array[Dictionary]:
 		_entry("use item", "use item 1", "Uses an inventory slot.", ["use", "item"]),
 		_entry("build", "build wall left", "Builds on a free adjacent tile.", ["build"]),
 		_entry("combo", "combo left attack right attack", "Executes a known mana combo.", ["combo"]),
-		_entry("repeat", "repeat 3 times\n    \nend", "Repeats a finite block.", ["repeat", "times", "end"], "control"),
+		_entry(
+			"repeat",
+			"repeat 3 times\n    \nend",
+			"Repeats a finite block.",
+			["repeat", "times", "end"],
+			"control",
+			true,
+			"Loop: repeat"
+		),
 		_entry(
 			"if",
 			"if enemy right\n    \nend",
@@ -178,7 +206,9 @@ static func _entry(
 		insert_text: String,
 		description: String,
 		keywords: Array[String],
-		group: String = "movement"
+		group: String = "movement",
+		show_in_functions: bool = false,
+		function_label: String = ""
 	) -> Dictionary:
 	return {
 		"trigger": trigger,
@@ -186,4 +216,6 @@ static func _entry(
 		"description": description,
 		"keywords": PackedStringArray(keywords),
 		"group": group,
+		"show_in_functions": show_in_functions,
+		"function_label": function_label,
 	}

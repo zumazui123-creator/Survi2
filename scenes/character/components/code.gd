@@ -168,6 +168,12 @@ func _refresh_function_lists() -> void:
 		return
 	item_list.clear()
 	function_list.clear()
+	for entry: Dictionary in CodeCommandCatalog.get_function_templates(Strings.current_locale):
+		_add_list_item(
+			String(entry.get("function_label", entry.get("trigger", "Vorlage"))),
+			String(entry.get("insert_text", "")),
+			String(entry.get("description", ""))
+		)
 	if not is_instance_valid(function_library):
 		return
 	var function_names: PackedStringArray = function_library.get_function_names()
