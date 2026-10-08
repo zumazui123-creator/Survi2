@@ -87,8 +87,15 @@ func _init() -> void:
 
 
 func _build_indexes() -> void:
-	for definition in ITEM_DEFINITIONS:
+	for resource: Resource in ITEM_DEFINITIONS:
+		var definition: ItemDefinition = resource as ItemDefinition
+		if definition == null:
+			_report_invalid_definition(resource, &"ItemDefinition")
+			continue
 		var id: String = String(definition.item_id)
+		if id.is_empty():
+			_report_missing_id(resource, &"item_id")
+			continue
 		item_definitions[id] = definition
 		match definition.kind:
 			ItemDefinition.Kind.CONSUMABLE:
@@ -98,31 +105,80 @@ func _build_indexes() -> void:
 		if not definition.recipe.is_empty():
 			recipes[id] = definition.recipe.duplicate(true)
 
-	for definition in ENEMY_DEFINITIONS:
+	for resource: Resource in ENEMY_DEFINITIONS:
+		var definition: ActorDefinition = resource as ActorDefinition
+		if definition == null:
+			_report_invalid_definition(resource, &"ActorDefinition")
+			continue
 		var id: String = String(definition.actor_id)
+		if id.is_empty():
+			_report_missing_id(resource, &"actor_id")
+			continue
 		actor_definitions[id] = definition
 		mobs[id] = definition.to_legacy_dict()
 
-	for definition in ANIMAL_DEFINITIONS:
+	for resource: Resource in ANIMAL_DEFINITIONS:
+		var definition: ActorDefinition = resource as ActorDefinition
+		if definition == null:
+			_report_invalid_definition(resource, &"ActorDefinition")
+			continue
 		var id: String = String(definition.actor_id)
+		if id.is_empty():
+			_report_missing_id(resource, &"actor_id")
+			continue
 		actor_definitions[id] = definition
 		animals[id] = definition.to_legacy_dict()
 
 	# NPC definitions are addressable by Creature without entering the random
 	# enemy or animal spawn pools.
-	for definition in NPC_DEFINITIONS:
+	for resource: Resource in NPC_DEFINITIONS:
+		var definition: ActorDefinition = resource as ActorDefinition
+		if definition == null:
+			_report_invalid_definition(resource, &"ActorDefinition")
+			continue
 		var id: String = String(definition.actor_id)
+		if id.is_empty():
+			_report_missing_id(resource, &"actor_id")
+			continue
 		actor_definitions[id] = definition
 
-	for definition in OBJECT_DEFINITIONS:
+	for resource: Resource in OBJECT_DEFINITIONS:
+		var definition: WorldObjectDefinition = resource as WorldObjectDefinition
+		if definition == null:
+			_report_invalid_definition(resource, &"WorldObjectDefinition")
+			continue
 		var id: String = String(definition.object_id)
+		if id.is_empty():
+			_report_missing_id(resource, &"object_id")
+			continue
 		object_definitions[id] = definition
 		objects[id] = definition.to_legacy_dict()
 
-	for definition in PROJECTILE_DEFINITIONS:
+	for resource: Resource in PROJECTILE_DEFINITIONS:
+		var definition: ProjectileDefinition = resource as ProjectileDefinition
+		if definition == null:
+			_report_invalid_definition(resource, &"ProjectileDefinition")
+			continue
 		var id: String = String(definition.projectile_id)
+		if id.is_empty():
+			_report_missing_id(resource, &"projectile_id")
+			continue
 		projectile_definitions[id] = definition
 		projectiles[id] = definition.to_legacy_dict()
+
+
+func _report_invalid_definition(resource: Resource, expected_type: StringName) -> void:
+	var path: String = resource.resource_path if resource != null else "<null>"
+	var actual_type: String = resource.get_class() if resource != null else "null"
+	push_error(
+		"Items: '%s' was loaded as %s instead of %s. Check the resource's script."
+		% [path, actual_type, expected_type]
+	)
+
+
+func _report_missing_id(resource: Resource, property_name: StringName) -> void:
+	var path: String = resource.resource_path if resource != null else "<null>"
+	push_error("Items: '%s' has no %s." % [path, property_name])
 
 
 func get_item_icon(item_id: String) -> Texture2D:
