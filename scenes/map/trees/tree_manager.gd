@@ -24,7 +24,7 @@ const HIDDEN_COLOR: Color = Color(1.0, 1.0, 1.0, 0.0)
 @export_range(4, 64, 1) var chunk_size_tiles: int = 16
 @export_range(0.0, 3600.0, 1.0) var tree_spawn_delay: float = 60.0
 
-@onready var world_map: Map = get_parent() as Map
+@onready var world_map: Map = get_parent().get_parent() as Map
 @onready var passive_trees: MultiMeshInstance2D = $PassiveTrees
 
 # Tiles are the stable identity. Full TreeEntity scenes are temporary active

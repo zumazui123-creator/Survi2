@@ -19,11 +19,11 @@ var width = Constants.MAP_SIZE.x
 var height = Constants.MAP_SIZE.y
 
 
-@onready var enemies : Node2D  
-@onready var animals : Node2D 
-#@export var tile_map : TileMapLayer 
-var tile_map : TileMapLayer 
-@onready var tree_manager: TreeManager = $TreeManager
+@onready var enemies : Node2D
+@onready var animals : Node2D
+#@export var tile_map : TileMapLayer
+var tile_map : TileMapLayer
+@onready var object_manager: ObjectManager = $ObjectManager
 
 var map_type : Node
 var spawnPosition = Vector2i(0,0)
@@ -37,24 +37,24 @@ var level_no : int = -1
 # A single shared grid describes terrain and persistent world obstacles. Moving
 # actors use the lightweight occupancy/reservation dictionaries below instead
 # of mutating the AStar graph for every step.
-var astar_grid := AStarGrid2D.new()
-var astar_ready := false
+var astar_grid: AStarGrid2D = AStarGrid2D.new()
+var astar_ready: bool = false
 var navigation_blockers: Dictionary = {}
 var navigation_reservations: Dictionary = {}
 var navigation_occupants: Dictionary = {}
 var navigation_moves: Dictionary = {}
 var navigation_destinations: Dictionary = {}
-var navigation_revision := 0
-var navigation_generation := 0
-var navigation_path_queries := 0
-@export var debug_navigation := false
+var navigation_revision: int = 0
+var navigation_generation: int = 0
+var navigation_path_queries: int = 0
+@export var debug_navigation: bool = false
 
 func _ready():
 	print("Map ready")
 	enemies = get_tree().get_first_node_in_group("enemies_root")
 	animals = get_tree().get_first_node_in_group("animals_root")
-	
-	
+
+
 func generateMap(level_dict : Dictionary):
 	print("generated:"+str(level_dict))
 	generation_started.emit()
@@ -71,9 +71,9 @@ func generateMap(level_dict : Dictionary):
 	spawnPosition = Vector2i.ZERO
 	endPosition = Vector2i(-10, -10)
 	_reset_navigation_state()
-	tree_manager.clear_trees(false)
+	object_manager.clear_trees(false)
 	var generated_trees: Array[TreeSpawnData] = []
-	
+
 	if level_type == Constants.MAP_MAIN:
 		map_type  		=  get_node_or_null("MainLevelGenerator")
 		var tiles: Array = map_type.generateMainMap(level_dict)
@@ -99,7 +99,7 @@ func generateMap(level_dict : Dictionary):
 
 	if spawnable_tiles.is_empty():
 		spawnable_tiles = walkable_tiles.duplicate()
-	tree_manager.load_spawn_data(generated_trees)
+	object_manager.load_tree_spawn_data(generated_trees)
 	rebuild_navigation_grid()
 
 
@@ -138,8 +138,8 @@ func rebuild_navigation_grid() -> void:
 
 
 func _get_navigation_region() -> Rect2i:
-	var minimum := Vector2i.ZERO
-	var maximum := Vector2i(maxi(width - 1, 0), maxi(height - 1, 0))
+	var minimum: Vector2i = Vector2i.ZERO
+	var maximum: Vector2i = Vector2i(maxi(width - 1, 0), maxi(height - 1, 0))
 	for tile: Vector2i in walkable_tiles:
 		minimum.x = mini(minimum.x, tile.x)
 		minimum.y = mini(minimum.y, tile.y)
@@ -162,8 +162,8 @@ func is_navigation_tile_in_bounds(tile: Vector2i) -> bool:
 
 func is_navigation_tile_walkable(
 		tile: Vector2i,
-		include_actor_occupancy := false,
-		except_actor_id := -1
+		include_actor_occupancy: bool = false,
+		except_actor_id: int = -1
 	) -> bool:
 	if not is_navigation_tile_in_bounds(tile) or astar_grid.is_point_solid(tile):
 		return false
@@ -209,7 +209,7 @@ func get_navigation_path_avoiding_actors(
 		if is_navigation_tile_walkable(tile):
 			astar_grid.set_point_solid(tile, true)
 			temporary_solids.append(tile)
-	var result := get_navigation_path(from_tile, to_tile)
+	var result: Array[Vector2i] = get_navigation_path(from_tile, to_tile)
 	for tile in temporary_solids:
 		if not navigation_blockers.has(tile):
 			astar_grid.set_point_solid(tile, false)
@@ -220,12 +220,12 @@ func get_attack_destination(
 		enemy_tile: Vector2i,
 		player_tile: Vector2i,
 		actor_id: int,
-		desired_range_tiles := 1
+		desired_range_tiles: int = 1
 	) -> Vector2i:
-	var radius := maxi(desired_range_tiles, 1)
+	var radius: int = maxi(desired_range_tiles, 1)
 	var candidates: Array[Vector2i] = []
 	for x_offset in range(-radius, radius + 1):
-		var y_offset := radius - absi(x_offset)
+		var y_offset: int = radius - absi(x_offset)
 		candidates.append(player_tile + Vector2i(x_offset, y_offset))
 		if y_offset != 0:
 			candidates.append(player_tile + Vector2i(x_offset, -y_offset))
@@ -236,7 +236,11 @@ func get_attack_destination(
 	for candidate in candidates:
 		if not is_navigation_tile_walkable(candidate, true, actor_id):
 			continue
-		var path := get_navigation_path_avoiding_actors(enemy_tile, candidate, actor_id)
+		var path: Array[Vector2i] = get_navigation_path_avoiding_actors(
+			enemy_tile,
+			candidate,
+			actor_id
+		)
 		if not path.is_empty():
 			return candidate
 	return Vector2i(-1, -1)
@@ -264,7 +268,7 @@ func remove_navigation_blocker(tile: Vector2i) -> void:
 func register_navigation_actor(actor_id: int, tile: Vector2i) -> bool:
 	if not is_navigation_tile_walkable(tile):
 		return false
-	var occupant := int(navigation_occupants.get(tile, actor_id))
+	var occupant: int = int(navigation_occupants.get(tile, actor_id))
 	if occupant != actor_id:
 		return false
 	navigation_occupants[tile] = actor_id
@@ -330,7 +334,7 @@ func is_navigation_tile_reserved(tile: Vector2i, except_actor_id: int = -1) -> b
 	return step_reserved or destination_reserved
 
 
-func is_navigation_tile_occupied(tile: Vector2i, except_actor_id := -1) -> bool:
+func is_navigation_tile_occupied(tile: Vector2i, except_actor_id: int = -1) -> bool:
 	return navigation_occupants.has(tile) \
 		and navigation_occupants[tile] != except_actor_id
 
@@ -356,7 +360,7 @@ func set_navigation_terrain_tile(tile: Vector2i, walkable: bool) -> void:
 	else:
 		walkable_tiles.erase(tile)
 	if astar_ready and astar_grid.is_in_boundsv(tile):
-		var blocked := not walkable or navigation_blockers.has(tile)
+		var blocked: bool = not walkable or navigation_blockers.has(tile)
 		astar_grid.set_point_solid(tile, blocked)
 	_bump_navigation_revision()
 
@@ -367,7 +371,7 @@ func _bump_navigation_revision() -> void:
 
 
 func debug_print_path(from_tile: Vector2i, to_tile: Vector2i) -> void:
-	var path := get_navigation_path(from_tile, to_tile)
+	var path: Array[Vector2i] = get_navigation_path(from_tile, to_tile)
 	print("Navigation path ", from_tile, " -> ", to_tile, " (", path.size(), "): ", path)
 
 
@@ -376,7 +380,7 @@ func debug_print_path(from_tile: Vector2i, to_tile: Vector2i) -> void:
 
 func full_terrain_with_water_fields():
 	var rng = RandomNumberGenerator.new()
-	rng.seed = Multihelper.mapSeed 
+	rng.seed = Multihelper.mapSeed
 	var tile_coord = Vector2i()
 	for y in range(height):
 		for x in range(width):
@@ -393,7 +397,7 @@ func generate_borders():
 		tile_coord = waterCoors[rng.randi() % waterCoors.size()]
 		tile_map.set_cell( Vector2i(edge_x, y), tileset_source, tile_coord, 0)
 		tile_map.set_cell( Vector2i(edge_x2, y), tileset_source, tile_coord, 0)
-		
+
 	var edge_y = -1
 	var edge_y2 = height
 	for x2 in range(-1,width+1):
@@ -419,15 +423,15 @@ func set_level_options(level : int):
 		animals = get_tree().get_first_node_in_group("animals_root")
 	if enemies == null or animals == null:
 		return
-	
+
 	if level == 0:
 		enemies.maxEnemiesPerPlayer = 0
 		animals.maxAnimalsPerPlayer  = 0
-		
+
 	if level == 1:
 		enemies.maxEnemiesPerPlayer = 0
 		animals.maxAnimalsPerPlayer  = 25
-		
+
 	if level == 2:
 		enemies.maxEnemiesPerPlayer = 1
 		animals.maxAnimalsPerPlayer  = 6
@@ -442,7 +446,7 @@ func get_walkable_tiles2(
 	var walkable_tiles_tmp = []
 
 	for cell in layer.get_used_cells():
-		var atlas := layer.get_cell_atlas_coords(cell)
+		var atlas: Vector2i = layer.get_cell_atlas_coords(cell)
 
 		if atlas in grass_atlas_coords:
 			walkable_tiles_tmp.append(cell)

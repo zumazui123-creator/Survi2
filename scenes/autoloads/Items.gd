@@ -51,8 +51,6 @@ const OBJECT_DEFINITIONS: Array[WorldObjectDefinition] = [
 	preload("res://assets/data/world_objects/crystal_1.tres"),
 	preload("res://assets/data/world_objects/magic_tree_1.tres"),
 	preload("res://assets/data/world_objects/magic_rock_1.tres"),
-	preload("res://assets/data/world_objects/wall.tres"),
-	preload("res://assets/data/world_objects/defense_tower.tres"),
 ]
 
 const PROJECTILE_DEFINITIONS: Array[ProjectileDefinition] = [

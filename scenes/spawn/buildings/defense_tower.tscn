@@ -1,8 +1,10 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=12 format=3]
 
 [ext_resource type="Script" path="res://scenes/spawn/buildings/defense_tower.gd" id="1_tower"]
 [ext_resource type="Texture2D" path="res://assets/objects/mauer1.png" id="2_texture"]
 [ext_resource type="Script" path="res://scenes/navigation/navigation_blocker.gd" id="3_navigation"]
+[ext_resource type="Script" path="res://scenes/spawn/buildings/tower_target_finder.gd" id="4_target_finder"]
+[ext_resource type="Script" path="res://scenes/spawn/buildings/tower_weapon.gd" id="5_weapon"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_tower"]
 size = Vector2(30, 30)
@@ -14,12 +16,15 @@ properties/0/replication_mode = 2
 properties/1/path = NodePath("AnimationPlayer:current_animation")
 properties/1/spawn = true
 properties/1/replication_mode = 2
-properties/2/path = NodePath(".:objectId")
+properties/2/path = NodePath(".:building_id")
 properties/2/spawn = true
 properties/2/replication_mode = 2
-properties/3/path = NodePath("MovingParts:rotation")
+properties/3/path = NodePath(".:builder_peer_id")
 properties/3/spawn = true
 properties/3/replication_mode = 2
+properties/4/path = NodePath("MovingParts:rotation")
+properties/4/spawn = true
+properties/4/replication_mode = 2
 
 [sub_resource type="Animation" id="Animation_break"]
 resource_name = "break"
@@ -97,7 +102,7 @@ point_count = 2
 [node name="DefenseTower" type="StaticBody2D" groups=["damageable", "sensor_object"]]
 collision_layer = 3
 script = ExtResource("1_tower")
-objectId = "defense_tower"
+building_id = &"tower"
 
 [node name="Sprite" type="Sprite2D" parent="."]
 texture = ExtResource("2_texture")
@@ -115,6 +120,12 @@ default_color = Color(0.18, 0.2, 0.24, 1)
 [node name="Head" type="Polygon2D" parent="MovingParts"]
 polygon = PackedVector2Array(-13, -10, 9, -10, 15, 0, 9, 10, -13, 10, -17, 0)
 color = Color(0.34, 0.38, 0.45, 1)
+
+[node name="TargetFinder" type="Node" parent="."]
+script = ExtResource("4_target_finder")
+
+[node name="TowerWeapon" type="Node" parent="."]
+script = ExtResource("5_weapon")
 
 [node name="NavigationBlocker" type="Node" parent="."]
 script = ExtResource("3_navigation")

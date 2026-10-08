@@ -1,57 +1,63 @@
 extends Node
 class_name PlayerBuilding
 
-const WALL_SCENE: PackedScene = preload("res://scenes/spawn/buildings/building.tscn")
-const TOWER_SCENE: PackedScene = preload("res://scenes/spawn/buildings/defense_tower.tscn")
-
 @export var player: CharacterBody2D
 @onready var world_map: Map = get_tree().get_first_node_in_group("world_map")
-@onready var buildings: Buildings = get_tree().get_first_node_in_group("buildings")
+@onready var building_manager: BuildingManager = get_tree().get_first_node_in_group(
+	"building_manager"
+) as BuildingManager
 
 # supports two building modes, one is painting tiles in tilemap in Map,
 # the other is placing building scenes in the world
 
-#@export var building_scenes : Dictionary[String, PackedScene] = {
-	#
-#}
-var building_scenes: Dictionary[String, PackedScene] = {
-	Strings.BUILDING_WALL: WALL_SCENE,
-	Strings.BUILDING_TOWER: TOWER_SCENE,
-}
-
-# dict of paintable tile atlas coords
-var paintable_tiles = {
+var paintable_tiles: Dictionary[String, Vector2i] = {
 	"grass": Vector2i(0, 0),
 	"water": Vector2i(18, 0),
 }
 
 func build(building_type: String, tile_position: Vector2i) -> void:
 	building_type = Strings.translate_building_names(Multihelper.lang, building_type)
+	var building_id: StringName = StringName(building_type)
 	if not _is_adjacent_to_player(tile_position):
 		push_warning("PlayerBuilding: buildings must be placed next to the player")
 		return
 	if multiplayer.is_server():
-		execute_build(building_type, tile_position)
+		execute_build(building_id, tile_position, player.get_multiplayer_authority())
 	else:
-		request_build.rpc_id(1, building_type, tile_position)
+		request_build.rpc_id(1, building_id, tile_position)
 
 @rpc("any_peer", "call_remote", "reliable")
-func request_build(building_type: String, tile_position: Vector2i) -> void:
+func request_build(building_id: StringName, tile_position: Vector2i) -> void:
 	if not multiplayer.is_server() or not _is_authorized_sender():
 		return
 	if not _is_adjacent_to_player(tile_position):
 		push_warning("PlayerBuilding: rejected non-adjacent build request")
 		return
-	execute_build(building_type, tile_position)
+	execute_build(building_id, tile_position, multiplayer.get_remote_sender_id())
 
 
-func execute_build(building_type: String, tile_position: Vector2i) -> void:
-	if not multiplayer.is_server() or not is_instance_valid(buildings):
+func execute_build(
+		building_id: StringName,
+		tile_position: Vector2i,
+		builder_peer_id: int
+	) -> void:
+	if not multiplayer.is_server() or not is_instance_valid(building_manager):
 		return
-	if not building_scenes.has(building_type):
-		push_warning("Building type '%s' not found." % building_type)
+	if not building_manager.has_definition(building_id):
+		push_warning("Building type '%s' not found." % building_id)
 		return
-	buildings.place_building(building_scenes[building_type], tile_position)
+	var result: BuildingPlacementValidator.Result = building_manager.place_building(
+		building_id,
+		tile_position,
+		builder_peer_id
+	)
+	if result != BuildingPlacementValidator.Result.OK:
+		push_warning(
+			"PlayerBuilding: %s Tile: %s" % [
+				building_manager.get_placement_message(result),
+				tile_position,
+			]
+		)
 
 func paint(tile_type: String, tile_pos: Vector2i) -> void:
 	if not _is_adjacent_to_player(tile_pos):
