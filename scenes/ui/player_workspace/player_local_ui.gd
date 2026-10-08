@@ -8,7 +8,7 @@ class_name PlayerLocalUI
 @onready var difficulty_button: OptionButton = %DifModeButton
 @onready var settings_popup: PopupPanel = %PopupSettings
 @onready var info_popup: PopupPanel = %PopupInfo
-@onready var ai_playground: RLPlaygroundUI = get_node("%KI Playground") as RLPlaygroundUI
+@onready var ai_playground: RLPlaygroundUI = get_node("%KI") as RLPlaygroundUI
 @onready var environment_settings: AIEnvironmentSettingsUI = %Umgebung
 
 
