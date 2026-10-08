@@ -5,8 +5,8 @@
 
 [resource]
 script = ExtResource("1_definition")
-object_id = &"defense_tower"
+object_id = &"wall"
 texture = ExtResource("2_texture")
-max_hp = 160.0
+max_hp = 70.0
 required_tool = &"pickaxe"
-drops = {"stone": {"min": 3,"max": 6}}
+drops = {"stone": {"min": 1,"max": 3}}

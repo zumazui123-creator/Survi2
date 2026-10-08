@@ -21,7 +21,7 @@ func place_building(building_scene: PackedScene, tile_pos: Vector2i) -> bool:
 			return false
 	self.add_child(building, true)
 	if building.objectId.is_empty():
-		building.objectId = "rock1"
+		building.objectId = "wall"
 	building.global_position = world_map.navigation_tile_to_world(tile_pos)
 	building.spawner = self
 	building.register_navigation_blockers(occupied_tiles)

@@ -13,9 +13,7 @@ var spawner: Node2D
 var loaded: bool = false
 var navigation_tiles: Array[Vector2i] = []
 @export var navigation_footprint: Array[Vector2i] = [
-	Vector2i(-1, -1), Vector2i(0, -1), Vector2i(1, -1),
-	Vector2i(-1, 0), Vector2i.ZERO, Vector2i(1, 0),
-	Vector2i(-1, 1), Vector2i(0, 1), Vector2i(1, 1),
+	Vector2i.ZERO,
 ]
 
 

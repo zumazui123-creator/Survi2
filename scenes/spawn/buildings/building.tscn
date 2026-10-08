@@ -1,11 +1,11 @@
 [gd_scene format=3 uid="uid://c5vhr2saulowe"]
 
 [ext_resource type="Script" uid="uid://d0it8ym6pwdbd" path="res://scenes/spawn/buildings/building.gd" id="1_rvqm1"]
-[ext_resource type="Texture2D" uid="uid://i17mwgyr2rqe" path="res://assets/objects/tree1.png" id="2_ics6v"]
+[ext_resource type="Texture2D" path="res://assets/objects/mauer1.png" id="2_ics6v"]
 [ext_resource type="Script" path="res://scenes/navigation/navigation_blocker.gd" id="3_navigation"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_sene2"]
-radius = 48.8365
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wall"]
+size = Vector2(30, 30)
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_a5lig"]
 properties/0/path = NodePath(".:position")
@@ -93,12 +93,13 @@ point_count = 2
 [node name="Buildings" type="StaticBody2D" unique_id=46637213 groups=["damageable", "sensor_object"]]
 collision_layer = 3
 script = ExtResource("1_rvqm1")
+objectId = "wall"
 
 [node name="Sprite" type="Sprite2D" parent="." unique_id=1433906994]
 texture = ExtResource("2_ics6v")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=869055359]
-shape = SubResource("CircleShape2D_sene2")
+shape = SubResource("RectangleShape2D_wall")
 
 [node name="NavigationBlocker" type="Node" parent="."]
 script = ExtResource("3_navigation")
@@ -118,7 +119,7 @@ explosiveness = 1.0
 randomness = 1.0
 lifetime_randomness = 0.18
 emission_shape = 1
-emission_sphere_radius = 48.03
+emission_sphere_radius = 15.0
 initial_velocity_min = 72.29
 initial_velocity_max = 301.21
 angular_velocity_min = -270.32
