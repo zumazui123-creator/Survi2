@@ -6,7 +6,6 @@
 [ext_resource type="Script" uid="uid://dsnm03bgpmori" path="res://scenes/character/components/code.gd" id="4_code"]
 [ext_resource type="Script" uid="uid://cq4ykx1tbo4pp" path="res://scenes/ui/player_workspace/navigation_reward_policy_editor.gd" id="5_reward_editor"]
 [ext_resource type="Script" path="res://scenes/ui/player_workspace/ai_environment_settings_ui.gd" id="6_environment_settings"]
-[ext_resource type="Script" path="res://scenes/ui/player_workspace/code_sensor_preview.gd" id="7_sensor_preview"]
 
 [sub_resource type="CodeHighlighter" id="CodeHighlighter_vreni"]
 number_color = Color(0.16078432, 0.5294118, 0.36862746, 1)
@@ -31,7 +30,7 @@ position = Vector2(218, -371)
 script = ExtResource("4_code")
 
 [node name="TabContainer" type="TabContainer" parent="CodeLayer/Code" unique_id=1538183637]
-offset_left = -273.0
+offset_left = -178.0
 offset_top = 14.0
 offset_right = 422.0
 offset_bottom = 724.0
@@ -53,19 +52,12 @@ size_flags_horizontal = 4
 size_flags_vertical = 0
 text = "Haupt-Code"
 
-[node name="EditorSplit" type="HSplitContainer" parent="CodeLayer/Code/TabContainer/Code"]
+[node name="CodeEdit" type="CodeEdit" parent="CodeLayer/Code/TabContainer/Code" unique_id=1757023759]
 custom_minimum_size = Vector2(0, 360)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-split_offset = 420
-
-[node name="CodeEdit" type="CodeEdit" parent="CodeLayer/Code/TabContainer/Code/EditorSplit" unique_id=1757023759]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(390, 360)
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
 theme_override_constants/line_spacing = 3
 theme_override_font_sizes/font_size = 14
 scroll_smooth = true
@@ -75,42 +67,6 @@ highlight_current_line = true
 symbol_tooltip_on_hover = true
 gutters_draw_executing_lines = true
 gutters_draw_line_numbers = true
-
-[node name="SensorPreview" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/Code/EditorSplit"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(230, 360)
-layout_mode = 2
-size_flags_horizontal = 3
-script = ExtResource("7_sensor_preview")
-
-[node name="Title" type="Label" parent="CodeLayer/Code/TabContainer/Code/EditorSplit/SensorPreview"]
-layout_mode = 2
-text = "Live-Sensor"
-horizontal_alignment = 1
-
-[node name="SensorPreviewText" type="RichTextLabel" parent="CodeLayer/Code/TabContainer/Code/EditorSplit/SensorPreview"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_font_sizes/normal_font_size = 10
-fit_content = false
-scroll_active = true
-selection_enabled = true
-
-[node name="VariablesTitle" type="Label" parent="CodeLayer/Code/TabContainer/Code/EditorSplit/SensorPreview"]
-layout_mode = 2
-text = "Variablen"
-horizontal_alignment = 1
-
-[node name="VariablesText" type="RichTextLabel" parent="CodeLayer/Code/TabContainer/Code/EditorSplit/SensorPreview"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 90)
-layout_mode = 2
-theme_override_font_sizes/normal_font_size = 11
-text = "Noch keine Variablen"
-fit_content = false
-scroll_active = true
-selection_enabled = true
 
 [node name="ButtonCotainer" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/Code" unique_id=1098950445]
 layout_mode = 2
@@ -261,7 +217,7 @@ size_flags_horizontal = 3
 
 [node name="Label" type="Label" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer3" unique_id=1616721237]
 layout_mode = 2
-text = "Vorlagen & Befehle"
+text = "Funktionen"
 
 [node name="ItemList" type="ItemList" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer3" unique_id=575498734]
 unique_name_in_owner = true

@@ -2,6 +2,7 @@ extends Node2D
 class_name VillageManager
 
 signal village_loaded(village_id: int, bounds: Rect2i)
+signal villages_changed()
 signal intrusion_started(village_id: int, player: CharacterBody2D)
 signal intrusion_ended(village_id: int, player: CharacterBody2D)
 
@@ -37,6 +38,7 @@ func load_villages(
 	for plan: VillagePlan in plans:
 		_plans[plan.village_id] = plan
 		_intruders[plan.village_id] = []
+	villages_changed.emit()
 	if not multiplayer.is_server() or definition == null:
 		return
 
@@ -62,10 +64,21 @@ func clear_villages() -> void:
 	_walls.clear()
 	_residents.clear()
 	_pigs.clear()
+	villages_changed.emit()
 
 
 func get_plan(village_id: int) -> VillagePlan:
 	return _plans.get(village_id) as VillagePlan
+
+
+func get_plans() -> Array[VillagePlan]:
+	var result: Array[VillagePlan] = []
+	for plan: VillagePlan in _plans.values():
+		result.append(plan)
+	result.sort_custom(func(a: VillagePlan, b: VillagePlan) -> bool:
+		return a.village_id < b.village_id
+	)
+	return result
 
 
 func get_nearest_intruder(village_id: int, from_position: Vector2) -> CharacterBody2D:

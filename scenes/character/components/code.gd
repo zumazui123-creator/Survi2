@@ -29,7 +29,6 @@ var _last_error_line: int = 0
 @onready var load_example_button: Button = %LoadExampleButton
 @onready var status_label: Label = %EditorStatus
 @onready var command_help_label: Label = %CommandHelp
-@onready var sensor_preview: CodeSensorPreview = %SensorPreview
 
 
 func _ready() -> void:
@@ -58,13 +57,6 @@ func bind_components(value_code_player: CodePlayer, value_function_library: Func
 		code_player.source_line_started.connect(_on_source_line_started)
 		code_player.runtime_error.connect(_on_runtime_error)
 		code_player.pause_changed.connect(_on_pause_changed)
-		code_player.variables_changed.connect(_on_variables_changed)
-		sensor_preview.show_variables(code_player.get_variables())
-		if is_instance_valid(code_player.player):
-			sensor_preview.bind_sensor(code_player.player.get("sensor") as PlayerSensor)
-	else:
-		sensor_preview.bind_sensor(null)
-		sensor_preview.show_variables({})
 	if is_instance_valid(function_library):
 		function_library.functions_changed.connect(_refresh_function_lists)
 	_refresh_function_lists()
@@ -75,8 +67,6 @@ func unbind_components() -> void:
 	_disconnect_components()
 	code_player = null
 	function_library = null
-	sensor_preview.bind_sensor(null)
-	sensor_preview.show_variables({})
 	_set_execution_buttons(false)
 
 
@@ -94,8 +84,6 @@ func _disconnect_components() -> void:
 			code_player.runtime_error.disconnect(_on_runtime_error)
 		if code_player.pause_changed.is_connected(_on_pause_changed):
 			code_player.pause_changed.disconnect(_on_pause_changed)
-		if code_player.variables_changed.is_connected(_on_variables_changed):
-			code_player.variables_changed.disconnect(_on_variables_changed)
 	if is_instance_valid(function_library) \
 			and function_library.functions_changed.is_connected(_refresh_function_lists):
 		function_library.functions_changed.disconnect(_refresh_function_lists)
@@ -163,10 +151,6 @@ func _on_runtime_error(message: String) -> void:
 	_set_status(message, true)
 
 
-func _on_variables_changed(snapshot: Dictionary) -> void:
-	sensor_preview.show_variables(snapshot)
-
-
 func _set_execution_buttons(running: bool) -> void:
 	play_button.disabled = running or not is_instance_valid(code_player)
 	pause_button.disabled = not running or not is_instance_valid(code_player)
@@ -184,14 +168,6 @@ func _refresh_function_lists() -> void:
 		return
 	item_list.clear()
 	function_list.clear()
-	for entry: Dictionary in CodeCommandCatalog.get_entries(Strings.current_locale):
-		_add_catalog_item(entry)
-	for combo_command: String in _get_combo_commands():
-		_add_list_item(
-			combo_command,
-			combo_command,
-			"Führt die vordefinierte Combo aus und verbraucht Mana."
-		)
 	if not is_instance_valid(function_library):
 		return
 	var function_names: PackedStringArray = function_library.get_function_names()
@@ -202,27 +178,11 @@ func _refresh_function_lists() -> void:
 	highlighter.apply_function_names(code_edit, function_names)
 
 
-func _add_catalog_item(entry: Dictionary) -> void:
-	var trigger: String = String(entry.get("trigger", ""))
-	var insert_text: String = String(entry.get("insert_text", trigger))
-	var description: String = String(entry.get("description", ""))
-	_add_list_item(trigger, insert_text, description)
-
-
 func _add_list_item(label: String, insert_text: String, description: String) -> void:
 	var item_index: int = item_list.item_count
 	item_list.add_item(label)
 	item_list.set_item_metadata(item_index, insert_text)
 	item_list.set_item_tooltip(item_index, description)
-
-
-func _get_combo_commands() -> PackedStringArray:
-	if not is_instance_valid(code_player) or not is_instance_valid(code_player.player):
-		return PackedStringArray()
-	var player_combo: PlayerComboController = code_player.player.get("combo") as PlayerComboController
-	if not is_instance_valid(player_combo):
-		return PackedStringArray()
-	return player_combo.get_code_commands()
 
 
 func _refresh_examples() -> void:
@@ -231,6 +191,10 @@ func _refresh_examples() -> void:
 		var option_index: int = example_selector.item_count
 		example_selector.add_item(String(example.get("name", "Beispiel")))
 		example_selector.set_item_metadata(option_index, String(example.get("code", "")))
+		example_selector.set_item_tooltip(
+			option_index,
+			String(example.get("description", "Vollständiges Beispielprogramm"))
+		)
 
 
 func _insert_text(text: String) -> void:

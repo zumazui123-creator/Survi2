@@ -46,6 +46,7 @@ static func get_examples(locale: String = "de") -> Array[Dictionary]:
 		{
 			"name": "Wasser suchen",
 			"code": "wasser_abstand = abstand zu wasser\nwenn wasser_abstand kleiner 3\n    sage Wasser ist nah\nende",
+			"description": "Definiert wasser_abstand, bevor die Variable verwendet wird.",
 		},
 	]
 
