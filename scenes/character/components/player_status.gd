@@ -8,6 +8,9 @@ signal info_requested
 @export var hp_bar: ProgressBar
 @export var mana_bar: ProgressBar
 @export var exp_bar: ProgressBar
+@export var hp_value_label: Label
+@export var mana_value_label: Label
+@export var exp_value_label: Label
 @export var hydration_bar: ProgressBar
 @export var food_bar: ProgressBar
 @export var name_label: Label
@@ -40,14 +43,15 @@ func _ready() -> void:
 
 func set_player_name(new_name: String) -> void:
 	if name_label:
-		name_label.text = new_name + " [Lvl " + str(stats.level) + "]"
+		name_label.text = "%s  |  LVL %d" % [new_name, stats.level]
 		_resize_name_to_fit()
 
 
 func _resize_name_to_fit() -> void:
 	if not name_label:
 		return
-	var font_size: int = 14
+	var font_size: int = 11
+	name_label.set("theme_override_font_sizes/font_size", font_size)
 	while name_label.get_line_count() > 1 and font_size > 8:
 		font_size -= 1
 		name_label.set("theme_override_font_sizes/font_size", font_size)
@@ -57,24 +61,34 @@ func _update_hp_ui(current: float, maximum: float) -> void:
 	if hp_bar:
 		hp_bar.max_value = maximum
 		hp_bar.value = current
+	if hp_value_label:
+		hp_value_label.text = _format_bar_value("HP", current, maximum)
 
 
 func _update_mana_ui(current: float, maximum: float) -> void:
 	if mana_bar:
 		mana_bar.max_value = maximum
 		mana_bar.value = current
+	if mana_value_label:
+		mana_value_label.text = _format_bar_value("MP", current, maximum)
 
 
 func _update_exp_ui(current: float, maximum: float) -> void:
 	if exp_bar:
 		exp_bar.max_value = maximum
 		exp_bar.value = current
+	if exp_value_label:
+		exp_value_label.text = _format_bar_value("XP", current, maximum)
 
 
 func _update_level_ui(new_level: int) -> void:
 	if name_label and player:
-		name_label.text = player.playerName + " [Lvl " + str(new_level) + "]"
+		name_label.text = "%s  |  LVL %d" % [player.playerName, new_level]
 		_resize_name_to_fit()
+
+
+func _format_bar_value(prefix: String, current: float, maximum: float) -> String:
+	return "%s %d/%d" % [prefix, roundi(current), roundi(maximum)]
 
 
 func _update_hydration_ui(value: float) -> void:

@@ -9,9 +9,11 @@
 
 [sub_resource type="CodeHighlighter" id="CodeHighlighter_vreni"]
 number_color = Color(0.16078432, 0.5294118, 0.36862746, 1)
+symbol_color = Color(1, 1, 1, 1)
 
 [sub_resource type="CodeHighlighter" id="CodeHighlighter_function"]
 number_color = Color(0.16078432, 0.5294118, 0.36862746, 1)
+symbol_color = Color(1, 1, 1, 1)
 
 [node name="PlayerLocalUI" type="Node" unique_id=72987237]
 script = ExtResource("1_ui")
@@ -61,7 +63,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 unique_name_in_owner = true
 theme_override_constants/line_spacing = 3
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 13
 scroll_smooth = true
 scroll_past_end_of_file = true
 syntax_highlighter = SubResource("CodeHighlighter_vreni")
@@ -514,6 +516,7 @@ custom_minimum_size = Vector2(0, 260)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_font_sizes/font_size = 13
 placeholder_text = "rechts\nattacke\nlinks"
 scroll_smooth = true
 scroll_past_end_of_file = true
