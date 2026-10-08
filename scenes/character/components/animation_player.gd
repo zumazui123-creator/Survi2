@@ -22,11 +22,17 @@ func set_character_sprite(file_path):
 
 func animate_player(dir: Vector2):
 	if dir != Vector2.ZERO:
-		moving_parts.rotation = dir.angle()
+		face_direction(dir)
 		if not is_playing() or current_animation != Strings.ANIM_WALKING:
 			play(Strings.ANIM_WALKING)
 	else:
 		stop()
+
+
+func face_direction(dir: Vector2) -> void:
+	if dir == Vector2.ZERO or not is_instance_valid(moving_parts):
+		return
+	moving_parts.rotation = dir.angle()
 
 func handleAnims(vel, doing_action):
 	if not player.combat:

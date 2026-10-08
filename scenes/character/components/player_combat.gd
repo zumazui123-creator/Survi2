@@ -111,7 +111,10 @@ func punchCheckCollision():
 	var id = multiplayer.get_unique_id()
 	if spawnsProjectile:
 		if str(id) == player.name:
-			sendProjectile.rpc_id(1, player.movement.direction if player.movement else Vector2.ZERO)
+			sendProjectile.rpc_id(
+				1,
+				player.movement.facing_direction if player.movement else Vector2.ZERO
+			)
 
 	if player.items.equippedItem:
 		Inventory.useItemDurability(str(player.name), player.items.equippedItem)

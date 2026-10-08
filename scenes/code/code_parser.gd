@@ -413,8 +413,8 @@ func _validate_and_normalize_arguments(
 	if action == Strings.ACTION_USE_ITEM:
 		if arguments.size() != 1 or not arguments[0].is_valid_int():
 			return "Der Item-Befehl benötigt genau einen ganzzahligen Index."
-		if arguments[0].to_int() < 0:
-			return "Der Item-Index darf nicht negativ sein."
+		if arguments[0].to_int() < 1:
+			return "Der Item-Index muss bei 1 beginnen."
 		return ""
 
 	if action == Strings.ACTION_SAY:

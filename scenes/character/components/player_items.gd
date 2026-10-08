@@ -47,7 +47,7 @@ func equipItem(id):
 	equippedItem = id
 	player.combat.hands.visible = false
 	held_item.texture = Items.get_item_icon(id)
-	var item_scene := Items.get_equipment_scene(id)
+	var item_scene: PackedScene = Items.get_equipment_scene(id)
 	if multiplayer.is_server() and item_scene:
 		for c in equipment.get_children():
 			c.queue_free()
@@ -71,25 +71,24 @@ func itemRemoved(id, item):
 		unequipItem.rpc()
 		
 func handle_item_selection(id):
-	var equipList := Items.equips.keys()
+	var equipList: Array = Items.equips.keys()
 	if id in equipList:
 		tryEquipItem.rpc_id(1, id)
 	elif equippedItem:
 		unequipItem.rpc()
 		
-	var consumeList := Items.consume.keys()
+	var consumeList: Array = Items.consume.keys()
 	if id in consumeList:
-		Inventory.useItem(str(player.name), id)
+		request_consume_item(String(id))
 
 
-func use_item(cmd: PackedStringArray):
-	var item_id 	: int 		= -1
-	var item_id_str : String 	= cmd[1]
-	if item_id_str.is_valid_int():
-		item_id = int(item_id_str)
-		inventory.selectionChanged.emit(item_id)
-		
-		return item_id
+func use_item(arguments: PackedStringArray) -> bool:
+	if arguments.size() != 1 or not arguments[0].is_valid_int():
+		return false
+	if not is_instance_valid(inventory) or not inventory.has_method("select_slot"):
+		return false
+	var slot_number: int = arguments[0].to_int()
+	return inventory.select_slot(slot_number)
 
 #func _on_item_consumed(id, effects):
 	#if str(player.name) != id: # Ensure this is for the current player
@@ -104,8 +103,56 @@ func use_item(cmd: PackedStringArray):
 		#player.apply_speed_boost(effects["speed"], effects["duration"])
 	#Inventory.removeItem(str(name),effects)
 
+func request_consume_item(item_id: String) -> void:
+	if multiplayer.is_server():
+		_consume_item_authoritative(item_id, multiplayer.get_unique_id())
+	else:
+		_request_consume_item.rpc_id(1, item_id)
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func _request_consume_item(item_id: String) -> void:
+	if not multiplayer.is_server():
+		return
+	_consume_item_authoritative(item_id, multiplayer.get_remote_sender_id())
+
+
+func _consume_item_authoritative(item_id: String, sender_id: int) -> bool:
+	var player_peer_id: int = int(str(player.name))
+	if sender_id != player_peer_id:
+		return false
+	var definition: ItemDefinition = Items.item_definitions.get(item_id) as ItemDefinition
+	if definition == null or definition.kind != ItemDefinition.Kind.CONSUMABLE:
+		return false
+	var player_id: String = str(player.name)
+	if not Inventory.checkHasItemAmount(player_id, item_id, 1):
+		return false
+
+	_apply_consumable_effects(definition.effects)
+	return Inventory.removeItem(player_id, item_id, 1)
+
+
+func _apply_consumable_effects(effects: Dictionary) -> void:
+	if effects.has("hp"):
+		player.status.heal(float(effects["hp"]))
+	if effects.has("hydration"):
+		player.status.hydration += float(effects["hydration"])
+	if effects.has("food"):
+		player.status.food += float(effects["food"])
+	if effects.has("mana"):
+		player.status.mana += float(effects["mana"])
+	if effects.has("speed") and effects.has("duration"):
+		_apply_speed_boost.rpc_id(
+			int(str(player.name)),
+			float(effects["speed"]),
+			float(effects["duration"])
+		)
+
+
 @rpc("any_peer", "call_local", "reliable")
-func consumeItem(item, item_prop):
-	if "hp" in item_prop:
-		player.status.heal(float(item_prop["hp"]))
-	Inventory.removeItem(str(player.name),item)
+func _apply_speed_boost(multiplier: float, duration: float) -> void:
+	var sender_id: int = multiplayer.get_remote_sender_id()
+	if sender_id != 0 and sender_id != 1:
+		return
+	if is_instance_valid(player) and is_instance_valid(player.movement):
+		player.movement.apply_speed_boost(multiplier, duration)

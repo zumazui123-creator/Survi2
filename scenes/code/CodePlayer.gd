@@ -110,7 +110,8 @@ func execute_command(command: CodeParser.ParsedCommand, execution_id: int) -> vo
 	elif action == Strings.ACTION_BUILD or action == Strings.ACTION_PAINT:
 		build(action, command.arguments)
 	elif action == Strings.ACTION_USE_ITEM:
-		player.items.use_item(command.to_parts())
+		if not player.items.use_item(command.arguments):
+			_report_error("Der angegebene Inventar-Slot ist leer oder ungültig.")
 	elif action == Strings.ACTION_SAY:
 		say(command.arguments)
 	else:
@@ -168,7 +169,8 @@ func move_step(action: String, execution_id: int) -> bool:
 	if not _is_current_execution(execution_id):
 		return false
 	if step_result.size() < 2 or not bool(step_result[1]):
-		_report_error("Die Bewegung wurde durch eine Kollision blockiert: " + action)
+		# A blocked step is also useful: the player keeps facing the requested
+		# direction so the next attack or drink command can target that tile.
 		return false
 	return true
 

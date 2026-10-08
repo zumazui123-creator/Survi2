@@ -3,6 +3,7 @@ class_name PlayerComboEffects
 
 const DEFAULT_EFFECT_DURATION: float = 0.42
 const TILE_DISTANCE: float = float(Constants.TILE_SIZE)
+const VISUAL_SCALE: float = 1.2
 
 var _effect_id: StringName = &""
 var _directions: Array[Vector2i] = []
@@ -34,6 +35,9 @@ func _process(delta: float) -> void:
 
 
 func _draw() -> void:
+	# Scale only the visuals around the player. Combo damage and target tiles stay
+	# unchanged in PlayerComboController.
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE * VISUAL_SCALE)
 	var progress: float = clampf(_elapsed / _duration, 0.0, 1.0)
 	match _effect_id:
 		&"sound_wave":

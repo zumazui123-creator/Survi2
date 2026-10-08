@@ -1,7 +1,5 @@
 extends PanelContainer
 
-signal itemSelected(id)
-
 @onready var slot_number_label: Label = %SlotNumberLabel
 
 var pId : int
@@ -53,7 +51,6 @@ func selectionChanged(selectedId):
 	if selectedId == index:
 		selected = true
 		$AnimationPlayer.play("selected")
-		itemSelected.emit(itemId)
 	elif selected:
 		selected = false
 		$AnimationPlayer.play("deselected")

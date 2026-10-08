@@ -2,9 +2,9 @@ extends Control
 
 signal selectionChanged
 
-var slotCount := Constants.MAX_INVENTORY_SLOTS
-var selectedSlot := 0
-var selectedRecipe := ""
+var slotCount: int = Constants.MAX_INVENTORY_SLOTS
+var selectedSlot: int = 0
+var selectedRecipe: String = ""
 var player
 
 var chatinput
@@ -23,8 +23,8 @@ func _unhandled_input(_event):
 				player.sendMessage.rpc_id(1,chatinput.text)
 			chatinput.queue_free()
 		else:
-			var chatInputSc := preload("res://scenes/ui/chat/chat_input.tscn")
-			var chatInput := chatInputSc.instantiate()
+			var chatInputSc: PackedScene = preload("res://scenes/ui/chat/chat_input.tscn")
+			var chatInput: Node = chatInputSc.instantiate()
 			%ChatInputLocation.add_child(chatInput)
 			chatinput = chatInput
 			chatinput.gui_input.connect(_unhandled_input)
@@ -39,20 +39,18 @@ func inventoryUpdated(_id):
 func populateSlots():
 	for c in %Slots.get_children():
 		c.queue_free()
-	var slotScene := preload("res://scenes/ui/inventory/inventory_slot.tscn")
+	var slotScene: PackedScene = preload("res://scenes/ui/inventory/inventory_slot.tscn")
 	for i in range(1,slotCount+1):
-		var slot := slotScene.instantiate()
+		var slot: Node = slotScene.instantiate()
 		slot.index = i
 		selectionChanged.connect(slot.selectionChanged)
-		slot.itemSelected.connect(itemSelected)
-		#slot.itemSelected.connect(player.player_combat.handle_item_selection)
 		%Slots.add_child(slot)
 
 func populateItems():
-	var pId := multiplayer.get_unique_id()
+	var pId: int = multiplayer.get_unique_id()
 	if str(pId) in Inventory.inventories:
 		var inventory = Inventory.inventories[str(pId)]
-		var currentIndex := 0
+		var currentIndex: int = 0
 		for slot in %Slots.get_children():
 			if currentIndex < len(inventory.keys()):
 				var item = inventory.keys()[currentIndex]
@@ -64,11 +62,11 @@ func populateItems():
 				slot.itemId = ""
 
 func populateRecipes():
-	var recipeSlotScene := preload("res://scenes/ui/inventory/recipe_slot.tscn")
+	var recipeSlotScene: PackedScene = preload("res://scenes/ui/inventory/recipe_slot.tscn")
 	for c in %Recipes.get_children():
 		c.queue_free()
 	for recipe in Items.recipes.keys():
-		var recipeSlot := recipeSlotScene.instantiate()
+		var recipeSlot: Node = recipeSlotScene.instantiate()
 		recipeSlot.itemId = recipe
 		recipeSlot.canCraft = Inventory.canCraftItem(str(multiplayer.get_unique_id()), recipe)
 		%Recipes.add_child(recipeSlot)
@@ -86,15 +84,25 @@ func populateRecipes():
 		#selectedSlot = slotCount - 1
 	#selectionChanged.emit(selectedSlot)
 	
-func itemSelected(id):
-	if id in Items.equips.keys():
-		player.items.tryEquipItem.rpc_id(1, id)
-	elif player.items.equippedItem:
-		player.items.unequipItem.rpc()
-		
-	var consumeList := Items.consume.keys()
-	if id in consumeList:
-		player.items.consumeItem.rpc_id(1, id, Items.consume[id] ) 
+func select_slot(slot_number: int) -> bool:
+	var slot_index: int = slot_number - 1
+	var slots: Array[Node] = %Slots.get_children()
+	if slot_index < 0 or slot_index >= slots.size():
+		return false
+
+	selectedSlot = slot_number
+	selectionChanged.emit(slot_number)
+	var item_id: String = String(slots[slot_index].get("itemId"))
+	if item_id.is_empty():
+		return false
+	itemSelected(item_id)
+	return true
+
+
+func itemSelected(id: String) -> void:
+	if not is_instance_valid(player) or not is_instance_valid(player.items):
+		return
+	player.items.handle_item_selection(id)
 		
 func _on_craft_button_pressed():
 	if %craftCont.visible:
@@ -113,8 +121,8 @@ func recipeSelected(id):
 		c.queue_free()
 	%RecipeBox.visible = true
 	for ing in Items.recipes[id].keys():
-		var itemSlotScene := preload("res://scenes/ui/inventory/inventory_slot.tscn")
-		var itemSlot := itemSlotScene.instantiate()
+		var itemSlotScene: PackedScene = preload("res://scenes/ui/inventory/inventory_slot.tscn")
+		var itemSlot: Node = itemSlotScene.instantiate()
 		itemSlot.itemId = ing
 		itemSlot.setRecipeText(Inventory.checkItemCount(str(multiplayer.get_unique_id()), ing),Items.recipes[id][ing])
 		%ingList.add_child(itemSlot)	
