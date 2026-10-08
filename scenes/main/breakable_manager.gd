@@ -2,6 +2,10 @@ extends Node2D
 class_name BreakableManager
 
 const BREAKABLE_SCENE: PackedScene = preload("res://scenes/spawn/object/breakable.tscn")
+const BLOCKING_ENTITY_GROUPS: Array[StringName] = [
+	&"damageable",
+	&"sensor_item",
+]
 
 @export_group("References")
 @export var world_map: Map
@@ -41,27 +45,30 @@ func spawn_objects(amount: int) -> int:
 		if world_map.is_navigation_tile_walkable(tile, true):
 			candidates.append(tile)
 	candidates.shuffle()
+	var blocking_entity_tiles: Dictionary[Vector2i, bool] = _collect_blocking_entity_tiles()
 
 	var spawned_this_wave: int = 0
 	for spawn_tile: Vector2i in candidates:
 		if spawned_this_wave >= amount or spawned_objects >= max_objects:
 			break
+		var object_index: int = randi_range(0, available_object_ids.size() - 1)
+		var object_id: String = available_object_ids[object_index]
 		var breakable: NavigationBreakable = BREAKABLE_SCENE.instantiate() as NavigationBreakable
 		if breakable == null:
 			push_warning("BreakableManager: breakable.tscn must use NavigationBreakable")
 			return spawned_this_wave
+		breakable.objectId = object_id
 		var occupied_tiles: Array[Vector2i] = breakable.get_navigation_tiles(spawn_tile)
-		if not _can_spawn_on(occupied_tiles):
+		if not _can_spawn_on(occupied_tiles, blocking_entity_tiles):
 			breakable.free()
 			continue
 
-		var object_index: int = randi_range(0, available_object_ids.size() - 1)
-		var object_id: String = available_object_ids[object_index]
-		breakable.objectId = object_id
 		breakable.position = to_local(world_map.navigation_tile_to_world(spawn_tile))
 		breakable.spawner = self
 		add_child(breakable, true)
 		breakable.register_navigation_blockers(occupied_tiles)
+		for occupied_tile: Vector2i in occupied_tiles:
+			blocking_entity_tiles[occupied_tile] = true
 		spawned_objects += 1
 		spawned_this_wave += 1
 	return spawned_this_wave
@@ -90,17 +97,33 @@ func notify_breakable_removed() -> void:
 	spawned_objects = maxi(spawned_objects - 1, 0)
 
 
-func _can_spawn_on(occupied_tiles: Array[Vector2i]) -> bool:
+func _can_spawn_on(
+		occupied_tiles: Array[Vector2i],
+		blocking_entity_tiles: Dictionary[Vector2i, bool]
+	) -> bool:
 	for occupied_tile: Vector2i in occupied_tiles:
+		if blocking_entity_tiles.has(occupied_tile):
+			return false
 		if not world_map.is_navigation_tile_walkable(occupied_tile, true):
 			return false
 	return true
 
 
+func _collect_blocking_entity_tiles() -> Dictionary[Vector2i, bool]:
+	var result: Dictionary[Vector2i, bool] = {}
+	for group_name: StringName in BLOCKING_ENTITY_GROUPS:
+		for candidate: Node in get_tree().get_nodes_in_group(group_name):
+			var entity: Node2D = candidate as Node2D
+			if entity == null or entity.is_queued_for_deletion():
+				continue
+			result[world_map.world_to_navigation_tile(entity.global_position)] = true
+	return result
+
+
 func _get_available_object_ids() -> PackedStringArray:
 	var result: PackedStringArray = PackedStringArray()
 	for object_id: String in breakable_object_ids:
-		if Items.objects.has(object_id):
+		if Items.get_object_definition(object_id) != null:
 			result.append(object_id)
 		else:
 			push_warning("BreakableManager: unknown object definition '%s'" % object_id)

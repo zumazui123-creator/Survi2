@@ -1,25 +1,7 @@
 extends Object
 class_name MyCodeHighLighter
 
-# ------------------------------
-# Keyword-Gruppen
-# ------------------------------
-const MOVEMENT_KEYWORDS: Array[String] = [
-	"oben", "rechts", "unten", "links", "attacke", "combo", "trinke", "sage"
-]
-
-const LOOP_KEYWORDS: Array[String] = [
-	"wiederhole", "mal", "ende", "wenn", "gegner", "tier", "item", "objekt", "wasser", "frei", "ziel", "nutze"
-]
-
-const FUNC_KEYWORDS: Array[String] = [
-	
-]
-
-# Farbe für Zahlen
-const NUMBER_COLOR: Color = Color(1.0, 0.5, 0.0) # Orange
-
-func setup_custom_highlighter(code_edit: CodeEdit) -> void:
+func setup_custom_highlighter(code_edit: CodeEdit, locale: String = "de") -> void:
 	assert(code_edit != null, "code_edit darf nicht null sein.")
 
 	var highlighter: CodeHighlighter = code_edit.syntax_highlighter
@@ -28,10 +10,12 @@ func setup_custom_highlighter(code_edit: CodeEdit) -> void:
 		return
 
 	_clear_existing_highlight_rules(highlighter)
-	_apply_keywords(highlighter, MOVEMENT_KEYWORDS, Color.AQUAMARINE)
-	_apply_keywords(highlighter, LOOP_KEYWORDS, Color.YELLOW)
-	_apply_keywords(highlighter, FUNC_KEYWORDS, Color.CHARTREUSE)
-	
+	var groups: Dictionary = CodeCommandCatalog.get_highlight_groups(locale)
+	_apply_keywords(highlighter, groups.get("movement", []), Color.AQUAMARINE)
+	_apply_keywords(highlighter, groups.get("control", []), Color.YELLOW)
+	_apply_keywords(highlighter, groups.get("function", []), Color.CHARTREUSE)
+	highlighter.add_color_region("#", "", Color(0.45, 0.6, 0.45), true)
+	highlighter.add_color_region("\"", "\"", Color(0.95, 0.65, 0.35), false)
 
 
 func _clear_existing_highlight_rules(highlighter: CodeHighlighter) -> void:
@@ -45,6 +29,16 @@ func _clear_existing_highlight_rules(highlighter: CodeHighlighter) -> void:
 		highlighter.clear_highlighting_cache()
 	highlighter.clear_highlighting_cache()
 	highlighter.update_cache()
+
+
+func apply_function_names(code_edit: CodeEdit, function_names: PackedStringArray) -> void:
+	var highlighter: CodeHighlighter = code_edit.syntax_highlighter
+	if highlighter == null:
+		return
+	_apply_keywords(highlighter, function_names, Color.CHARTREUSE)
+	highlighter.clear_highlighting_cache()
+	highlighter.update_cache()
+
 
 func _apply_keywords(highlighter: CodeHighlighter, keywords: Array, color: Color) -> void:
 	var trimmed: String = ""

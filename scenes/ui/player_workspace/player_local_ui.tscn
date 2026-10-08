@@ -6,8 +6,12 @@
 [ext_resource type="Script" uid="uid://dsnm03bgpmori" path="res://scenes/character/components/code.gd" id="4_code"]
 [ext_resource type="Script" uid="uid://cq4ykx1tbo4pp" path="res://scenes/ui/player_workspace/navigation_reward_policy_editor.gd" id="5_reward_editor"]
 [ext_resource type="Script" path="res://scenes/ui/player_workspace/ai_environment_settings_ui.gd" id="6_environment_settings"]
+[ext_resource type="Script" path="res://scenes/ui/player_workspace/code_sensor_preview.gd" id="7_sensor_preview"]
 
 [sub_resource type="CodeHighlighter" id="CodeHighlighter_vreni"]
+number_color = Color(0.16078432, 0.5294118, 0.36862746, 1)
+
+[sub_resource type="CodeHighlighter" id="CodeHighlighter_function"]
 number_color = Color(0.16078432, 0.5294118, 0.36862746, 1)
 
 [node name="PlayerLocalUI" type="Node" unique_id=72987237]
@@ -27,7 +31,7 @@ position = Vector2(218, -371)
 script = ExtResource("4_code")
 
 [node name="TabContainer" type="TabContainer" parent="CodeLayer/Code" unique_id=1538183637]
-offset_left = 67.0
+offset_left = -273.0
 offset_top = 14.0
 offset_right = 422.0
 offset_bottom = 724.0
@@ -49,10 +53,18 @@ size_flags_horizontal = 4
 size_flags_vertical = 0
 text = "Haupt-Code"
 
-[node name="CodeEdit" type="CodeEdit" parent="CodeLayer/Code/TabContainer/Code" unique_id=1757023759]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 440)
+[node name="EditorSplit" type="HSplitContainer" parent="CodeLayer/Code/TabContainer/Code"]
+custom_minimum_size = Vector2(0, 360)
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+split_offset = 420
+
+[node name="CodeEdit" type="CodeEdit" parent="CodeLayer/Code/TabContainer/Code/EditorSplit" unique_id=1757023759]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(390, 360)
+layout_mode = 2
+size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/line_spacing = 3
 theme_override_font_sizes/font_size = 14
@@ -61,7 +73,44 @@ scroll_past_end_of_file = true
 syntax_highlighter = SubResource("CodeHighlighter_vreni")
 highlight_current_line = true
 symbol_tooltip_on_hover = true
+gutters_draw_executing_lines = true
 gutters_draw_line_numbers = true
+
+[node name="SensorPreview" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/Code/EditorSplit"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(230, 360)
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("7_sensor_preview")
+
+[node name="Title" type="Label" parent="CodeLayer/Code/TabContainer/Code/EditorSplit/SensorPreview"]
+layout_mode = 2
+text = "Live-Sensor"
+horizontal_alignment = 1
+
+[node name="SensorPreviewText" type="RichTextLabel" parent="CodeLayer/Code/TabContainer/Code/EditorSplit/SensorPreview"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_font_sizes/normal_font_size = 10
+fit_content = false
+scroll_active = true
+selection_enabled = true
+
+[node name="VariablesTitle" type="Label" parent="CodeLayer/Code/TabContainer/Code/EditorSplit/SensorPreview"]
+layout_mode = 2
+text = "Variablen"
+horizontal_alignment = 1
+
+[node name="VariablesText" type="RichTextLabel" parent="CodeLayer/Code/TabContainer/Code/EditorSplit/SensorPreview"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 90)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 11
+text = "Noch keine Variablen"
+fit_content = false
+scroll_active = true
+selection_enabled = true
 
 [node name="ButtonCotainer" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/Code" unique_id=1098950445]
 layout_mode = 2
@@ -69,16 +118,71 @@ size_flags_horizontal = 4
 theme_override_constants/separation = 15
 
 [node name="PlayButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ButtonCotainer" unique_id=882962888]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Play"
 
+[node name="PauseButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ButtonCotainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Pause"
+
+[node name="StepButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ButtonCotainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Schritt"
+
 [node name="StopButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ButtonCotainer" unique_id=969813704]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Stop"
 
+[node name="UndoButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ButtonCotainer"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Letzte Änderung rückgängig machen"
+text = "↶"
+
+[node name="RedoButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ButtonCotainer"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Rückgängig gemachte Änderung wiederholen"
+text = "↷"
+
 [node name="CodeDeleteButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ButtonCotainer" unique_id=354657902]
 layout_mode = 2
-text = "Code lÃ¶schen"
+text = "Code löschen"
+
+[node name="ExampleContainer" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/Code"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Label" type="Label" parent="CodeLayer/Code/TabContainer/Code/ExampleContainer"]
+layout_mode = 2
+text = "Beispiel:"
+
+[node name="ExampleSelector" type="OptionButton" parent="CodeLayer/Code/TabContainer/Code/ExampleContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="LoadExampleButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ExampleContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Einfügen"
+
+[node name="EditorStatus" type="Label" parent="CodeLayer/Code/TabContainer/Code"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Bereit"
+autowrap_mode = 2
+
+[node name="CommandHelp" type="Label" parent="CodeLayer/Code/TabContainer/Code"]
+unique_name_in_owner = true
+layout_mode = 2
+modulate = Color(0.78, 0.82, 0.9, 1)
+text = "Befehl auswählen oder mit Strg+Leertaste suchen."
+autowrap_mode = 2
 
 [node name="ActionsContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/Code" unique_id=1139331600]
 modulate = Color(1, 1, 1, 0.984314)
@@ -100,6 +204,7 @@ text = "Bewege"
 
 [node name="ObenButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer" unique_id=827057773]
 layout_mode = 2
+tooltip_text = "Fügt den Befehl für ein Tile nach oben ein"
 text = "oben"
 
 [node name="LinksRechtsContainer" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer" unique_id=1051260093]
@@ -108,14 +213,17 @@ theme_override_constants/separation = 9
 
 [node name="LinksButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer/LinksRechtsContainer" unique_id=75737517]
 layout_mode = 2
+tooltip_text = "Fügt den Befehl für ein Tile nach links ein"
 text = "links"
 
 [node name="rechtsButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer/LinksRechtsContainer" unique_id=2008059962]
 layout_mode = 2
+tooltip_text = "Fügt den Befehl für ein Tile nach rechts ein"
 text = "rechts"
 
 [node name="UntenButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer" unique_id=1412224385]
 layout_mode = 2
+tooltip_text = "Fügt den Befehl für ein Tile nach unten ein"
 text = "unten"
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer" unique_id=305099569]
@@ -130,18 +238,21 @@ text = "Action"
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 8
+tooltip_text = "Greift das Tile vor den Händen an"
 text = "attacke"
 
 [node name="trinkeButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 8
+tooltip_text = "Trinkt aus einem Wasser-Tile an den Händen"
 text = "trinke"
 
 [node name="sageButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer2" unique_id=568166206]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 8
+tooltip_text = "Lässt die Figur einen Text sagen"
 text = "sage"
 
 [node name="VBoxContainer3" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer" unique_id=2079471987]
@@ -150,7 +261,7 @@ size_flags_horizontal = 3
 
 [node name="Label" type="Label" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer3" unique_id=1616721237]
 layout_mode = 2
-text = "Funktion"
+text = "Vorlagen & Befehle"
 
 [node name="ItemList" type="ItemList" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer3" unique_id=575498734]
 unique_name_in_owner = true
@@ -653,6 +764,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 scroll_smooth = true
 scroll_past_end_of_file = true
+syntax_highlighter = SubResource("CodeHighlighter_function")
 highlight_current_line = true
 symbol_tooltip_on_hover = true
 gutters_draw_bookmarks = true
@@ -772,12 +884,17 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_vertical = 4
 bbcode_enabled = true
-text = "Geh zum weiÃŸen Feld!"
+text = "Geh zum weißen Feld!"
 fit_content = true
 
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ButtonCotainer/PlayButton" to="CodeLayer/Code" method="_on_play_button_pressed"]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ButtonCotainer/PauseButton" to="CodeLayer/Code" method="_on_pause_button_pressed"]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ButtonCotainer/StepButton" to="CodeLayer/Code" method="_on_step_button_pressed"]
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ButtonCotainer/StopButton" to="CodeLayer/Code" method="_on_stop_button_pressed"]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ButtonCotainer/UndoButton" to="CodeLayer/Code" method="_on_undo_button_pressed"]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ButtonCotainer/RedoButton" to="CodeLayer/Code" method="_on_redo_button_pressed"]
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ButtonCotainer/CodeDeleteButton" to="CodeLayer/Code" method="_on_code_delete_button_pressed"]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ExampleContainer/LoadExampleButton" to="CodeLayer/Code" method="_on_load_example_pressed"]
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer/ObenButton" to="CodeLayer/Code" method="_on_oben_button_pressed"]
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer/LinksRechtsContainer/LinksButton" to="CodeLayer/Code" method="_on_links_button_pressed"]
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer/LinksRechtsContainer/rechtsButton" to="CodeLayer/Code" method="_on_rechts_button_pressed"]

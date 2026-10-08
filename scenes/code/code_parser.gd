@@ -36,15 +36,81 @@ class ParsedCommand:
 		return parts
 
 
+class CodeExpression:
+	extends RefCounted
+
+	enum Kind {
+		LITERAL,
+		VARIABLE,
+		BINARY,
+		DISTANCE_QUERY,
+		PLAYER_STAT,
+	}
+
+	var kind: int
+	var literal_value: Variant
+	var variable_name: String = ""
+	var binary_operator: StringName = &""
+	var left: CodeExpression
+	var right: CodeExpression
+	var subject: StringName = &""
+	var stat_name: StringName = &""
+
+	func _init(parsed_kind: int) -> void:
+		kind = parsed_kind
+
+
+class Assignment:
+	extends ParsedNode
+
+	var variable_name: String
+	var expression: CodeExpression
+
+	func _init(
+			parsed_variable_name: String,
+			parsed_expression: CodeExpression,
+			parsed_source_line: int,
+			parsed_source_text: String
+		) -> void:
+		variable_name = parsed_variable_name
+		expression = parsed_expression
+		source_line = parsed_source_line
+		source_text = parsed_source_text
+
+
 class CodeCondition:
 	extends RefCounted
 
-	var subject: StringName
-	var direction_action: StringName
+	enum Mode {
+		DIRECTION,
+		DISTANCE,
+		EXPRESSION,
+	}
 
-	func _init(parsed_subject: StringName, parsed_direction_action: StringName) -> void:
+	var subject: StringName
+	var mode: int
+	var direction_action: StringName
+	var comparison_operator: StringName
+	var distance_tiles: int
+	var left_expression: CodeExpression
+	var right_expression: CodeExpression
+
+	func _init(
+			parsed_subject: StringName,
+			parsed_mode: int,
+			parsed_direction_action: StringName = &"",
+			parsed_comparison_operator: StringName = &"",
+			parsed_distance_tiles: int = -1,
+			parsed_left_expression: CodeExpression = null,
+			parsed_right_expression: CodeExpression = null
+		) -> void:
 		subject = parsed_subject
+		mode = parsed_mode
 		direction_action = parsed_direction_action
+		comparison_operator = parsed_comparison_operator
+		distance_tiles = parsed_distance_tiles
+		left_expression = parsed_left_expression
+		right_expression = parsed_right_expression
 
 
 class ConditionalBlock:
@@ -60,6 +126,24 @@ class ConditionalBlock:
 			parsed_source_text: String
 		) -> void:
 		condition = parsed_condition
+		body = parsed_body
+		source_line = parsed_source_line
+		source_text = parsed_source_text
+
+
+class RepeatBlock:
+	extends ParsedNode
+
+	var count_expression: CodeExpression
+	var body: Array[ParsedNode] = []
+
+	func _init(
+			parsed_count_expression: CodeExpression,
+			parsed_body: Array[ParsedNode],
+			parsed_source_line: int,
+			parsed_source_text: String
+		) -> void:
+		count_expression = parsed_count_expression
 		body = parsed_body
 		source_line = parsed_source_line
 		source_text = parsed_source_text
@@ -81,14 +165,24 @@ class ParseResult:
 		return command_count
 
 	func _count_commands_in_node(node: ParsedNode) -> int:
-		if node is ParsedCommand:
+		if node is ParsedCommand or node is Assignment:
 			return 1
 		if node is ConditionalBlock:
 			var conditional_block: ConditionalBlock = node as ConditionalBlock
 			var command_count: int = 0
 			for child: ParsedNode in conditional_block.body:
 				command_count += _count_commands_in_node(child)
-			return command_count
+			return 1 + command_count
+		if node is RepeatBlock:
+			var repeat_block: RepeatBlock = node as RepeatBlock
+			var body_count: int = 0
+			for child: ParsedNode in repeat_block.body:
+				body_count += _count_commands_in_node(child)
+			var repeat_count: int = 1
+			if repeat_block.count_expression.kind == CodeExpression.Kind.LITERAL \
+					and repeat_block.count_expression.literal_value is int:
+				repeat_count = maxi(int(repeat_block.count_expression.literal_value), 0)
+			return 1 + body_count * repeat_count
 		return 0
 
 
@@ -234,10 +328,19 @@ func _parse_block(
 			var repeat_parts: PackedStringArray = line.split(" ", false)
 			if not _is_valid_repeat_syntax(repeat_parts, repeat_template):
 				return _error("Ungültige Wiederholung: %s" % line, source_line)
-
-			var repeat_count: int = repeat_parts[1].to_int()
-			if repeat_count < 0:
-				return _error("Die Anzahl der Wiederholungen darf nicht negativ sein.", source_line)
+			var count_expression_result: Dictionary = _parse_expression(
+				repeat_parts[1],
+				locale,
+				source_line
+			)
+			if count_expression_result.has("error"):
+				return count_expression_result
+			var count_expression: CodeExpression = count_expression_result.expression
+			if count_expression.kind == CodeExpression.Kind.LITERAL:
+				if not count_expression.literal_value is int:
+					return _error("Die Wiederholungsanzahl muss eine ganze Zahl sein.", source_line)
+				if int(count_expression.literal_value) < 0:
+					return _error("Die Anzahl der Wiederholungen darf nicht negativ sein.", source_line)
 
 			var repeat_block_result: Dictionary = _parse_block(
 				lines,
@@ -255,14 +358,7 @@ func _parse_block(
 				)
 
 			var repeat_body: Array[ParsedNode] = repeat_block_result.nodes
-			var repeat_body_count: int = _count_commands(repeat_body)
-			if _count_commands(result) + repeat_body_count * repeat_count > MAX_EXPANDED_COMMANDS:
-				return _error(
-					"Das Programm überschreitet das Limit von %d Befehlen." % MAX_EXPANDED_COMMANDS,
-					source_line
-				)
-			for repeat_index: int in range(repeat_count):
-				result.append_array(repeat_body)
+			result.append(RepeatBlock.new(count_expression, repeat_body, source_line, line))
 			line_index = int(repeat_block_result.index)
 		elif first_word == Strings.KEYWORD_IF:
 			var condition_result: Dictionary = _parse_condition(line_data, locale)
@@ -292,6 +388,11 @@ func _parse_block(
 			)
 			result.append(conditional_block)
 			line_index = int(conditional_body_result.index)
+		elif line.contains("="):
+			var assignment_result: Dictionary = _parse_assignment(line_data, locale)
+			if assignment_result.has("error"):
+				return assignment_result
+			result.append(assignment_result.assignment)
 		else:
 			var parsed_command: Dictionary = _parse_command(line_data, locale)
 			if parsed_command.has("error"):
@@ -312,12 +413,16 @@ func _parse_condition(line_data: Dictionary, locale: String) -> Dictionary:
 	var source_text: String = String(line_data.text).strip_edges()
 	var source_line: int = int(line_data.line_number)
 	var parts: PackedStringArray = source_text.split(" ", false)
-	if parts.size() != 3:
+	if parts.size() == 4:
+		return _parse_expression_condition(parts, locale, source_line)
+	if parts.size() != 3 and parts.size() != 5:
 		return _error("Ungültige Wenn-Bedingung: %s" % source_text, source_line)
 
 	var subject: StringName = Strings.translate_condition_name(locale, parts[1])
 	if subject == &"":
 		return _error("Unbekannte Bedingung: %s" % parts[1], source_line)
+	if parts.size() == 5:
+		return _parse_distance_condition(parts, subject, locale, source_line)
 
 	var localized_actions: Dictionary = Strings.ACTION_NAMES.get(locale, {})
 	var direction_name: String = parts[2].to_lower()
@@ -327,22 +432,98 @@ func _parse_condition(line_data: Dictionary, locale: String) -> Dictionary:
 	if not Strings.direction_map.has(String(direction_action)):
 		return _error("Unbekannte Richtung: %s" % parts[2], source_line)
 
-	return {"condition": CodeCondition.new(subject, direction_action)}
+	return {
+		"condition": CodeCondition.new(
+			subject,
+			CodeCondition.Mode.DIRECTION,
+			direction_action
+		),
+	}
+
+
+func _parse_expression_condition(
+		parts: PackedStringArray,
+		locale: String,
+		source_line: int
+	) -> Dictionary:
+	var left_result: Dictionary = _parse_expression(parts[1], locale, source_line)
+	if left_result.has("error"):
+		return left_result
+	var comparison_operator: StringName = Strings.translate_condition_comparison(locale, parts[2])
+	if comparison_operator == &"":
+		return _error(
+			"Unbekannter Vergleich '%s'. Erlaubt sind kleiner, größer und gleich." % parts[2],
+			source_line
+		)
+	var right_result: Dictionary = _parse_expression(parts[3], locale, source_line)
+	if right_result.has("error"):
+		return right_result
+	return {
+		"condition": CodeCondition.new(
+			&"",
+			CodeCondition.Mode.EXPRESSION,
+			&"",
+			comparison_operator,
+			-1,
+			left_result.expression,
+			right_result.expression
+		),
+	}
+
+
+func _parse_distance_condition(
+		parts: PackedStringArray,
+		subject: StringName,
+		locale: String,
+		source_line: int
+	) -> Dictionary:
+	if not Strings.is_condition_distance_keyword(locale, parts[2]):
+		return _error("Erwartet wurde 'abstand', nicht '%s'." % parts[2], source_line)
+
+	var comparison_operator: StringName = Strings.translate_condition_comparison(locale, parts[3])
+	if comparison_operator == &"":
+		return _error(
+			"Unbekannter Vergleich '%s'. Erlaubt sind kleiner, größer und gleich." % parts[3],
+			source_line
+		)
+	if not parts[4].is_valid_int():
+		return _error("Der Abstand muss eine ganze Zahl sein.", source_line)
+
+	var distance_tiles: int = parts[4].to_int()
+	if distance_tiles < 0:
+		return _error("Der Abstand darf nicht negativ sein.", source_line)
+
+	return {
+		"condition": CodeCondition.new(
+			subject,
+			CodeCondition.Mode.DISTANCE,
+			&"",
+			comparison_operator,
+			distance_tiles
+		),
+	}
 
 
 func _count_commands(nodes: Array[ParsedNode]) -> int:
 	var command_count: int = 0
 	for node: ParsedNode in nodes:
-		if node is ParsedCommand:
+		if node is ParsedCommand or node is Assignment:
 			command_count += 1
 		elif node is ConditionalBlock:
 			var conditional_block: ConditionalBlock = node as ConditionalBlock
-			command_count += _count_commands(conditional_block.body)
+			command_count += 1 + _count_commands(conditional_block.body)
+		elif node is RepeatBlock:
+			var repeat_block: RepeatBlock = node as RepeatBlock
+			var repeat_count: int = 1
+			if repeat_block.count_expression.kind == CodeExpression.Kind.LITERAL \
+					and repeat_block.count_expression.literal_value is int:
+				repeat_count = maxi(int(repeat_block.count_expression.literal_value), 0)
+			command_count += 1 + _count_commands(repeat_block.body) * repeat_count
 	return command_count
 
 
 func _is_valid_repeat_syntax(parts: PackedStringArray, template: PackedStringArray) -> bool:
-	if parts.size() != template.size() or parts.size() < 2 or not parts[1].is_valid_int():
+	if parts.size() != template.size() or parts.size() < 3:
 		return false
 	for token_index in range(parts.size()):
 		if token_index == 1:
@@ -352,12 +533,139 @@ func _is_valid_repeat_syntax(parts: PackedStringArray, template: PackedStringArr
 	return true
 
 
+func _parse_assignment(line_data: Dictionary, locale: String) -> Dictionary:
+	var source_text: String = String(line_data.text).strip_edges()
+	var source_line: int = int(line_data.line_number)
+	if source_text.count("=") != 1:
+		return _error("Eine Zuweisung benötigt genau ein '='.", source_line)
+
+	var equals_index: int = source_text.find("=")
+	var variable_name: String = source_text.substr(0, equals_index).strip_edges().to_lower()
+	var expression_text: String = source_text.substr(equals_index + 1).strip_edges()
+	if not _is_valid_variable_name(variable_name):
+		return _error(
+			"'%s' ist kein gültiger Variablenname. Beispiel: wasser_abstand" % variable_name,
+			source_line
+		)
+	if _is_reserved_variable_name(variable_name, locale):
+		return _error("'%s' ist ein reserviertes Wort." % variable_name, source_line)
+	if expression_text.is_empty():
+		return _error("Rechts vom '=' fehlt ein Wert.", source_line)
+
+	var expression_result: Dictionary = _parse_expression(expression_text, locale, source_line)
+	if expression_result.has("error"):
+		return expression_result
+	return {
+		"assignment": Assignment.new(
+			variable_name,
+			expression_result.expression,
+			source_line,
+			source_text
+		),
+	}
+
+
+func _parse_expression(expression_text: String, locale: String, source_line: int) -> Dictionary:
+	var text: String = expression_text.strip_edges()
+	if text.is_empty():
+		return _error("Der Ausdruck ist leer.", source_line)
+
+	if text.begins_with("\"") or text.ends_with("\""):
+		if text.length() < 2 or not text.begins_with("\"") or not text.ends_with("\""):
+			return _error("Ein Text muss vollständig in Anführungszeichen stehen.", source_line)
+		var string_expression: CodeExpression = CodeExpression.new(CodeExpression.Kind.LITERAL)
+		string_expression.literal_value = text.substr(1, text.length() - 2)
+		return {"expression": string_expression}
+
+	if text.is_valid_int():
+		var integer_expression: CodeExpression = CodeExpression.new(CodeExpression.Kind.LITERAL)
+		integer_expression.literal_value = text.to_int()
+		return {"expression": integer_expression}
+	if text.is_valid_float():
+		var float_expression: CodeExpression = CodeExpression.new(CodeExpression.Kind.LITERAL)
+		float_expression.literal_value = text.to_float()
+		return {"expression": float_expression}
+
+	var parts: PackedStringArray = text.split(" ", false)
+	if parts.size() == 3 and parts[1] in ["+", "-"]:
+		var left_result: Dictionary = _parse_expression(parts[0], locale, source_line)
+		if left_result.has("error"):
+			return left_result
+		var right_result: Dictionary = _parse_expression(parts[2], locale, source_line)
+		if right_result.has("error"):
+			return right_result
+		var binary_expression: CodeExpression = CodeExpression.new(CodeExpression.Kind.BINARY)
+		binary_expression.binary_operator = &"add" if parts[1] == "+" else &"subtract"
+		binary_expression.left = left_result.expression
+		binary_expression.right = right_result.expression
+		return {"expression": binary_expression}
+
+	if parts.size() == 3 and parts[0].to_lower() == "abstand" \
+			and parts[1].to_lower() == "zu":
+		var subject: StringName = Strings.translate_condition_name(locale, parts[2])
+		if subject == &"" or subject == Strings.CONDITION_FREE:
+			return _error("Unbekanntes Abstandsziel: %s" % parts[2], source_line)
+		var distance_expression: CodeExpression = CodeExpression.new(
+			CodeExpression.Kind.DISTANCE_QUERY
+		)
+		distance_expression.subject = subject
+		return {"expression": distance_expression}
+
+	if parts.size() == 2 and parts[0].to_lower() == "spieler":
+		var stat_name: StringName = Strings.translate_player_stat_name(locale, parts[1])
+		if stat_name == &"":
+			return _error("Unbekannter Spielerwert: %s" % parts[1], source_line)
+		var stat_expression: CodeExpression = CodeExpression.new(CodeExpression.Kind.PLAYER_STAT)
+		stat_expression.stat_name = stat_name
+		return {"expression": stat_expression}
+
+	if parts.size() == 1 and _is_valid_variable_name(text):
+		var variable_expression: CodeExpression = CodeExpression.new(CodeExpression.Kind.VARIABLE)
+		variable_expression.variable_name = text.to_lower()
+		return {"expression": variable_expression}
+
+	return _error("Ungültiger Ausdruck: %s" % text, source_line)
+
+
+func _is_valid_variable_name(variable_name: String) -> bool:
+	if variable_name.is_empty():
+		return false
+	var first_character: String = variable_name.substr(0, 1)
+	if not "abcdefghijklmnopqrstuvwxyz_".contains(first_character.to_lower()):
+		return false
+	for character_index: int in range(1, variable_name.length()):
+		var character: String = variable_name.substr(character_index, 1).to_lower()
+		if not "abcdefghijklmnopqrstuvwxyz_0123456789".contains(character):
+			return false
+	return true
+
+
+func _is_reserved_variable_name(variable_name: String, locale: String) -> bool:
+	if variable_name in [
+		Strings.KEYWORD_IF,
+		Strings.KEYWORD_END,
+		Strings.KEYWORD_FUNC,
+		"wiederhole",
+		"mal",
+		"abstand",
+		"spieler",
+	]:
+		return true
+	if Strings.ACTION_NAMES.get(locale, {}).has(variable_name):
+		return true
+	return Strings.translate_condition_name(locale, variable_name) != &""
+
+
 func _parse_command(line_data: Dictionary, locale: String) -> Dictionary:
 	var source_text: String = String(line_data.text).strip_edges()
 	var source_line: int = int(line_data.line_number)
 	var normalized_line: String = Strings.remap_code_cmd_to_action(locale, source_text)
 	if normalized_line.is_empty():
-		return _error("Unbekannter Befehl: %s" % source_text, source_line)
+		var suggestion: String = _find_command_suggestion(source_text, locale)
+		var message: String = "Unbekannter Befehl: %s" % source_text
+		if not suggestion.is_empty():
+			message += ". Meintest du '%s'?" % suggestion
+		return _error(message, source_line)
 
 	var parts: PackedStringArray = normalized_line.split(" ", false)
 	var action: StringName = StringName(parts[0])
@@ -385,9 +693,9 @@ func _validate_and_normalize_arguments(
 		if arguments.size() > 1:
 			return "Ein Bewegungsbefehl akzeptiert höchstens eine Schrittanzahl."
 		if arguments.size() == 1:
-			if not arguments[0].is_valid_int():
-				return "Die Schrittanzahl muss eine ganze Zahl sein."
-			if arguments[0].to_int() < 0:
+			if not arguments[0].is_valid_int() and not _is_valid_variable_name(arguments[0]):
+				return "Die Schrittanzahl muss eine ganze Zahl oder Variable sein."
+			if arguments[0].is_valid_int() and arguments[0].to_int() < 0:
 				return "Die Schrittanzahl darf nicht negativ sein."
 		return ""
 
@@ -442,6 +750,21 @@ func _validate_combo_arguments(arguments: PackedStringArray, locale: String) -> 
 		arguments[argument_index] = direction_action
 		arguments[argument_index + 1] = Strings.ACTION_ATTACK
 	return ""
+
+
+func _find_command_suggestion(source_text: String, locale: String) -> String:
+	var first_word: String = source_text.get_slice(" ", 0).to_lower()
+	var best_match: String = ""
+	var best_similarity: float = 0.0
+	for entry: Dictionary in CodeCommandCatalog.get_entries(locale):
+		var trigger: String = String(entry.get("trigger", ""))
+		if trigger.contains(" ") or trigger.is_empty():
+			continue
+		var similarity: float = first_word.similarity(trigger)
+		if similarity > best_similarity:
+			best_similarity = similarity
+			best_match = trigger
+	return best_match if best_similarity >= 0.5 else ""
 
 
 func _error(message: String, line_number: int) -> Dictionary:

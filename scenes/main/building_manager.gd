@@ -46,26 +46,46 @@ func place_building(
 		return BuildingPlacementValidator.Result.NOT_AFFORDABLE
 	if definition.scene == null:
 		return BuildingPlacementValidator.Result.SPAWN_FAILED
-
-	var building: BuildingEntity = definition.scene.instantiate() as BuildingEntity
-	if building == null:
-		return BuildingPlacementValidator.Result.SPAWN_FAILED
-	building.configure(definition, builder_peer_id)
 	if not _consume_build_cost(builder_peer_id, definition.build_cost):
-		building.free()
 		return BuildingPlacementValidator.Result.NOT_AFFORDABLE
-	building.position = to_local(world_map.navigation_tile_to_world(tile))
-	building.spawner = self
-	add_child(building, true)
-	building.register_navigation_blockers(occupied_tiles)
-	for occupied_tile: Vector2i in occupied_tiles:
-		_placed_buildings[occupied_tile] = building
-	building.tree_exiting.connect(
-		_on_building_tree_exiting.bind(building),
-		CONNECT_ONE_SHOT
+	var building: BuildingEntity = _spawn_building(
+		definition,
+		tile,
+		builder_peer_id,
+		occupied_tiles
 	)
+	if building == null:
+		_refund_build_cost(builder_peer_id, definition.build_cost)
+		return BuildingPlacementValidator.Result.SPAWN_FAILED
 	building_placed.emit(tile, building)
 	return BuildingPlacementValidator.Result.OK
+
+
+## Places map-owned structures without charging a player's inventory. It uses
+## the same validation, navigation and multiplayer path as player buildings.
+func place_generated_building(
+		building_id: StringName,
+		tile: Vector2i,
+		source_id: StringName
+	) -> BuildingEntity:
+	if not multiplayer.is_server():
+		return null
+	var definition: BuildingDefinition = get_definition(building_id)
+	if definition == null or definition.scene == null:
+		return null
+	var occupied_tiles: Array[Vector2i] = definition.get_occupied_tiles(tile)
+	var placement_result: BuildingPlacementValidator.Result = _placement_validator.validate(
+		world_map,
+		occupied_tiles,
+		is_tile_occupied
+	)
+	if placement_result != BuildingPlacementValidator.Result.OK:
+		return null
+	var building: BuildingEntity = _spawn_building(definition, tile, 0, occupied_tiles)
+	if building != null:
+		building.set_meta(&"generated_source", source_id)
+		building_placed.emit(tile, building)
+	return building
 
 
 func is_tile_occupied(tile: Vector2i) -> bool:
@@ -89,6 +109,21 @@ func remove_building(building: BuildingEntity) -> void:
 				found_tile = true
 	if found_tile:
 		building_removed.emit(removed_tile, building.building_id)
+
+
+func remove_building_immediately(building: BuildingEntity) -> void:
+	if not is_instance_valid(building):
+		return
+	var navigation_blocker: NavigationBlocker = building.get_node_or_null(
+		"NavigationBlocker"
+	) as NavigationBlocker
+	if navigation_blocker != null:
+		navigation_blocker.release()
+	remove_building(building)
+	var parent: Node = building.get_parent()
+	if parent != null:
+		parent.remove_child(building)
+	building.queue_free()
 
 
 func clear_buildings() -> void:
@@ -144,3 +179,35 @@ func _consume_build_cost(builder_peer_id: int, build_cost: Dictionary) -> bool:
 			return false
 		removed_items[item_id] = amount
 	return true
+
+
+func _refund_build_cost(builder_peer_id: int, build_cost: Dictionary) -> void:
+	var inventory_id: String = str(builder_peer_id)
+	for item_value: Variant in build_cost.keys():
+		var item_id: String = String(item_value)
+		var amount: int = int(build_cost[item_value])
+		if amount > 0:
+			Inventory.addItem(inventory_id, item_id, amount)
+
+
+func _spawn_building(
+		definition: BuildingDefinition,
+		tile: Vector2i,
+		builder_peer_id: int,
+		occupied_tiles: Array[Vector2i]
+	) -> BuildingEntity:
+	var building: BuildingEntity = definition.scene.instantiate() as BuildingEntity
+	if building == null:
+		return null
+	building.configure(definition, builder_peer_id)
+	building.position = to_local(world_map.navigation_tile_to_world(tile))
+	building.spawner = self
+	add_child(building, true)
+	building.register_navigation_blockers(occupied_tiles)
+	for occupied_tile: Vector2i in occupied_tiles:
+		_placed_buildings[occupied_tile] = building
+	building.tree_exiting.connect(
+		_on_building_tree_exiting.bind(building),
+		CONNECT_ONE_SHOT
+	)
+	return building

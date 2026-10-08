@@ -37,6 +37,10 @@ const ANIMAL_DEFINITIONS: Array[ActorDefinition] = [
 	preload("res://assets/data/animals/pig.tres"),
 ]
 
+const NPC_DEFINITIONS: Array[ActorDefinition] = [
+	preload("res://assets/data/actors/villager.tres"),
+]
+
 const OBJECT_DEFINITIONS: Array[WorldObjectDefinition] = [
 	preload("res://assets/data/world_objects/tree_0.tres"),
 	preload("res://assets/data/world_objects/tree_1.tres"),
@@ -104,6 +108,12 @@ func _build_indexes() -> void:
 		actor_definitions[id] = definition
 		animals[id] = definition.to_legacy_dict()
 
+	# NPC definitions are addressable by Creature without entering the random
+	# enemy or animal spawn pools.
+	for definition in NPC_DEFINITIONS:
+		var id: String = String(definition.actor_id)
+		actor_definitions[id] = definition
+
 	for definition in OBJECT_DEFINITIONS:
 		var id: String = String(definition.object_id)
 		object_definitions[id] = definition
@@ -126,8 +136,12 @@ func get_actor_texture(actor_id: String) -> Texture2D:
 
 
 func get_object_texture(object_id: String) -> Texture2D:
-	var definition: WorldObjectDefinition = object_definitions.get(object_id)
+	var definition: WorldObjectDefinition = get_object_definition(object_id)
 	return definition.texture if definition else null
+
+
+func get_object_definition(object_id: String) -> WorldObjectDefinition:
+	return object_definitions.get(object_id) as WorldObjectDefinition
 
 
 func get_projectile_texture(projectile_id: String) -> Texture2D:

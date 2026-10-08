@@ -45,6 +45,7 @@ func _on_animal_spawn_timer_timeout() -> void:
 
 
 func _clear_dynamic_world() -> void:
+	object_manager.clear_villages()
 	object_manager.clear_breakables()
 	object_manager.clear_buildings()
 	for container in [$Enemies, $Animals, $Projectiles, $Pickups]:

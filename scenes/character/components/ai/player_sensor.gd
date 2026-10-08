@@ -189,6 +189,55 @@ func matches_code_condition(subject: StringName, direction_action: StringName) -
 	return _has_channel_at_offset(local_map, channel, direction)
 
 
+## Compares the Manhattan distance to the nearest visible matching TileMap cell.
+## A missing target is unknown rather than infinitely far away, so every comparison
+## returns false when the sensor cannot currently see a matching cell.
+func matches_code_distance_condition(
+		subject: StringName,
+		comparison_operator: StringName,
+		distance_tiles: int
+	) -> bool:
+	if not is_ready_to_scan() or distance_tiles < 0:
+		return false
+
+	var nearest_distance: int = get_nearest_code_condition_distance(subject)
+	if nearest_distance < 0:
+		return false
+
+	match comparison_operator:
+		Strings.CONDITION_COMPARISON_LESS:
+			return nearest_distance < distance_tiles
+		Strings.CONDITION_COMPARISON_GREATER:
+			return nearest_distance > distance_tiles
+		Strings.CONDITION_COMPARISON_EQUAL:
+			return nearest_distance == distance_tiles
+	return false
+
+
+func get_nearest_code_condition_distance(subject: StringName) -> int:
+	var channel: int = CHANNEL_WALKABLE if subject == Strings.CONDITION_FREE \
+		else _get_code_condition_channel(subject)
+	if channel < 0:
+		return -1
+
+	var observation: Dictionary = scan()
+	var local_map: PackedByteArray = observation["local_map"]
+	var nearest_distance: int = -1
+	for relative_y: int in range(-scan_radius_tiles, scan_radius_tiles + 1):
+		for relative_x: int in range(-scan_radius_tiles, scan_radius_tiles + 1):
+			var relative_tile: Vector2i = Vector2i(relative_x, relative_y)
+			var tile_distance: int = absi(relative_x) + absi(relative_y)
+			if tile_distance > scan_radius_tiles:
+				continue
+			if subject == Strings.CONDITION_FREE and tile_distance == 0:
+				continue
+			if not _has_channel_at_offset(local_map, channel, relative_tile):
+				continue
+			if nearest_distance < 0 or tile_distance < nearest_distance:
+				nearest_distance = tile_distance
+	return nearest_distance
+
+
 ## Checks the actual TileMap cell under a world-space point. Player interactions
 ## use this instead of depending on rendered water nodes.
 func is_water_at_world_position(world_position: Vector2) -> bool:

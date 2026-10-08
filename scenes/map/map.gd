@@ -71,8 +71,11 @@ func generateMap(level_dict : Dictionary):
 	spawnPosition = Vector2i.ZERO
 	endPosition = Vector2i(-10, -10)
 	_reset_navigation_state()
+	object_manager.clear_villages()
 	object_manager.clear_trees(false)
 	var generated_trees: Array[TreeSpawnData] = []
+	var generated_villages: Array[VillagePlan] = []
+	var generated_village_definition: VillageDefinition
 
 	if level_type == Constants.MAP_MAIN:
 		map_type  		=  get_node_or_null("MainLevelGenerator")
@@ -80,6 +83,8 @@ func generateMap(level_dict : Dictionary):
 		walkable_tiles = tiles[0]
 		spawnable_tiles = tiles[1]
 		generated_trees.assign(tiles[2])
+		generated_villages.assign(tiles[3])
+		generated_village_definition = tiles[4] as VillageDefinition
 		set_level_options(level_no)
 	elif level_type == Constants.MAP_LABY:
 		map_type  		 =  get_node_or_null("LabyrinthGenerator")
@@ -93,6 +98,8 @@ func generateMap(level_dict : Dictionary):
 		walkable_tiles = tiles[0]
 		spawnable_tiles = tiles[1]
 		generated_trees.assign(tiles[2])
+		generated_villages.assign(tiles[3])
+		generated_village_definition = tiles[4] as VillageDefinition
 	else:
 		push_warning("Unsupported map type: %s" % level_type)
 		return
@@ -101,6 +108,7 @@ func generateMap(level_dict : Dictionary):
 		spawnable_tiles = walkable_tiles.duplicate()
 	object_manager.load_tree_spawn_data(generated_trees)
 	rebuild_navigation_grid()
+	object_manager.load_villages(generated_villages, generated_village_definition)
 
 
 func _reset_navigation_state() -> void:
@@ -337,6 +345,10 @@ func is_navigation_tile_reserved(tile: Vector2i, except_actor_id: int = -1) -> b
 func is_navigation_tile_occupied(tile: Vector2i, except_actor_id: int = -1) -> bool:
 	return navigation_occupants.has(tile) \
 		and navigation_occupants[tile] != except_actor_id
+
+
+func is_village_tile(tile: Vector2i) -> bool:
+	return is_instance_valid(object_manager) and object_manager.is_tile_in_village(tile)
 
 
 func try_claim_navigation_destination(tile: Vector2i, actor_id: int) -> bool:

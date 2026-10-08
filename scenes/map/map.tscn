@@ -11,6 +11,10 @@
 [ext_resource type="Resource" path="res://assets/data/buildings/wall.tres" id="10_wall_definition"]
 [ext_resource type="Resource" path="res://assets/data/buildings/defense_tower.tres" id="11_tower_definition"]
 [ext_resource type="Script" path="res://scenes/gameplay/definitions/building_definition.gd" id="12_building_definition"]
+[ext_resource type="Script" path="res://scenes/main/village_manager.gd" id="13_village_manager"]
+[ext_resource type="Resource" path="res://assets/data/villages/default_village.tres" id="14_village_definition"]
+[ext_resource type="PackedScene" path="res://scenes/village/village_resident.tscn" id="15_village_resident"]
+[ext_resource type="PackedScene" path="res://scenes/village/village_pig.tscn" id="16_village_pig"]
 
 [node name="Map" type="Control" unique_id=1853554641]
 layout_mode = 3
@@ -28,12 +32,14 @@ script = ExtResource("3_qpycp")
 
 [node name="MainLevelGenerator" type="Node" parent="." unique_id=784512027]
 script = ExtResource("5_qci3n")
+village_definition = ExtResource("14_village_definition")
 
-[node name="ObjectManager" type="Node2D" parent="." node_paths=PackedStringArray("tree_manager", "breakable_manager", "building_manager") groups=["object_manager"]]
+[node name="ObjectManager" type="Node2D" parent="." node_paths=PackedStringArray("tree_manager", "breakable_manager", "building_manager", "village_manager") groups=["object_manager"]]
 script = ExtResource("7_object_manager")
 tree_manager = NodePath("TreeManager")
 breakable_manager = NodePath("BreakableManager")
 building_manager = NodePath("BuildingManager")
+village_manager = NodePath("VillageManager")
 
 [node name="TreeManager" type="Node2D" parent="ObjectManager" unique_id=1255616609 groups=["tree_manager"]]
 script = ExtResource("6_tree_manager")
@@ -50,3 +56,10 @@ world_map = NodePath("../..")
 script = ExtResource("9_building_manager")
 world_map = NodePath("../..")
 building_definitions = Array[ExtResource("12_building_definition")]([ExtResource("10_wall_definition"), ExtResource("11_tower_definition")])
+
+[node name="VillageManager" type="Node2D" parent="ObjectManager" node_paths=PackedStringArray("world_map", "building_manager") groups=["village_manager"]]
+script = ExtResource("13_village_manager")
+world_map = NodePath("../..")
+building_manager = NodePath("../BuildingManager")
+resident_scene = ExtResource("15_village_resident")
+pig_scene = ExtResource("16_village_pig")

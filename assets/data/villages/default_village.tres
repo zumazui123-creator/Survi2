@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="VillageDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/map/villages/village_definition.gd" id="1_definition"]
+
+[resource]
+script = ExtResource("1_definition")
+minimum_villages = 1
+maximum_villages = 3
+map_edge_margin_tiles = 8
+village_spacing_tiles = 10
+placement_attempts_per_village = 100
+minimum_size_tiles = Vector2i(7, 7)
+maximum_size_tiles = Vector2i(11, 11)
+minimum_residents = 2
+maximum_residents = 4
+minimum_pigs = 2
+maximum_pigs = 5
+wall_building_id = &"wall"

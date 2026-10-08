@@ -46,6 +46,8 @@ func get_walkable_tiles_in_distance(player_tile_pos: Vector2i,
 	for vec in map.walkable_tiles:
 		if not map.is_navigation_tile_walkable(vec, true):
 			continue
+		if map.is_village_tile(vec):
+			continue
 		x_dist = abs(player_tile_pos.x-vec.x)
 		y_dist = abs(player_tile_pos.y-vec.y)
 		var tile_distance := maxi(x_dist, y_dist)

@@ -4,25 +4,38 @@ extends Node
 @export_range(1, 8, 1) var tree_spacing_tiles: int = 2
 @export_range(0, 100000, 1) var max_trees_per_map: int = 1000
 @export_range(0.0, 1.0, 0.001) var max_tree_map_ratio: float = 0.02
+@export_group("Villages")
+@export var village_definition: VillageDefinition
 
 @onready var map : Map = $".."
 
 var walkable_tiles: Array[Vector2i] = []
 var spawnable_tiles: Array[Vector2i] = []
 var tree_spawn_data: Array[TreeSpawnData] = []
+var village_plans: Array[VillagePlan] = []
 var _tree_candidate_blocks: Dictionary = {}
+var _village_reserved_tiles: Dictionary[Vector2i, bool] = {}
 var noise = FastNoiseLite.new()
 
 func generateMainMap(levelData : Dictionary):
 	walkable_tiles.clear()
 	spawnable_tiles.clear()
 	tree_spawn_data.clear()
+	village_plans.clear()
 	_tree_candidate_blocks.clear()
+	_village_reserved_tiles.clear()
 	generate_terrain(levelData)
+	_plan_villages()
 	_select_tree_spawns()
 	map.set_level_options(1)
 	map.generate_borders()
-	return [walkable_tiles, spawnable_tiles, tree_spawn_data]
+	return [
+		walkable_tiles,
+		spawnable_tiles,
+		tree_spawn_data,
+		village_plans,
+		village_definition,
+	]
 	
 func generate_terrain(levelData : Dictionary):
 	
@@ -93,7 +106,28 @@ func _select_tree_spawns() -> void:
 	)
 
 	for tile: Vector2i in selected_tiles:
+		if _village_reserved_tiles.has(tile):
+			continue
 		tree_spawn_data.append(TreeSpawnData.new(tile))
+
+
+func _plan_villages() -> void:
+	if village_definition == null:
+		return
+	var planner: VillagePlanner = VillagePlanner.new()
+	village_plans = planner.create_plans(
+		Vector2i(map.width, map.height),
+		village_definition,
+		Multihelper.mapSeed
+	)
+	for plan: VillagePlan in village_plans:
+		for tile: Vector2i in plan.get_reserved_tiles():
+			_village_reserved_tiles[tile] = true
+			map.set_grass_field(tile)
+			if tile not in walkable_tiles:
+				walkable_tiles.append(tile)
+			# Players and normal spawn waves must begin outside guarded villages.
+			spawnable_tiles.erase(tile)
 
 
 func _get_tree_limit(candidate_count: int) -> int:

@@ -95,6 +95,48 @@ const CONDITION_WATER: StringName = &"water"
 const CONDITION_FREE: StringName = &"free"
 const CONDITION_GOAL: StringName = &"goal"
 
+const CONDITION_COMPARISON_LESS: StringName = &"less"
+const CONDITION_COMPARISON_GREATER: StringName = &"greater"
+const CONDITION_COMPARISON_EQUAL: StringName = &"equal"
+
+const CONDITION_DISTANCE_KEYWORDS: Dictionary = {
+	"de": "abstand",
+	"en": "distance",
+}
+
+const CONDITION_COMPARISON_NAMES: Dictionary = {
+	"de": {
+		"kleiner": CONDITION_COMPARISON_LESS,
+		"größer": CONDITION_COMPARISON_GREATER,
+		"gleich": CONDITION_COMPARISON_EQUAL,
+	},
+	"en": {
+		"less": CONDITION_COMPARISON_LESS,
+		"greater": CONDITION_COMPARISON_GREATER,
+		"equal": CONDITION_COMPARISON_EQUAL,
+	},
+}
+
+const PLAYER_STAT_MANA: StringName = &"mana"
+const PLAYER_STAT_HEALTH: StringName = &"health"
+const PLAYER_STAT_HYDRATION: StringName = &"hydration"
+const PLAYER_STAT_FOOD: StringName = &"food"
+
+const PLAYER_STAT_NAMES: Dictionary = {
+	"de": {
+		"mana": PLAYER_STAT_MANA,
+		"leben": PLAYER_STAT_HEALTH,
+		"wasser": PLAYER_STAT_HYDRATION,
+		"essen": PLAYER_STAT_FOOD,
+	},
+	"en": {
+		"mana": PLAYER_STAT_MANA,
+		"health": PLAYER_STAT_HEALTH,
+		"water": PLAYER_STAT_HYDRATION,
+		"food": PLAYER_STAT_FOOD,
+	},
+}
+
 const CONDITION_NAMES: Dictionary = {
 	"de": {
 		"gegner": CONDITION_ENEMY,
@@ -182,6 +224,27 @@ func translate_condition_name(lang: String, value: String) -> StringName:
 	if not condition_names.has(normalized_value):
 		return &""
 	return StringName(condition_names[normalized_value])
+
+
+func is_condition_distance_keyword(lang: String, value: String) -> bool:
+	var expected_keyword: String = String(CONDITION_DISTANCE_KEYWORDS.get(lang, ""))
+	return not expected_keyword.is_empty() and value.strip_edges().to_lower() == expected_keyword
+
+
+func translate_condition_comparison(lang: String, value: String) -> StringName:
+	var comparison_names: Dictionary = CONDITION_COMPARISON_NAMES.get(lang, {})
+	var normalized_value: String = value.strip_edges().to_lower()
+	if not comparison_names.has(normalized_value):
+		return &""
+	return StringName(comparison_names[normalized_value])
+
+
+func translate_player_stat_name(lang: String, value: String) -> StringName:
+	var stat_names: Dictionary = PLAYER_STAT_NAMES.get(lang, {})
+	var normalized_value: String = value.strip_edges().to_lower()
+	if not stat_names.has(normalized_value):
+		return &""
+	return StringName(stat_names[normalized_value])
 
 	# var code_cmd = sperated_line
 	# var parameter = "" inp_action.trim_prefix(Strings.ACTION_USE_ITEM).strip_edges()Z

@@ -5,24 +5,26 @@ class_name NavigationBreakable
 	set(value):
 		objectId = value
 		loaded = false
-		if value.is_empty() or not Items.objects.has(value):
+		definition = Items.get_object_definition(value)
+		if definition == null:
 			return
-		data = (Items.objects[value] as Dictionary).duplicate(true)
-		hp = float(data.get("hp", 40.0))
-		$Sprite.texture = Items.get_object_texture(value)
+		hp = definition.max_hp
+		$Sprite.texture = definition.texture
+		_apply_collision_size(definition.get_collision_size())
 		loaded = true
 
-var data: Dictionary = {}
+var definition: WorldObjectDefinition
 var hp: float = 40.0
 var spawner: Node
 var loaded: bool = false
+var navigation_tiles: Array[Vector2i] = []
 
 func getDamage(causer: Node, amount: float, damage_type: StringName) -> void:
 	if !loaded:
 		return
 	if hp <= 0:
 		return
-	var required_tool: StringName = StringName(data.get("tool", ""))
+	var required_tool: StringName = definition.required_tool
 	var total_damage: float = amount * 2.0 if damage_type == required_tool else amount
 	$AnimationPlayer.play("shake")
 	$hitParticle.emitting = true
@@ -48,13 +50,17 @@ func breakObject() -> void:
 	queue_free()
 
 func spawnDrops() -> void:
-	var drops: Dictionary = data.get("drops", {})
-	for drop_value: Variant in drops.keys():
+	if definition == null:
+		return
+	var entity_spawner: WorldEntitySpawner = WorldEntitySpawner.get_for(self)
+	if entity_spawner == null:
+		return
+	for drop_value: Variant in definition.drops.keys():
 		var drop: String = String(drop_value)
-		var amount_data: Dictionary = drops.get(drop, {})
+		var amount_data: Dictionary = definition.drops.get(drop_value, {})
 		var minimum: int = int(amount_data.get("min", 0))
 		var maximum: int = int(amount_data.get("max", minimum))
-		WorldEntitySpawner.get_for(self).spawn_pickups(
+		entity_spawner.spawn_pickups(
 			drop,
 			global_position,
 			randi_range(minimum, maximum)
@@ -62,9 +68,18 @@ func spawnDrops() -> void:
 
 
 func register_navigation_blockers(tiles: Array[Vector2i]) -> void:
-	$NavigationBlocker.register_tiles(tiles)
+	navigation_tiles = tiles.duplicate()
+	$NavigationBlocker.register_tiles(navigation_tiles)
 
 
 func get_navigation_tiles(origin: Vector2i) -> Array[Vector2i]:
-	var result: Array[Vector2i] = [origin]
-	return result
+	if definition == null:
+		return [origin]
+	return definition.get_occupied_tiles(origin)
+
+
+func _apply_collision_size(size: Vector2) -> void:
+	var collision_shape: CollisionShape2D = $CollisionShape2D
+	var rectangle: RectangleShape2D = collision_shape.shape as RectangleShape2D
+	if rectangle != null:
+		rectangle.size = size

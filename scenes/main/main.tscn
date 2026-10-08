@@ -106,11 +106,11 @@ _spawnable_scenes = PackedStringArray("uid://bmhxilkffhqa5")
 spawn_path = NodePath("../Players")
 
 [node name="AnimalSpawner" type="MultiplayerSpawner" parent="." unique_id=2005880034]
-_spawnable_scenes = PackedStringArray("uid://4yb25tbuu2at")
+_spawnable_scenes = PackedStringArray("uid://4yb25tbuu2at", "res://scenes/village/village_pig.tscn")
 spawn_path = NodePath("../Animals")
 
 [node name="EnemySpawner" type="MultiplayerSpawner" parent="." unique_id=1050839693]
-_spawnable_scenes = PackedStringArray("uid://d3bgdspo4bhr4")
+_spawnable_scenes = PackedStringArray("uid://d3bgdspo4bhr4", "res://scenes/village/village_resident.tscn")
 spawn_path = NodePath("../Enemies")
 
 [node name="ProjectileSpawner" type="MultiplayerSpawner" parent="." unique_id=1312236852]

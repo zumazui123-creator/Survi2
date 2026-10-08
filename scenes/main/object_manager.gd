@@ -4,6 +4,7 @@ class_name ObjectManager
 @export var tree_manager: TreeManager
 @export var breakable_manager: BreakableManager
 @export var building_manager: BuildingManager
+@export var village_manager: VillageManager
 
 
 func load_tree_spawn_data(spawn_data: Array[TreeSpawnData]) -> void:
@@ -54,7 +55,26 @@ func clear_buildings() -> void:
 		building_manager.clear_buildings()
 
 
+func load_villages(
+		plans: Array[VillagePlan],
+		definition: VillageDefinition
+	) -> void:
+	if is_instance_valid(village_manager):
+		village_manager.load_villages(plans, definition)
+
+
+func clear_villages() -> void:
+	if is_instance_valid(village_manager):
+		village_manager.clear_villages()
+
+
+func is_tile_in_village(tile: Vector2i) -> bool:
+	return is_instance_valid(village_manager) \
+		and village_manager.is_tile_in_any_village(tile)
+
+
 func clear_all(release_tree_navigation: bool = true) -> void:
+	clear_villages()
 	clear_trees(release_tree_navigation)
 	clear_breakables()
 	clear_buildings()

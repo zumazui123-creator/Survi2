@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/enemy/enemy.tscn" id="1_enemy"]
+[ext_resource type="Script" path="res://scenes/village/village_resident.gd" id="2_script"]
+
+[node name="VillageResident" groups=["damageable", "sensor_enemy", "village_resident"] instance=ExtResource("1_enemy")]
+script = ExtResource("2_script")
+actor_id = &"villager"

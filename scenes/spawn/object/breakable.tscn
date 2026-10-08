@@ -5,6 +5,7 @@
 [ext_resource type="Script" path="res://scenes/navigation/navigation_blocker.gd" id="3_navigation"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_breakable"]
+resource_local_to_scene = true
 size = Vector2(30, 30)
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_a5lig"]
