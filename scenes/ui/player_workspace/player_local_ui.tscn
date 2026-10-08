@@ -238,11 +238,11 @@ alignment = 1
 
 [node name="createFunction" type="Button" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer2" unique_id=79635568]
 layout_mode = 2
-text = "Funktion Menu"
+text = "Neue Funktion"
 
 [node name="loadFunction" type="Button" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer2" unique_id=1071860524]
 layout_mode = 2
-text = "Lade Funktionen"
+text = "Funktionen verwalten"
 
 [node name="KI Playground" type="MarginContainer" parent="CodeLayer/Code/TabContainer" unique_id=1000470522]
 unique_name_in_owner = true
@@ -270,7 +270,7 @@ theme_override_constants/separation = 12
 [node name="Title" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content" unique_id=156423091]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
-text = "KI Playground"
+text = "KI"
 horizontal_alignment = 1
 
 [node name="AgentDescription" type="Label" parent="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content" unique_id=281127605]
@@ -466,6 +466,107 @@ theme_override_constants/h_separation = 10
 theme_override_constants/v_separation = 5
 columns = 2
 
+[node name="Functionen" type="MarginContainer" parent="CodeLayer/Code/TabContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+metadata/_tab_index = 2
+
+[node name="Content" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/Functionen"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="CodeLayer/Code/TabContainer/Functionen/Content"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Eigene Funktionen"
+horizontal_alignment = 1
+
+[node name="Description" type="Label" parent="CodeLayer/Code/TabContainer/Functionen/Content"]
+layout_mode = 2
+text = "Speichere einen Befehlsblock und rufe ihn im Haupt-Code über seinen Namen auf."
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="NameRow" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/Functionen/Content"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Label" type="Label" parent="CodeLayer/Code/TabContainer/Functionen/Content/NameRow"]
+layout_mode = 2
+text = "Name:"
+
+[node name="InputFuncName" type="LineEdit" parent="CodeLayer/Code/TabContainer/Functionen/Content/NameRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "zum_beispiel_sammle_holz"
+max_length = 30
+
+[node name="FunctionCodeEdit" type="CodeEdit" parent="CodeLayer/Code/TabContainer/Functionen/Content"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 260)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+placeholder_text = "rechts\nattacke\nlinks"
+scroll_smooth = true
+scroll_past_end_of_file = true
+syntax_highlighter = SubResource("CodeHighlighter_function")
+highlight_current_line = true
+symbol_tooltip_on_hover = true
+gutters_draw_bookmarks = true
+gutters_draw_line_numbers = true
+
+[node name="FunctionButtons" type="GridContainer" parent="CodeLayer/Code/TabContainer/Functionen/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/h_separation = 6
+theme_override_constants/v_separation = 6
+columns = 3
+
+[node name="NewFunctionButton" type="Button" parent="CodeLayer/Code/TabContainer/Functionen/Content/FunctionButtons"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Neu"
+
+[node name="SaveFunctionButton" type="Button" parent="CodeLayer/Code/TabContainer/Functionen/Content/FunctionButtons"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Speichern"
+
+[node name="InsertFunctionButton" type="Button" parent="CodeLayer/Code/TabContainer/Functionen/Content/FunctionButtons"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "Fügt den Funktionsaufruf in den Haupt-Code ein."
+text = "In Code"
+
+[node name="FunctionStatus" type="Label" parent="CodeLayer/Code/TabContainer/Functionen/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Neue Funktion erstellen oder eine gespeicherte Funktion auswählen."
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="ListLabel" type="Label" parent="CodeLayer/Code/TabContainer/Functionen/Content"]
+layout_mode = 2
+text = "Gespeicherte Funktionen"
+
+[node name="FuncList" type="ItemList" parent="CodeLayer/Code/TabContainer/Functionen/Content"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
 [node name="Umgebung" type="MarginContainer" parent="CodeLayer/Code/TabContainer"]
 unique_name_in_owner = true
 layout_mode = 2
@@ -474,7 +575,7 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 script = ExtResource("6_environment_settings")
-metadata/_tab_index = 2
+metadata/_tab_index = 3
 
 [node name="ScrollContainer" type="ScrollContainer" parent="CodeLayer/Code/TabContainer/Umgebung"]
 layout_mode = 2
@@ -679,88 +780,6 @@ text = "Das Schrittlimit trennt nur Trainingsabschnitte; Welt und Player laufen 
 horizontal_alignment = 1
 autowrap_mode = 2
 
-[node name="PopupFunction" type="PopupPanel" parent="CodeLayer" unique_id=1573069857]
-unique_name_in_owner = true
-oversampling_override = 1.0
-title = "Funktionen"
-size = Vector2i(559, 478)
-
-[node name="HBoxContainer" type="HBoxContainer" parent="CodeLayer/PopupFunction" unique_id=1817172930]
-anchors_preset = 4
-anchor_top = 0.5
-anchor_bottom = 0.5
-offset_left = 4.0
-offset_top = 4.0
-offset_right = 555.0
-offset_bottom = 474.0
-grow_vertical = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
-theme_override_constants/separation = 10
-
-[node name="VBoxContainer" type="VBoxContainer" parent="CodeLayer/PopupFunction/HBoxContainer" unique_id=1023878274]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="HBoxContainer" type="HBoxContainer" parent="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer" unique_id=1285933140]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=359106307]
-layout_mode = 2
-text = "Funktionsname: "
-
-[node name="InputFuncName" type="LineEdit" parent="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=706551571]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-max_length = 30
-
-[node name="FunctionCodeEdit" type="CodeEdit" parent="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer" unique_id=881055132]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(400, 400)
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-scroll_smooth = true
-scroll_past_end_of_file = true
-syntax_highlighter = SubResource("CodeHighlighter_function")
-highlight_current_line = true
-symbol_tooltip_on_hover = true
-gutters_draw_bookmarks = true
-gutters_draw_line_numbers = true
-
-[node name="BtnContainer" type="HBoxContainer" parent="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer" unique_id=1176897146]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_constants/separation = 20
-
-[node name="CreateBtn" type="Button" parent="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer/BtnContainer" unique_id=531604751]
-layout_mode = 2
-text = "Erstellen"
-
-[node name="ExitBtn" type="Button" parent="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer/BtnContainer" unique_id=913988223]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Abbrechen"
-
-[node name="VBoxContainer2" type="VBoxContainer" parent="CodeLayer/PopupFunction/HBoxContainer" unique_id=1857271388]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 15
-
-[node name="Label" type="Label" parent="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer2" unique_id=1289616111]
-layout_mode = 2
-text = "Funktionsliste"
-
-[node name="FuncList" type="ItemList" parent="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer2" unique_id=1811930146]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_vertical = 3
-item_count = 1
-item_0/text = "Test2"
-
 [node name="PopupSettings" type="PopupPanel" parent="." unique_id=796379025]
 unique_name_in_owner = true
 transparent_bg = false
@@ -865,6 +884,10 @@ fit_content = true
 [connection signal="item_activated" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer3/ItemList" to="CodeLayer/Code" method="_on_item_list_item_activated"]
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer2/createFunction" to="CodeLayer/Code" method="_on_create_function_pressed"]
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer2/loadFunction" to="CodeLayer/Code" method="_on_load_function_pressed"]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/Functionen/Content/FunctionButtons/NewFunctionButton" to="CodeLayer/Code" method="_on_new_function_pressed"]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/Functionen/Content/FunctionButtons/SaveFunctionButton" to="CodeLayer/Code" method="_on_create_btn_pressed"]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/Functionen/Content/FunctionButtons/InsertFunctionButton" to="CodeLayer/Code" method="_on_insert_function_pressed"]
+[connection signal="item_selected" from="CodeLayer/Code/TabContainer/Functionen/Content/FuncList" to="CodeLayer/Code" method="_on_func_list_item_activated"]
 [connection signal="value_changed" from="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/AgentSettingsPanel/VBox/EpisodeGrid/MaxStepsInput" to="CodeLayer/Code/TabContainer/KI Playground" method="_on_max_steps_changed"]
 [connection signal="value_changed" from="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/AgentSettingsPanel/VBox/EpisodeGrid/RolloutCountInput" to="CodeLayer/Code/TabContainer/KI Playground" method="_on_rollout_count_changed"]
 [connection signal="item_selected" from="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/AgentSettingsPanel/VBox/EpisodeGrid/AgentSelector" to="CodeLayer/Code/TabContainer/KI Playground" method="_on_agent_selected"]
@@ -878,7 +901,5 @@ fit_content = true
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/ActionsPanel/VBox/RunButtons/RandomPolicyButton" to="CodeLayer/Code/TabContainer/KI Playground" method="_on_random_policy_pressed"]
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/ActionsPanel/VBox/ManageButtons/StopTrainingButton" to="CodeLayer/Code/TabContainer/KI Playground" method="_on_stop_training_pressed"]
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/KI Playground/ScrollContainer/Content/ActionsPanel/VBox/ManageButtons/ClearPolicyButton" to="CodeLayer/Code/TabContainer/KI Playground" method="_on_reset_agent_pressed"]
-[connection signal="pressed" from="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer/BtnContainer/CreateBtn" to="CodeLayer/Code" method="_on_create_btn_pressed"]
-[connection signal="item_activated" from="CodeLayer/PopupFunction/HBoxContainer/VBoxContainer2/FuncList" to="CodeLayer/Code" method="_on_func_list_item_activated"]
 [connection signal="pressed" from="PopupSettings/VBoxContainer/HBoxContainer2/backToMenu" to="." method="_on_back_to_menu_pressed"]
 [connection signal="pressed" from="PopupSettings/VBoxContainer/HBoxContainer2/SettingsOkBtn" to="." method="_on_settings_ok_pressed"]

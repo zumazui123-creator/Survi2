@@ -155,7 +155,7 @@ static func _get_german_entries() -> Array[Dictionary]:
 		_entry(
 			"func",
 			FUNCTION_TEMPLATE_ID,
-			"Öffnet den Funktionseditor für einen wiederverwendbaren Befehlsblock.",
+			"Öffnet den Tab für einen wiederverwendbaren Befehlsblock.",
 			["func", "end_func"],
 			"function"
 		),
@@ -197,7 +197,7 @@ static func _get_english_entries() -> Array[Dictionary]:
 			["if", "end", "distance", "less", "greater", "equal"],
 			"control"
 		),
-		_entry("func", FUNCTION_TEMPLATE_ID, "Opens the reusable function editor.", ["func"], "function"),
+		_entry("func", FUNCTION_TEMPLATE_ID, "Opens the tab for reusable function blocks.", ["func"], "function"),
 	]
 
 

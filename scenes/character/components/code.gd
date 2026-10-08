@@ -14,11 +14,13 @@ var _last_error_line: int = 0
 
 @onready var code_edit: CodeEdit = %CodeEdit
 @onready var item_list: ItemList = %ItemList
+@onready var tab_container: TabContainer = $TabContainer
+@onready var main_code_tab: VBoxContainer = %Code
+@onready var function_tab: MarginContainer = %Functionen
 @onready var function_name_input: LineEdit = %InputFuncName
 @onready var function_code_edit: CodeEdit = %FunctionCodeEdit
 @onready var function_list: ItemList = %FuncList
-@onready var function_popup: PopupPanel = %PopupFunction
-@onready var function_exit_button: Button = %ExitBtn
+@onready var function_status: Label = %FunctionStatus
 @onready var play_button: Button = %PlayButton
 @onready var pause_button: Button = %PauseButton
 @onready var step_button: Button = %StepButton
@@ -33,7 +35,6 @@ var _last_error_line: int = 0
 
 func _ready() -> void:
 	_line_number_pattern.compile("\\(Zeile (\\d+)\\)")
-	function_exit_button.pressed.connect(_on_exit_button_pressed)
 	highlighter = MyCodeHighLighter.new()
 	highlighter.setup_custom_highlighter(code_edit, Strings.current_locale)
 	highlighter.setup_custom_highlighter(function_code_edit, Strings.current_locale)
@@ -181,7 +182,9 @@ func _refresh_function_lists() -> void:
 		_add_list_item(function_name, function_name, "Ruft deine Funktion '%s' auf." % function_name)
 		function_list.add_item(function_name)
 	highlighter.setup_custom_highlighter(code_edit, Strings.current_locale)
+	highlighter.setup_custom_highlighter(function_code_edit, Strings.current_locale)
 	highlighter.apply_function_names(code_edit, function_names)
+	highlighter.apply_function_names(function_code_edit, function_names)
 
 
 func _add_list_item(label: String, insert_text: String, description: String) -> void:
@@ -288,10 +291,6 @@ func _get_functions() -> Dictionary:
 	return function_library.functions if is_instance_valid(function_library) else {}
 
 
-func _on_exit_button_pressed() -> void:
-	function_popup.hide()
-
-
 func _on_links_button_pressed() -> void:
 	_insert_text("links")
 
@@ -329,12 +328,14 @@ func _on_item_list_item_activated(index: int) -> void:
 
 
 func _on_create_function_pressed() -> void:
-	function_popup.popup_centered()
+	_clear_function_editor()
+	_show_function_tab()
 	function_name_input.grab_focus()
 
 
 func _on_load_function_pressed() -> void:
-	function_popup.popup_centered()
+	_show_function_tab()
+	function_list.grab_focus()
 
 
 func _on_code_delete_button_pressed() -> void:
@@ -396,24 +397,79 @@ func _on_load_example_pressed() -> void:
 
 
 func _on_create_btn_pressed() -> void:
-	if not Multihelper.code_player_enabled or not is_instance_valid(function_library):
+	if not is_instance_valid(function_library):
+		_set_function_status("Der Funktionseditor ist derzeit nicht verfügbar.", true)
 		return
 	var function_name: String = function_name_input.text.strip_edges()
 	if function_name.is_empty():
-		_set_status("Die Funktion braucht einen Namen.", true)
+		_set_function_status("Die Funktion braucht einen Namen.", true)
 		return
-	var data: Dictionary = {function_name: function_code_edit.text}
+	if not function_name.is_valid_identifier():
+		_set_function_status(
+			"Der Name darf nur Buchstaben, Zahlen und Unterstriche enthalten.",
+			true
+		)
+		return
+	if not CodeCommandCatalog.get_description(function_name, Strings.current_locale).is_empty():
+		_set_function_status(
+			"'%s' ist bereits ein Befehl und kann nicht als Funktionsname verwendet werden."
+			% function_name,
+			true
+		)
+		return
+	var function_body: String = function_code_edit.text.strip_edges()
+	if function_body.is_empty():
+		_set_function_status("Die Funktion braucht mindestens einen Befehl.", true)
+		return
+	var data: Dictionary = {function_name: function_body}
 	if function_library.set_func(data):
-		function_popup.hide()
+		_set_function_status("Funktion '%s' gespeichert." % function_name, false)
 		_set_status("Funktion '%s' gespeichert." % function_name, false)
 
 
 func _on_func_list_item_activated(index: int) -> void:
-	if not is_instance_valid(function_library):
+	if not is_instance_valid(function_library) \
+			or index < 0 \
+			or index >= function_list.item_count:
 		return
 	var function_name: String = function_list.get_item_text(index)
 	function_name_input.text = function_name
 	function_code_edit.text = "\n".join(function_library.get_function_body(function_name))
+	_set_function_status("Funktion '%s' wird bearbeitet." % function_name, false)
+
+
+func _on_new_function_pressed() -> void:
+	_clear_function_editor()
+	function_name_input.grab_focus()
+
+
+func _on_insert_function_pressed() -> void:
+	if not is_instance_valid(function_library):
+		_set_function_status("Der Funktionsspeicher ist nicht verbunden.", true)
+		return
+	var function_name: String = function_name_input.text.strip_edges()
+	if function_name.is_empty() or not function_library.functions.has(function_name):
+		_set_function_status("Speichere oder wähle zuerst eine Funktion aus.", true)
+		return
+	_insert_text(function_name)
+	tab_container.current_tab = main_code_tab.get_index()
+	_set_status("Funktionsaufruf '%s' eingefügt." % function_name, false)
+
+
+func _show_function_tab() -> void:
+	tab_container.current_tab = function_tab.get_index()
+
+
+func _clear_function_editor() -> void:
+	function_name_input.clear()
+	function_code_edit.text = ""
+	function_list.deselect_all()
+	_set_function_status("Neue Funktion: Namen und Befehle eingeben.", false)
+
+
+func _set_function_status(message: String, is_error: bool) -> void:
+	function_status.text = message
+	function_status.modulate = Color(1.0, 0.45, 0.45) if is_error else Color.WHITE
 
 
 func _exit_tree() -> void:

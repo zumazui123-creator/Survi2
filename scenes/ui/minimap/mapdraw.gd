@@ -12,6 +12,8 @@ const WALKABLE_COLOR: Color = Color(0.0, 1.0, 0.0)
 const DEFAULT_COLOR: Color = Color(0.0, 0.0, 1.0, 0.6)
 const VILLAGE_FILL_COLOR: Color = Color(0.95, 0.55, 0.12, 0.72)
 const VILLAGE_BORDER_COLOR: Color = Color(1.0, 0.9, 0.35, 1.0)
+const LARGE_VILLAGE_FILL_COLOR: Color = Color(0.75, 0.22, 0.85, 0.78)
+const LARGE_VILLAGE_BORDER_COLOR: Color = Color(1.0, 0.65, 1.0, 1.0)
 
 #@export var MultiHelper.map.tilemap: TileMapLayer
 #@export var player: Node2D
@@ -71,8 +73,12 @@ func _draw_villages() -> void:
 			Vector2(plan.bounds.position) * tile_size,
 			Vector2(plan.bounds.size) * tile_size
 		)
-		draw_rect(village_rect, VILLAGE_FILL_COLOR, true)
-		draw_rect(village_rect, VILLAGE_BORDER_COLOR, false, 1.0)
+		var fill_color: Color = LARGE_VILLAGE_FILL_COLOR \
+			if plan.is_large else VILLAGE_FILL_COLOR
+		var border_color: Color = LARGE_VILLAGE_BORDER_COLOR \
+			if plan.is_large else VILLAGE_BORDER_COLOR
+		draw_rect(village_rect, fill_color, true)
+		draw_rect(village_rect, border_color, false, 1.0)
 
 
 func _on_generation_started() -> void:

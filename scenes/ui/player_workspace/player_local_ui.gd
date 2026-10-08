@@ -3,12 +3,17 @@ class_name PlayerLocalUI
 
 @onready var code_controller: CodeEditorController = $CodeLayer/Code
 @onready var function_library: FunctionHandler = $FunctionLibrary
+@onready var tab_container: TabContainer = $CodeLayer/Code/TabContainer
 @onready var work_task_text: RichTextLabel = %WorkTaskText
 @onready var difficulty_button: OptionButton = %DifModeButton
 @onready var settings_popup: PopupPanel = %PopupSettings
 @onready var info_popup: PopupPanel = %PopupInfo
 @onready var ai_playground: RLPlaygroundUI = get_node("%KI Playground") as RLPlaygroundUI
 @onready var environment_settings: AIEnvironmentSettingsUI = %Umgebung
+
+
+func _ready() -> void:
+	tab_container.set_tab_title(ai_playground.get_index(), "KI")
 
 
 func bind_components(

@@ -114,18 +114,25 @@ func _select_tree_spawns() -> void:
 func _plan_villages() -> void:
 	if village_definition == null:
 		return
+	var available_village_tiles: Dictionary[Vector2i, bool] = {}
+	for tile: Vector2i in walkable_tiles:
+		available_village_tiles[tile] = true
 	var planner: VillagePlanner = VillagePlanner.new()
 	village_plans = planner.create_plans(
 		Vector2i(map.width, map.height),
 		village_definition,
-		Multihelper.mapSeed
+		Multihelper.mapSeed,
+		available_village_tiles
 	)
 	for plan: VillagePlan in village_plans:
 		for tile: Vector2i in plan.get_reserved_tiles():
+			if not available_village_tiles.has(tile):
+				push_error(
+					"Village plan %d contains blocked tile %s" % [plan.village_id, tile]
+				)
+				continue
 			_village_reserved_tiles[tile] = true
 			map.set_grass_field(tile)
-			if tile not in walkable_tiles:
-				walkable_tiles.append(tile)
 			# Players and normal spawn waves must begin outside guarded villages.
 			spawnable_tiles.erase(tile)
 

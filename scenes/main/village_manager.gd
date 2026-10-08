@@ -46,6 +46,7 @@ func load_villages(
 		_spawn_walls(plan, definition.wall_building_id)
 		_spawn_residents(plan)
 		_spawn_pigs(plan)
+		_spawn_loot(plan, definition)
 		village_loaded.emit(plan.village_id, plan.bounds)
 	_update_intruders()
 
@@ -175,6 +176,37 @@ func _spawn_pigs(plan: VillagePlan) -> void:
 		pig.configure_village(plan.village_id, plan.interior_bounds, self, world_map)
 		animals_root.add_child(pig, true)
 		_pigs.append(pig)
+
+
+func _spawn_loot(plan: VillagePlan, definition: VillageDefinition) -> void:
+	if not plan.is_large or plan.loot_spawn_tiles.is_empty():
+		return
+	var spawner: WorldEntitySpawner = WorldEntitySpawner.get_for(self)
+	if not is_instance_valid(spawner) or not is_instance_valid(world_map):
+		push_warning("VillageManager: world entity spawner is missing; village loot was skipped")
+		return
+
+	var item_ids: Array[String] = []
+	for value: Variant in definition.large_village_loot.keys():
+		item_ids.append(String(value))
+	item_ids.sort()
+	var loot_tile_index: int = 0
+	for item_id: String in item_ids:
+		var amount: int = int(definition.large_village_loot.get(item_id, 0))
+		if amount <= 0:
+			continue
+		if not Items.item_definitions.has(item_id):
+			push_warning("VillageManager: unknown large-village loot item '%s'" % item_id)
+			continue
+		var loot_tile: Vector2i = plan.loot_spawn_tiles[
+			loot_tile_index % plan.loot_spawn_tiles.size()
+		]
+		spawner.spawn_pickups(
+			item_id,
+			world_map.navigation_tile_to_world(loot_tile),
+			amount
+		)
+		loot_tile_index += 1
 
 
 func _update_intruders() -> void:

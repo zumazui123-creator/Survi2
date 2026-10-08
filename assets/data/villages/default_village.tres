@@ -4,15 +4,22 @@
 
 [resource]
 script = ExtResource("1_definition")
-minimum_villages = 1
-maximum_villages = 3
+minimum_villages = 10
+maximum_villages = 12
 map_edge_margin_tiles = 8
-village_spacing_tiles = 10
-placement_attempts_per_village = 100
+village_spacing_tiles = 6
+placement_attempts_per_village = 600
 minimum_size_tiles = Vector2i(7, 7)
-maximum_size_tiles = Vector2i(11, 11)
+maximum_size_tiles = Vector2i(9, 9)
 minimum_residents = 2
 maximum_residents = 4
 minimum_pigs = 2
 maximum_pigs = 5
+generate_large_village = true
+large_village_size_tiles = Vector2i(15, 15)
+large_minimum_residents = 7
+large_maximum_residents = 10
+large_minimum_pigs = 4
+large_maximum_pigs = 7
+large_village_loot = {"crystalShard": 3, "energy_drink": 2, "magicAxe1": 1, "magicSpear1": 1, "magicSword1": 1}
 wall_building_id = &"wall"
