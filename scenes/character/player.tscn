@@ -81,62 +81,59 @@ properties/15/path = NodePath("Gameplay/PlayerStats:mana")
 properties/15/spawn = true
 properties/15/replication_mode = 2
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxEmpty_5y66v"]
-content_margin_left = 5.0
-content_margin_top = 4.0
-content_margin_right = 5.0
-content_margin_bottom = 4.0
-bg_color = Color(0.018, 0.025, 0.047, 0.9)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.35, 0.43, 0.58, 0.9)
-corner_radius_top_left = 6
-corner_radius_top_right = 6
-corner_radius_bottom_right = 6
-corner_radius_bottom_left = 6
-shadow_color = Color(0, 0, 0, 0.5)
-shadow_size = 2
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5y66v"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uicah"]
-bg_color = Color(0.025, 0.035, 0.06, 0.96)
+bg_color = Color(0.45160097, 0.13573483, 0.102712326, 0.5568628)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(0.25, 0.3, 0.4, 0.95)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
+border_color = Color(0.52549, 0.52549, 0.52549, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+expand_margin_left = 2.0
+expand_margin_top = 2.0
+expand_margin_right = 2.0
+expand_margin_bottom = 2.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g2qfr"]
-bg_color = Color(0.06, 0.72, 0.28, 1)
-border_width_top = 1
-border_color = Color(0.42, 1, 0.58, 1)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
+bg_color = Color(0, 0.529412, 0.113725, 1)
+border_color = Color(0.701961, 0.701961, 0.701961, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+expand_margin_left = 2.0
+expand_margin_top = 2.0
+expand_margin_right = 2.0
+expand_margin_bottom = 2.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_exp"]
-bg_color = Color(0.95, 0.67, 0.08, 1)
-border_width_top = 1
-border_color = Color(1, 0.9, 0.35, 1)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
+bg_color = Color(0.69803923, 0.68235296, 0.019607844, 1)
+border_color = Color(0.701961, 0.701961, 0.701961, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+expand_margin_left = 2.0
+expand_margin_top = 2.0
+expand_margin_right = 2.0
+expand_margin_bottom = 2.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mana"]
-bg_color = Color(0.1, 0.4, 0.98, 1)
-border_width_top = 1
-border_color = Color(0.46, 0.78, 1, 1)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
+bg_color = Color(0.0784314, 0.392157, 0.905882, 1)
+border_color = Color(0.545098, 0.803922, 1, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+expand_margin_left = 2.0
+expand_margin_top = 2.0
+expand_margin_right = 2.0
+expand_margin_bottom = 2.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wmtbp"]
 bg_color = Color(0.180392, 0.180392, 0.180392, 1)
@@ -513,7 +510,7 @@ stats = NodePath("../PlayerStats")
 
 [node name="WorldUI" type="Node2D" parent="."]
 
-[node name="PlayerStatus" type="Control" parent="WorldUI" unique_id=381426310 node_paths=PackedStringArray("hp_bar", "mana_bar", "exp_bar", "hp_value_label", "mana_value_label", "exp_value_label", "hydration_bar", "food_bar", "name_label", "player", "stats")]
+[node name="PlayerStatus" type="Control" parent="WorldUI" unique_id=381426310 node_paths=PackedStringArray("hp_bar", "mana_bar", "exp_bar", "hydration_bar", "food_bar", "name_label", "player", "stats")]
 unique_name_in_owner = true
 layout_mode = 3
 anchors_preset = 8
@@ -522,7 +519,7 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -32.0
-offset_top = -80.0
+offset_top = -40.0
 offset_right = 32.0
 offset_bottom = 24.0
 grow_horizontal = 2
@@ -532,9 +529,6 @@ script = ExtResource("7_wmtbp")
 hp_bar = NodePath("NameTag/VBoxContainer/hpBar")
 mana_bar = NodePath("NameTag/VBoxContainer/manaBar")
 exp_bar = NodePath("NameTag/VBoxContainer/expBar")
-hp_value_label = NodePath("NameTag/VBoxContainer/hpBar/ValueLabel")
-mana_value_label = NodePath("NameTag/VBoxContainer/manaBar/ValueLabel")
-exp_value_label = NodePath("NameTag/VBoxContainer/expBar/ValueLabel")
 hydration_bar = NodePath("Bar/HydrationBar")
 food_bar = NodePath("Bar/FoodBar")
 name_label = NodePath("NameTag/VBoxContainer/nameLabel")
@@ -546,111 +540,57 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -65.0
-offset_right = 65.0
-offset_bottom = 52.0
+offset_left = -50.0
+offset_right = 50.0
+offset_bottom = 20.0
 grow_horizontal = 2
 layout_direction = 1
 theme_override_styles/panel = SubResource("StyleBoxEmpty_5y66v")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="WorldUI/PlayerStatus/NameTag" unique_id=3770290]
 layout_mode = 2
-theme_override_constants/separation = 2
-
-[node name="nameLabel" type="Label" parent="WorldUI/PlayerStatus/NameTag/VBoxContainer" unique_id=1397500899]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(120, 14)
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_colors/font_color = Color(0.92, 0.95, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 0.95)
-theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 11
-text = "playerName  |  LVL 1"
-horizontal_alignment = 1
-vertical_alignment = 1
-text_overrun_behavior = 3
+theme_override_constants/separation = 0
 
 [node name="hpBar" type="ProgressBar" parent="WorldUI/PlayerStatus/NameTag/VBoxContainer" unique_id=1506261142]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 12)
+custom_minimum_size = Vector2(0, 4)
 layout_mode = 2
 size_flags_vertical = 1
-tooltip_text = "Lebenspunkte"
 theme_override_styles/background = SubResource("StyleBoxFlat_uicah")
 theme_override_styles/fill = SubResource("StyleBoxFlat_g2qfr")
 max_value = 1.0
 value = 1.0
 show_percentage = false
 
-[node name="ValueLabel" type="Label" parent="WorldUI/PlayerStatus/NameTag/VBoxContainer/hpBar"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0.12, 0.035, 1)
-theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 8
-text = "HP 100/100"
-horizontal_alignment = 1
-vertical_alignment = 1
-
 [node name="manaBar" type="ProgressBar" parent="WorldUI/PlayerStatus/NameTag/VBoxContainer"]
-custom_minimum_size = Vector2(0, 10)
+custom_minimum_size = Vector2(0, 3)
 layout_mode = 2
 size_flags_vertical = 1
-tooltip_text = "Mana für Combos"
 theme_override_styles/background = SubResource("StyleBoxFlat_uicah")
 theme_override_styles/fill = SubResource("StyleBoxFlat_mana")
 max_value = 100.0
 value = 100.0
 show_percentage = false
 
-[node name="ValueLabel" type="Label" parent="WorldUI/PlayerStatus/NameTag/VBoxContainer/manaBar"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-theme_override_colors/font_color = Color(0.9, 0.96, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0.05, 0.18, 1)
-theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 7
-text = "MP 100/100"
-horizontal_alignment = 1
-vertical_alignment = 1
-
 [node name="expBar" type="ProgressBar" parent="WorldUI/PlayerStatus/NameTag/VBoxContainer" unique_id=123456789]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 8)
+custom_minimum_size = Vector2(0, 2)
 layout_mode = 2
-tooltip_text = "Erfahrung bis zum nächsten Level"
 theme_override_styles/background = SubResource("StyleBoxFlat_uicah")
 theme_override_styles/fill = SubResource("StyleBoxFlat_exp")
 step = 1.0
 show_percentage = false
 
-[node name="ValueLabel" type="Label" parent="WorldUI/PlayerStatus/NameTag/VBoxContainer/expBar"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-theme_override_colors/font_color = Color(1, 0.98, 0.82, 1)
-theme_override_colors/font_outline_color = Color(0.16, 0.1, 0, 1)
-theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 6
-text = "XP 0/100"
+[node name="nameLabel" type="Label" parent="WorldUI/PlayerStatus/NameTag/VBoxContainer" unique_id=1397500899]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 10)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 14
+text = "playerName"
 horizontal_alignment = 1
 vertical_alignment = 1
+autowrap_mode = 1
 
 [node name="Bar" type="GridContainer" parent="WorldUI/PlayerStatus" unique_id=99468987]
 z_index = 100
