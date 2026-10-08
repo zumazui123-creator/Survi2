@@ -1,6 +1,6 @@
-[gd_resource type="Resource" script_class="ComboDefinition" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="ComboDefinition" format=3 uid="uid://ef7wqwkhjncb"]
 
-[ext_resource type="Script" path="res://scenes/gameplay/definitions/combo_definition.gd" id="1_combo"]
+[ext_resource type="Script" uid="uid://t135nhoiotb6" path="res://scenes/gameplay/definitions/combo_definition.gd" id="1_combo"]
 
 [resource]
 script = ExtResource("1_combo")
@@ -10,6 +10,7 @@ code_command = "combo links attacke rechts attacke oben attacke unten attacke"
 description = "Ein längerer rotierender Angriff trifft alle vier Nachbartiles dreimal mit schwächeren Schadenspulsen. Kostet 65 Mana."
 input_sequence = PackedStringArray("walkLeft", "attack", "walkRight", "attack", "walkUp", "attack", "walkDown", "attack")
 target_directions = PackedStringArray("walkLeft", "walkRight", "walkUp", "walkDown")
+target_hit_counts = null
 damage_multiplier = 0.75
 mana_cost = 65.0
 damage_pulse_count = 3
