@@ -30,7 +30,9 @@ position = Vector2(218, -371)
 script = ExtResource("4_code")
 
 [node name="TabContainer" type="TabContainer" parent="CodeLayer/Code" unique_id=1538183637]
-offset_left = -8.0
+clip_contents = true
+custom_maximum_size = Vector2(400, -1)
+offset_left = 22.0
 offset_top = 14.0
 offset_right = 422.0
 offset_bottom = 724.0
@@ -68,11 +70,12 @@ symbol_tooltip_on_hover = true
 gutters_draw_executing_lines = true
 gutters_draw_line_numbers = true
 
-[node name="ButtonCotainer" type="HFlowContainer" parent="CodeLayer/Code/TabContainer/Code" unique_id=1098950445]
+[node name="ButtonCotainer" type="GridContainer" parent="CodeLayer/Code/TabContainer/Code" unique_id=1098950445]
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_constants/h_separation = 8
 theme_override_constants/v_separation = 6
+columns = 4
 
 [node name="PlayButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ButtonCotainer" unique_id=882962888]
 unique_name_in_owner = true
