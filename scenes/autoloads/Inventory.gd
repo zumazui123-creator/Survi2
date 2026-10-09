@@ -13,6 +13,16 @@ var durabilities := {}
 func getItems(id :String):
 	return inventories.get(id, {})
 
+func get_item_id_at_slot(id: String, slot_number: int) -> String:
+	if slot_number < 1:
+		return ""
+	var player_inventory: Dictionary = getItems(id)
+	var item_ids: Array = player_inventory.keys()
+	var slot_index: int = slot_number - 1
+	if slot_index >= item_ids.size():
+		return ""
+	return String(item_ids[slot_index])
+
 func _ready():
 	#if !multiplayer.is_server():
 		#return

@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="StructureRecipe" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/gameplay/definitions/structure_recipe.gd" id="1_recipe"]
+
+[resource]
+script = ExtResource("1_recipe")
+recipe_id = &"fire_cannon_from_cannon"
+display_name = "Feuerkanone"
+description = "Eine Kanone wird mit Fackel und Kohle zu einer Feuerkanone."
+base_building_ids = Array[StringName]([&"cannon"])
+ingredients = {"coal": 1, "torch": 1}
+result_building_id = &"fire_cannon"
+priority = 45
+

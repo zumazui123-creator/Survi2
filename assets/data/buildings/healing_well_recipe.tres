@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="StructureRecipe" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/gameplay/definitions/structure_recipe.gd" id="1_recipe"]
+
+[resource]
+script = ExtResource("1_recipe")
+recipe_id = &"healing_well_from_wall"
+display_name = "Heilbrunnen"
+description = "Mauer, magisches Holz und magischer Stein werden zu einem Heilbrunnen."
+base_building_ids = Array[StringName]([&"wall"])
+ingredients = {"magicStone": 1, "magicWood": 1}
+result_building_id = &"healing_well"
+priority = 37
+

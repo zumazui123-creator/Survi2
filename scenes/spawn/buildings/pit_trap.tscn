@@ -1,0 +1,89 @@
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://scenes/spawn/buildings/pit_trap.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/items/spear1.png" id="2_spear"]
+[ext_resource type="Script" path="res://scenes/navigation/navigation_blocker.gd" id="3_navigation"]
+
+[sub_resource type="RectangleShape2D" id="Shape_area"]
+size = Vector2(28, 28)
+
+[sub_resource type="SceneReplicationConfig" id="Replication"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+properties/1/path = NodePath(".:building_id")
+properties/1/spawn = true
+properties/1/replication_mode = 2
+properties/2/path = NodePath(".:builder_peer_id")
+properties/2/spawn = true
+properties/2/replication_mode = 2
+
+[sub_resource type="Animation" id="Anim_break"]
+resource_name = "break"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/path = NodePath("Visuals:scale")
+tracks/0/keys = {"times": PackedFloat32Array(0, 0.3), "transitions": PackedFloat32Array(1, 1), "update": 0, "values": [Vector2(1, 1), Vector2(0.05, 0.05)]}
+tracks/1/type = "method"
+tracks/1/path = NodePath(".")
+tracks/1/keys = {"times": PackedFloat32Array(0.3), "transitions": PackedFloat32Array(1), "values": [{"args": [], "method": &"breakObject"}]}
+
+[sub_resource type="Animation" id="Anim_shake"]
+resource_name = "shake"
+length = 0.2
+
+[sub_resource type="Animation" id="Anim_spawn"]
+resource_name = "spawn"
+length = 0.25
+tracks/0/type = "value"
+tracks/0/path = NodePath("Visuals:scale")
+tracks/0/keys = {"times": PackedFloat32Array(0, 0.25), "transitions": PackedFloat32Array(1, 1), "update": 0, "values": [Vector2(0.1, 0.1), Vector2(1, 1)]}
+
+[sub_resource type="AnimationLibrary" id="Library"]
+_data = {&"break": SubResource("Anim_break"), &"shake": SubResource("Anim_shake"), &"spawn": SubResource("Anim_spawn")}
+
+[node name="PitTrap" type="StaticBody2D" groups=["damageable", "sensor_object"]]
+collision_layer = 0
+collision_mask = 0
+script = ExtResource("1_script")
+building_id = &"pit_trap"
+
+[node name="Visuals" type="Node2D" parent="."]
+
+[node name="Pit" type="Polygon2D" parent="Visuals"]
+polygon = PackedVector2Array(-15, -15, 15, -15, 15, 15, -15, 15)
+color = Color(0.12, 0.08, 0.05, 0.9)
+
+[node name="SpearA" type="Sprite2D" parent="Visuals"]
+scale = Vector2(0.42, 0.42)
+rotation = 0.785398
+texture = ExtResource("2_spear")
+
+[node name="SpearB" type="Sprite2D" parent="Visuals"]
+scale = Vector2(0.42, 0.42)
+rotation = -0.785398
+texture = ExtResource("2_spear")
+
+[node name="DamageArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DamageArea"]
+shape = SubResource("Shape_area")
+
+[node name="NavigationBlocker" type="Node" parent="."]
+script = ExtResource("3_navigation")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("Replication")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries/ = SubResource("Library")
+autoplay = &"spawn"
+
+[node name="hitParticle" type="CPUParticles2D" parent="."]
+emitting = false
+one_shot = true
+amount = 5
+lifetime = 0.3
+

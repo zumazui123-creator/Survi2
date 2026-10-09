@@ -31,7 +31,8 @@ func getDamage(causer: Node, amount: float, damage_type: StringName) -> void:
 	if not loaded or hp <= 0.0:
 		return
 	var required_tool: StringName = definition.required_tool
-	var total_damage: float = amount * 2.0 if damage_type == required_tool else amount
+	var tool_damage: float = amount * 2.0 if damage_type == required_tool else amount
+	var total_damage: float = tool_damage * _get_protection_multiplier()
 	$AnimationPlayer.play("shake")
 	$hitParticle.emitting = true
 	hp -= total_damage
@@ -42,6 +43,18 @@ func getDamage(causer: Node, amount: float, damage_type: StringName) -> void:
 			and causer.has_signal("object_destroyed"):
 		causer.emit_signal("object_destroyed")
 	startBreaking()
+
+
+func _get_protection_multiplier() -> float:
+	var multiplier: float = 1.0
+	for candidate: Node in get_tree().get_nodes_in_group(&"building_protector"):
+		if candidate == self or not candidate.has_method("get_damage_multiplier_for"):
+			continue
+		multiplier = minf(
+			multiplier,
+			float(candidate.call("get_damage_multiplier_for", self))
+		)
+	return clampf(multiplier, 0.1, 1.0)
 
 
 func startBreaking() -> void:
@@ -78,7 +91,13 @@ func spawnDrops() -> void:
 
 func register_navigation_blockers(tiles: Array[Vector2i]) -> void:
 	navigation_tiles = tiles.duplicate()
-	$NavigationBlocker.register_tiles(navigation_tiles)
+	if definition != null and not definition.blocks_navigation:
+		return
+	var navigation_blocker: NavigationBlocker = get_node_or_null(
+		"NavigationBlocker"
+	) as NavigationBlocker
+	if navigation_blocker != null:
+		navigation_blocker.register_tiles(navigation_tiles)
 
 
 func get_navigation_tiles(origin: Vector2i) -> Array[Vector2i]:

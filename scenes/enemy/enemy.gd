@@ -10,6 +10,9 @@ enum AIState { IDLE, CHASE, ATTACK, BLOCKED, DEAD }
 func _physics_process(delta: float) -> void:
 	if not _is_server() or _is_dead:
 		return
+	if bool(get_meta(&"jump_pad_airborne", false)):
+		velocity = Vector2.ZERO
+		return
 	_update_target()
 	if not is_instance_valid(target_player):
 		velocity = Vector2.ZERO

@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="BuildingDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scenes/gameplay/definitions/building_definition.gd" id="1_definition"]
+[ext_resource type="PackedScene" path="res://scenes/spawn/buildings/jump_pad.tscn" id="2_scene"]
+
+[resource]
+script = ExtResource("1_definition")
+building_id = &"jump_pad"
+display_name = "Sprung-Tile"
+description = "Schleudert Spieler und Gegner in ihrer Bewegungs- oder Blickrichtung bis zu zehn Tiles weit."
+scene = ExtResource("2_scene")
+max_hp = 100.0
+required_tool = &"axe"
+drops = {"magicWood": {"min": 1, "max": 1}, "sap": {"min": 0, "max": 1}}
+player_placeable = false
+blocks_navigation = false
+navigation_footprint = Array[Vector2i]([Vector2i(0, 0)])
+

@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="BuildingDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scenes/gameplay/definitions/building_definition.gd" id="1_definition"]
+[ext_resource type="PackedScene" path="res://scenes/spawn/buildings/fire_cannon.tscn" id="2_scene"]
+
+[resource]
+script = ExtResource("1_definition")
+building_id = &"fire_cannon"
+display_name = "Feuerkanone"
+description = "Verschießt Feuerbälle und verursacht fünf Sekunden lang Brennschaden."
+scene = ExtResource("2_scene")
+max_hp = 210.0
+required_tool = &"pickaxe"
+drops = {"coal": {"min": 1, "max": 2}, "iron": {"min": 1, "max": 2}, "torch": {"min": 0, "max": 1}}
+player_placeable = false
+navigation_footprint = Array[Vector2i]([Vector2i(0, 0)])
+

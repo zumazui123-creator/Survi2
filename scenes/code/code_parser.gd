@@ -118,17 +118,20 @@ class ConditionalBlock:
 
 	var condition: CodeCondition
 	var body: Array[ParsedNode] = []
+	var alternative: ConditionalBlock
 
 	func _init(
 			parsed_condition: CodeCondition,
 			parsed_body: Array[ParsedNode],
 			parsed_source_line: int,
-			parsed_source_text: String
+			parsed_source_text: String,
+			parsed_alternative: ConditionalBlock = null
 		) -> void:
 		condition = parsed_condition
 		body = parsed_body
 		source_line = parsed_source_line
 		source_text = parsed_source_text
+		alternative = parsed_alternative
 
 
 class RepeatBlock:
@@ -149,6 +152,115 @@ class RepeatBlock:
 		source_text = parsed_source_text
 
 
+class ConditionLoopBlock:
+	extends ParsedNode
+
+	enum Mode {
+		WHILE,
+		UNTIL,
+	}
+
+	var mode: int
+	var condition: CodeCondition
+	var body: Array[ParsedNode] = []
+
+	func _init(
+			parsed_mode: int,
+			parsed_condition: CodeCondition,
+			parsed_body: Array[ParsedNode],
+			parsed_source_line: int,
+			parsed_source_text: String
+		) -> void:
+		mode = parsed_mode
+		condition = parsed_condition
+		body = parsed_body
+		source_line = parsed_source_line
+		source_text = parsed_source_text
+
+
+class RangeLoopBlock:
+	extends ParsedNode
+
+	var variable_name: String
+	var start_expression: CodeExpression
+	var end_expression: CodeExpression
+	var body: Array[ParsedNode] = []
+
+	func _init(
+			parsed_variable_name: String,
+			parsed_start_expression: CodeExpression,
+			parsed_end_expression: CodeExpression,
+			parsed_body: Array[ParsedNode],
+			parsed_source_line: int,
+			parsed_source_text: String
+		) -> void:
+		variable_name = parsed_variable_name
+		start_expression = parsed_start_expression
+		end_expression = parsed_end_expression
+		body = parsed_body
+		source_line = parsed_source_line
+		source_text = parsed_source_text
+
+
+class ForEachBlock:
+	extends ParsedNode
+
+	var variable_name: String
+	var collection_name: StringName
+	var sensor_subject: StringName
+	var body: Array[ParsedNode] = []
+
+	func _init(
+			parsed_variable_name: String,
+			parsed_collection_name: StringName,
+			parsed_sensor_subject: StringName,
+			parsed_body: Array[ParsedNode],
+			parsed_source_line: int,
+			parsed_source_text: String
+		) -> void:
+		variable_name = parsed_variable_name
+		collection_name = parsed_collection_name
+		sensor_subject = parsed_sensor_subject
+		body = parsed_body
+		source_line = parsed_source_line
+		source_text = parsed_source_text
+
+
+class ForeverBlock:
+	extends ParsedNode
+
+	var body: Array[ParsedNode] = []
+
+	func _init(
+			parsed_body: Array[ParsedNode],
+			parsed_source_line: int,
+			parsed_source_text: String
+		) -> void:
+		body = parsed_body
+		source_line = parsed_source_line
+		source_text = parsed_source_text
+
+
+class LoopControl:
+	extends ParsedNode
+
+	enum Kind {
+		BREAK,
+		CONTINUE,
+	}
+
+	var kind: int
+
+	func _init(
+			parsed_kind: int,
+			parsed_source_line: int,
+			parsed_source_text: String
+		) -> void:
+		kind = parsed_kind
+		source_line = parsed_source_line
+		source_text = parsed_source_text
+
+
 class ParseResult:
 	extends RefCounted
 
@@ -165,13 +277,15 @@ class ParseResult:
 		return command_count
 
 	func _count_commands_in_node(node: ParsedNode) -> int:
-		if node is ParsedCommand or node is Assignment:
+		if node is ParsedCommand or node is Assignment or node is LoopControl:
 			return 1
 		if node is ConditionalBlock:
 			var conditional_block: ConditionalBlock = node as ConditionalBlock
 			var command_count: int = 0
 			for child: ParsedNode in conditional_block.body:
 				command_count += _count_commands_in_node(child)
+			if conditional_block.alternative != null:
+				command_count += _count_commands_in_node(conditional_block.alternative)
 			return 1 + command_count
 		if node is RepeatBlock:
 			var repeat_block: RepeatBlock = node as RepeatBlock
@@ -183,7 +297,21 @@ class ParseResult:
 					and repeat_block.count_expression.literal_value is int:
 				repeat_count = maxi(int(repeat_block.count_expression.literal_value), 0)
 			return 1 + body_count * repeat_count
+		if node is ConditionLoopBlock:
+			return 1 + _count_commands_in_body((node as ConditionLoopBlock).body)
+		if node is RangeLoopBlock:
+			return 1 + _count_commands_in_body((node as RangeLoopBlock).body)
+		if node is ForEachBlock:
+			return 1 + _count_commands_in_body((node as ForEachBlock).body)
+		if node is ForeverBlock:
+			return 1 + _count_commands_in_body((node as ForeverBlock).body)
 		return 0
+
+	func _count_commands_in_body(body: Array[ParsedNode]) -> int:
+		var result: int = 0
+		for child: ParsedNode in body:
+			result += _count_commands_in_node(child)
+		return result
 
 
 func parse(
@@ -296,11 +424,14 @@ func _parse_block(
 		start_index: int,
 		expects_end: bool,
 		locale: String,
-		block_depth: int
+		block_depth: int,
+		allows_conditional_alternative: bool = false,
+		loop_depth: int = 0
 	) -> Dictionary:
 	var result: Array[ParsedNode] = []
 	var line_index: int = start_index
-	var repeat_template: PackedStringArray = Strings.KEYWORD_REPEAT.split(" ", false)
+	var repeat_template: PackedStringArray = Strings.KEYWORD_REPEAT.split(" ", false) \
+		if locale == "de" else PackedStringArray(["repeat", "3", "times"])
 	var repeat_keyword: String = repeat_template[0]
 
 	while line_index < lines.size():
@@ -312,10 +443,28 @@ func _parse_block(
 			line_index += 1
 			continue
 
+		var alternative_kind: String = _get_conditional_alternative_kind(line, locale)
+		if not alternative_kind.is_empty():
+			if alternative_kind == "invalid":
+				return _error("Ungültiger Sonst-Zweig: %s" % line, source_line)
+			if not allows_conditional_alternative:
+				return _error("Unerwarteter Sonst-Zweig: %s" % line, source_line)
+			return {
+				"nodes": result,
+				"index": line_index,
+				"closed": false,
+				"terminator": alternative_kind,
+			}
+
 		if line == Strings.KEYWORD_END:
 			if not expects_end:
 				return _error("Unerwartetes '%s'." % Strings.KEYWORD_END, source_line)
-			return {"nodes": result, "index": line_index, "closed": true}
+			return {
+				"nodes": result,
+				"index": line_index,
+				"closed": true,
+				"terminator": "end",
+			}
 
 		if block_depth >= MAX_BLOCK_DEPTH:
 			return _error(
@@ -324,7 +473,71 @@ func _parse_block(
 			)
 
 		var first_word: String = line.get_slice(" ", 0).to_lower()
-		if first_word == repeat_keyword:
+		if _is_loop_control(line, locale):
+			if loop_depth <= 0:
+				return _error("'%s' ist nur innerhalb einer Schleife erlaubt." % line, source_line)
+			var control_kind: int = LoopControl.Kind.BREAK \
+				if _is_break_keyword(line, locale) else LoopControl.Kind.CONTINUE
+			result.append(LoopControl.new(control_kind, source_line, line))
+		elif _is_forever_header(line, locale):
+			var forever_result: Dictionary = _parse_loop_body(
+				lines, line_index, locale, block_depth, loop_depth, "Immer-Schleife"
+			)
+			if forever_result.has("error"):
+				return forever_result
+			var forever_body: Array[ParsedNode] = forever_result.body
+			result.append(ForeverBlock.new(forever_body, source_line, line))
+			line_index = int(forever_result.index)
+		elif _is_while_header(line, locale):
+			var while_condition_result: Dictionary = _parse_loop_condition(
+				line_data, _while_keyword(locale), locale
+			)
+			if while_condition_result.has("error"):
+				return while_condition_result
+			var while_body_result: Dictionary = _parse_loop_body(
+				lines, line_index, locale, block_depth, loop_depth, "Solange-Schleife"
+			)
+			if while_body_result.has("error"):
+				return while_body_result
+			var while_body: Array[ParsedNode] = while_body_result.body
+			result.append(ConditionLoopBlock.new(
+				ConditionLoopBlock.Mode.WHILE,
+				while_condition_result.condition,
+				while_body,
+				source_line,
+				line
+			))
+			line_index = int(while_body_result.index)
+		elif _is_repeat_until_header(line, locale):
+			var until_prefix: String = _repeat_keyword(locale) + " " + _until_keyword(locale)
+			var until_condition_result: Dictionary = _parse_loop_condition(
+				line_data, until_prefix, locale
+			)
+			if until_condition_result.has("error"):
+				return until_condition_result
+			var until_body_result: Dictionary = _parse_loop_body(
+				lines, line_index, locale, block_depth, loop_depth, "Wiederhole-bis-Schleife"
+			)
+			if until_body_result.has("error"):
+				return until_body_result
+			var until_body: Array[ParsedNode] = until_body_result.body
+			result.append(ConditionLoopBlock.new(
+				ConditionLoopBlock.Mode.UNTIL,
+				until_condition_result.condition,
+				until_body,
+				source_line,
+				line
+			))
+			line_index = int(until_body_result.index)
+		elif _is_for_header(first_word, locale):
+			var for_result: Dictionary = _parse_for_loop(
+				lines, line_index, locale, block_depth, loop_depth
+			)
+			if for_result.has("error"):
+				return for_result
+			result.append(for_result.block)
+			line_index = int(for_result.index)
+		elif first_word == repeat_keyword:
 			var repeat_parts: PackedStringArray = line.split(" ", false)
 			if not _is_valid_repeat_syntax(repeat_parts, repeat_template):
 				return _error("Ungültige Wiederholung: %s" % line, source_line)
@@ -347,7 +560,9 @@ func _parse_block(
 				line_index + 1,
 				true,
 				locale,
-				block_depth + 1
+				block_depth + 1,
+				false,
+				loop_depth + 1
 			)
 			if repeat_block_result.has("error"):
 				return repeat_block_result
@@ -361,33 +576,18 @@ func _parse_block(
 			result.append(RepeatBlock.new(count_expression, repeat_body, source_line, line))
 			line_index = int(repeat_block_result.index)
 		elif first_word == Strings.KEYWORD_IF:
-			var condition_result: Dictionary = _parse_condition(line_data, locale)
-			if condition_result.has("error"):
-				return condition_result
-
-			var conditional_body_result: Dictionary = _parse_block(
+			var conditional_result: Dictionary = _parse_conditional_chain(
 				lines,
-				line_index + 1,
-				true,
+				line_index,
 				locale,
-				block_depth + 1
+				block_depth,
+				false,
+				loop_depth
 			)
-			if conditional_body_result.has("error"):
-				return conditional_body_result
-			if not bool(conditional_body_result.get("closed", false)):
-				return _error(
-					"Der Wenn-Block hat kein '%s'." % Strings.KEYWORD_END,
-					source_line
-				)
-
-			var conditional_block: ConditionalBlock = ConditionalBlock.new(
-				condition_result.condition,
-				conditional_body_result.nodes,
-				source_line,
-				line
-			)
-			result.append(conditional_block)
-			line_index = int(conditional_body_result.index)
+			if conditional_result.has("error"):
+				return conditional_result
+			result.append(conditional_result.block)
+			line_index = int(conditional_result.index)
 		elif line.contains("="):
 			var assignment_result: Dictionary = _parse_assignment(line_data, locale)
 			if assignment_result.has("error"):
@@ -407,6 +607,332 @@ func _parse_block(
 		line_index += 1
 
 	return {"nodes": result, "index": line_index, "closed": false}
+
+
+func _parse_loop_body(
+		lines: Array[Dictionary],
+		header_index: int,
+		locale: String,
+		block_depth: int,
+		loop_depth: int,
+		loop_name: String
+	) -> Dictionary:
+	var source_line: int = int(lines[header_index].line_number)
+	var body_result: Dictionary = _parse_block(
+		lines,
+		header_index + 1,
+		true,
+		locale,
+		block_depth + 1,
+		false,
+		loop_depth + 1
+	)
+	if body_result.has("error"):
+		return body_result
+	if not bool(body_result.get("closed", false)):
+		return _error("Die %s hat kein '%s'." % [loop_name, Strings.KEYWORD_END], source_line)
+	var body: Array[ParsedNode] = body_result.nodes
+	if body.is_empty():
+		return _error("Die %s darf nicht leer sein." % loop_name, source_line)
+	return {
+		"body": body,
+		"index": int(body_result.index),
+	}
+
+
+func _parse_loop_condition(
+		line_data: Dictionary,
+		prefix: String,
+		locale: String
+	) -> Dictionary:
+	var source_text: String = String(line_data.text).strip_edges()
+	var condition_text: String = source_text.substr(prefix.length()).strip_edges()
+	if condition_text.is_empty():
+		return _error("Der Schleifenbedingung fehlt ein Vergleich.", int(line_data.line_number))
+	var condition_data: Dictionary = line_data.duplicate()
+	condition_data["text"] = (Strings.KEYWORD_IF if locale == "de" else "if") \
+		+ " " + condition_text
+	return _parse_condition(condition_data, locale)
+
+
+func _parse_for_loop(
+		lines: Array[Dictionary],
+		header_index: int,
+		locale: String,
+		block_depth: int,
+		loop_depth: int
+	) -> Dictionary:
+	var line_data: Dictionary = lines[header_index]
+	var source_text: String = String(line_data.text).strip_edges()
+	var source_line: int = int(line_data.line_number)
+	var parts: PackedStringArray = source_text.split(" ", false)
+	var each_keyword: String = Strings.KEYWORD_EACH if locale == "de" else "each"
+	var in_keyword: String = Strings.KEYWORD_IN if locale == "de" else "in"
+	var from_keyword: String = Strings.KEYWORD_FROM if locale == "de" else "from"
+	var until_keyword: String = Strings.KEYWORD_UNTIL if locale == "de" else "to"
+
+	if parts.size() == 5 and parts[1].to_lower() == each_keyword \
+			and parts[3].to_lower() == in_keyword:
+		var variable_name: String = parts[2].to_lower()
+		if not _is_valid_variable_name(variable_name):
+			return _error("Ungültige Schleifenvariable: %s" % parts[2], source_line)
+		var collection_text: String = parts[4].to_lower()
+		var collection_name: StringName = &""
+		var sensor_subject: StringName = &""
+		if collection_text == ("inventar" if locale == "de" else "inventory"):
+			collection_name = &"inventory"
+		elif collection_text == ("sensor" if locale == "de" else "sensor"):
+			collection_name = &"sensor"
+			sensor_subject = Strings.translate_condition_name(locale, variable_name)
+			if sensor_subject == &"" or sensor_subject == Strings.CONDITION_FREE:
+				return _error(
+					"Für den Sensor sind objekt, item, tier, gegner, wasser oder ziel erlaubt.",
+					source_line
+				)
+		else:
+			return _error("Unbekannte Sammlung: %s" % parts[4], source_line)
+
+		var each_body_result: Dictionary = _parse_loop_body(
+			lines, header_index, locale, block_depth, loop_depth, "Für-jedes-Schleife"
+		)
+		if each_body_result.has("error"):
+			return each_body_result
+		var each_body: Array[ParsedNode] = each_body_result.body
+		return {
+			"block": ForEachBlock.new(
+				variable_name,
+				collection_name,
+				sensor_subject,
+				each_body,
+				source_line,
+				source_text
+			),
+			"index": int(each_body_result.index),
+		}
+
+	if parts.size() != 6 or parts[2].to_lower() != from_keyword \
+			or parts[4].to_lower() != until_keyword:
+		return _error(
+			"Ungültige Für-Schleife. Beispiel: für schritt von 1 bis 5",
+			source_line
+		)
+	var range_variable_name: String = parts[1].to_lower()
+	if not _is_valid_variable_name(range_variable_name) \
+			or _is_reserved_variable_name(range_variable_name, locale):
+		return _error("Ungültige Schleifenvariable: %s" % parts[1], source_line)
+	var start_result: Dictionary = _parse_expression(parts[3], locale, source_line)
+	if start_result.has("error"):
+		return start_result
+	var end_result: Dictionary = _parse_expression(parts[5], locale, source_line)
+	if end_result.has("error"):
+		return end_result
+	var range_body_result: Dictionary = _parse_loop_body(
+		lines, header_index, locale, block_depth, loop_depth, "Für-Schleife"
+	)
+	if range_body_result.has("error"):
+		return range_body_result
+	var range_body: Array[ParsedNode] = range_body_result.body
+	return {
+		"block": RangeLoopBlock.new(
+			range_variable_name,
+			start_result.expression,
+			end_result.expression,
+			range_body,
+			source_line,
+			source_text
+		),
+		"index": int(range_body_result.index),
+	}
+
+
+func _is_loop_control(line: String, locale: String) -> bool:
+	var normalized_line: String = line.to_lower()
+	return normalized_line in [
+		_break_keyword(locale),
+		_continue_keyword(locale),
+	]
+
+
+func _is_break_keyword(line: String, locale: String) -> bool:
+	return line.to_lower() == _break_keyword(locale)
+
+
+func _is_forever_header(line: String, locale: String) -> bool:
+	return line.to_lower() == (Strings.KEYWORD_FOREVER if locale == "de" else "forever")
+
+
+func _is_while_header(line: String, locale: String) -> bool:
+	var keyword: String = _while_keyword(locale)
+	var normalized_line: String = line.to_lower()
+	return normalized_line == keyword or normalized_line.begins_with(keyword + " ")
+
+
+func _is_repeat_until_header(line: String, locale: String) -> bool:
+	var prefix: String = _repeat_keyword(locale) + " " + _until_keyword(locale)
+	var normalized_line: String = line.to_lower()
+	return normalized_line == prefix or normalized_line.begins_with(prefix + " ")
+
+
+func _is_for_header(first_word: String, locale: String) -> bool:
+	return first_word == (Strings.KEYWORD_FOR if locale == "de" else "for")
+
+
+func _while_keyword(locale: String) -> String:
+	return Strings.KEYWORD_WHILE if locale == "de" else "while"
+
+
+func _repeat_keyword(locale: String) -> String:
+	return "wiederhole" if locale == "de" else "repeat"
+
+
+func _until_keyword(locale: String) -> String:
+	return Strings.KEYWORD_UNTIL if locale == "de" else "until"
+
+
+func _break_keyword(locale: String) -> String:
+	return Strings.KEYWORD_BREAK if locale == "de" else "break"
+
+
+func _continue_keyword(locale: String) -> String:
+	return Strings.KEYWORD_CONTINUE if locale == "de" else "continue"
+
+
+func _parse_conditional_chain(
+		lines: Array[Dictionary],
+		header_index: int,
+		locale: String,
+		block_depth: int,
+		is_alternative: bool,
+		loop_depth: int
+	) -> Dictionary:
+	var header_data: Dictionary = lines[header_index]
+	var source_text: String = String(header_data.text).strip_edges()
+	var source_line: int = int(header_data.line_number)
+	var condition_data: Dictionary = header_data.duplicate()
+	if is_alternative:
+		condition_data["text"] = _strip_conditional_alternative_prefix(source_text, locale)
+	var condition_result: Dictionary = _parse_condition(condition_data, locale)
+	if condition_result.has("error"):
+		return condition_result
+
+	var body_result: Dictionary = _parse_block(
+		lines,
+		header_index + 1,
+		true,
+		locale,
+		block_depth + 1,
+		true,
+		loop_depth
+	)
+	if body_result.has("error"):
+		return body_result
+	var terminator: String = String(body_result.get("terminator", ""))
+	if terminator.is_empty():
+		return _error(
+			"Der Wenn-Block hat kein '%s'." % Strings.KEYWORD_END,
+			source_line
+		)
+
+	var alternative: ConditionalBlock = null
+	var final_index: int = int(body_result.index)
+	if terminator == "else_if":
+		var alternative_result: Dictionary = _parse_conditional_chain(
+			lines,
+			final_index,
+			locale,
+			block_depth,
+			true,
+			loop_depth
+		)
+		if alternative_result.has("error"):
+			return alternative_result
+		alternative = alternative_result.block as ConditionalBlock
+		final_index = int(alternative_result.index)
+	elif terminator == "else":
+		var else_header_data: Dictionary = lines[final_index]
+		var else_source_text: String = String(else_header_data.text).strip_edges()
+		var else_source_line: int = int(else_header_data.line_number)
+		var else_body_result: Dictionary = _parse_block(
+			lines,
+			final_index + 1,
+			true,
+			locale,
+			block_depth + 1,
+			false,
+			loop_depth
+		)
+		if else_body_result.has("error"):
+			return else_body_result
+		if String(else_body_result.get("terminator", "")) != "end":
+			return _error(
+				"Der Sonst-Block hat kein '%s'." % Strings.KEYWORD_END,
+				else_source_line
+			)
+		var else_body: Array[ParsedNode] = else_body_result.nodes
+		alternative = ConditionalBlock.new(
+			null,
+			else_body,
+			else_source_line,
+			else_source_text
+		)
+		final_index = int(else_body_result.index)
+	elif terminator != "end":
+		return _error("Unbekanntes Ende des Wenn-Blocks.", source_line)
+
+	var body: Array[ParsedNode] = body_result.nodes
+	return {
+		"block": ConditionalBlock.new(
+			condition_result.condition,
+			body,
+			source_line,
+			source_text,
+			alternative
+		),
+		"index": final_index,
+	}
+
+
+func _get_conditional_alternative_kind(line: String, locale: String) -> String:
+	var normalized_line: String = line.strip_edges().to_lower()
+	var else_keywords: PackedStringArray = PackedStringArray(["else"])
+	var if_keyword: String = "if"
+	if locale == "de":
+		else_keywords = PackedStringArray([
+			Strings.KEYWORD_ELSE,
+			Strings.KEYWORD_ELSE_ALIAS,
+		])
+		if_keyword = Strings.KEYWORD_IF
+	for else_keyword: String in else_keywords:
+		if normalized_line == else_keyword:
+			return "else"
+		var prefix: String = else_keyword + " "
+		if not normalized_line.begins_with(prefix):
+			continue
+		var remainder: String = normalized_line.substr(prefix.length()).strip_edges()
+		if remainder == if_keyword or remainder.begins_with(if_keyword + " "):
+			return "else_if"
+		if locale == "de" and not remainder.is_empty():
+			return "else_if"
+		return "invalid"
+	return ""
+
+
+func _strip_conditional_alternative_prefix(line: String, locale: String) -> String:
+	var else_keywords: PackedStringArray = PackedStringArray(["else"])
+	if locale == "de":
+		else_keywords = PackedStringArray([
+			Strings.KEYWORD_ELSE,
+			Strings.KEYWORD_ELSE_ALIAS,
+		])
+	var normalized_line: String = line.strip_edges()
+	for else_keyword: String in else_keywords:
+		var prefix: String = else_keyword + " "
+		if normalized_line.to_lower().begins_with(prefix):
+			var remainder: String = normalized_line.substr(prefix.length()).strip_edges()
+			if locale == "de" and remainder.get_slice(" ", 0).to_lower() != Strings.KEYWORD_IF:
+				return Strings.KEYWORD_IF + " " + remainder
+			return remainder
+	return normalized_line
 
 
 func _parse_condition(line_data: Dictionary, locale: String) -> Dictionary:
@@ -507,11 +1033,14 @@ func _parse_distance_condition(
 func _count_commands(nodes: Array[ParsedNode]) -> int:
 	var command_count: int = 0
 	for node: ParsedNode in nodes:
-		if node is ParsedCommand or node is Assignment:
+		if node is ParsedCommand or node is Assignment or node is LoopControl:
 			command_count += 1
 		elif node is ConditionalBlock:
 			var conditional_block: ConditionalBlock = node as ConditionalBlock
 			command_count += 1 + _count_commands(conditional_block.body)
+			if conditional_block.alternative != null:
+				var alternative_nodes: Array[ParsedNode] = [conditional_block.alternative]
+				command_count += _count_commands(alternative_nodes)
 		elif node is RepeatBlock:
 			var repeat_block: RepeatBlock = node as RepeatBlock
 			var repeat_count: int = 1
@@ -519,6 +1048,14 @@ func _count_commands(nodes: Array[ParsedNode]) -> int:
 					and repeat_block.count_expression.literal_value is int:
 				repeat_count = maxi(int(repeat_block.count_expression.literal_value), 0)
 			command_count += 1 + _count_commands(repeat_block.body) * repeat_count
+		elif node is ConditionLoopBlock:
+			command_count += 1 + _count_commands((node as ConditionLoopBlock).body)
+		elif node is RangeLoopBlock:
+			command_count += 1 + _count_commands((node as RangeLoopBlock).body)
+		elif node is ForEachBlock:
+			command_count += 1 + _count_commands((node as ForEachBlock).body)
+		elif node is ForeverBlock:
+			command_count += 1 + _count_commands((node as ForeverBlock).body)
 	return command_count
 
 
@@ -645,8 +1182,18 @@ func _is_reserved_variable_name(variable_name: String, locale: String) -> bool:
 		Strings.KEYWORD_IF,
 		Strings.KEYWORD_END,
 		Strings.KEYWORD_FUNC,
-		"wiederhole",
-		"mal",
+		Strings.KEYWORD_ELSE,
+		Strings.KEYWORD_ELSE_ALIAS,
+		Strings.KEYWORD_WHILE,
+		Strings.KEYWORD_UNTIL,
+		Strings.KEYWORD_FOR,
+		Strings.KEYWORD_EACH,
+		Strings.KEYWORD_FROM,
+		Strings.KEYWORD_IN,
+		Strings.KEYWORD_FOREVER,
+		Strings.KEYWORD_BREAK,
+		Strings.KEYWORD_CONTINUE,
+		"wiederhole", "mal", "inventar", "sensor",
 		"abstand",
 		"spieler",
 	]:
@@ -723,6 +1270,22 @@ func _validate_and_normalize_arguments(
 			return "Der Item-Befehl benötigt genau einen ganzzahligen Index."
 		if arguments[0].to_int() < 1:
 			return "Der Item-Index muss bei 1 beginnen."
+		return ""
+
+	if action == Strings.ACTION_DROP_ITEM:
+		if arguments.size() < 1 or arguments.size() > 2 or not arguments[0].is_valid_int():
+			return "Der Drop-Befehl benötigt einen Item-Index und optional eine Richtung."
+		if arguments[0].to_int() < 1:
+			return "Der Item-Index muss bei 1 beginnen."
+		if arguments.size() == 2:
+			var drop_localized_actions: Dictionary = Strings.ACTION_NAMES.get(locale, {})
+			var drop_direction_name: String = arguments[1].to_lower()
+			if not drop_localized_actions.has(drop_direction_name):
+				return "Unbekannte Drop-Richtung: %s" % arguments[1]
+			var drop_direction_action: String = drop_localized_actions[drop_direction_name]
+			if not Strings.direction_map.has(drop_direction_action):
+				return "Unbekannte Drop-Richtung: %s" % arguments[1]
+			arguments[1] = drop_direction_action
 		return ""
 
 	if action == Strings.ACTION_SAY:

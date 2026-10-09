@@ -4,7 +4,9 @@ class_name ObjectManager
 @export var tree_manager: TreeManager
 @export var breakable_manager: BreakableManager
 @export var building_manager: BuildingManager
+@export var tile_structure_assembler: TileStructureAssembler
 @export var village_manager: VillageManager
+@export var teleport_network: TeleportNetwork
 
 
 func load_tree_spawn_data(spawn_data: Array[TreeSpawnData]) -> void:
@@ -51,6 +53,10 @@ func clear_breakables() -> void:
 
 
 func clear_buildings() -> void:
+	if is_instance_valid(tile_structure_assembler):
+		tile_structure_assembler.clear_pending_assemblies()
+	if is_instance_valid(teleport_network):
+		teleport_network.clear()
 	if is_instance_valid(building_manager):
 		building_manager.clear_buildings()
 

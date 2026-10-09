@@ -34,6 +34,8 @@ func place_building(
 	var definition: BuildingDefinition = get_definition(building_id)
 	if definition == null:
 		return BuildingPlacementValidator.Result.UNKNOWN_BUILDING
+	if not definition.player_placeable:
+		return BuildingPlacementValidator.Result.RECIPE_ONLY
 	var occupied_tiles: Array[Vector2i] = definition.get_occupied_tiles(tile)
 	var placement_result: BuildingPlacementValidator.Result = _placement_validator.validate(
 		world_map,
@@ -93,7 +95,56 @@ func is_tile_occupied(tile: Vector2i) -> bool:
 
 
 func get_building_at(tile: Vector2i) -> BuildingEntity:
-	return _placed_buildings.get(tile) as BuildingEntity
+	var indexed_building: BuildingEntity = _placed_buildings.get(tile) as BuildingEntity
+	if indexed_building != null:
+		return indexed_building
+	if not is_instance_valid(world_map):
+		return null
+	for child: Node in get_children():
+		var building: BuildingEntity = child as BuildingEntity
+		if building == null or building.is_queued_for_deletion():
+			continue
+		if world_map.world_to_navigation_tile(building.global_position) == tile:
+			return building
+	return null
+
+
+func replace_building(
+		existing: BuildingEntity,
+		result_building_id: StringName
+	) -> BuildingEntity:
+	if not multiplayer.is_server() or not is_instance_valid(existing):
+		return null
+	var definition: BuildingDefinition = get_definition(result_building_id)
+	if definition == null or definition.scene == null:
+		return null
+	if existing.navigation_tiles.is_empty():
+		return null
+	var origin_tile: Vector2i = existing.navigation_tiles[0]
+	var occupied_tiles: Array[Vector2i] = definition.get_occupied_tiles(origin_tile)
+	if not _uses_same_tiles(existing.navigation_tiles, occupied_tiles):
+		push_warning(
+			"BuildingManager: replacement footprints must use the same tiles"
+		)
+		return null
+	var replacement: BuildingEntity = definition.scene.instantiate() as BuildingEntity
+	if replacement == null:
+		return null
+	var builder_peer_id: int = existing.builder_peer_id
+	remove_building_immediately(existing)
+	replacement.configure(definition, builder_peer_id)
+	replacement.position = to_local(world_map.navigation_tile_to_world(origin_tile))
+	replacement.spawner = self
+	add_child(replacement, true)
+	replacement.register_navigation_blockers(occupied_tiles)
+	for occupied_tile: Vector2i in occupied_tiles:
+		_placed_buildings[occupied_tile] = replacement
+	replacement.tree_exiting.connect(
+		_on_building_tree_exiting.bind(replacement),
+		CONNECT_ONE_SHOT
+	)
+	building_placed.emit(origin_tile, replacement)
+	return replacement
 
 
 func remove_building(building: BuildingEntity) -> void:
@@ -153,6 +204,18 @@ func _rebuild_definition_index() -> void:
 
 func _on_building_tree_exiting(building: BuildingEntity) -> void:
 	remove_building(building)
+
+
+func _uses_same_tiles(
+		left: Array[Vector2i],
+		right: Array[Vector2i]
+	) -> bool:
+	if left.size() != right.size():
+		return false
+	for tile: Vector2i in left:
+		if tile not in right:
+			return false
+	return true
 
 
 func _can_afford(builder_peer_id: int, build_cost: Dictionary) -> bool:

@@ -9,8 +9,14 @@ var projectileId := "":
 		projectileId = value
 		projectileData = Items.projectiles[value]
 		for stat in projectileData.keys():
+			if stat == "horizontalFrames":
+				continue
 			set(stat, projectileData[stat])
-			%Sprite2D.texture = Items.get_projectile_texture(value)
+		%Sprite2D.texture = Items.get_projectile_texture(value)
+		var horizontal_frames: int = int(projectileData.get("horizontalFrames", 4))
+		%Sprite2D.hframes = maxi(horizontal_frames, 1)
+		%Sprite2D.frame = 0
+		$AnimationPlayer.active = horizontal_frames > 1
 		
 # maxHits, speed, time, curveSpeed
 var targetGroup := "damageable"

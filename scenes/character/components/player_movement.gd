@@ -35,6 +35,7 @@ var _grid_position_initialized: bool = false
 var _step_start_global_position: Vector2 = Vector2.ZERO
 var _step_target_global_position: Vector2 = Vector2.ZERO
 var _step_target_map_position: Vector2i = Vector2i.ZERO
+var _external_motion_active: bool = false
 
 
 func _ready() -> void:
@@ -49,7 +50,7 @@ func is_moving() -> bool:
 
 
 func input() -> void:
-	if is_moving() or control_mode != ControlMode.MANUAL:
+	if _external_motion_active or is_moving() or control_mode != ControlMode.MANUAL:
 		return
 
 	var input_direction: Vector2i = Vector2i.ZERO
@@ -67,6 +68,9 @@ func input() -> void:
 
 
 func tile_move(delta: float) -> Vector2:
+	if _external_motion_active:
+		player.velocity = Vector2.ZERO
+		return Vector2.ZERO
 	if not is_moving():
 		player.velocity = Vector2.ZERO
 		return Vector2.ZERO
@@ -118,8 +122,29 @@ func snap_to_tiles_position() -> void:
 	synchronize_to_player_position(true)
 
 
+func launch_to_world_position(target_position: Vector2, duration: float) -> void:
+	if _external_motion_active:
+		return
+	_external_motion_active = true
+	direction = Vector2.ZERO
+	player.velocity = Vector2.ZERO
+	_clear_path_line()
+	var tween: Tween = player.create_tween()
+	tween.tween_property(
+		player,
+		"global_position",
+		target_position,
+		maxf(duration, 0.05)
+	).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	await tween.finished
+	_external_motion_active = false
+	synchronize_to_player_position(true)
+
+
 func _start_tile_step(tile_direction: Vector2i) -> bool:
-	if is_moving() or abs(tile_direction.x) + abs(tile_direction.y) != 1:
+	if _external_motion_active \
+			or is_moving() \
+			or abs(tile_direction.x) + abs(tile_direction.y) != 1:
 		return false
 	if not _grid_position_initialized and not synchronize_to_player_position(true):
 		return false

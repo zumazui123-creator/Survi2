@@ -47,9 +47,7 @@ const ACTION_DIRECTIONS: Array[Vector2i] = [
 		if scan_radius_tiles == new_radius:
 			return
 		scan_radius_tiles = new_radius
-		if is_instance_valid(debug_view):
-			debug_view.set_radius(scan_radius_tiles)
-		radius_changed.emit(scan_radius_tiles)
+		_refresh_effective_radius()
 @export_range(0.05, 2.0, 0.05) var visualization_scan_interval: float = 0.25
 
 @onready var world_map: Map = get_tree().get_first_node_in_group("world_map")
@@ -62,17 +60,19 @@ var _detected_entities: Dictionary = {}
 var _highlighted_entities: Dictionary = {}
 var _detected_tree_tiles: Dictionary[Vector2i, bool] = {}
 var _highlighted_tree_tiles: Dictionary[Vector2i, bool] = {}
+var _radius_modifiers: Dictionary[StringName, int] = {}
+var _enemy_marking_sources: Dictionary[StringName, bool] = {}
 
 
 func _ready() -> void:
 	if is_instance_valid(debug_view):
-		debug_view.set_radius(scan_radius_tiles)
+		debug_view.set_radius(get_effective_scan_radius())
 		debug_view.set_visualization_enabled(false)
 	set_process(false)
 
 
 func _process(delta: float) -> void:
-	if not visualization_enabled or not is_instance_valid(player) \
+	if not _is_entity_highlighting_enabled() or not is_instance_valid(player) \
 			or not player.is_multiplayer_authority():
 		return
 	_visualization_elapsed += delta
@@ -85,7 +85,7 @@ func _process(delta: float) -> void:
 ## Returns the fixed-size observation consumed directly by the AI environment.
 ## local_map is a flattened CHANNEL_COUNT x side x side byte tensor.
 func scan() -> Dictionary:
-	if visualization_enabled:
+	if _is_entity_highlighting_enabled():
 		_detected_entities.clear()
 		_detected_tree_tiles.clear()
 	var observation: Dictionary = _create_empty_observation()
@@ -106,7 +106,7 @@ func scan() -> Dictionary:
 		observation["action_mask"] = _scan_action_mask(origin_tile)
 
 	last_observation = observation
-	if visualization_enabled:
+	if _is_entity_highlighting_enabled():
 		_sync_highlights()
 	scan_completed.emit(observation)
 	return observation
@@ -116,16 +116,65 @@ func set_scan_radius(value: int) -> void:
 	scan_radius_tiles = value
 
 
+func set_radius_modifier(source_id: StringName, bonus_tiles: int) -> void:
+	if bonus_tiles <= 0:
+		remove_radius_modifier(source_id)
+		return
+	_radius_modifiers[source_id] = bonus_tiles
+	_refresh_effective_radius()
+
+
+func remove_radius_modifier(source_id: StringName) -> void:
+	if not _radius_modifiers.erase(source_id):
+		return
+	_refresh_effective_radius()
+
+
+func set_enemy_marking_source(source_id: StringName, enabled: bool) -> void:
+	if enabled:
+		_enemy_marking_sources[source_id] = true
+	else:
+		_enemy_marking_sources.erase(source_id)
+	var should_process: bool = _is_entity_highlighting_enabled()
+	var local_authority: bool = is_instance_valid(player) \
+		and player.is_multiplayer_authority()
+	set_process(should_process and local_authority)
+	_visualization_elapsed = visualization_scan_interval
+	if should_process and local_authority:
+		scan()
+	else:
+		_clear_highlights()
+
+
+func _is_entity_highlighting_enabled() -> bool:
+	return visualization_enabled or not _enemy_marking_sources.is_empty()
+
+
+func get_effective_scan_radius() -> int:
+	var bonus: int = 0
+	for value: Variant in _radius_modifiers.values():
+		bonus += int(value)
+	return clampi(scan_radius_tiles + bonus, 1, 64)
+
+
+func _refresh_effective_radius() -> void:
+	var effective_radius: int = get_effective_scan_radius()
+	if is_instance_valid(debug_view):
+		debug_view.set_radius(effective_radius)
+	radius_changed.emit(effective_radius)
+
+
 func set_visualization_enabled(value: bool) -> void:
 	if visualization_enabled == value:
 		return
 	visualization_enabled = value
 	_visualization_elapsed = visualization_scan_interval
 	if is_instance_valid(debug_view):
-		debug_view.set_radius(scan_radius_tiles)
+		debug_view.set_radius(get_effective_scan_radius())
 		debug_view.set_visualization_enabled(value)
-	set_process(value)
-	if value:
+	var should_process: bool = _is_entity_highlighting_enabled()
+	set_process(should_process)
+	if should_process:
 		scan()
 	else:
 		_clear_highlights()
@@ -145,7 +194,7 @@ func get_origin_tile() -> Vector2i:
 
 
 func get_map_side_length() -> int:
-	return scan_radius_tiles * 2 + 1
+	return get_effective_scan_radius() * 2 + 1
 
 
 func get_observation_shape() -> PackedInt32Array:
@@ -223,11 +272,12 @@ func get_nearest_code_condition_distance(subject: StringName) -> int:
 	var observation: Dictionary = scan()
 	var local_map: PackedByteArray = observation["local_map"]
 	var nearest_distance: int = -1
-	for relative_y: int in range(-scan_radius_tiles, scan_radius_tiles + 1):
-		for relative_x: int in range(-scan_radius_tiles, scan_radius_tiles + 1):
+	var effective_radius: int = get_effective_scan_radius()
+	for relative_y: int in range(-effective_radius, effective_radius + 1):
+		for relative_x: int in range(-effective_radius, effective_radius + 1):
 			var relative_tile: Vector2i = Vector2i(relative_x, relative_y)
 			var tile_distance: int = absi(relative_x) + absi(relative_y)
-			if tile_distance > scan_radius_tiles:
+			if tile_distance > effective_radius:
 				continue
 			if subject == Strings.CONDITION_FREE and tile_distance == 0:
 				continue
@@ -236,6 +286,29 @@ func get_nearest_code_condition_distance(subject: StringName) -> int:
 			if nearest_distance < 0 or tile_distance < nearest_distance:
 				nearest_distance = tile_distance
 	return nearest_distance
+
+
+## Returns a stable snapshot of matching absolute TileMap coordinates for
+## `für jedes ... im sensor`. The collection is created at loop start so a
+## moving player cannot change the current iteration halfway through.
+func get_code_collection_tiles(subject: StringName) -> Array[Vector2i]:
+	var result: Array[Vector2i] = []
+	if not is_ready_to_scan():
+		return result
+	var channel: int = _get_code_condition_channel(subject)
+	if channel < 0:
+		return result
+	var observation: Dictionary = scan()
+	var local_map: PackedByteArray = observation["local_map"]
+	var origin_tile: Vector2i = get_origin_tile()
+	var effective_radius: int = get_effective_scan_radius()
+	for relative_y: int in range(-effective_radius, effective_radius + 1):
+		for relative_x: int in range(-effective_radius, effective_radius + 1):
+			var relative_tile: Vector2i = Vector2i(relative_x, relative_y)
+			if not _has_channel_at_offset(local_map, channel, relative_tile):
+				continue
+			result.append(origin_tile + relative_tile)
+	return result
 
 
 ## Checks the actual TileMap cell under a world-space point. Player interactions
@@ -272,8 +345,9 @@ func _has_channel_at_offset(
 	if channel < 0 or channel >= CHANNEL_COUNT or not _is_visible_offset(relative_tile):
 		return false
 	var side: int = get_map_side_length()
-	var local_x: int = relative_tile.x + scan_radius_tiles
-	var local_y: int = relative_tile.y + scan_radius_tiles
+	var effective_radius: int = get_effective_scan_radius()
+	var local_x: int = relative_tile.x + effective_radius
+	var local_y: int = relative_tile.y + effective_radius
 	var index: int = channel * side * side + local_y * side + local_x
 	return index >= 0 and index < local_map.size() and local_map[index] != 0
 
@@ -302,8 +376,9 @@ func _create_empty_observation() -> Dictionary:
 
 
 func _fill_terrain_layers(local_map: PackedByteArray, origin_tile: Vector2i) -> void:
-	for y_offset in range(-scan_radius_tiles, scan_radius_tiles + 1):
-		for x_offset in range(-scan_radius_tiles, scan_radius_tiles + 1):
+	var effective_radius: int = get_effective_scan_radius()
+	for y_offset in range(-effective_radius, effective_radius + 1):
+		for x_offset in range(-effective_radius, effective_radius + 1):
 			var relative_tile: Vector2i = Vector2i(x_offset, y_offset)
 			if not _is_visible_offset(relative_tile):
 				continue
@@ -341,7 +416,9 @@ func _mark_entity_group(
 			var relative_tile: Vector2i = tile - origin_tile
 			_set_channel(local_map, channel, relative_tile)
 			detected = detected or _is_visible_offset(relative_tile)
-		if detected and visualization_enabled:
+		var mark_entity: bool = visualization_enabled \
+			or group == GROUP_ENEMY and not _enemy_marking_sources.is_empty()
+		if detected and mark_entity:
 			_detected_entities[entity] = true
 
 
@@ -350,7 +427,8 @@ func _mark_tree_data(local_map: PackedByteArray, origin_tile: Vector2i) -> void:
 		tree_manager = get_tree().get_first_node_in_group("tree_manager") as TreeManager
 	if not is_instance_valid(tree_manager):
 		return
-	for state: TreeState in tree_manager.get_trees_in_radius(origin_tile, scan_radius_tiles):
+	var effective_radius: int = get_effective_scan_radius()
+	for state: TreeState in tree_manager.get_trees_in_radius(origin_tile, effective_radius):
 		var relative_tile: Vector2i = state.tile - origin_tile
 		_set_channel(local_map, CHANNEL_OBJECT, relative_tile)
 		if not visualization_enabled:
@@ -442,14 +520,15 @@ func _set_channel(
 	if channel < 0 or channel >= CHANNEL_COUNT or not _is_visible_offset(relative_tile):
 		return
 	var side: int = get_map_side_length()
-	var local_x: int = relative_tile.x + scan_radius_tiles
-	var local_y: int = relative_tile.y + scan_radius_tiles
+	var effective_radius: int = get_effective_scan_radius()
+	var local_x: int = relative_tile.x + effective_radius
+	var local_y: int = relative_tile.y + effective_radius
 	var index: int = channel * side * side + local_y * side + local_x
 	local_map[index] = 1
 
 
 func _is_visible_offset(relative_tile: Vector2i) -> bool:
-	return absi(relative_tile.x) + absi(relative_tile.y) <= scan_radius_tiles
+	return absi(relative_tile.x) + absi(relative_tile.y) <= get_effective_scan_radius()
 
 
 func _to_tile_array(value: Variant) -> Array[Vector2i]:

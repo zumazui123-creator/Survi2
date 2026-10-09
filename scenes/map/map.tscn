@@ -15,6 +15,32 @@
 [ext_resource type="Resource" path="res://assets/data/villages/default_village.tres" id="14_village_definition"]
 [ext_resource type="PackedScene" path="res://scenes/village/village_resident.tscn" id="15_village_resident"]
 [ext_resource type="PackedScene" path="res://scenes/village/village_pig.tscn" id="16_village_pig"]
+[ext_resource type="Resource" path="res://assets/data/buildings/campfire.tres" id="17_campfire_definition"]
+[ext_resource type="Resource" path="res://assets/data/buildings/cannon.tres" id="18_cannon_definition"]
+[ext_resource type="Script" path="res://scenes/main/tile_structure_assembler.gd" id="19_structure_assembler"]
+[ext_resource type="Script" path="res://scenes/gameplay/definitions/structure_recipe.gd" id="20_structure_recipe"]
+[ext_resource type="Resource" path="res://assets/data/buildings/campfire_recipe.tres" id="21_campfire_recipe"]
+[ext_resource type="Resource" path="res://assets/data/buildings/cannon_wall_recipe.tres" id="22_cannon_wall_recipe"]
+[ext_resource type="Resource" path="res://assets/data/buildings/cannon_campfire_recipe.tres" id="23_cannon_campfire_recipe"]
+[ext_resource type="Resource" path="res://assets/data/buildings/magic_cannon.tres" id="24_magic_cannon_definition"]
+[ext_resource type="Resource" path="res://assets/data/buildings/jump_pad.tres" id="25_jump_pad_definition"]
+[ext_resource type="Resource" path="res://assets/data/buildings/magic_cannon_recipe.tres" id="26_magic_cannon_recipe"]
+[ext_resource type="Resource" path="res://assets/data/buildings/jump_pad_recipe.tres" id="27_jump_pad_recipe"]
+[ext_resource type="Resource" path="res://assets/data/buildings/pit_trap.tres" id="28_pit_definition"]
+[ext_resource type="Resource" path="res://assets/data/buildings/pit_trap_recipe.tres" id="29_pit_recipe"]
+[ext_resource type="Resource" path="res://assets/data/buildings/shield_wall.tres" id="30_shield_definition"]
+[ext_resource type="Resource" path="res://assets/data/buildings/shield_wall_recipe.tres" id="31_shield_recipe"]
+[ext_resource type="Resource" path="res://assets/data/buildings/cooking_station.tres" id="32_cooking_definition"]
+[ext_resource type="Resource" path="res://assets/data/buildings/cooking_station_recipe.tres" id="33_cooking_recipe"]
+[ext_resource type="Resource" path="res://assets/data/buildings/teleport_pad.tres" id="34_teleport_definition"]
+[ext_resource type="Resource" path="res://assets/data/buildings/teleport_pad_recipe.tres" id="35_teleport_recipe"]
+[ext_resource type="Resource" path="res://assets/data/buildings/fire_cannon.tres" id="36_fire_definition"]
+[ext_resource type="Resource" path="res://assets/data/buildings/fire_cannon_recipe.tres" id="37_fire_recipe"]
+[ext_resource type="Resource" path="res://assets/data/buildings/sensor_tower.tres" id="38_sensor_definition"]
+[ext_resource type="Resource" path="res://assets/data/buildings/sensor_tower_recipe.tres" id="39_sensor_recipe"]
+[ext_resource type="Resource" path="res://assets/data/buildings/healing_well.tres" id="40_well_definition"]
+[ext_resource type="Resource" path="res://assets/data/buildings/healing_well_recipe.tres" id="41_well_recipe"]
+[ext_resource type="Script" path="res://scenes/main/teleport_network.gd" id="42_teleport_network"]
 
 [node name="Map" type="Control" unique_id=1853554641]
 layout_mode = 3
@@ -34,12 +60,14 @@ script = ExtResource("3_qpycp")
 script = ExtResource("5_qci3n")
 village_definition = ExtResource("14_village_definition")
 
-[node name="ObjectManager" type="Node2D" parent="." node_paths=PackedStringArray("tree_manager", "breakable_manager", "building_manager", "village_manager") groups=["object_manager"]]
+[node name="ObjectManager" type="Node2D" parent="." node_paths=PackedStringArray("tree_manager", "breakable_manager", "building_manager", "tile_structure_assembler", "village_manager", "teleport_network") groups=["object_manager"]]
 script = ExtResource("7_object_manager")
 tree_manager = NodePath("TreeManager")
 breakable_manager = NodePath("BreakableManager")
 building_manager = NodePath("BuildingManager")
+tile_structure_assembler = NodePath("TileStructureAssembler")
 village_manager = NodePath("VillageManager")
+teleport_network = NodePath("TeleportNetwork")
 
 [node name="TreeManager" type="Node2D" parent="ObjectManager" unique_id=1255616609 groups=["tree_manager"]]
 script = ExtResource("6_tree_manager")
@@ -55,7 +83,16 @@ world_map = NodePath("../..")
 [node name="BuildingManager" type="Node2D" parent="ObjectManager" node_paths=PackedStringArray("world_map") groups=["building_manager", "buildings"]]
 script = ExtResource("9_building_manager")
 world_map = NodePath("../..")
-building_definitions = Array[ExtResource("12_building_definition")]([ExtResource("10_wall_definition"), ExtResource("11_tower_definition")])
+building_definitions = Array[ExtResource("12_building_definition")]([ExtResource("10_wall_definition"), ExtResource("11_tower_definition"), ExtResource("17_campfire_definition"), ExtResource("18_cannon_definition"), ExtResource("24_magic_cannon_definition"), ExtResource("25_jump_pad_definition"), ExtResource("28_pit_definition"), ExtResource("30_shield_definition"), ExtResource("32_cooking_definition"), ExtResource("34_teleport_definition"), ExtResource("36_fire_definition"), ExtResource("38_sensor_definition"), ExtResource("40_well_definition")])
+
+[node name="TileStructureAssembler" type="Node" parent="ObjectManager" node_paths=PackedStringArray("world_map", "building_manager") groups=["tile_structure_assembler"]]
+script = ExtResource("19_structure_assembler")
+world_map = NodePath("../..")
+building_manager = NodePath("../BuildingManager")
+recipes = Array[ExtResource("20_structure_recipe")]([ExtResource("21_campfire_recipe"), ExtResource("22_cannon_wall_recipe"), ExtResource("23_cannon_campfire_recipe"), ExtResource("26_magic_cannon_recipe"), ExtResource("27_jump_pad_recipe"), ExtResource("29_pit_recipe"), ExtResource("31_shield_recipe"), ExtResource("33_cooking_recipe"), ExtResource("35_teleport_recipe"), ExtResource("37_fire_recipe"), ExtResource("39_sensor_recipe"), ExtResource("41_well_recipe")])
+
+[node name="TeleportNetwork" type="Node" parent="ObjectManager" groups=["teleport_network"]]
+script = ExtResource("42_teleport_network")
 
 [node name="VillageManager" type="Node2D" parent="ObjectManager" node_paths=PackedStringArray("world_map", "building_manager") groups=["village_manager"]]
 script = ExtResource("13_village_manager")

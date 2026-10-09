@@ -1,6 +1,8 @@
 extends Node
 class_name WorldEntitySpawner
 
+signal pickup_spawned(pickup: WorldPickup)
+
 @export var pickups_root: Node2D
 @export var projectiles_root: Node2D
 
@@ -14,10 +16,27 @@ static func get_for(node: Node) -> WorldEntitySpawner:
 
 func spawn_pickups(item_id: String, world_position: Vector2, amount: int) -> void:
 	for _index in range(amount):
-		var pickup = PICKUP_SCENE.instantiate()
-		pickup.itemId = item_id
-		pickups_root.add_child(pickup, true)
-		pickup.global_position = world_position + Vector2(randf_range(-15.0, 15.0), randf_range(-15.0, 15.0))
+		spawn_pickup(
+			item_id,
+			world_position + Vector2(randf_range(-15.0, 15.0), randf_range(-15.0, 15.0)),
+			1
+		)
+
+
+func spawn_pickup(item_id: String, world_position: Vector2, amount: int = 1) -> bool:
+	if not multiplayer.is_server() or not is_instance_valid(pickups_root) or amount < 1:
+		return false
+	if Items.item_definitions.get(item_id) == null:
+		return false
+	var pickup: WorldPickup = PICKUP_SCENE.instantiate() as WorldPickup
+	if pickup == null:
+		return false
+	pickup.set("itemId", item_id)
+	pickup.set("stackCount", amount)
+	pickup.position = pickups_root.to_local(world_position)
+	pickups_root.add_child(pickup, true)
+	pickup_spawned.emit(pickup)
+	return true
 
 
 func spawn_projectile(

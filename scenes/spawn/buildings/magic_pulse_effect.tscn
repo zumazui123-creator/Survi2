@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/spawn/buildings/magic_pulse_effect.gd" id="1_effect"]
+
+[node name="MagicPulseEffect" type="Node2D"]
+z_index = 20
+script = ExtResource("1_effect")
+

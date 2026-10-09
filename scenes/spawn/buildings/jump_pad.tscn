@@ -1,0 +1,128 @@
+[gd_scene load_steps=11 format=3]
+
+[ext_resource type="Script" path="res://scenes/spawn/buildings/jump_pad.gd" id="1_jump_pad"]
+[ext_resource type="Texture2D" path="res://assets/items/magicWood.png" id="2_magic_wood"]
+[ext_resource type="Texture2D" path="res://assets/items/sap.png" id="3_sap"]
+[ext_resource type="Script" path="res://scenes/navigation/navigation_blocker.gd" id="4_navigation"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_launch"]
+size = Vector2(27, 27)
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_jump_pad"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+properties/1/path = NodePath(".:building_id")
+properties/1/spawn = true
+properties/1/replication_mode = 2
+properties/2/path = NodePath(".:builder_peer_id")
+properties/2/spawn = true
+properties/2/replication_mode = 2
+
+[sub_resource type="Animation" id="Animation_break"]
+resource_name = "break"
+length = 0.35
+tracks/0/type = "value"
+tracks/0/path = NodePath("Visuals:scale")
+tracks/0/keys = {"times": PackedFloat32Array(0, 0.35), "transitions": PackedFloat32Array(1, 1), "update": 0, "values": [Vector2(1, 1), Vector2(0.05, 0.05)]}
+tracks/1/type = "method"
+tracks/1/path = NodePath(".")
+tracks/1/keys = {"times": PackedFloat32Array(0.35), "transitions": PackedFloat32Array(1), "values": [{"args": [], "method": &"breakObject"}]}
+
+[sub_resource type="Animation" id="Animation_shake"]
+resource_name = "shake"
+length = 0.25
+tracks/0/type = "value"
+tracks/0/path = NodePath("Visuals:position")
+tracks/0/keys = {"times": PackedFloat32Array(0, 0.08, 0.16, 0.25), "transitions": PackedFloat32Array(1, 1, 1, 1), "update": 0, "values": [Vector2(0, 0), Vector2(2, 0), Vector2(-2, 0), Vector2(0, 0)]}
+
+[sub_resource type="Animation" id="Animation_spawn"]
+resource_name = "spawn"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/path = NodePath("Visuals:scale")
+tracks/0/keys = {"times": PackedFloat32Array(0, 0.2, 0.3), "transitions": PackedFloat32Array(1, 1, 1), "update": 0, "values": [Vector2(0.05, 0.05), Vector2(1.15, 1.15), Vector2(1, 1)]}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_jump_pad"]
+_data = {&"break": SubResource("Animation_break"), &"shake": SubResource("Animation_shake"), &"spawn": SubResource("Animation_spawn")}
+
+[sub_resource type="Curve" id="Curve_particles"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[node name="JumpPad" type="StaticBody2D" groups=["damageable", "sensor_object"]]
+collision_layer = 0
+collision_mask = 0
+script = ExtResource("1_jump_pad")
+building_id = &"jump_pad"
+
+[node name="Visuals" type="Node2D" parent="."]
+
+[node name="Platform" type="Polygon2D" parent="Visuals"]
+polygon = PackedVector2Array(-15, -12, -10, -16, 10, -16, 15, -12, 15, 12, 10, 16, -10, 16, -15, 12)
+color = Color(0.17, 0.38, 0.24, 1)
+
+[node name="InnerPlatform" type="Polygon2D" parent="Visuals"]
+polygon = PackedVector2Array(-11, -9, -7, -12, 7, -12, 11, -9, 11, 9, 7, 12, -7, 12, -11, 9)
+color = Color(0.34, 0.77, 0.42, 1)
+
+[node name="MagicWood" type="Sprite2D" parent="Visuals"]
+scale = Vector2(0.62, 0.62)
+texture = ExtResource("2_magic_wood")
+self_modulate = Color(0.75, 1, 0.82, 0.78)
+
+[node name="SapCore" type="Sprite2D" parent="Visuals"]
+scale = Vector2(0.34, 0.34)
+texture = ExtResource("3_sap")
+self_modulate = Color(0.92, 1, 0.44, 1)
+
+[node name="Arrow" type="Polygon2D" parent="Visuals"]
+polygon = PackedVector2Array(-3, 8, 3, 8, 3, -2, 8, -2, 0, -11, -8, -2, -3, -2)
+color = Color(0.82, 1, 0.55, 0.95)
+
+[node name="LaunchParticles" type="CPUParticles2D" parent="Visuals"]
+amount = 10
+lifetime = 0.7
+randomness = 0.5
+emission_shape = 3
+emission_rect_extents = Vector2(11, 11)
+direction = Vector2(0, -1)
+spread = 35.0
+gravity = Vector2(0, -20)
+initial_velocity_min = 8.0
+initial_velocity_max = 18.0
+scale_amount_min = 0.8
+scale_amount_max = 2.0
+color = Color(0.47, 1, 0.58, 0.65)
+
+[node name="LaunchArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 3
+monitoring = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LaunchArea"]
+shape = SubResource("RectangleShape2D_launch")
+
+[node name="NavigationBlocker" type="Node" parent="."]
+script = ExtResource("4_navigation")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_jump_pad")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries/ = SubResource("AnimationLibrary_jump_pad")
+autoplay = &"spawn"
+
+[node name="hitParticle" type="CPUParticles2D" parent="."]
+emitting = false
+lifetime = 0.4
+one_shot = true
+explosiveness = 1.0
+emission_shape = 1
+emission_sphere_radius = 12.0
+initial_velocity_min = 30.0
+initial_velocity_max = 90.0
+scale_amount_max = 2.0
+scale_amount_curve = SubResource("Curve_particles")
+color = Color(0.4, 0.9, 0.5, 1)
+

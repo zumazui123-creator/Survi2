@@ -200,6 +200,24 @@ func stop_at_current_position() -> void:
 	_has_occupancy = _world_map.register_navigation_actor(_actor_id, _occupied_tile)
 
 
+func synchronize_after_external_move() -> void:
+	if not _resolve_map() or not is_instance_valid(_enemy):
+		return
+	_world_map.release_navigation_actor(_actor_id)
+	_has_occupancy = false
+	_has_reservation = false
+	current_path.clear()
+	path_index = 0
+	path_active = false
+	has_destination = false
+	_occupied_tile = _world_map.world_to_navigation_tile(_enemy.global_position)
+	_has_occupancy = _world_map.register_navigation_actor(_actor_id, _occupied_tile)
+	_force_repath = true
+	repath_timer = 0.0
+	_last_world_position = _enemy.global_position
+	_stuck_time = 0.0
+
+
 func shutdown() -> void:
 	if is_instance_valid(_world_map):
 		_world_map.release_navigation_actor(_actor_id)
