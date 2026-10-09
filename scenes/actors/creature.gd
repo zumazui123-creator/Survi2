@@ -61,6 +61,7 @@ func tryAttack() -> void:
 	if projectile == null:
 		push_warning("Creature attack scene root must inherit Node2D.")
 		return
+	projectile.set("spawner", self)
 	world_spawner.projectiles_root.add_child(projectile, true)
 	projectile.global_position = global_position
 	var projectile_visuals := projectile.get_node_or_null("MovingParts") as Node2D

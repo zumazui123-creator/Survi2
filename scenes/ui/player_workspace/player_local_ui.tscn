@@ -144,7 +144,7 @@ autowrap_mode = 2
 unique_name_in_owner = true
 modulate = Color(0.78, 0.82, 0.9, 1)
 layout_mode = 2
-text = "Befehl auswählen oder mit Strg+Leertaste suchen."
+text = "Fahre mit der Maus über einen Befehl für eine kurze Erklärung."
 autowrap_mode = 2
 
 [node name="ActionsContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/Code" unique_id=1139331600]
@@ -573,9 +573,6 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_font_sizes/font_size = 13
-placeholder_text = "rechts
-attacke
-links"
 scroll_smooth = true
 scroll_past_end_of_file = true
 syntax_highlighter = SubResource("CodeHighlighter_function")

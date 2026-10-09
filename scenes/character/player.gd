@@ -190,6 +190,15 @@ func sendPos(pos):
 	movement.synchronize_to_player_position(true)
 
 
+@rpc("any_peer", "call_local", "reliable")
+func launch_from_jump_pad(target_position: Vector2, duration: float) -> void:
+	var sender_id: int = multiplayer.get_remote_sender_id()
+	if sender_id != 0 and sender_id != 1:
+		return
+	if is_instance_valid(movement):
+		movement.launch_to_world_position(target_position, duration)
+
+
 func _exit_tree() -> void:
 	if is_instance_valid(local_ui):
 		local_ui.queue_free()

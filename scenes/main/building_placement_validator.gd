@@ -9,6 +9,7 @@ enum Result {
 	BLOCKED_BY_ENTITY,
 	BLOCKED_BY_BUILDING,
 	NOT_AFFORDABLE,
+	RECIPE_ONLY,
 	SPAWN_FAILED,
 }
 
@@ -53,6 +54,8 @@ static func get_message(result: Result) -> String:
 			return "Auf dem Ziel-Tile steht bereits ein Gebäude."
 		Result.NOT_AFFORDABLE:
 			return "Es fehlen die benötigten Baumaterialien."
+		Result.RECIPE_ONLY:
+			return "Dieses Gebäude entsteht nur durch eine Item-Kombination."
 		Result.SPAWN_FAILED:
 			return "Das Gebäude konnte nicht erzeugt werden."
 	return "Das Gebäude konnte nicht gebaut werden."

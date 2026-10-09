@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="StructureRecipe" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/gameplay/definitions/structure_recipe.gd" id="1_recipe"]
+
+[resource]
+script = ExtResource("1_recipe")
+recipe_id = &"campfire_from_wall"
+display_name = "Lagerfeuer"
+description = "Mauer und Fackel werden zu einem Lagerfeuer."
+base_building_ids = Array[StringName]([&"wall"])
+ingredients = {"torch": 1}
+result_building_id = &"campfire"
+priority = 10
+

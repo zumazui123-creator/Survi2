@@ -10,6 +10,8 @@ class_name BuildingDefinition
 @export var required_tool: StringName = &"pickaxe"
 @export var drops: Dictionary = {}
 @export var build_cost: Dictionary = {}
+@export var player_placeable: bool = true
+@export var blocks_navigation: bool = true
 @export var navigation_footprint: Array[Vector2i] = [Vector2i.ZERO]
 
 

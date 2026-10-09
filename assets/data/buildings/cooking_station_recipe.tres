@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="StructureRecipe" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/gameplay/definitions/structure_recipe.gd" id="1_recipe"]
+
+[resource]
+script = ExtResource("1_recipe")
+recipe_id = &"cooking_station_from_campfire"
+display_name = "Kochstelle"
+description = "Ein Lagerfeuer wird mit Nahrung zu einer Kochstelle."
+base_building_ids = Array[StringName]([&"campfire"])
+ingredients = {"food": 1}
+result_building_id = &"cooking_station"
+priority = 25
+

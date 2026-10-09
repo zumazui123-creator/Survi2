@@ -1,0 +1,127 @@
+[gd_scene load_steps=12 format=3]
+
+[ext_resource type="Script" path="res://scenes/spawn/buildings/defense_tower.gd" id="1_cannon"]
+[ext_resource type="Texture2D" path="res://assets/objects/mauer1.png" id="2_texture"]
+[ext_resource type="Script" path="res://scenes/navigation/navigation_blocker.gd" id="3_navigation"]
+[ext_resource type="Script" path="res://scenes/spawn/buildings/tower_target_finder.gd" id="4_target_finder"]
+[ext_resource type="Script" path="res://scenes/spawn/buildings/tower_weapon.gd" id="5_weapon"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_cannon"]
+size = Vector2(30, 30)
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_cannon"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+properties/1/path = NodePath("AnimationPlayer:current_animation")
+properties/1/spawn = true
+properties/1/replication_mode = 2
+properties/2/path = NodePath(".:building_id")
+properties/2/spawn = true
+properties/2/replication_mode = 2
+properties/3/path = NodePath(".:builder_peer_id")
+properties/3/spawn = true
+properties/3/replication_mode = 2
+properties/4/path = NodePath("MovingParts:rotation")
+properties/4/spawn = true
+properties/4/replication_mode = 2
+
+[sub_resource type="Animation" id="Animation_break"]
+resource_name = "break"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:scale")
+tracks/0/keys = {"times": PackedFloat32Array(0, 0.4), "transitions": PackedFloat32Array(1, 1), "update": 0, "values": [Vector2(1, 1), Vector2(0.05, 0.05)]}
+tracks/1/type = "method"
+tracks/1/path = NodePath(".")
+tracks/1/keys = {"times": PackedFloat32Array(0.4), "transitions": PackedFloat32Array(1), "values": [{"args": [], "method": &"breakObject"}]}
+
+[sub_resource type="Animation" id="Animation_shake"]
+resource_name = "shake"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:offset")
+tracks/0/keys = {"times": PackedFloat32Array(0, 0.1, 0.2, 0.3), "transitions": PackedFloat32Array(1, 1, 1, 1), "update": 0, "values": [Vector2(0, 0), Vector2(3, -1), Vector2(-3, 1), Vector2(0, 0)]}
+
+[sub_resource type="Animation" id="Animation_spawn"]
+resource_name = "spawn"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:scale")
+tracks/0/keys = {"times": PackedFloat32Array(0, 0.2, 0.3), "transitions": PackedFloat32Array(1, 1, 1), "update": 0, "values": [Vector2(0.05, 0.05), Vector2(1.15, 1.15), Vector2(1, 1)]}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_cannon"]
+_data = {&"break": SubResource("Animation_break"), &"shake": SubResource("Animation_shake"), &"spawn": SubResource("Animation_spawn")}
+
+[sub_resource type="Curve" id="Curve_particles"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[node name="Cannon" type="StaticBody2D" groups=["damageable", "sensor_object"]]
+collision_layer = 3
+script = ExtResource("1_cannon")
+building_id = &"cannon"
+
+[node name="Sprite" type="Sprite2D" parent="."]
+texture = ExtResource("2_texture")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_cannon")
+
+[node name="MovingParts" type="Node2D" parent="."]
+
+[node name="Barrel" type="Line2D" parent="MovingParts"]
+points = PackedVector2Array(0, 0, 35, 0)
+width = 8.0
+default_color = Color(0.12, 0.13, 0.15, 1)
+
+[node name="BarrelHighlight" type="Line2D" parent="MovingParts"]
+points = PackedVector2Array(2, -2, 32, -2)
+width = 2.0
+default_color = Color(0.42, 0.45, 0.48, 1)
+
+[node name="Head" type="Polygon2D" parent="MovingParts"]
+polygon = PackedVector2Array(-14, -11, 9, -11, 15, -6, 15, 6, 9, 11, -14, 11, -18, 0)
+color = Color(0.22, 0.24, 0.27, 1)
+
+[node name="Hub" type="Polygon2D" parent="MovingParts"]
+polygon = PackedVector2Array(-6, -6, 3, -8, 9, -3, 9, 4, 3, 8, -6, 6, -9, 0)
+color = Color(0.45, 0.27, 0.11, 1)
+
+[node name="TargetFinder" type="Node" parent="."]
+script = ExtResource("4_target_finder")
+attack_range_tiles = 7.0
+
+[node name="TowerWeapon" type="Node" parent="."]
+script = ExtResource("5_weapon")
+attack_damage = 22.0
+attack_interval = 1.75
+projectile_id = "cannonball"
+
+[node name="NavigationBlocker" type="Node" parent="."]
+script = ExtResource("3_navigation")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_cannon")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries/ = SubResource("AnimationLibrary_cannon")
+autoplay = &"spawn"
+
+[node name="hitParticle" type="CPUParticles2D" parent="."]
+emitting = false
+lifetime = 0.5
+one_shot = true
+explosiveness = 1.0
+emission_shape = 1
+emission_sphere_radius = 15.0
+initial_velocity_min = 35.0
+initial_velocity_max = 120.0
+scale_amount_max = 2.5
+scale_amount_curve = SubResource("Curve_particles")
+color = Color(0.45, 0.5, 0.58, 1)
+
+[node name="AttackCooldown" type="Timer" parent="."]
+wait_time = 1.75
+one_shot = true
+

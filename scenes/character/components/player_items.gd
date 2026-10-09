@@ -90,6 +90,118 @@ func use_item(arguments: PackedStringArray) -> bool:
 	var slot_number: int = arguments[0].to_int()
 	return inventory.select_slot(slot_number)
 
+
+func drop_item(arguments: PackedStringArray) -> bool:
+	if arguments.size() < 1 or arguments.size() > 2 or not arguments[0].is_valid_int():
+		return false
+	var slot_number: int = arguments[0].to_int()
+	var player_id: String = str(player.name)
+	var item_id: String = Inventory.get_item_id_at_slot(player_id, slot_number)
+	if item_id.is_empty():
+		return false
+
+	var preferred_direction: Vector2i = _get_facing_tile_direction()
+	if arguments.size() == 2:
+		var direction_action: String = arguments[1]
+		if not Strings.direction_map.has(direction_action):
+			return false
+		preferred_direction = Vector2i(Strings.direction_map[direction_action])
+	var drop_tile_result: Dictionary = _find_drop_tile(preferred_direction, item_id)
+	if not bool(drop_tile_result.get("found", false)):
+		return false
+	var drop_tile: Vector2i = drop_tile_result.get("tile", Vector2i.ZERO)
+	if multiplayer.is_server():
+		return _drop_item_authoritative(
+			item_id,
+			drop_tile,
+			player.get_multiplayer_authority()
+		)
+	_request_drop_item.rpc_id(1, item_id, drop_tile)
+	return true
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func _request_drop_item(item_id: String, drop_tile: Vector2i) -> void:
+	if not multiplayer.is_server():
+		return
+	_drop_item_authoritative(item_id, drop_tile, multiplayer.get_remote_sender_id())
+
+
+func _drop_item_authoritative(
+		item_id: String,
+		drop_tile: Vector2i,
+		sender_id: int
+	) -> bool:
+	if not multiplayer.is_server() or sender_id != player.get_multiplayer_authority():
+		return false
+	var world_map: Map = get_tree().get_first_node_in_group("world_map") as Map
+	if not _is_valid_drop_tile(world_map, drop_tile, item_id):
+		return false
+
+	var player_id: String = str(player.name)
+	if not Inventory.checkHasItemAmount(player_id, item_id, 1):
+		return false
+	var spawner: WorldEntitySpawner = WorldEntitySpawner.get_for(self)
+	if not is_instance_valid(spawner):
+		return false
+	if not Inventory.removeItem(player_id, item_id, 1):
+		return false
+	var drop_position: Vector2 = world_map.navigation_tile_to_world(drop_tile)
+	if spawner.spawn_pickup(item_id, drop_position, 1):
+		return true
+
+	Inventory.addItem(player_id, item_id, 1)
+	return false
+
+
+func _find_drop_tile(preferred_direction: Vector2i, item_id: String) -> Dictionary:
+	var world_map: Map = get_tree().get_first_node_in_group("world_map") as Map
+	if not is_instance_valid(world_map) or not is_instance_valid(player):
+		return {"found": false}
+	var player_tile: Vector2i = world_map.world_to_navigation_tile(player.global_position)
+	var left: Vector2i = Vector2i(preferred_direction.y, -preferred_direction.x)
+	var right: Vector2i = Vector2i(-preferred_direction.y, preferred_direction.x)
+	var candidates: Array[Vector2i] = [
+		player_tile + preferred_direction,
+		player_tile + left,
+		player_tile + right,
+		player_tile - preferred_direction,
+	]
+	for candidate: Vector2i in candidates:
+		if _is_valid_drop_tile(world_map, candidate, item_id):
+			return {"found": true, "tile": candidate}
+	return {"found": false}
+
+
+func _get_facing_tile_direction() -> Vector2i:
+	if not is_instance_valid(player.movement):
+		return Vector2i.RIGHT
+	var facing: Vector2 = player.movement.facing_direction
+	if absf(facing.x) >= absf(facing.y):
+		return Vector2i.RIGHT if facing.x >= 0.0 else Vector2i.LEFT
+	return Vector2i.DOWN if facing.y >= 0.0 else Vector2i.UP
+
+
+func _is_valid_drop_tile(
+		world_map: Map,
+		drop_tile: Vector2i,
+		item_id: String = ""
+	) -> bool:
+	if not is_instance_valid(world_map) or not is_instance_valid(player):
+		return false
+	var player_tile: Vector2i = world_map.world_to_navigation_tile(player.global_position)
+	var delta: Vector2i = drop_tile - player_tile
+	if absi(delta.x) + absi(delta.y) != 1:
+		return false
+	var assembler: TileStructureAssembler = get_tree().get_first_node_in_group(
+		"tile_structure_assembler"
+	) as TileStructureAssembler
+	if not item_id.is_empty() \
+			and is_instance_valid(assembler) \
+			and assembler.can_accept_item(drop_tile, StringName(item_id)):
+		return true
+	return world_map.is_navigation_tile_walkable(drop_tile, true)
+
 #func _on_item_consumed(id, effects):
 	#if str(player.name) != id: # Ensure this is for the current player
 		#return

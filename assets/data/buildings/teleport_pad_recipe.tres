@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="StructureRecipe" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/gameplay/definitions/structure_recipe.gd" id="1_recipe"]
+
+[resource]
+script = ExtResource("1_recipe")
+recipe_id = &"teleport_pad_from_jump_pad"
+display_name = "Teleport-Tile"
+description = "Ein Sprung-Tile wird mit einem magischen Stein zum Teleport-Tile."
+base_building_ids = Array[StringName]([&"jump_pad"])
+ingredients = {"magicStone": 1}
+result_building_id = &"teleport_pad"
+priority = 45
+

@@ -17,6 +17,7 @@ const ACTION_SAY        = "say"
 const ACTION_BUILD      = "build"
 const ACTION_PAINT      = "paint"
 const ACTION_USE_ITEM   = "useItem"
+const ACTION_DROP_ITEM  = "dropItem"
 
 const direction_map = {
 	Strings.ACTION_WALK_LEFT: Vector2i.LEFT,
@@ -36,6 +37,7 @@ const ACTION_NAMES = {
 		"trinke": ACTION_DRINK,
 		"sage":   ACTION_SAY,
 		"nutze item" : ACTION_USE_ITEM,
+		"droppe item" : ACTION_DROP_ITEM,
 		"baue":   ACTION_BUILD,
 		"male":   ACTION_PAINT,
 	},
@@ -49,6 +51,7 @@ const ACTION_NAMES = {
 		"drink":  ACTION_DRINK,
 		"speak":  ACTION_SAY,
 		"use item" : ACTION_USE_ITEM,
+		"drop item" : ACTION_DROP_ITEM,
 		"build":  ACTION_BUILD,
 		"paint":  ACTION_PAINT,
 	}
@@ -79,6 +82,18 @@ const KEYWORD_REPEAT = "wiederhole 3 mal"
 const KEYWORD_REPEAT_FULL = "wiederhole 3 mal\n\nende"
 const KEYWORD_IF = "wenn"
 const KEYWORD_IF_FULL = "wenn gegner rechts\n\nende"
+const KEYWORD_ELSE = "sonst"
+const KEYWORD_ELSE_ALIAS = "sont"
+const KEYWORD_ELSE_IF = "sonst wenn"
+const KEYWORD_WHILE = "solange"
+const KEYWORD_UNTIL = "bis"
+const KEYWORD_FOR = "für"
+const KEYWORD_EACH = "jedes"
+const KEYWORD_FROM = "von"
+const KEYWORD_IN = "im"
+const KEYWORD_FOREVER = "immer"
+const KEYWORD_BREAK = "verlasse"
+const KEYWORD_CONTINUE = "weiter"
 const KEYWORD_COMBO_SOUND_WAVE = "combo links attacke rechts attacke"
 const KEYWORD_COMBO_EARTHQUAKE = "combo unten attacke oben attacke"
 const KEYWORD_COMBO_DOUBLE_STRIKE = "combo links attacke links attacke rechts attacke"
@@ -86,6 +101,7 @@ const KEYWORD_COMBO_CROSS_EXPLOSION = "combo oben attacke unten attacke links at
 const KEYWORD_COMBO_WHIRLWIND = "combo links attacke rechts attacke oben attacke unten attacke"
 const KEYWORD_COMBO = KEYWORD_COMBO_SOUND_WAVE
 const KEYWORD_USE_ITEM = "nutze item 3"
+const KEYWORD_DROP_ITEM = "droppe item 3 links"
 
 const CONDITION_ENEMY: StringName = &"enemy"
 const CONDITION_ANIMAL: StringName = &"animal"

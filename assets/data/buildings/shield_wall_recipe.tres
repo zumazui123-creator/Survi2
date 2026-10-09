@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="StructureRecipe" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/gameplay/definitions/structure_recipe.gd" id="1_recipe"]
+
+[resource]
+script = ExtResource("1_recipe")
+recipe_id = &"shield_wall_from_wall"
+display_name = "Schildmauer"
+description = "Mauer, Eisen und magischer Stein werden zu einer schützenden Schildmauer."
+base_building_ids = Array[StringName]([&"wall"])
+ingredients = {"iron": 1, "magicStone": 1}
+result_building_id = &"shield_wall"
+priority = 36
+

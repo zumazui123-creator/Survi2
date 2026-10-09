@@ -122,7 +122,7 @@ _spawnable_scenes = PackedStringArray("uid://dagsu16arm3mv")
 spawn_path = NodePath("../Map/ObjectManager/BreakableManager")
 
 [node name="BuildingSpawner" type="MultiplayerSpawner" parent="." unique_id=1419203123]
-_spawnable_scenes = PackedStringArray("uid://c5vhr2saulowe", "res://scenes/spawn/buildings/defense_tower.tscn")
+_spawnable_scenes = PackedStringArray("uid://c5vhr2saulowe", "res://scenes/spawn/buildings/defense_tower.tscn", "res://scenes/spawn/buildings/campfire.tscn", "res://scenes/spawn/buildings/cannon.tscn", "res://scenes/spawn/buildings/magic_cannon.tscn", "res://scenes/spawn/buildings/jump_pad.tscn", "res://scenes/spawn/buildings/pit_trap.tscn", "res://scenes/spawn/buildings/shield_wall.tscn", "res://scenes/spawn/buildings/cooking_station.tscn", "res://scenes/spawn/buildings/teleport_pad.tscn", "res://scenes/spawn/buildings/fire_cannon.tscn", "res://scenes/spawn/buildings/sensor_tower.tscn", "res://scenes/spawn/buildings/healing_well.tscn")
 spawn_path = NodePath("../Map/ObjectManager/BuildingManager")
 
 [node name="PickupSpawner" type="MultiplayerSpawner" parent="." unique_id=406642788]

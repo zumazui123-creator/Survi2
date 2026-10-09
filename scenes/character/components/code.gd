@@ -36,13 +36,11 @@ var _last_error_line: int = 0
 func _ready() -> void:
 	_line_number_pattern.compile("\\(Zeile (\\d+)\\)")
 	highlighter = MyCodeHighLighter.new()
-	highlighter.setup_custom_highlighter(code_edit, Strings.current_locale)
-	highlighter.setup_custom_highlighter(function_code_edit, Strings.current_locale)
 	_setup_editor_assistance()
 	_refresh_examples()
 	_refresh_function_lists()
 	_set_execution_buttons(false)
-	_set_status("Bereit – Strg+Leertaste zeigt Befehle.", false)
+	_set_status("Bereit – schreibe dein Programm.", false)
 	if Multihelper.code_player_enabled:
 		print("Debug Code Playing enabled.")
 
@@ -91,12 +89,12 @@ func _disconnect_components() -> void:
 
 
 func _setup_editor_assistance() -> void:
-	code_edit.code_completion_enabled = true
-	code_edit.code_completion_requested.connect(_on_code_completion_requested)
+	code_edit.code_completion_enabled = false
 	code_edit.symbol_hovered.connect(_on_symbol_hovered)
 	code_edit.text_changed.connect(_on_code_text_changed)
-	function_code_edit.code_completion_enabled = true
-	function_code_edit.code_completion_requested.connect(_on_function_completion_requested)
+	function_code_edit.code_completion_enabled = false
+	function_code_edit.symbol_hovered.connect(_on_symbol_hovered)
+	function_code_edit.text_changed.connect(_on_function_code_text_changed)
 
 
 func _on_execution_started(_estimated_command_count: int) -> void:
@@ -175,16 +173,25 @@ func _refresh_function_lists() -> void:
 			String(entry.get("insert_text", "")),
 			String(entry.get("description", ""))
 		)
-	if not is_instance_valid(function_library):
+	if is_instance_valid(function_library):
+		for function_name: String in function_library.get_function_names():
+			_add_list_item(function_name, function_name, "Ruft deine Funktion '%s' auf." % function_name)
+			function_list.add_item(function_name)
+	_refresh_all_editor_highlighting()
+
+
+func _refresh_all_editor_highlighting() -> void:
+	if not is_instance_valid(highlighter):
 		return
-	var function_names: PackedStringArray = function_library.get_function_names()
-	for function_name: String in function_names:
-		_add_list_item(function_name, function_name, "Ruft deine Funktion '%s' auf." % function_name)
-		function_list.add_item(function_name)
-	highlighter.setup_custom_highlighter(code_edit, Strings.current_locale)
-	highlighter.setup_custom_highlighter(function_code_edit, Strings.current_locale)
-	highlighter.apply_function_names(code_edit, function_names)
-	highlighter.apply_function_names(function_code_edit, function_names)
+	var function_names: PackedStringArray = PackedStringArray()
+	if is_instance_valid(function_library):
+		function_names = function_library.get_function_names()
+	var source_codes: Array[String] = [code_edit.text, function_code_edit.text]
+	var variable_names: PackedStringArray = highlighter.collect_variable_names(source_codes)
+	var editors: Array[CodeEdit] = [code_edit, function_code_edit]
+	for editor: CodeEdit in editors:
+		highlighter.setup_custom_highlighter(editor, Strings.current_locale)
+		highlighter.apply_document_symbols(editor, function_names, variable_names)
 
 
 func _add_list_item(label: String, insert_text: String, description: String) -> void:
@@ -213,38 +220,14 @@ func _insert_text(text: String) -> void:
 	code_edit.grab_focus()
 
 
-func _on_code_completion_requested() -> void:
-	_add_completion_options(code_edit)
-
-
-func _on_function_completion_requested() -> void:
-	_add_completion_options(function_code_edit)
-
-
-func _add_completion_options(editor: CodeEdit) -> void:
-	for entry: Dictionary in CodeCommandCatalog.get_entries(Strings.current_locale):
-		var insert_text: String = String(entry.get("insert_text", ""))
-		if insert_text == CodeCommandCatalog.FUNCTION_TEMPLATE_ID:
-			continue
-		editor.add_code_completion_option(
-			CodeEdit.KIND_PLAIN_TEXT,
-			String(entry.get("trigger", insert_text)),
-			insert_text
-		)
-	if is_instance_valid(function_library):
-		for function_name: String in function_library.get_function_names():
-			editor.add_code_completion_option(
-				CodeEdit.KIND_FUNCTION,
-				function_name,
-				function_name
-			)
-	editor.update_code_completion_options(true)
-
-
 func _on_code_text_changed() -> void:
 	if _highlighted_line >= 0 and not (is_instance_valid(code_player) and code_player.is_running):
 		_clear_line_highlight()
-	code_edit.request_code_completion(false)
+	_refresh_all_editor_highlighting()
+
+
+func _on_function_code_text_changed() -> void:
+	_refresh_all_editor_highlighting()
 
 
 func _on_symbol_hovered(symbol: String, _line: int, _column: int) -> void:
@@ -252,7 +235,7 @@ func _on_symbol_hovered(symbol: String, _line: int, _column: int) -> void:
 	if description.is_empty() and is_instance_valid(function_library) \
 			and function_library.functions.has(symbol):
 		description = "Ruft deine Funktion '%s' auf." % symbol
-	command_help_label.text = description if not description.is_empty() else "Befehl auswählen oder mit Strg+Leertaste suchen."
+	command_help_label.text = description if not description.is_empty() else "Fahre mit der Maus über einen Befehl für eine kurze Erklärung."
 
 
 func _highlight_line(source_line: int, color: Color) -> void:

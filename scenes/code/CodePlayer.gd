@@ -1,6 +1,12 @@
 extends Node
 class_name CodePlayer
 
+enum LoopControlState {
+	NONE,
+	BREAK,
+	CONTINUE,
+}
+
 signal execution_started(command_count: int)
 signal source_line_started(source_line: int, source_text: String)
 signal command_started(command_index: int, command: String, source_line: int)
@@ -20,6 +26,7 @@ var is_paused: bool = false
 var _execution_id: int = 0
 var _executed_command_count: int = 0
 var _step_budget: int = 0
+var _loop_control_state: int = LoopControlState.NONE
 var _parser: CodeParser = CodeParser.new()
 var _execution_context: CodeExecutionContext = CodeExecutionContext.new()
 var _expression_evaluator: CodeExpressionEvaluator = CodeExpressionEvaluator.new()
@@ -33,6 +40,7 @@ func cancel() -> void:
 	is_running = false
 	is_paused = false
 	_step_budget = 0
+	_loop_control_state = LoopControlState.NONE
 	execution_gate_changed.emit()
 	pause_changed.emit(false)
 	_reset_execution_effects()
@@ -87,6 +95,7 @@ func play(code: String, functions: Dictionary = {}, start_paused: bool = false) 
 	is_paused = start_paused
 	_step_budget = 0
 	_executed_command_count = 0
+	_loop_control_state = LoopControlState.NONE
 	_execution_context.clear()
 	variables_changed.emit(_execution_context.get_variables())
 	var maximum_command_count: int = parse_result.get_max_command_count()
@@ -140,14 +149,27 @@ func execute_node(node: CodeParser.ParsedNode, execution_id: int) -> void:
 		variables_changed.emit(_execution_context.get_variables())
 		return
 
+	if node is CodeParser.LoopControl:
+		var loop_control: CodeParser.LoopControl = node as CodeParser.LoopControl
+		_loop_control_state = LoopControlState.BREAK \
+			if loop_control.kind == CodeParser.LoopControl.Kind.BREAK \
+			else LoopControlState.CONTINUE
+		return
+
 	if node is CodeParser.ConditionalBlock:
 		var conditional_block: CodeParser.ConditionalBlock = node as CodeParser.ConditionalBlock
-		if not _matches_condition(conditional_block.condition, conditional_block.source_line):
+		var condition_matches: bool = conditional_block.condition == null \
+			or _matches_condition(conditional_block.condition, conditional_block.source_line)
+		if not condition_matches:
+			if conditional_block.alternative != null:
+				await execute_node(conditional_block.alternative, execution_id)
 			return
 		for child: CodeParser.ParsedNode in conditional_block.body:
 			if not _is_current_execution(execution_id):
 				return
 			await execute_node(child, execution_id)
+			if _loop_control_state != LoopControlState.NONE:
+				return
 		return
 
 	if node is CodeParser.RepeatBlock:
@@ -173,10 +195,144 @@ func execute_node(node: CodeParser.ParsedNode, execution_id: int) -> void:
 			)
 			return
 		for _repeat_index: int in range(repeat_count):
-			for child: CodeParser.ParsedNode in repeat_block.body:
-				if not _is_current_execution(execution_id):
-					return
-				await execute_node(child, execution_id)
+			var repeat_control: int = await _execute_loop_body(repeat_block.body, execution_id)
+			if repeat_control == LoopControlState.BREAK:
+				_loop_control_state = LoopControlState.NONE
+				return
+			if repeat_control == LoopControlState.CONTINUE:
+				_loop_control_state = LoopControlState.NONE
+				continue
+		return
+
+	if node is CodeParser.ConditionLoopBlock:
+		var condition_loop: CodeParser.ConditionLoopBlock = node as CodeParser.ConditionLoopBlock
+		while _is_current_execution(execution_id):
+			var condition_matches: bool = _matches_condition(
+				condition_loop.condition,
+				condition_loop.source_line
+			)
+			var should_execute: bool = condition_matches \
+				if condition_loop.mode == CodeParser.ConditionLoopBlock.Mode.WHILE \
+				else not condition_matches
+			if not should_execute:
+				return
+			var condition_control: int = await _execute_loop_body(
+				condition_loop.body,
+				execution_id
+			)
+			if condition_control == LoopControlState.BREAK:
+				_loop_control_state = LoopControlState.NONE
+				return
+			if condition_control == LoopControlState.CONTINUE:
+				_loop_control_state = LoopControlState.NONE
+		return
+
+	if node is CodeParser.RangeLoopBlock:
+		await _execute_range_loop(node as CodeParser.RangeLoopBlock, execution_id)
+		return
+
+	if node is CodeParser.ForEachBlock:
+		await _execute_for_each_loop(node as CodeParser.ForEachBlock, execution_id)
+		return
+
+	if node is CodeParser.ForeverBlock:
+		var forever_loop: CodeParser.ForeverBlock = node as CodeParser.ForeverBlock
+		while _is_current_execution(execution_id):
+			var forever_control: int = await _execute_loop_body(forever_loop.body, execution_id)
+			if forever_control == LoopControlState.BREAK:
+				_loop_control_state = LoopControlState.NONE
+				return
+			if forever_control == LoopControlState.CONTINUE:
+				_loop_control_state = LoopControlState.NONE
+		return
+
+
+func _execute_loop_body(
+		body: Array[CodeParser.ParsedNode],
+		execution_id: int
+	) -> int:
+	for child: CodeParser.ParsedNode in body:
+		if not _is_current_execution(execution_id):
+			return LoopControlState.NONE
+		await execute_node(child, execution_id)
+		if _loop_control_state != LoopControlState.NONE:
+			return _loop_control_state
+	return LoopControlState.NONE
+
+
+func _execute_range_loop(
+		loop: CodeParser.RangeLoopBlock,
+		execution_id: int
+	) -> void:
+	var start_result: Dictionary = _evaluate_expression(loop.start_expression, loop.source_line)
+	if not bool(start_result.get("ok", false)):
+		return
+	var end_result: Dictionary = _evaluate_expression(loop.end_expression, loop.source_line)
+	if not bool(end_result.get("ok", false)):
+		return
+	var start_value: Variant = start_result.get("value")
+	var end_value: Variant = end_result.get("value")
+	if not start_value is int or not end_value is int:
+		_report_error("Die Grenzen einer Für-Schleife müssen ganze Zahlen sein.", loop.source_line)
+		return
+	var start_number: int = int(start_value)
+	var end_number: int = int(end_value)
+	var iteration_count: int = absi(end_number - start_number) + 1
+	if iteration_count > max_runtime_commands:
+		_report_error(
+			"Eine Für-Schleife darf höchstens %d Durchläufe haben." % max_runtime_commands,
+			loop.source_line
+		)
+		return
+	var step_size: int = 1 if start_number <= end_number else -1
+	for current_value: int in range(start_number, end_number + step_size, step_size):
+		_execution_context.set_variable(loop.variable_name, current_value)
+		variables_changed.emit(_execution_context.get_variables())
+		var range_control: int = await _execute_loop_body(loop.body, execution_id)
+		if range_control == LoopControlState.BREAK:
+			_loop_control_state = LoopControlState.NONE
+			return
+		if range_control == LoopControlState.CONTINUE:
+			_loop_control_state = LoopControlState.NONE
+			continue
+
+
+func _execute_for_each_loop(
+		loop: CodeParser.ForEachBlock,
+		execution_id: int
+	) -> void:
+	var values: Array = _get_loop_collection(loop)
+	for value: Variant in values:
+		if not _is_current_execution(execution_id):
+			return
+		_execution_context.set_variable(loop.variable_name, value)
+		variables_changed.emit(_execution_context.get_variables())
+		var each_control: int = await _execute_loop_body(loop.body, execution_id)
+		if each_control == LoopControlState.BREAK:
+			_loop_control_state = LoopControlState.NONE
+			return
+		if each_control == LoopControlState.CONTINUE:
+			_loop_control_state = LoopControlState.NONE
+			continue
+
+
+func _get_loop_collection(loop: CodeParser.ForEachBlock) -> Array:
+	if loop.collection_name == &"inventory":
+		var inventory: Dictionary = Inventory.getItems(str(player.name))
+		var item_ids: Array = []
+		for item_id_value: Variant in inventory.keys():
+			if int(inventory.get(item_id_value, 0)) > 0:
+				item_ids.append(String(item_id_value))
+		item_ids.sort()
+		return item_ids
+	if loop.collection_name == &"sensor" and is_instance_valid(player.sensor):
+		var sensor_tiles: Array[Vector2i] = player.sensor.get_code_collection_tiles(
+			loop.sensor_subject
+		)
+		var result: Array = []
+		result.assign(sensor_tiles)
+		return result
+	return []
 
 
 func _matches_condition(condition: CodeParser.CodeCondition, source_line: int) -> bool:
@@ -273,6 +429,12 @@ func execute_command(command: CodeParser.ParsedCommand, execution_id: int) -> vo
 		if not player.items.use_item(command.arguments):
 			_report_error(
 				"Der angegebene Inventar-Slot ist leer oder ungültig.",
+				command.source_line
+			)
+	elif action == Strings.ACTION_DROP_ITEM:
+		if not player.items.drop_item(command.arguments):
+			_report_error(
+				"Das Item konnte nicht gedroppt werden. Prüfe Slot und freie Nachbar-Tiles.",
 				command.source_line
 			)
 	elif action == Strings.ACTION_SAY:
@@ -410,6 +572,7 @@ func _finish_execution(execution_id: int) -> void:
 	is_running = false
 	is_paused = false
 	_step_budget = 0
+	_loop_control_state = LoopControlState.NONE
 	pause_changed.emit(false)
 	_reset_execution_effects()
 	execution_finished.emit()

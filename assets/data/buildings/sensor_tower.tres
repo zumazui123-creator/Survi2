@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="BuildingDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scenes/gameplay/definitions/building_definition.gd" id="1_definition"]
+[ext_resource type="PackedScene" path="res://scenes/spawn/buildings/sensor_tower.tscn" id="2_scene"]
+
+[resource]
+script = ExtResource("1_definition")
+building_id = &"sensor_tower"
+display_name = "Sensorturm"
+description = "Erhöht den Sensor-Radius seines Erbauers um fünf Tiles; erkannte Gegner werden in der Sensoransicht markiert."
+scene = ExtResource("2_scene")
+max_hp = 130.0
+required_tool = &"pickaxe"
+drops = {"crystalShard": {"min": 0, "max": 1}, "stone": {"min": 1, "max": 3}}
+player_placeable = false
+navigation_footprint = Array[Vector2i]([Vector2i(0, 0)])
+

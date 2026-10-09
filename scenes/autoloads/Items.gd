@@ -11,6 +11,7 @@ const ITEM_DEFINITIONS: Array[ItemDefinition] = [
 	preload("res://assets/data/items/magic_herb.tres"),
 	preload("res://assets/data/items/crystal_shard.tres"),
 	preload("res://assets/data/items/food.tres"),
+	preload("res://assets/data/items/cooked_food.tres"),
 	preload("res://assets/data/items/berries.tres"),
 	preload("res://assets/data/items/water.tres"),
 	preload("res://assets/data/items/energy_drink.tres"),
@@ -58,6 +59,8 @@ const OBJECT_DEFINITIONS: Array[WorldObjectDefinition] = [
 ]
 
 const PROJECTILE_DEFINITIONS: Array[ProjectileDefinition] = [
+	preload("res://assets/data/projectiles/cannonball.tres"),
+	preload("res://assets/data/projectiles/magic_pulse.tres"),
 	preload("res://assets/data/projectiles/fireshuriken.tres"),
 	preload("res://assets/data/projectiles/icebolt.tres"),
 	preload("res://assets/data/projectiles/magic_bolt.tres"),

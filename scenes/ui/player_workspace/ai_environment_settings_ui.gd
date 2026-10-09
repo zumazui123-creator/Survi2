@@ -82,8 +82,9 @@ func _on_sensor_radius_changed(value: float) -> void:
 		sensor.set_scan_radius(int(value))
 
 
-func _on_sensor_radius_updated(value: int) -> void:
-	sensor_radius_input.set_value_no_signal(float(value))
+func _on_sensor_radius_updated(_value: int) -> void:
+	if is_instance_valid(sensor):
+		sensor_radius_input.set_value_no_signal(float(sensor.scan_radius_tiles))
 
 
 func _on_sensor_visualization_updated(value: bool) -> void:
