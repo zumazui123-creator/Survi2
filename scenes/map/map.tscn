@@ -5,13 +5,13 @@
 [ext_resource type="Script" uid="uid://bqqq0ujqgl6ln" path="res://scenes/map/mapGenerator/labyrinth.gd" id="3_qpycp"]
 [ext_resource type="Script" uid="uid://c8y1yilcj8bkg" path="res://scenes/map/mapGenerator/main_level.gd" id="5_qci3n"]
 [ext_resource type="Script" uid="uid://bc5swuf5dfhdv" path="res://scenes/map/trees/tree_manager.gd" id="6_tree_manager"]
-[ext_resource type="Script" path="res://scenes/main/object_manager.gd" id="7_object_manager"]
-[ext_resource type="Script" path="res://scenes/main/breakable_manager.gd" id="8_breakable_manager"]
-[ext_resource type="Script" path="res://scenes/main/building_manager.gd" id="9_building_manager"]
+[ext_resource type="Script" uid="uid://b6apphllx0oya" path="res://scenes/main/object_manager.gd" id="7_object_manager"]
+[ext_resource type="Script" uid="uid://dduo0212bbq8w" path="res://scenes/main/breakable_manager.gd" id="8_breakable_manager"]
+[ext_resource type="Script" uid="uid://dr2hjekho22i8" path="res://scenes/main/building_manager.gd" id="9_building_manager"]
 [ext_resource type="Resource" path="res://assets/data/buildings/wall.tres" id="10_wall_definition"]
 [ext_resource type="Resource" path="res://assets/data/buildings/defense_tower.tres" id="11_tower_definition"]
-[ext_resource type="Script" path="res://scenes/gameplay/definitions/building_definition.gd" id="12_building_definition"]
-[ext_resource type="Script" path="res://scenes/main/village_manager.gd" id="13_village_manager"]
+[ext_resource type="Script" uid="uid://cpdmb5xh7ry3k" path="res://scenes/gameplay/definitions/building_definition.gd" id="12_building_definition"]
+[ext_resource type="Script" uid="uid://dqjkhc4hxkgfw" path="res://scenes/main/village_manager.gd" id="13_village_manager"]
 [ext_resource type="Resource" path="res://assets/data/villages/default_village.tres" id="14_village_definition"]
 [ext_resource type="PackedScene" path="res://scenes/village/village_resident.tscn" id="15_village_resident"]
 [ext_resource type="PackedScene" path="res://scenes/village/village_pig.tscn" id="16_village_pig"]
@@ -34,7 +34,7 @@ script = ExtResource("3_qpycp")
 script = ExtResource("5_qci3n")
 village_definition = ExtResource("14_village_definition")
 
-[node name="ObjectManager" type="Node2D" parent="." node_paths=PackedStringArray("tree_manager", "breakable_manager", "building_manager", "village_manager") groups=["object_manager"]]
+[node name="ObjectManager" type="Node2D" parent="." unique_id=560462589 node_paths=PackedStringArray("tree_manager", "breakable_manager", "building_manager", "village_manager") groups=["object_manager"]]
 script = ExtResource("7_object_manager")
 tree_manager = NodePath("TreeManager")
 breakable_manager = NodePath("BreakableManager")
@@ -48,16 +48,16 @@ active_tree_batch_interval = 2.0
 
 [node name="PassiveTrees" type="MultiMeshInstance2D" parent="ObjectManager/TreeManager" unique_id=471359765]
 
-[node name="BreakableManager" type="Node2D" parent="ObjectManager" node_paths=PackedStringArray("world_map") groups=["breakable_manager"]]
+[node name="BreakableManager" type="Node2D" parent="ObjectManager" unique_id=877257521 node_paths=PackedStringArray("world_map") groups=["breakable_manager"]]
 script = ExtResource("8_breakable_manager")
 world_map = NodePath("../..")
 
-[node name="BuildingManager" type="Node2D" parent="ObjectManager" node_paths=PackedStringArray("world_map") groups=["building_manager", "buildings"]]
+[node name="BuildingManager" type="Node2D" parent="ObjectManager" unique_id=1047387073 node_paths=PackedStringArray("world_map") groups=["building_manager", "buildings"]]
 script = ExtResource("9_building_manager")
 world_map = NodePath("../..")
 building_definitions = Array[ExtResource("12_building_definition")]([ExtResource("10_wall_definition"), ExtResource("11_tower_definition")])
 
-[node name="VillageManager" type="Node2D" parent="ObjectManager" node_paths=PackedStringArray("world_map", "building_manager") groups=["village_manager"]]
+[node name="VillageManager" type="Node2D" parent="ObjectManager" unique_id=127240209 node_paths=PackedStringArray("world_map", "building_manager") groups=["village_manager"]]
 script = ExtResource("13_village_manager")
 world_map = NodePath("../..")
 building_manager = NodePath("../BuildingManager")

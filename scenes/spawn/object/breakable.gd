@@ -38,7 +38,6 @@ func getDamage(causer: Node, amount: float, damage_type: StringName) -> void:
 
 func startBreaking() -> void:
 	$AnimationPlayer.play("break")
-	#Also calling breakObject() in Animation
 
 func breakObject() -> void:
 	if !multiplayer.is_server():
@@ -80,6 +79,8 @@ func get_navigation_tiles(origin: Vector2i) -> Array[Vector2i]:
 
 func _apply_collision_size(size: Vector2) -> void:
 	var collision_shape: CollisionShape2D = $CollisionShape2D
-	var rectangle: RectangleShape2D = collision_shape.shape as RectangleShape2D
-	if rectangle != null:
-		rectangle.size = size
+	var CircleShape: RectangleShape2D = collision_shape.shape as RectangleShape2D
+	if CircleShape != null:
+		CircleShape.size.x = Constants.TILE_SIZE*3 #min(size.x,size.y)
+		CircleShape.size.y = Constants.TILE_SIZE*3  
+		definition.collision_size = Vector2(CircleShape.size.x ,CircleShape.size.y) 

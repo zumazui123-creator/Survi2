@@ -210,30 +210,17 @@ func spawnPlayers():
 			spawnPlayer(newPlayer)
 	
 func spawnPlayer(newPlayer):
-	#var players = main.get_node("Players")
-	#for newPlayer in players.get_children():
 	var spawnPosition = Vector2i(0,0)
 	if map.spawnPosition > Vector2i(0,0):
 		spawnPosition = map.spawnPosition
 	else :
-		if  len(spawnedPlayers) > 1:
-			print("spawn near players")
-			var player1 = getPlayers().get_child(0)
-			spawnPosition = player1.movement.current_map_position
-		else:
-			spawnPosition = map.spawnable_tiles.pick_random()
+		spawnPosition = map.spawnable_tiles.pick_random()
 	if newPlayer.has_method("set_work_task_text"):
 		newPlayer.set_work_task_text(String(workTask.getWorkTask(self.level)))
 	newPlayer.sendPos.rpc(map.tile_map.map_to_local( spawnPosition ))
 
-#func rebornPlayer(playerId : String):
-	#var players = main.get_node("Players")
-	#for player in players.get_children():
-		#if player.name == playerId:
-			#player.hp = 100
-			
-#@rpc("call_local" ,"any_peer", "reliable")
-@rpc("any_peer", "call_remote", "reliable") #Server maybe copy method showSpawnUI and make 2 ways local and remote
+
+@rpc("any_peer", "call_remote", "reliable")
 func showSpawnUI():
 	print("showSpawnUI")
 	var spawnPlayerScene: PackedScene = preload("res://scenes/ui/spawn/spawnPlayer.tscn")

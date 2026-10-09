@@ -1,12 +1,10 @@
 [gd_scene format=3 uid="uid://dagsu16arm3mv"]
 
 [ext_resource type="Script" uid="uid://cxdh77bwwe5u2" path="res://scenes/spawn/object/breakable.gd" id="1_2ysco"]
-[ext_resource type="Texture2D" path="res://assets/objects/rock1.png" id="1_dsonf"]
-[ext_resource type="Script" path="res://scenes/navigation/navigation_blocker.gd" id="3_navigation"]
+[ext_resource type="Texture2D" uid="uid://d3h3816ogx3ij" path="res://assets/objects/rock1.png" id="1_dsonf"]
+[ext_resource type="Script" uid="uid://bot7vdfehko6b" path="res://scenes/navigation/navigation_blocker.gd" id="3_navigation"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_breakable"]
-resource_local_to_scene = true
-size = Vector2(30, 30)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7x1s6"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_a5lig"]
 properties/0/path = NodePath(".:position")
@@ -96,12 +94,13 @@ collision_layer = 3
 script = ExtResource("1_2ysco")
 
 [node name="Sprite" type="Sprite2D" parent="." unique_id=1433906994]
+z_index = 3
 texture = ExtResource("1_dsonf")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=869055359]
-shape = SubResource("RectangleShape2D_breakable")
+shape = SubResource("RectangleShape2D_7x1s6")
 
-[node name="NavigationBlocker" type="Node" parent="."]
+[node name="NavigationBlocker" type="Node" parent="." unique_id=1873654315]
 script = ExtResource("3_navigation")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=1897248292]

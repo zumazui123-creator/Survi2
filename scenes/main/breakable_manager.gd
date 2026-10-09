@@ -14,9 +14,7 @@ const BLOCKING_ENTITY_GROUPS: Array[StringName] = [
 @export var breakable_object_ids: PackedStringArray = PackedStringArray([
 	"rock1",
 	"rock2",
-	"rock3",
 	"bush1",
-	"ore1",
 	"magicPlant1",
 	"crystal1",
 	"magicRock1",

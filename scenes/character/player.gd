@@ -92,12 +92,7 @@ func try_recover_body():
 	if characterFile == "" and info.has("body"):
 		print("Recovered body from Multihelper: " + str(info["body"]))
 		self.characterFile = info["body"]
-		#var p_combat_node = get_node("PlayerCombat")
-		#if p_combat_node:
-			#Inventory.itemRemoved.connect(p_items.itemRemoved)
-			#p_combat_node.mob_killed.connect(p_combat_node.mobKilled)
-			#p_combat_node.player_killed.connect(p_combat_node.enemyPlayerKilled)
-			#p_combat_node.object_destroyed.connect(p_combat_node.objectDestroyed)
+
 	
 	_setup_local_player()
 
@@ -112,13 +107,16 @@ func _setup_local_player():
 	if not is_instance_valid(local_ui):
 		push_error("Player: player_local_ui.tscn does not instantiate PlayerLocalUI")
 		return
+		
 	hud.add_child(local_ui)
 	local_ui.bind_components(code_player, rl_agent, rl_trainer, environment)
 	local_ui.set_work_task_text(_work_task_text)
+	
 	if not status_view.settings_requested.is_connected(local_ui.show_settings):
 		status_view.settings_requested.connect(local_ui.show_settings)
 	if not status_view.info_requested.is_connected(local_ui.show_info):
 		status_view.info_requested.connect(local_ui.show_info)
+		
 	local_setup_done = true
 	EndUI = get_tree().get_first_node_in_group("end_ui")
 	$Camera2D.enabled = true
@@ -140,7 +138,6 @@ func visibilityFilter(id):
 
 @rpc("any_peer", "call_local", "reliable")
 func sendMessage(text):
-	#if multiplayer.is_server():
 		var message_box_scene: PackedScene = preload(Constants.PATH_CHAT_MESSAGE_SCENE)
 		var message_box: Variant = message_box_scene.instantiate()
 		%PlayerMessages.add_child(message_box, true)
