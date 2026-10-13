@@ -103,7 +103,10 @@ Generell: loest man das Raetsel richtig wird man gut mit items belohnt.
     Tile 3 Rot
     Tile 4 Lila
 
-- einen Wächter mit Sensorbedingungen umgehen
+- Ghost Monster in den Suempfen mit Sensorbedingungen umgehen
+- Bei den Wald Biom: Es gibt ein Pfad der zum Schatz fuehrt. Diese Pfad
+    wird links und rechts von pfeilen beschossen, man muss mauer bauen und stueck fuer 
+    stueck nach oben zum schatz gehen.
 - eine Figur aus einem Gefahrenbereich programmieren
 - eine Brücke aus Mauern bauen
 Als Belohnung gibt es neue Befehle, Funktionen oder seltene Items.
@@ -116,7 +119,7 @@ Die Dörfer könnten unterschiedliche Rollen erhalten:
 - befestigtes Militärdorf
 - verlassenes oder von Gegnern besetztes Dorf
 - Händlerstadt als großes Hauptdorf
-Bewohner könnten Aufträge geben, handeln und ihre Einstellung zum Spieler verändern.
+
 8. Boss-Territorien ankündigen
 Der Spieler sollte erkennen, dass er sich einem Boss nähert:
 - zerbrochene Bäume beim Waldkoloss
@@ -160,7 +163,8 @@ Am stärksten zu deinem Spiel passen meiner Meinung nach programmierbare Erkundu
 
 
 
-
+vielleicht Spaeter:
+Bewohner könnten Aufträge geben, handeln und ihre Einstellung zum Spieler verändern.
 
 Done:
 1. Unterschiedliche Biome
