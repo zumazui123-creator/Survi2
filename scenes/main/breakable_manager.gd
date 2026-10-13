@@ -44,15 +44,20 @@ func spawn_objects(amount: int) -> int:
 	for tile: Vector2i in world_map.spawnable_tiles:
 		if world_map.is_navigation_tile_walkable(tile, true):
 			candidates.append(tile)
-	candidates.shuffle()
+	var spawn_rng: RandomNumberGenerator = RandomNumberGenerator.new()
+	spawn_rng.seed = Multihelper.mapSeed ^ 0x5245534F ^ spawned_objects
+	_shuffle_tiles(candidates, spawn_rng)
 	var blocking_entity_tiles: Dictionary[Vector2i, bool] = _collect_blocking_entity_tiles()
 
 	var spawned_this_wave: int = 0
 	for spawn_tile: Vector2i in candidates:
 		if spawned_this_wave >= amount or spawned_objects >= max_objects:
 			break
-		var object_index: int = randi_range(0, available_object_ids.size() - 1)
-		var object_id: String = available_object_ids[object_index]
+		var object_id: String = _pick_object_id_for_tile(
+			spawn_tile,
+			available_object_ids,
+			spawn_rng
+		)
 		var breakable: NavigationBreakable = BREAKABLE_SCENE.instantiate() as NavigationBreakable
 		if breakable == null:
 			push_warning("BreakableManager: breakable.tscn must use NavigationBreakable")
@@ -128,6 +133,47 @@ func _get_available_object_ids() -> PackedStringArray:
 		else:
 			push_warning("BreakableManager: unknown object definition '%s'" % object_id)
 	return result
+
+
+func _pick_object_id_for_tile(
+		tile: Vector2i,
+		fallback_ids: PackedStringArray,
+		rng: RandomNumberGenerator
+	) -> String:
+	var definition: BiomeDefinition = world_map.get_biome_definition_at(tile)
+	if definition != null and not definition.resource_object_weights.is_empty():
+		var valid_weights: Dictionary[String, float] = {}
+		var total_weight: float = 0.0
+		for object_id_value: Variant in definition.resource_object_weights:
+			var object_id: String = String(object_id_value)
+			var weight: float = maxf(
+				float(definition.resource_object_weights[object_id_value]),
+				0.0
+			)
+			if weight <= 0.0 or Items.get_object_definition(object_id) == null:
+				continue
+			valid_weights[object_id] = weight
+			total_weight += weight
+		if total_weight > 0.0:
+			var selection: float = rng.randf() * total_weight
+			for object_id: String in valid_weights:
+				selection -= valid_weights[object_id]
+				if selection <= 0.0:
+					return object_id
+
+	var fallback_index: int = rng.randi_range(0, fallback_ids.size() - 1)
+	return fallback_ids[fallback_index]
+
+
+func _shuffle_tiles(
+		tiles: Array[Vector2i],
+		rng: RandomNumberGenerator
+	) -> void:
+	for index: int in range(tiles.size() - 1, 0, -1):
+		var swap_index: int = rng.randi_range(0, index)
+		var previous_tile: Vector2i = tiles[index]
+		tiles[index] = tiles[swap_index]
+		tiles[swap_index] = previous_tile
 
 
 func _configure_for_current_level() -> void:

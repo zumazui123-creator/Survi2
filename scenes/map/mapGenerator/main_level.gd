@@ -1,11 +1,23 @@
 extends Node
 
 @export_group("Tree placement")
-@export_range(1, 8, 1) var tree_spacing_tiles: int = 2
-@export_range(0, 100000, 1) var max_trees_per_map: int = 1000
-@export_range(0.0, 1.0, 0.001) var max_tree_map_ratio: float = 0.02
+@export_range(0, 100000, 1) var max_trees_per_map: int = 2500
+@export_range(0.0, 1.0, 0.001) var max_tree_map_ratio: float = 0.06
+@export var tree_object_ids: PackedStringArray = PackedStringArray([
+	"tree0",
+	"tree4",
+	"tree5",
+	"tree6",
+])
 @export_group("Villages")
 @export var village_definition: VillageDefinition
+@export_group("Landmarks")
+@export var landmark_definitions: Array[LandmarkDefinition] = []
+@export_group("Biomes")
+@export var biome_definitions: Array[BiomeDefinition] = []
+@export_range(0.0, 0.45, 0.01) var water_elevation_threshold: float = 0.22
+@export_range(1, 4, 1) var path_half_width_tiles: int = 1
+@export_range(4, 20, 1) var biome_landmark_reservation_radius: int = 12
 
 @onready var map : Map = $".."
 
@@ -13,19 +25,28 @@ var walkable_tiles: Array[Vector2i] = []
 var spawnable_tiles: Array[Vector2i] = []
 var tree_spawn_data: Array[TreeSpawnData] = []
 var village_plans: Array[VillagePlan] = []
-var _tree_candidate_blocks: Dictionary = {}
+var landmark_plans: Array[LandmarkPlan] = []
+var _tree_candidate_tiles: Array[Vector2i] = []
 var _village_reserved_tiles: Dictionary[Vector2i, bool] = {}
-var noise = FastNoiseLite.new()
+var _landmark_reserved_tiles: Dictionary[Vector2i, bool] = {}
+var _water_tiles: Dictionary[Vector2i, bool] = {}
+var biome_map_data: BiomeMapData
+var _biome_definitions_by_id: Dictionary[StringName, BiomeDefinition] = {}
 
 func generateMainMap(levelData : Dictionary):
 	walkable_tiles.clear()
 	spawnable_tiles.clear()
 	tree_spawn_data.clear()
 	village_plans.clear()
-	_tree_candidate_blocks.clear()
+	landmark_plans.clear()
+	_tree_candidate_tiles.clear()
 	_village_reserved_tiles.clear()
+	_landmark_reserved_tiles.clear()
+	_water_tiles.clear()
 	generate_terrain(levelData)
+	_plan_landmarks()
 	_plan_villages()
+	_carve_paths_between_regions()
 	_select_tree_spawns()
 	map.set_level_options(1)
 	map.generate_borders()
@@ -35,52 +56,66 @@ func generateMainMap(levelData : Dictionary):
 		tree_spawn_data,
 		village_plans,
 		village_definition,
+		landmark_plans,
 	]
 	
-func generate_terrain(levelData : Dictionary):
-	
+func generate_terrain(levelData : Dictionary) -> void:
 	print("generate_terrain with seed: ", Multihelper.mapSeed)
-	var rng = RandomNumberGenerator.new()
+	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 	rng.seed = Multihelper.mapSeed
-	
-	noise.seed = Multihelper.mapSeed
-	noise.noise_type = FastNoiseLite.TYPE_PERLIN
-	noise.fractal_octaves = 1.1
-	noise.fractal_lacunarity = 1.0 #2.0
-	noise.frequency = 0.03
 	if "size" in levelData:
 		map.width = levelData["size"].x
 		map.height = levelData["size"].y
-	
-	for y in range(map.height):
-		for x in range(map.width):
-			var noise_value = noise.get_noise_2d(x, y)
-			var tile_coord = Vector2i()
+
+	_rebuild_biome_definition_index()
+	var biome_generator: BiomeGenerator = BiomeGenerator.new()
+	biome_map_data = biome_generator.generate(
+		Vector2i(map.width, map.height),
+		Multihelper.mapSeed,
+		biome_definitions
+	)
+	map.configure_biome_map(biome_map_data, biome_definitions)
+
+	for y: int in range(map.height):
+		for x: int in range(map.width):
 			var tile: Vector2i = Vector2i(x, y)
-			if noise_value < 0.13:
-				tile_coord = map.grassAtlasCoords[rng.randi() % map.grassAtlasCoords.size()]
-				walkable_tiles.append(tile)
-				spawnable_tiles.append(tile)
-				
-			elif noise_value > 0.13 and noise_value < 0.40 : 
-				tile_coord = map.treeCoors
-				walkable_tiles.append(tile)
-				_add_tree_candidate(tile)
-				
+			var biome_id: StringName = biome_map_data.get_biome_id(tile)
+			var definition: BiomeDefinition = _biome_definitions_by_id.get(
+				biome_id
+			) as BiomeDefinition
+			var is_frozen_lake: bool = biome_id == &"snow"
+			var is_water: bool = biome_map_data.get_elevation(tile) \
+				< water_elevation_threshold and not is_frozen_lake
+			if is_water:
+				var water_index: int = rng.randi_range(0, map.waterCoors.size() - 1)
+				map.tile_map.set_cell(
+					tile,
+					map.tileset_source,
+					map.waterCoors[water_index],
+					0
+				)
+				_water_tiles[tile] = true
+				continue
+
+			walkable_tiles.append(tile)
+			spawnable_tiles.append(tile)
+			var tile_coord: Vector2i = Vector2i.ZERO
+			if definition != null:
+				tile_coord = definition.get_random_ground_atlas(rng)
+				if definition.tree_density > 0.0 \
+						and rng.randf() <= definition.tree_density:
+					_tree_candidate_tiles.append(tile)
 			else:
-				tile_coord = map.waterCoors[rng.randi() % map.waterCoors.size()]
+				var grass_index: int = rng.randi_range(0, map.grassAtlasCoords.size() - 1)
+				tile_coord = map.grassAtlasCoords[grass_index]
 			map.tile_map.set_cell(tile, map.tileset_source, tile_coord, 0)
 
 
-func _add_tree_candidate(tile: Vector2i) -> void:
-	var spacing: int = maxi(tree_spacing_tiles, 1)
-	var block: Vector2i = Vector2i(
-		floori(float(tile.x) / float(spacing)),
-		floori(float(tile.y) / float(spacing))
-	)
-	var candidates: Array = _tree_candidate_blocks.get(block, [])
-	candidates.append(tile)
-	_tree_candidate_blocks[block] = candidates
+func _rebuild_biome_definition_index() -> void:
+	_biome_definitions_by_id.clear()
+	for definition: BiomeDefinition in biome_definitions:
+		if definition != null and not definition.biome_id.is_empty():
+			_biome_definitions_by_id[definition.biome_id] = definition
 
 
 func _select_tree_spawns() -> void:
@@ -88,14 +123,10 @@ func _select_tree_spawns() -> void:
 	tree_rng.seed = Multihelper.mapSeed ^ 0x54524545
 	var selected_tiles: Array[Vector2i] = []
 
-	# Each spacing block contributes at most one randomly selected forest tile.
-	for candidates_value: Variant in _tree_candidate_blocks.values():
-		var candidates: Array = candidates_value
-		if candidates.is_empty():
-			continue
-		var selected_index: int = tree_rng.randi_range(0, candidates.size() - 1)
-		var selected_tile: Vector2i = candidates[selected_index]
-		selected_tiles.append(selected_tile)
+	# Every forest tile is eligible. The global limits below protect performance
+	# without forcing an artificial minimum distance between neighboring trees.
+	for candidate_tile: Vector2i in _tree_candidate_tiles:
+		selected_tiles.append(candidate_tile)
 
 	_shuffle_tiles(selected_tiles, tree_rng)
 	var tree_limit: int = _get_tree_limit(selected_tiles.size())
@@ -106,9 +137,19 @@ func _select_tree_spawns() -> void:
 	)
 
 	for tile: Vector2i in selected_tiles:
-		if _village_reserved_tiles.has(tile):
+		if _village_reserved_tiles.has(tile) or _landmark_reserved_tiles.has(tile):
 			continue
-		tree_spawn_data.append(TreeSpawnData.new(tile))
+		var available_tree_ids: PackedStringArray = PackedStringArray()
+		var definition: BiomeDefinition = map.get_biome_definition_at(tile)
+		if definition != null:
+			available_tree_ids = definition.get_valid_tree_ids()
+		else:
+			available_tree_ids = tree_object_ids
+		if available_tree_ids.is_empty():
+			continue
+		var tree_index: int = tree_rng.randi_range(0, available_tree_ids.size() - 1)
+		var tree_object_id: String = String(available_tree_ids[tree_index])
+		tree_spawn_data.append(TreeSpawnData.new(tile, tree_object_id))
 
 
 func _plan_villages() -> void:
@@ -116,7 +157,21 @@ func _plan_villages() -> void:
 		return
 	var available_village_tiles: Dictionary[Vector2i, bool] = {}
 	for tile: Vector2i in walkable_tiles:
-		available_village_tiles[tile] = true
+		if not _landmark_reserved_tiles.has(tile):
+			available_village_tiles[tile] = true
+	if biome_map_data != null:
+		for center: Vector2i in biome_map_data.get_guaranteed_region_centers():
+			for y_offset: int in range(
+				-biome_landmark_reservation_radius,
+				biome_landmark_reservation_radius + 1
+			):
+				for x_offset: int in range(
+					-biome_landmark_reservation_radius,
+					biome_landmark_reservation_radius + 1
+				):
+					available_village_tiles.erase(
+						center + Vector2i(x_offset, y_offset)
+					)
 	var planner: VillagePlanner = VillagePlanner.new()
 	village_plans = planner.create_plans(
 		Vector2i(map.width, map.height),
@@ -135,6 +190,100 @@ func _plan_villages() -> void:
 			map.set_grass_field(tile)
 			# Players and normal spawn waves must begin outside guarded villages.
 			spawnable_tiles.erase(tile)
+
+
+func _plan_landmarks() -> void:
+	if landmark_definitions.is_empty():
+		return
+	var available_tiles: Dictionary[Vector2i, bool] = {}
+	for tile: Vector2i in walkable_tiles:
+		available_tiles[tile] = true
+	var planner: LandmarkPlanner = LandmarkPlanner.new()
+	landmark_plans = planner.create_plans(
+		Vector2i(map.width, map.height),
+		landmark_definitions,
+		Multihelper.mapSeed,
+		available_tiles,
+		_water_tiles,
+		_village_reserved_tiles,
+		biome_map_data
+	)
+	for plan: LandmarkPlan in landmark_plans:
+		for tile: Vector2i in plan.reserved_tiles:
+			_landmark_reserved_tiles[tile] = true
+			spawnable_tiles.erase(tile)
+			map.set_grass_field(tile)
+			_water_tiles.erase(tile)
+			if tile not in walkable_tiles:
+				walkable_tiles.append(tile)
+
+
+func _carve_paths_between_regions() -> void:
+	var destinations: Array[Vector2i] = []
+	for plan: VillagePlan in village_plans:
+		destinations.append(plan.bounds.position + Vector2i(
+			floori(float(plan.bounds.size.x) / 2.0),
+			floori(float(plan.bounds.size.y) / 2.0)
+		))
+	for plan: LandmarkPlan in landmark_plans:
+		destinations.append(plan.center_tile)
+	if destinations.is_empty():
+		return
+	var connected_tile: Vector2i = Vector2i(
+		floori(float(map.width) / 2.0),
+		floori(float(map.height) / 2.0)
+	)
+	_make_path_tile_walkable(connected_tile)
+	var path_rng: RandomNumberGenerator = RandomNumberGenerator.new()
+	path_rng.seed = Multihelper.mapSeed ^ 0x50415448
+	for destination: Vector2i in destinations:
+		_carve_axis_path(connected_tile, destination, path_rng.randf() < 0.5)
+		connected_tile = destination
+
+
+func _carve_axis_path(
+		from_tile: Vector2i,
+		to_tile: Vector2i,
+		horizontal_first: bool
+	) -> void:
+	var cursor: Vector2i = from_tile
+	_make_path_area_walkable(cursor)
+	if horizontal_first:
+		while cursor.x != to_tile.x:
+			cursor.x += signi(to_tile.x - cursor.x)
+			_make_path_area_walkable(cursor)
+		while cursor.y != to_tile.y:
+			cursor.y += signi(to_tile.y - cursor.y)
+			_make_path_area_walkable(cursor)
+	else:
+		while cursor.y != to_tile.y:
+			cursor.y += signi(to_tile.y - cursor.y)
+			_make_path_area_walkable(cursor)
+		while cursor.x != to_tile.x:
+			cursor.x += signi(to_tile.x - cursor.x)
+			_make_path_area_walkable(cursor)
+
+
+func _make_path_area_walkable(center_tile: Vector2i) -> void:
+	for y_offset: int in range(-path_half_width_tiles, path_half_width_tiles + 1):
+		for x_offset: int in range(-path_half_width_tiles, path_half_width_tiles + 1):
+			if absi(x_offset) + absi(y_offset) > path_half_width_tiles:
+				continue
+			_make_path_tile_walkable(center_tile + Vector2i(x_offset, y_offset))
+
+
+func _make_path_tile_walkable(tile: Vector2i) -> void:
+	if tile.x < 0 or tile.y < 0 or tile.x >= map.width or tile.y >= map.height:
+		return
+	_water_tiles.erase(tile)
+	_tree_candidate_tiles.erase(tile)
+	if tile not in walkable_tiles:
+		walkable_tiles.append(tile)
+	if not _village_reserved_tiles.has(tile) \
+			and not _landmark_reserved_tiles.has(tile) \
+			and tile not in spawnable_tiles:
+		spawnable_tiles.append(tile)
+	map.set_biome_path_field(tile)
 
 
 func _get_tree_limit(candidate_count: int) -> int:

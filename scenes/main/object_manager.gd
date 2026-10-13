@@ -6,6 +6,7 @@ class_name ObjectManager
 @export var building_manager: BuildingManager
 @export var tile_structure_assembler: TileStructureAssembler
 @export var village_manager: VillageManager
+@export var landmark_manager: LandmarkManager
 @export var teleport_network: TeleportNetwork
 
 
@@ -74,12 +75,30 @@ func clear_villages() -> void:
 		village_manager.clear_villages()
 
 
+func load_landmarks(plans: Array[LandmarkPlan]) -> void:
+	if is_instance_valid(landmark_manager):
+		landmark_manager.load_landmarks(plans)
+
+
+func clear_landmarks() -> void:
+	if is_instance_valid(landmark_manager):
+		landmark_manager.clear_landmarks()
+
+
+func get_landmark_plans() -> Array[LandmarkPlan]:
+	if not is_instance_valid(landmark_manager):
+		var empty_result: Array[LandmarkPlan] = []
+		return empty_result
+	return landmark_manager.get_plans()
+
+
 func is_tile_in_village(tile: Vector2i) -> bool:
 	return is_instance_valid(village_manager) \
 		and village_manager.is_tile_in_any_village(tile)
 
 
 func clear_all(release_tree_navigation: bool = true) -> void:
+	clear_landmarks()
 	clear_villages()
 	clear_trees(release_tree_navigation)
 	clear_breakables()

@@ -1,0 +1,72 @@
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://scenes/spawn/buildings/temporary_rock_wall.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/objects/rock2.png" id="2"]
+[ext_resource type="Script" path="res://scenes/navigation/navigation_blocker.gd" id="3"]
+
+[sub_resource type="RectangleShape2D" id="Shape"]
+size = Vector2(30, 30)
+
+[sub_resource type="SceneReplicationConfig" id="Replication"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+properties/1/path = NodePath(".:building_id")
+properties/1/spawn = true
+properties/1/replication_mode = 2
+properties/2/path = NodePath(".:builder_peer_id")
+properties/2/spawn = true
+properties/2/replication_mode = 2
+
+[sub_resource type="Animation" id="Break"]
+resource_name = "break"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:scale")
+tracks/0/keys = {"times": PackedFloat32Array(0, 0.3), "transitions": PackedFloat32Array(1, 1), "update": 0, "values": [Vector2(0.8, 0.8), Vector2(0.05, 0.05)]}
+tracks/1/type = "method"
+tracks/1/path = NodePath(".")
+tracks/1/keys = {"times": PackedFloat32Array(0.3), "transitions": PackedFloat32Array(1), "values": [{"args": [], "method": &"breakObject"}]}
+
+[sub_resource type="Animation" id="Shake"]
+resource_name = "shake"
+length = 0.2
+
+[sub_resource type="Animation" id="Spawn"]
+resource_name = "spawn"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:scale")
+tracks/0/keys = {"times": PackedFloat32Array(0, 0.2), "transitions": PackedFloat32Array(1, 1), "update": 0, "values": [Vector2(0.05, 0.05), Vector2(0.8, 0.8)]}
+
+[sub_resource type="AnimationLibrary" id="Library"]
+_data = {&"break": SubResource("Break"), &"shake": SubResource("Shake"), &"spawn": SubResource("Spawn")}
+
+[node name="GolemRockWall" type="StaticBody2D" groups=["damageable", "sensor_object"]]
+collision_layer = 3
+script = ExtResource("1")
+building_id = &"golem_rock_wall"
+
+[node name="Sprite" type="Sprite2D" parent="."]
+scale = Vector2(0.8, 0.8)
+texture = ExtResource("2")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("Shape")
+
+[node name="NavigationBlocker" type="Node" parent="."]
+script = ExtResource("3")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("Replication")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries/ = SubResource("Library")
+autoplay = &"spawn"
+
+[node name="hitParticle" type="CPUParticles2D" parent="."]
+emitting = false
+one_shot = true
+amount = 8
+lifetime = 0.35
+

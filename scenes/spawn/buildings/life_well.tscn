@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/spawn/buildings/healing_well.tscn" id="1_base"]
+
+[node name="LifeWell" instance=ExtResource("1_base")]
+building_id = &"life_well"
+effect_radius_tiles = 4.5
+healing_per_tick = 10.0
+mana_per_tick = 8.0
+
+[node name="Visuals" parent="." index="0"]
+self_modulate = Color(0.58, 1, 0.7, 1)
+
+[editable path="."]

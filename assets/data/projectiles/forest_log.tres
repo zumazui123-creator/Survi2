@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ProjectileDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scenes/gameplay/definitions/projectile_definition.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/items/wood.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+projectile_id = &"forestLog"
+texture = ExtResource("2")
+max_hits = 1
+speed = 54.0
+lifetime = 2.5
+curve_speed = true
+horizontal_frames = 1

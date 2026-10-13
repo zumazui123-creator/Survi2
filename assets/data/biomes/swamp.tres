@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="BiomeDefinition" load_steps=2 format=3]
+[ext_resource type="Script" path="res://scenes/map/biomes/biome_definition.gd" id="1_definition"]
+[resource]
+script = ExtResource("1_definition")
+biome_id = &"swamp"
+display_name = "Sumpf"
+description = "Feuchtes Gelände mit giftigen Pflanzen und seltenen Kräutern."
+map_color = Color(0.2, 0.42, 0.16, 1)
+ground_atlas_coords = Array[Vector2i]([Vector2i(16, 0), Vector2i(17, 0)])
+path_atlas_coords = Array[Vector2i]([Vector2i(4, 0), Vector2i(5, 0)])
+tree_density = 0.2
+tree_object_ids = PackedStringArray("tree0", "tree3")
+resource_object_weights = {"bush1": 3.0, "magicPlant1": 2.0, "magicTree1": 0.15}
+movement_speed_multiplier = 0.72
+damage_per_second = 0.2
+hazard_description = "Morast verlangsamt und giftige Dämpfe verursachen langsam Schaden."

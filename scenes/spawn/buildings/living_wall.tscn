@@ -1,0 +1,22 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/spawn/buildings/building.tscn" id="1_base"]
+[ext_resource type="Script" path="res://scenes/spawn/buildings/living_wall.gd" id="2_script"]
+[ext_resource type="Texture2D" path="res://assets/objects/magicTree1.png" id="3_tree"]
+
+[node name="LivingWall" instance=ExtResource("1_base")]
+script = ExtResource("2_script")
+building_id = &"living_wall"
+
+[node name="Sprite" parent="." index="0"]
+scale = Vector2(0.72, 0.72)
+texture = ExtResource("3_tree")
+self_modulate = Color(0.48, 0.9, 0.36, 1)
+
+[node name="RegenerationTimer" type="Timer" parent="."]
+wait_time = 2.0
+autostart = true
+
+[connection signal="timeout" from="RegenerationTimer" to="." method="_on_regeneration_timer_timeout"]
+
+[editable path="."]

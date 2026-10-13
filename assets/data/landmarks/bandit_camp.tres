@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="LandmarkDefinition" load_steps=2 format=3]
+[ext_resource type="Script" path="res://scenes/map/landmarks/landmark_definition.gd" id="1"]
+[resource]
+script = ExtResource("1")
+landmark_id = &"bandit_camp"
+display_name = "Banditenlager"
+description = "Banditen überfallen Händler auf alten Waldwegen. In ihrem Lager liegen gestohlene Waren und Hinweise auf verborgene Schätze."
+danger_description = "Eine bewaffnete Bande bewacht das Lager und verfolgt Eindringlinge."
+reward_description = "Seltene Ausrüstung, Gold und Schatzkarten"
+size_tiles = Vector2i(9, 9)
+spacing_tiles = 7
+category = 0
+minimum_instances = 1
+maximum_instances = 2
+generation_priority = 45
+map_color = Color(0.75, 0.18, 0.1, 1)
+loot = {"gold": 6, "magicSword1": 1, "treasureMap": 1}
+enemy_spawns = {"bandit": 4}
+structure_style = &"camp"
+allowed_biomes = Array[StringName]([&"forest"])
+biome_border_margin_tiles = 1
+

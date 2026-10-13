@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="BuildingDefinition" load_steps=3 format=3]
+[ext_resource type="Script" path="res://scenes/gameplay/definitions/building_definition.gd" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/spawn/buildings/living_wall.tscn" id="2"]
+[resource]
+script = ExtResource("1")
+building_id = &"living_wall"
+display_name = "Lebende Mauer"
+description = "Eine starke Pflanzenmauer, die sich langsam selbst regeneriert."
+scene = ExtResource("2")
+max_hp = 280.0
+required_tool = &"axe"
+drops = {"forestCore": {"min": 0, "max": 1}, "magicWood": {"min": 2, "max": 4}}
+player_placeable = false
+navigation_footprint = Array[Vector2i]([Vector2i(0, 0)])

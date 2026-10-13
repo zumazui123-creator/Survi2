@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="BuildingDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scenes/gameplay/definitions/building_definition.gd" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/spawn/buildings/temporary_rock_wall.tscn" id="2"]
+
+[resource]
+script = ExtResource("1")
+building_id = &"golem_rock_wall"
+display_name = "Golem-Felswand"
+description = "Eine temporäre Felswand des Steingolems."
+scene = ExtResource("2")
+max_hp = 120.0
+required_tool = &"pickaxe"
+drops = {}
+player_placeable = false
+navigation_footprint = Array[Vector2i]([Vector2i(0, 0)])
+

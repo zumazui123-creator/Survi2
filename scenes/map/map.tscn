@@ -41,6 +41,49 @@
 [ext_resource type="Resource" path="res://assets/data/buildings/healing_well.tres" id="40_well_definition"]
 [ext_resource type="Resource" path="res://assets/data/buildings/healing_well_recipe.tres" id="41_well_recipe"]
 [ext_resource type="Script" path="res://scenes/main/teleport_network.gd" id="42_teleport_network"]
+[ext_resource type="Script" path="res://scenes/main/landmark_manager.gd" id="43_landmark_manager"]
+[ext_resource type="Script" path="res://scenes/map/landmarks/landmark_definition.gd" id="44_landmark_definition"]
+[ext_resource type="Resource" path="res://assets/data/landmarks/golem_temple.tres" id="45_golem_temple"]
+[ext_resource type="Resource" path="res://assets/data/landmarks/ruins.tres" id="46_ruins"]
+[ext_resource type="Resource" path="res://assets/data/landmarks/cave.tres" id="47_cave"]
+[ext_resource type="Resource" path="res://assets/data/landmarks/graveyard.tres" id="48_graveyard"]
+[ext_resource type="Resource" path="res://assets/data/landmarks/crystal_field.tres" id="49_crystal_field"]
+[ext_resource type="Resource" path="res://assets/data/landmarks/bandit_camp.tres" id="50_bandit_camp"]
+[ext_resource type="Resource" path="res://assets/data/landmarks/merchant_camp.tres" id="51_merchant_camp"]
+[ext_resource type="Resource" path="res://assets/data/landmarks/bridge.tres" id="52_bridge"]
+[ext_resource type="Resource" path="res://assets/data/landmarks/meteor_crater.tres" id="53_meteor_crater"]
+[ext_resource type="Resource" path="res://assets/data/landmarks/destroyed_village.tres" id="54_destroyed_village"]
+[ext_resource type="Resource" path="res://assets/data/buildings/golem_rock_wall.tres" id="55_golem_wall"]
+[ext_resource type="Resource" path="res://assets/data/buildings/golem_guardian.tres" id="56_golem_guardian"]
+[ext_resource type="Resource" path="res://assets/data/buildings/life_well.tres" id="57_life_well"]
+[ext_resource type="Resource" path="res://assets/data/buildings/earthquake_cannon.tres" id="58_earthquake_cannon"]
+[ext_resource type="Resource" path="res://assets/data/buildings/golem_guardian_recipe.tres" id="59_golem_guardian_recipe"]
+[ext_resource type="Resource" path="res://assets/data/buildings/life_well_recipe.tres" id="60_life_well_recipe"]
+[ext_resource type="Resource" path="res://assets/data/buildings/earthquake_cannon_recipe.tres" id="61_earthquake_cannon_recipe"]
+[ext_resource type="Resource" path="res://assets/data/landmarks/forest_heart.tres" id="62_forest_heart"]
+[ext_resource type="Resource" path="res://assets/data/buildings/nature_kitchen.tres" id="63_nature_kitchen"]
+[ext_resource type="Resource" path="res://assets/data/buildings/forest_eye.tres" id="64_forest_eye"]
+[ext_resource type="Resource" path="res://assets/data/buildings/world_tree.tres" id="65_world_tree"]
+[ext_resource type="Resource" path="res://assets/data/buildings/vine_catapult.tres" id="66_vine_catapult"]
+[ext_resource type="Resource" path="res://assets/data/buildings/living_wall.tres" id="67_living_wall"]
+[ext_resource type="Resource" path="res://assets/data/buildings/nature_kitchen_recipe.tres" id="68_nature_kitchen_recipe"]
+[ext_resource type="Resource" path="res://assets/data/buildings/forest_eye_recipe.tres" id="69_forest_eye_recipe"]
+[ext_resource type="Resource" path="res://assets/data/buildings/world_tree_recipe.tres" id="70_world_tree_recipe"]
+[ext_resource type="Resource" path="res://assets/data/buildings/vine_catapult_recipe.tres" id="71_vine_catapult_recipe"]
+[ext_resource type="Resource" path="res://assets/data/buildings/living_wall_recipe.tres" id="72_living_wall_recipe"]
+[ext_resource type="Script" path="res://scenes/map/biomes/biome_definition.gd" id="73_biome_definition"]
+[ext_resource type="Resource" path="res://assets/data/biomes/forest.tres" id="74_forest_biome"]
+[ext_resource type="Resource" path="res://assets/data/biomes/mountain.tres" id="75_mountain_biome"]
+[ext_resource type="Resource" path="res://assets/data/biomes/swamp.tres" id="76_swamp_biome"]
+[ext_resource type="Resource" path="res://assets/data/biomes/desert.tres" id="77_desert_biome"]
+[ext_resource type="Resource" path="res://assets/data/biomes/snow.tres" id="78_snow_biome"]
+[ext_resource type="Resource" path="res://assets/data/landmarks/ancient_tree.tres" id="79_ancient_tree"]
+[ext_resource type="Resource" path="res://assets/data/landmarks/abandoned_mine.tres" id="80_abandoned_mine"]
+[ext_resource type="Resource" path="res://assets/data/landmarks/abandoned_tower.tres" id="81_abandoned_tower"]
+[ext_resource type="Resource" path="res://assets/data/landmarks/shipwreck.tres" id="82_shipwreck"]
+[ext_resource type="Resource" path="res://assets/data/landmarks/desert_temple.tres" id="83_desert_temple"]
+[ext_resource type="Resource" path="res://assets/data/landmarks/magical_crater.tres" id="84_magical_crater"]
+[ext_resource type="Resource" path="res://assets/data/landmarks/frost_boss_arena.tres" id="85_frost_arena"]
 
 [node name="Map" type="Control" unique_id=1853554641]
 layout_mode = 3
@@ -51,6 +94,7 @@ script = ExtResource("1_gggpt")
 
 [node name="TileMap" type="TileMapLayer" parent="." unique_id=1940010477]
 visible = false
+z_index = -10
 tile_set = ExtResource("2_c3hbg")
 
 [node name="LabyrinthGenerator" type="Node" parent="." unique_id=16864905]
@@ -59,14 +103,17 @@ script = ExtResource("3_qpycp")
 [node name="MainLevelGenerator" type="Node" parent="." unique_id=784512027]
 script = ExtResource("5_qci3n")
 village_definition = ExtResource("14_village_definition")
+landmark_definitions = Array[ExtResource("44_landmark_definition")]([ExtResource("79_ancient_tree"), ExtResource("50_bandit_camp"), ExtResource("80_abandoned_mine"), ExtResource("81_abandoned_tower"), ExtResource("48_graveyard"), ExtResource("82_shipwreck"), ExtResource("83_desert_temple"), ExtResource("54_destroyed_village"), ExtResource("84_magical_crater"), ExtResource("85_frost_arena")])
+biome_definitions = Array[ExtResource("73_biome_definition")]([ExtResource("74_forest_biome"), ExtResource("75_mountain_biome"), ExtResource("76_swamp_biome"), ExtResource("77_desert_biome"), ExtResource("78_snow_biome")])
 
-[node name="ObjectManager" type="Node2D" parent="." node_paths=PackedStringArray("tree_manager", "breakable_manager", "building_manager", "tile_structure_assembler", "village_manager", "teleport_network") groups=["object_manager"]]
+[node name="ObjectManager" type="Node2D" parent="." node_paths=PackedStringArray("tree_manager", "breakable_manager", "building_manager", "tile_structure_assembler", "village_manager", "landmark_manager", "teleport_network") groups=["object_manager"]]
 script = ExtResource("7_object_manager")
 tree_manager = NodePath("TreeManager")
 breakable_manager = NodePath("BreakableManager")
 building_manager = NodePath("BuildingManager")
 tile_structure_assembler = NodePath("TileStructureAssembler")
 village_manager = NodePath("VillageManager")
+landmark_manager = NodePath("LandmarkManager")
 teleport_network = NodePath("TeleportNetwork")
 
 [node name="TreeManager" type="Node2D" parent="ObjectManager" unique_id=1255616609 groups=["tree_manager"]]
@@ -83,13 +130,13 @@ world_map = NodePath("../..")
 [node name="BuildingManager" type="Node2D" parent="ObjectManager" node_paths=PackedStringArray("world_map") groups=["building_manager", "buildings"]]
 script = ExtResource("9_building_manager")
 world_map = NodePath("../..")
-building_definitions = Array[ExtResource("12_building_definition")]([ExtResource("10_wall_definition"), ExtResource("11_tower_definition"), ExtResource("17_campfire_definition"), ExtResource("18_cannon_definition"), ExtResource("24_magic_cannon_definition"), ExtResource("25_jump_pad_definition"), ExtResource("28_pit_definition"), ExtResource("30_shield_definition"), ExtResource("32_cooking_definition"), ExtResource("34_teleport_definition"), ExtResource("36_fire_definition"), ExtResource("38_sensor_definition"), ExtResource("40_well_definition")])
+building_definitions = Array[ExtResource("12_building_definition")]([ExtResource("10_wall_definition"), ExtResource("11_tower_definition"), ExtResource("17_campfire_definition"), ExtResource("18_cannon_definition"), ExtResource("24_magic_cannon_definition"), ExtResource("25_jump_pad_definition"), ExtResource("28_pit_definition"), ExtResource("30_shield_definition"), ExtResource("32_cooking_definition"), ExtResource("34_teleport_definition"), ExtResource("36_fire_definition"), ExtResource("38_sensor_definition"), ExtResource("40_well_definition"), ExtResource("55_golem_wall"), ExtResource("56_golem_guardian"), ExtResource("57_life_well"), ExtResource("58_earthquake_cannon"), ExtResource("63_nature_kitchen"), ExtResource("64_forest_eye"), ExtResource("65_world_tree"), ExtResource("66_vine_catapult"), ExtResource("67_living_wall")])
 
 [node name="TileStructureAssembler" type="Node" parent="ObjectManager" node_paths=PackedStringArray("world_map", "building_manager") groups=["tile_structure_assembler"]]
 script = ExtResource("19_structure_assembler")
 world_map = NodePath("../..")
 building_manager = NodePath("../BuildingManager")
-recipes = Array[ExtResource("20_structure_recipe")]([ExtResource("21_campfire_recipe"), ExtResource("22_cannon_wall_recipe"), ExtResource("23_cannon_campfire_recipe"), ExtResource("26_magic_cannon_recipe"), ExtResource("27_jump_pad_recipe"), ExtResource("29_pit_recipe"), ExtResource("31_shield_recipe"), ExtResource("33_cooking_recipe"), ExtResource("35_teleport_recipe"), ExtResource("37_fire_recipe"), ExtResource("39_sensor_recipe"), ExtResource("41_well_recipe")])
+recipes = Array[ExtResource("20_structure_recipe")]([ExtResource("21_campfire_recipe"), ExtResource("22_cannon_wall_recipe"), ExtResource("23_cannon_campfire_recipe"), ExtResource("26_magic_cannon_recipe"), ExtResource("27_jump_pad_recipe"), ExtResource("29_pit_recipe"), ExtResource("31_shield_recipe"), ExtResource("33_cooking_recipe"), ExtResource("35_teleport_recipe"), ExtResource("37_fire_recipe"), ExtResource("39_sensor_recipe"), ExtResource("41_well_recipe"), ExtResource("59_golem_guardian_recipe"), ExtResource("60_life_well_recipe"), ExtResource("61_earthquake_cannon_recipe"), ExtResource("68_nature_kitchen_recipe"), ExtResource("69_forest_eye_recipe"), ExtResource("70_world_tree_recipe"), ExtResource("71_vine_catapult_recipe"), ExtResource("72_living_wall_recipe")])
 
 [node name="TeleportNetwork" type="Node" parent="ObjectManager" groups=["teleport_network"]]
 script = ExtResource("42_teleport_network")
@@ -100,3 +147,9 @@ world_map = NodePath("../..")
 building_manager = NodePath("../BuildingManager")
 resident_scene = ExtResource("15_village_resident")
 pig_scene = ExtResource("16_village_pig")
+
+[node name="LandmarkManager" type="Node2D" parent="ObjectManager" node_paths=PackedStringArray("world_map", "building_manager") groups=["landmark_manager"]]
+script = ExtResource("43_landmark_manager")
+world_map = NodePath("../..")
+building_manager = NodePath("../BuildingManager")
+definitions = Array[ExtResource("44_landmark_definition")]([ExtResource("79_ancient_tree"), ExtResource("50_bandit_camp"), ExtResource("80_abandoned_mine"), ExtResource("81_abandoned_tower"), ExtResource("48_graveyard"), ExtResource("82_shipwreck"), ExtResource("83_desert_temple"), ExtResource("54_destroyed_village"), ExtResource("84_magical_crater"), ExtResource("85_frost_arena")])

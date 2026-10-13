@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="LandmarkDefinition" load_steps=2 format=3]
+[ext_resource type="Script" path="res://scenes/map/landmarks/landmark_definition.gd" id="1"]
+[resource]
+script = ExtResource("1")
+landmark_id = &"graveyard"
+display_name = "Versunkener Friedhof"
+description = "Ein versunkener Friedhof liegt im giftigen Nebel. Verwitterte Grabsteine erzählen von einer untergegangenen Siedlung."
+danger_description = "Nachts erscheinen Geister und Untote zwischen den Gräbern."
+reward_description = "Seltene Tränke und Geisteressenzen"
+size_tiles = Vector2i(9, 9)
+spacing_tiles = 7
+category = 0
+minimum_instances = 1
+maximum_instances = 2
+generation_priority = 50
+map_color = Color(0.34, 0.28, 0.4, 1)
+loot = {"ghostEssence": 3, "magicHerb": 2, "spiritPotion": 2}
+enemy_spawns = {"swampGhost": 2, "zombie": 2}
+structure_style = &"graveyard"
+nocturnal_enemy_count = 3
+allowed_biomes = Array[StringName]([&"swamp"])
+biome_border_margin_tiles = 1
+

@@ -15,6 +15,8 @@
 [ext_resource type="Script" uid="uid://bysoe6stvcca4" path="res://scenes/main/NavHelper.gd" id="10_40gnc"]
 [ext_resource type="PackedScene" uid="uid://xisgglhsre7n" path="res://scenes/main/HUD/EndUI.tscn" id="13_raeie"]
 [ext_resource type="Script" uid="uid://c4ai745s7sera" path="res://scenes/main/world_entity_spawner.gd" id="14_spawner"]
+[ext_resource type="Script" path="res://scenes/ui/minimap/map_exploration_tracker.gd" id="15_exploration"]
+[ext_resource type="Script" path="res://scenes/ui/minimap/discovery_banner.gd" id="16_discovery_banner"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_dr53p"]
 properties/0/path = NodePath("dayNight:time")
@@ -90,10 +92,39 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 0
 
+[node name="MapExplorationTracker" type="Node" parent="HUD" groups=["map_exploration_tracker"]]
+script = ExtResource("15_exploration")
+
 [node name="Minimap" parent="HUD" unique_id=1001358332 instance=ExtResource("6_xel07")]
 offset_top = -230.0
 offset_right = 200.0
 offset_bottom = -30.0
+
+[node name="DiscoveryBanner" type="PanelContainer" parent="HUD"]
+visible = false
+z_index = 2000
+custom_minimum_size = Vector2(420, 68)
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -210.0
+offset_top = 24.0
+offset_right = 210.0
+offset_bottom = 92.0
+grow_horizontal = 2
+mouse_filter = 2
+script = ExtResource("16_discovery_banner")
+
+[node name="DiscoveryText" type="Label" parent="HUD/DiscoveryBanner"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Neuer Ort entdeckt"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="DisplayTimer" type="Timer" parent="HUD/DiscoveryBanner"]
+one_shot = true
 
 [node name="SpawnPlayer" parent="HUD" unique_id=161453860 instance=ExtResource("2_ajc02")]
 z_index = 1000
@@ -106,11 +137,11 @@ _spawnable_scenes = PackedStringArray("uid://bmhxilkffhqa5")
 spawn_path = NodePath("../Players")
 
 [node name="AnimalSpawner" type="MultiplayerSpawner" parent="." unique_id=2005880034]
-_spawnable_scenes = PackedStringArray("uid://4yb25tbuu2at", "res://scenes/village/village_pig.tscn")
+_spawnable_scenes = PackedStringArray("uid://4yb25tbuu2at", "res://scenes/village/village_pig.tscn", "res://scenes/npc/wandering_merchant.tscn")
 spawn_path = NodePath("../Animals")
 
 [node name="EnemySpawner" type="MultiplayerSpawner" parent="." unique_id=1050839693]
-_spawnable_scenes = PackedStringArray("uid://d3bgdspo4bhr4", "res://scenes/village/village_resident.tscn")
+_spawnable_scenes = PackedStringArray("uid://d3bgdspo4bhr4", "res://scenes/village/village_resident.tscn", "res://scenes/boss/stone_golem.tscn", "res://scenes/boss/forest_colossus.tscn", "res://scenes/map/landmarks/landmark_guardian.tscn")
 spawn_path = NodePath("../Enemies")
 
 [node name="ProjectileSpawner" type="MultiplayerSpawner" parent="." unique_id=1312236852]
@@ -122,8 +153,12 @@ _spawnable_scenes = PackedStringArray("uid://dagsu16arm3mv")
 spawn_path = NodePath("../Map/ObjectManager/BreakableManager")
 
 [node name="BuildingSpawner" type="MultiplayerSpawner" parent="." unique_id=1419203123]
-_spawnable_scenes = PackedStringArray("uid://c5vhr2saulowe", "res://scenes/spawn/buildings/defense_tower.tscn", "res://scenes/spawn/buildings/campfire.tscn", "res://scenes/spawn/buildings/cannon.tscn", "res://scenes/spawn/buildings/magic_cannon.tscn", "res://scenes/spawn/buildings/jump_pad.tscn", "res://scenes/spawn/buildings/pit_trap.tscn", "res://scenes/spawn/buildings/shield_wall.tscn", "res://scenes/spawn/buildings/cooking_station.tscn", "res://scenes/spawn/buildings/teleport_pad.tscn", "res://scenes/spawn/buildings/fire_cannon.tscn", "res://scenes/spawn/buildings/sensor_tower.tscn", "res://scenes/spawn/buildings/healing_well.tscn")
+_spawnable_scenes = PackedStringArray("uid://c5vhr2saulowe", "res://scenes/spawn/buildings/defense_tower.tscn", "res://scenes/spawn/buildings/campfire.tscn", "res://scenes/spawn/buildings/cannon.tscn", "res://scenes/spawn/buildings/magic_cannon.tscn", "res://scenes/spawn/buildings/jump_pad.tscn", "res://scenes/spawn/buildings/pit_trap.tscn", "res://scenes/spawn/buildings/shield_wall.tscn", "res://scenes/spawn/buildings/cooking_station.tscn", "res://scenes/spawn/buildings/teleport_pad.tscn", "res://scenes/spawn/buildings/fire_cannon.tscn", "res://scenes/spawn/buildings/sensor_tower.tscn", "res://scenes/spawn/buildings/healing_well.tscn", "res://scenes/spawn/buildings/temporary_rock_wall.tscn", "res://scenes/spawn/buildings/golem_guardian.tscn", "res://scenes/spawn/buildings/life_well.tscn", "res://scenes/spawn/buildings/earthquake_cannon.tscn", "res://scenes/spawn/buildings/nature_kitchen.tscn", "res://scenes/spawn/buildings/forest_eye.tscn", "res://scenes/spawn/buildings/world_tree.tscn", "res://scenes/spawn/buildings/vine_catapult.tscn", "res://scenes/spawn/buildings/living_wall.tscn")
 spawn_path = NodePath("../Map/ObjectManager/BuildingManager")
+
+[node name="LandmarkSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("res://scenes/map/landmarks/world_landmark.tscn")
+spawn_path = NodePath("../Map/ObjectManager/LandmarkManager")
 
 [node name="PickupSpawner" type="MultiplayerSpawner" parent="." unique_id=406642788]
 _spawnable_scenes = PackedStringArray("uid://bfq4kkw8jhqay")

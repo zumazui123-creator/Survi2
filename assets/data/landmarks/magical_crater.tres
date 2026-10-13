@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="LandmarkDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/map/landmarks/landmark_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+landmark_id = &"magical_crater"
+display_name = "Magischer Krater"
+description = "Ein mysteriöser Himmelskörper ist im ewigen Eis eingeschlagen. Seine Energie lässt das Eis in unnatürlichen Farben leuchten."
+danger_description = "Die fremde Energie verändert die Umgebung und erschafft aggressive Eiskreaturen."
+reward_description = "Frostkristalle und magische Erze"
+size_tiles = Vector2i(13, 13)
+edge_margin_tiles = 10
+spacing_tiles = 9
+category = 1
+minimum_instances = 1
+maximum_instances = 1
+generation_priority = 86
+map_color = Color(0.32, 0.78, 1, 1)
+loot = {"iceCrystal": 7, "magicStone": 4}
+enemy_spawns = {"iceCreature": 4}
+structure_style = &"magical_crater"
+allowed_biomes = Array[StringName]([&"snow"])
+biome_border_margin_tiles = 2

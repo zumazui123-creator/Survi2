@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="StructureRecipe" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/gameplay/definitions/structure_recipe.gd" id="1_recipe"]
+
+[resource]
+script = ExtResource("1_recipe")
+recipe_id = &"earthquake_cannon_from_magic_cannon"
+display_name = "Erdbebenkanone"
+description = "Eine magische Kanone wird mit einem Golemkern zur Erdbebenkanone."
+base_building_ids = Array[StringName]([&"magic_cannon"])
+ingredients = {"golemCore": 1}
+result_building_id = &"earthquake_cannon"
+priority = 62

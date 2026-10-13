@@ -24,6 +24,7 @@
 [ext_resource type="Script" uid="uid://bw6ru35840sqx" path="res://scenes/character/components/ai/sensor_debug_view.gd" id="31_sensor_debug"]
 [ext_resource type="Script" uid="uid://bcupkjwkllv3s" path="res://scenes/character/components/player_combo_controller.gd" id="32_combo_controller"]
 [ext_resource type="Script" uid="uid://ces31nnjp5aon" path="res://scenes/character/components/player_combo_effects.gd" id="33_combo_effects"]
+[ext_resource type="Script" path="res://scenes/character/components/player_biome_effects.gd" id="33_biome_effects"]
 [ext_resource type="Resource" path="res://assets/data/combos/sound_wave.tres" id="34_sound_wave"]
 [ext_resource type="Resource" uid="uid://ef7wqwkhjncb" path="res://assets/data/combos/whirlwind.tres" id="35_whirlwind"]
 [ext_resource type="Script" uid="uid://t135nhoiotb6" path="res://scenes/gameplay/definitions/combo_definition.gd" id="36_combo_definition"]
@@ -517,7 +518,29 @@ script = ExtResource("28_survival")
 player = NodePath("../..")
 stats = NodePath("../PlayerStats")
 
+[node name="PlayerBiomeEffects" type="Node" parent="Gameplay" node_paths=PackedStringArray("player", "stats", "movement")]
+script = ExtResource("33_biome_effects")
+player = NodePath("../..")
+stats = NodePath("../PlayerStats")
+movement = NodePath("../PlayerMovement")
+
 [node name="WorldUI" type="Node2D" parent="." unique_id=262582477]
+
+[node name="InteractiveInputLabel" type="Label" parent="WorldUI"]
+unique_name_in_owner = true
+visible = false
+z_index = 200
+offset_left = -180.0
+offset_top = -78.0
+offset_right = 180.0
+offset_bottom = -52.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 14
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="PlayerStatus" type="Control" parent="WorldUI" unique_id=381426310 node_paths=PackedStringArray("hp_bar", "mana_bar", "exp_bar", "hydration_bar", "food_bar", "name_label", "player", "stats")]
 unique_name_in_owner = true

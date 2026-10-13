@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="LandmarkDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/map/landmarks/landmark_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+landmark_id = &"abandoned_tower"
+display_name = "Verlassener Turm"
+description = "Ein alter Wachturm überblickt das Tal. Im Inneren liegen die Aufzeichnungen eines verschwundenen Magiers."
+danger_description = "Magische Fallen und arkane Wächter schützen die oberen Kammern."
+reward_description = "Magische Artefakte und seltene Baupläne"
+size_tiles = Vector2i(13, 13)
+edge_margin_tiles = 10
+spacing_tiles = 10
+category = 1
+minimum_instances = 1
+maximum_instances = 1
+generation_priority = 85
+map_color = Color(0.54, 0.32, 0.76, 1)
+loot = {"magicArtifact": 2, "rareBlueprint": 1}
+enemy_spawns = {"arcaneSentinel": 3}
+structure_style = &"tower"
+hazard_building_id = &"pit_trap"
+hazard_offsets = Array[Vector2i]([Vector2i(-2, 0), Vector2i(2, 0), Vector2i(0, 2)])
+allowed_biomes = Array[StringName]([&"mountain"])
+biome_border_margin_tiles = 2

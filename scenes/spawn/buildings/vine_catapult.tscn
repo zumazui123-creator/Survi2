@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/spawn/buildings/jump_pad.tscn" id="1_base"]
+
+[node name="VineCatapult" instance=ExtResource("1_base")]
+building_id = &"vine_catapult"
+maximum_launch_tiles = 15
+launch_duration = 0.32
+
+[node name="Visuals" parent="." index="0"]
+scale = Vector2(1.12, 1.12)
+self_modulate = Color(0.42, 1, 0.34, 1)
+
+[editable path="."]

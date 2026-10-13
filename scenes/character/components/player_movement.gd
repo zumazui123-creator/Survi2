@@ -30,6 +30,7 @@ var path_line : Line2D
 var _base_move_speed_factor: float = default_move_speed_factor
 var _speed_boost_multiplier: float = 1.0
 var _code_speed_multiplier: float = 1.0
+var _environment_speed_multiplier: float = 1.0
 var control_mode: int = ControlMode.MANUAL
 var _grid_position_initialized: bool = false
 var _step_start_global_position: Vector2 = Vector2.ZERO
@@ -144,6 +145,7 @@ func launch_to_world_position(target_position: Vector2, duration: float) -> void
 func _start_tile_step(tile_direction: Vector2i) -> bool:
 	if _external_motion_active \
 			or is_moving() \
+			or int(player.get_meta(&"movement_locked_until", 0)) > Time.get_ticks_msec() \
 			or abs(tile_direction.x) + abs(tile_direction.y) != 1:
 		return false
 	if not _grid_position_initialized and not synchronize_to_player_position(true):
@@ -244,6 +246,14 @@ func reset_code_speed_bonus():
 	_update_move_speed()
 	print("Code Speed Bonus reset: ", move_speed_factor)
 
+
+func set_environment_speed_multiplier(multiplier: float) -> void:
+	var normalized_multiplier: float = clampf(multiplier, 0.1, 2.0)
+	if is_equal_approx(_environment_speed_multiplier, normalized_multiplier):
+		return
+	_environment_speed_multiplier = normalized_multiplier
+	_update_move_speed()
+
 func acquire_control(requested_mode: int) -> bool:
 	if requested_mode == ControlMode.MANUAL:
 		return control_mode == ControlMode.MANUAL
@@ -272,7 +282,10 @@ func set_code_input_active(value: bool) -> bool:
 	return true
 
 func _update_move_speed() -> void:
-	move_speed_factor = _base_move_speed_factor * _speed_boost_multiplier * _code_speed_multiplier
+	move_speed_factor = _base_move_speed_factor \
+		* _speed_boost_multiplier \
+		* _code_speed_multiplier \
+		* _environment_speed_multiplier
 	speed_changed.emit(move_speed_factor)
 
 # GODOT Server

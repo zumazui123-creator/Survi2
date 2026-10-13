@@ -53,63 +53,103 @@ static func get_examples(locale: String = "de") -> Array[Dictionary]:
 		},
 		{
 			"name": "Baurezept: Lagerfeuer",
-			"code": "baue mauer links\ndroppe item 1 links\nsage Lagerfeuer gebaut",
+			"code": "baue mauer links\ndroppe item 1 links # torch\nsage Lagerfeuer gebaut",
 			"description": "Baut links eine Mauer und legt eine Fackel aus Slot 1 auf dasselbe Tile. Daraus entsteht automatisch ein Lagerfeuer.",
 		},
 		{
 			"name": "Baurezept: Kanone",
-			"code": "baue mauer links\ndroppe item 3 links\ndroppe item 2 links\ndroppe item 1 links\nsage Kanone gebaut",
+			"code": "baue mauer links\ndroppe item 3 links # coal\ndroppe item 2 links # iron\ndroppe item 1 links # torch\nsage Kanone gebaut",
 			"description": "Lege Fackel in Slot 1, Eisen in Slot 2 und Kohle in Slot 3. Durch die rückwärts geleerten Slots landet die Fackel zuletzt auf der Mauer und das vollständige Rezept erzeugt direkt eine Kanone.",
 		},
 		{
 			"name": "Upgrade: Lagerfeuer zu Kanone",
-			"code": "baue mauer links\ndroppe item 3 links\ndroppe item 2 links\ndroppe item 1 links\nsage Lagerfeuer aufgerüstet",
+			"code": "baue mauer links\ndroppe item 3 links # torch\ndroppe item 2 links # coal\ndroppe item 1 links # iron\nsage Lagerfeuer aufgerüstet",
 			"description": "Lege Eisen in Slot 1, Kohle in Slot 2 und Fackel in Slot 3. Die Fackel erzeugt zuerst das Lagerfeuer; Kohle und Eisen rüsten es danach zur Kanone auf.",
 		},
 		{
 			"name": "Upgrade: Magiekanone",
-			"code": "baue mauer links\ndroppe item 3 links\ndroppe item 2 links\ndroppe item 1 links\ndroppe item 1 links\nsage Magiekanone bereit",
+			"code": "baue mauer links\ndroppe item 3 links # coal\ndroppe item 2 links # iron\ndroppe item 1 links # torch\ndroppe item 1 links # magicStone\nsage Magiekanone bereit",
 			"description": "Lege Fackel in Slot 1, Eisen in Slot 2, Kohle in Slot 3 und einen magischen Stein in Slot 4. Die ersten drei Drops bauen die Kanone; der danach auf Slot 1 gerückte magische Stein verbessert sie zur Magiekanone.",
 		},
 		{
 			"name": "Baurezept: Sprung-Tile",
-			"code": "baue mauer links\ndroppe item 2 links\ndroppe item 1 links\nlinks\nsage Abflug",
+			"code": "baue mauer links\ndroppe item 2 links # sap\ndroppe item 1 links # magicWood\nlinks\nsage Abflug",
 			"description": "Lege magisches Holz in Slot 1 und Harz in Slot 2. Beide Items verwandeln die Mauer in ein Sprung-Tile; beim Betreten schleudert es die Figur in Blickrichtung.",
 		},
 		{
 			"name": "Baurezept: Fallgrube",
-			"code": "baue mauer links\ndroppe item 2 links\ndroppe item 1 links\nsage Fallgrube bereit",
+			"code": "baue mauer links\ndroppe item 2 links # magicWood\ndroppe item 1 links # spear1\nsage Fallgrube bereit",
 			"description": "Lege Speer in Slot 1 und magisches Holz in Slot 2. Die Fallgrube verletzt Spieler, Tiere und Gegner beim Betreten, bleibt aber begehbar.",
 		},
 		{
 			"name": "Baurezept: Schildmauer",
-			"code": "baue mauer links\ndroppe item 2 links\ndroppe item 1 links\nsage Schild aktiv",
+			"code": "baue mauer links\ndroppe item 2 links # magicStone\ndroppe item 1 links # iron\nsage Schild aktiv",
 			"description": "Lege Eisen in Slot 1 und magischen Stein in Slot 2. Die Schildmauer halbiert Schaden an direkt benachbarten Gebäuden.",
 		},
 		{
 			"name": "Upgrade: Kochstelle",
-			"code": "baue mauer links\ndroppe item 1 links\ndroppe item 1 links\nsage Essen wird gekocht",
+			"code": "baue mauer links\ndroppe item 1 links # torch\ndroppe item 1 links # food\nsage Essen wird gekocht",
 			"description": "Lege Fackel in Slot 1 und Nahrung in Slot 2. Der erste Drop baut das Lagerfeuer; durch das Nachrücken liegt Nahrung danach in Slot 1 und baut die Kochstelle. Weitere Nahrung wird zu gekochter Nahrung.",
 		},
 		{
 			"name": "Teleport-Paar",
-			"code": "baue mauer links\ndroppe item 2 links\ndroppe item 1 links\ndroppe item 1 links\nrechts\nrechts\nbaue mauer rechts\ndroppe item 2 rechts\ndroppe item 1 rechts\ndroppe item 1 rechts\nsage Teleporter verbunden",
-			"description": "Baue nacheinander zwei Sprung-Tiles aus magischem Holz und Harz und verbessere jedes mit einem magischen Stein. Teleport-Tiles desselben Erbauers werden paarweise verbunden.",
+			"code": "baue mauer links\ndroppe item 2 links # sap\ndroppe item 1 links # magicWood\ndroppe item 3 links # magicStone\nrechts\nrechts\nbaue mauer rechts\ndroppe item 2 rechts # sap\ndroppe item 1 rechts # magicWood\ndroppe item 1 rechts # magicStone\nsage Teleporter verbunden",
+			"description": "Lege je zwei magicWood, sap und magicStone in die Slots 1 bis 3. Baue nacheinander zwei Sprung-Tiles und verbessere sie; Teleport-Tiles desselben Erbauers werden paarweise verbunden.",
 		},
 		{
 			"name": "Upgrade: Feuerkanone",
-			"code": "baue mauer links\ndroppe item 3 links\ndroppe item 2 links\ndroppe item 1 links\ndroppe item 2 links\ndroppe item 1 links\nsage Feuerkanone bereit",
+			"code": "baue mauer links\ndroppe item 3 links # coal\ndroppe item 2 links # iron\ndroppe item 1 links # torch\ndroppe item 2 links # coal\ndroppe item 1 links # torch\nsage Feuerkanone bereit",
 			"description": "Baue zuerst mit Fackel, Eisen und Kohle eine Kanone. Lege danach eine weitere Fackel und Kohle auf dieselbe Kanone, um Brennschaden freizuschalten.",
 		},
 		{
 			"name": "Baurezept: Sensorturm",
-			"code": "baue mauer links\ndroppe item 1 links\nsage Sensor erweitert",
+			"code": "baue mauer links\ndroppe item 1 links # crystalShard\nsage Sensor erweitert",
 			"description": "Lege eine Kristallscherbe in Slot 1 auf die Mauer. Der Turm erweitert den Sensor des Erbauers um fünf Tiles; die Sensoransicht markiert dadurch weiter entfernte Gegner.",
 		},
 		{
 			"name": "Baurezept: Heilbrunnen",
-			"code": "baue mauer links\ndroppe item 2 links\ndroppe item 1 links\nsage Heilung aktiv",
+			"code": "baue mauer links\ndroppe item 2 links # magicStone\ndroppe item 1 links # magicWood\nsage Heilung aktiv",
 			"description": "Lege magisches Holz in Slot 1 und magischen Stein in Slot 2. Spieler im Umkreis erhalten jede Sekunde Leben und Mana.",
+		},
+		{
+			"name": "GolemCore: Golem-Waechter",
+			"code": "baue mauer links\ndroppe item 2 links # magicStone\ndroppe item 1 links # iron\ndroppe item 1 links # golemCore\nsage Golem-Waechter aktiv",
+			"description": "Baut zuerst eine Schildmauer und verbessert sie mit einem GolemCore zu einem schnellen steinernen Verteidiger.",
+		},
+		{
+			"name": "GolemCore: Lebensbrunnen",
+			"code": "baue mauer links\ndroppe item 2 links # magicStone\ndroppe item 1 links # magicWood\ndroppe item 1 links # golemCore\nsage Lebensbrunnen aktiv",
+			"description": "Baut zuerst einen Heilbrunnen und verstaerkt Radius, Heilung und Mana-Regeneration mit einem GolemCore.",
+		},
+		{
+			"name": "GolemCore: Erdbebenkanone",
+			"code": "baue mauer links\ndroppe item 3 links # coal\ndroppe item 2 links # iron\ndroppe item 1 links # torch\ndroppe item 1 links # magicStone\ndroppe item 1 links # golemCore\nsage Erdbebenkanone bereit",
+			"description": "Baut eine Magiekanone und verbessert sie mit dem GolemCore zu einer langsamen, sehr starken Flaechenkanone.",
+		},
+		{
+			"name": "ForestCore: Naturkueche",
+			"code": "baue mauer links\ndroppe item 1 links # torch\ndroppe item 1 links # food\ndroppe item 1 links # forestCore\ndroppe item 1 links # food\nsage Waldeintopf wird gekocht",
+			"description": "Baut eine Kochstelle, verbessert sie mit dem ForestCore und kocht Nahrung schnell zu starkem Waldeintopf.",
+		},
+		{
+			"name": "ForestCore: Waldauge",
+			"code": "baue mauer links\ndroppe item 1 links # crystalShard\ndroppe item 1 links # forestCore\nsage Waldauge aktiv",
+			"description": "Verbessert einen Sensorturm mit dem ForestCore. Der Sensor erhaelt zwoelf zusaetzliche Tiles Reichweite.",
+		},
+		{
+			"name": "ForestCore: Weltenbaum",
+			"code": "baue mauer links\ndroppe item 2 links # magicStone\ndroppe item 1 links # magicWood\ndroppe item 1 links # golemCore\ndroppe item 1 links # forestCore\nsage Weltenbaum gepflanzt",
+			"description": "Verbessert einen Lebensbrunnen mit dem ForestCore. Der Weltenbaum regeneriert Leben, Mana, Wasser und Essen.",
+		},
+		{
+			"name": "ForestCore: Rankenkatapult",
+			"code": "baue mauer links\ndroppe item 2 links # sap\ndroppe item 1 links # magicWood\ndroppe item 1 links # forestCore\nlinks\nsage Weiter Flug",
+			"description": "Verbessert ein Sprung-Tile mit dem ForestCore und schleudert Figuren bis zu fuenfzehn Tiles weit.",
+		},
+		{
+			"name": "ForestCore: Lebende Mauer",
+			"code": "baue mauer links\ndroppe item 1 links # forestCore\nsage Die Mauer lebt",
+			"description": "Verwandelt eine normale Mauer mit dem ForestCore in eine robuste, selbstheilende Pflanzenmauer.",
 		},
 		{
 			"name": "Solange: drei Schritte",
@@ -197,6 +237,30 @@ static func get_description(symbol: String, locale: String = "de") -> String:
 		if normalized_symbol == String(entry.get("trigger", "")) or normalized_symbol in keywords:
 			return String(entry.get("description", ""))
 	return ""
+
+
+static func is_reserved_symbol(symbol: String) -> bool:
+	var normalized_symbol: String = symbol.strip_edges().to_lower()
+	if normalized_symbol.is_empty():
+		return false
+
+	for locale: String in ["de", "en"]:
+		for entry: Dictionary in get_entries(locale):
+			var trigger: String = String(entry.get("trigger", "")).strip_edges().to_lower()
+			if normalized_symbol == trigger:
+				return true
+			var keywords: PackedStringArray = entry.get("keywords", PackedStringArray())
+			for keyword: String in keywords:
+				if normalized_symbol == keyword.strip_edges().to_lower():
+					return true
+
+		var groups: Dictionary = get_highlight_groups(locale)
+		for group_value: Variant in groups.values():
+			var words: Array = group_value
+			for word_value: Variant in words:
+				if normalized_symbol == String(word_value).strip_edges().to_lower():
+					return true
+	return false
 
 
 static func get_highlight_groups(locale: String = "de") -> Dictionary:

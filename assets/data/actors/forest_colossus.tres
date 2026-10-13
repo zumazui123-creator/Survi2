@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ActorDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scenes/gameplay/definitions/actor_definition.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/objects/magicTree1.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+actor_id = &"forestColossus"
+texture = ExtResource("2")
+max_hp = 1500.0
+speed = 0.0
+attack = &"slash"
+attack_damage = 28.0
+attack_range = 96.0
+drops = {"forestCore": {"min": 1, "max": 1}, "magicHerb": {"min": 5, "max": 8}, "magicWood": {"min": 8, "max": 14}, "sap": {"min": 5, "max": 9}}

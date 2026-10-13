@@ -1,0 +1,42 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scenes/npc/wandering_merchant.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/characters/bodies/4.png" id="2"]
+
+[sub_resource type="CircleShape2D" id="Shape"]
+radius = 13.0
+
+[sub_resource type="SceneReplicationConfig" id="Replication"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+
+[node name="WanderingMerchant" type="CharacterBody2D" groups=["damageable", "sensor_animal", "world_merchant"]]
+collision_layer = 3
+collision_mask = 3
+script = ExtResource("1")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2")
+self_modulate = Color(1, 0.82, 0.35, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("Shape")
+
+[node name="TradeLabel" type="Label" parent="."]
+offset_left = -64.0
+offset_top = -45.0
+offset_right = 64.0
+offset_bottom = -22.0
+text = "Eisen → Energie | Nahrung → Magiekraut"
+horizontal_alignment = 1
+theme_override_colors/font_color = Color(1, 0.9, 0.45, 1)
+theme_override_font_sizes/font_size = 8
+
+[node name="MoveTimer" type="Timer" parent="."]
+wait_time = 3.0
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("Replication")
+
+[connection signal="timeout" from="MoveTimer" to="." method="_on_move_timer_timeout"]

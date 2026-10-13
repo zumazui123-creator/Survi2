@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ActorDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scenes/gameplay/definitions/actor_definition.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/objects/magicTree1.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+actor_id = &"forestSapling"
+texture = ExtResource("2")
+max_hp = 55.0
+speed = 68.0
+attack = &"slash"
+attack_damage = 9.0
+attack_range = 44.0
+drops = {"magicWood": {"min": 0, "max": 1}, "sap": {"min": 0, "max": 1}}

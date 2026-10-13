@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://dsnm03bgpmori" path="res://scenes/character/components/code.gd" id="4_code"]
 [ext_resource type="Script" uid="uid://cq4ykx1tbo4pp" path="res://scenes/ui/player_workspace/navigation_reward_policy_editor.gd" id="5_reward_editor"]
 [ext_resource type="Script" uid="uid://veoh825sn128" path="res://scenes/ui/player_workspace/ai_environment_settings_ui.gd" id="6_environment_settings"]
+[ext_resource type="Script" path="res://scenes/code/interactive_command_input.gd" id="7_interactive_input"]
 
 [sub_resource type="CodeHighlighter" id="CodeHighlighter_vreni"]
 number_color = Color(0.16078432, 0.5294118, 0.36862746, 1)
@@ -20,6 +21,9 @@ script = ExtResource("1_ui")
 
 [node name="FunctionLibrary" type="Node" parent="." unique_id=1453966637]
 script = ExtResource("3_function")
+
+[node name="InteractiveCommandInput" type="Node" parent="."]
+script = ExtResource("7_interactive_input")
 
 [node name="CodeLayer" type="CanvasLayer" parent="." unique_id=336348594]
 offset = Vector2(640, 360)
@@ -54,6 +58,13 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
 text = "Haupt-Code"
+
+[node name="InteractiveModeButton" type="CheckButton" parent="CodeLayer/Code/TabContainer/Code"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+tooltip_text = "Schaltet die Tastatur zwischen Code-Editor und direkter Wortsteuerung um."
+text = "Interactive Modus: Aus"
 
 [node name="CodeEdit" type="CodeEdit" parent="CodeLayer/Code/TabContainer/Code" unique_id=1757023759]
 unique_name_in_owner = true
@@ -547,7 +558,7 @@ horizontal_alignment = 1
 
 [node name="Description" type="Label" parent="CodeLayer/Code/TabContainer/Functionen/Content" unique_id=275671240]
 layout_mode = 2
-text = "Speichere einen Befehlsblock und rufe ihn im Haupt-Code über seinen Namen auf."
+text = "Speichere einen Befehlsblock und rufe ihn über seinen Namen auf. Funktionen bleiben in deinem Spielerprofil erhalten. Namen brauchen mindestens 3 Zeichen; Groß-/Kleinschreibung ist egal, Umlaute und Unterstriche sind erlaubt."
 horizontal_alignment = 1
 autowrap_mode = 2
 
@@ -878,6 +889,7 @@ fit_content = true
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ButtonCotainer/StepButton" to="CodeLayer/Code" method="_on_step_button_pressed"]
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ButtonCotainer/UndoButton" to="CodeLayer/Code" method="_on_undo_button_pressed"]
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ButtonCotainer/RedoButton" to="CodeLayer/Code" method="_on_redo_button_pressed"]
+[connection signal="toggled" from="CodeLayer/Code/TabContainer/Code/InteractiveModeButton" to="CodeLayer/Code" method="_on_interactive_mode_toggled"]
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ExampleContainer/LoadExampleButton" to="CodeLayer/Code" method="_on_load_example_pressed"]
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer/ObenButton" to="CodeLayer/Code" method="_on_oben_button_pressed"]
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer/LinksRechtsContainer/LinksButton" to="CodeLayer/Code" method="_on_links_button_pressed"]

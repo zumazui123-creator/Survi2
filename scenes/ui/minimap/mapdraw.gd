@@ -14,6 +14,8 @@ const VILLAGE_FILL_COLOR: Color = Color(0.95, 0.55, 0.12, 0.72)
 const VILLAGE_BORDER_COLOR: Color = Color(1.0, 0.9, 0.35, 1.0)
 const LARGE_VILLAGE_FILL_COLOR: Color = Color(0.75, 0.22, 0.85, 0.78)
 const LARGE_VILLAGE_BORDER_COLOR: Color = Color(1.0, 0.65, 1.0, 1.0)
+const LANDMARK_BORDER_COLOR: Color = Color(1.0, 1.0, 1.0, 0.92)
+const FOG_COLOR: Color = Color(0.015, 0.02, 0.035, 0.96)
 
 #@export var MultiHelper.map.tilemap: TileMapLayer
 #@export var player: Node2D
@@ -25,6 +27,12 @@ var drawn: bool = false
 @onready var village_manager: VillageManager = get_tree().get_first_node_in_group(
 	"village_manager"
 ) as VillageManager
+@onready var landmark_manager: LandmarkManager = get_tree().get_first_node_in_group(
+	"landmark_manager"
+) as LandmarkManager
+@onready var exploration_tracker: MapExplorationTracker = get_tree().get_first_node_in_group(
+	"map_exploration_tracker"
+) as MapExplorationTracker
 
 
 func _ready() -> void:
@@ -35,29 +43,51 @@ func _ready() -> void:
 	if is_instance_valid(village_manager) \
 			and not village_manager.villages_changed.is_connected(_on_villages_changed):
 		village_manager.villages_changed.connect(_on_villages_changed)
+	if is_instance_valid(landmark_manager) \
+			and not landmark_manager.landmarks_changed.is_connected(_on_landmarks_changed):
+		landmark_manager.landmarks_changed.connect(_on_landmarks_changed)
+	_connect_exploration_tracker()
 
 
 func _draw() -> void:
 	if world_map == null or world_map.tile_map == null:
 		return
 	var used_rect: Rect2i = world_map.tile_map.get_used_rect()
-	for x: int in range(used_rect.position.x, used_rect.end.x):
-		for y: int in range(used_rect.position.y, used_rect.end.y):
-			var cell: int = world_map.tile_map.get_cell_source_id(Vector2i(x, y))
-			if cell != -1:
-				var cell_atlas_coords: Vector2i = world_map.tile_map.get_cell_atlas_coords(
-					Vector2i(x, y)
-				)
-				var tile_color: Color = WALKABLE_COLOR \
-					if cell_atlas_coords in WALKABLE_TILES else DEFAULT_COLOR
-				var tile_rect: Rect2 = Rect2(Vector2(x, y) * tile_size, tile_size)
-				draw_rect(tile_rect, tile_color)
+	draw_rect(
+		Rect2(Vector2(used_rect.position) * tile_size, Vector2(used_rect.size) * tile_size),
+		FOG_COLOR,
+		true
+	)
+	if not is_instance_valid(exploration_tracker):
+		return
+	for tile: Vector2i in exploration_tracker.get_explored_tiles():
+		var cell: int = world_map.tile_map.get_cell_source_id(tile)
+		if cell != -1:
+			var cell_atlas_coords: Vector2i = world_map.tile_map.get_cell_atlas_coords(
+				tile
+			)
+			var biome_definition: BiomeDefinition = world_map.get_biome_definition_at(tile)
+			var tile_color: Color = DEFAULT_COLOR
+			if cell_atlas_coords in world_map.waterCoors:
+				tile_color = DEFAULT_COLOR
+			elif biome_definition != null:
+				tile_color = biome_definition.map_color
+			elif cell_atlas_coords in WALKABLE_TILES:
+				tile_color = WALKABLE_COLOR
+			var tile_rect: Rect2 = Rect2(Vector2(tile) * tile_size, tile_size)
+			draw_rect(tile_rect, tile_color)
 	_draw_villages()
+	_draw_landmarks()
 
 
 func _process(_delta: float) -> void:
 	if world_map == null:
 		return
+	if not is_instance_valid(exploration_tracker):
+		exploration_tracker = get_tree().get_first_node_in_group(
+			"map_exploration_tracker"
+		) as MapExplorationTracker
+		_connect_exploration_tracker()
 	if not drawn \
 			and world_map.tile_map != null \
 			and world_map.tile_map.get_used_rect().size != Vector2i.ZERO:
@@ -69,6 +99,9 @@ func _draw_villages() -> void:
 	if not is_instance_valid(village_manager):
 		return
 	for plan: VillagePlan in village_manager.get_plans():
+		if not is_instance_valid(exploration_tracker) \
+				or not exploration_tracker.is_village_discovered(plan):
+			continue
 		var village_rect: Rect2 = Rect2(
 			Vector2(plan.bounds.position) * tile_size,
 			Vector2(plan.bounds.size) * tile_size
@@ -86,4 +119,40 @@ func _on_generation_started() -> void:
 
 
 func _on_villages_changed() -> void:
+	queue_redraw()
+
+
+func _draw_landmarks() -> void:
+	if not is_instance_valid(landmark_manager):
+		return
+	for plan: LandmarkPlan in landmark_manager.get_plans():
+		if not is_instance_valid(exploration_tracker) \
+				or not exploration_tracker.is_landmark_discovered(plan):
+			continue
+		var definition: LandmarkDefinition = landmark_manager.get_definition(
+			plan.landmark_id
+		)
+		var color: Color = definition.map_color if definition != null \
+			else Color(0.65, 0.65, 0.65, 0.8)
+		var landmark_rect: Rect2 = Rect2(
+			Vector2(plan.bounds.position) * tile_size,
+			Vector2(plan.bounds.size) * tile_size
+		)
+		draw_rect(landmark_rect, Color(color.r, color.g, color.b, 0.82), true)
+		draw_rect(landmark_rect, LANDMARK_BORDER_COLOR, false, 1.0)
+
+
+func _on_landmarks_changed() -> void:
+	queue_redraw()
+
+
+func _connect_exploration_tracker() -> void:
+	if is_instance_valid(exploration_tracker) \
+			and not exploration_tracker.exploration_changed.is_connected(
+				_on_exploration_changed
+			):
+		exploration_tracker.exploration_changed.connect(_on_exploration_changed)
+
+
+func _on_exploration_changed() -> void:
 	queue_redraw()

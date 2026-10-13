@@ -3,8 +3,16 @@ class_name Map
 
 signal navigation_changed(revision: int)
 signal generation_started()
+signal biomes_changed()
 
-var grassAtlasCoords = [Vector2i(0,0),Vector2i(1,0),Vector2i(2,0),Vector2i(3,0),Vector2i(16,0),Vector2i(17,0)]
+var grassAtlasCoords = [
+	Vector2i(0, 0), Vector2i(1, 0), Vector2i(2, 0), Vector2i(3, 0),
+	Vector2i(4, 0), Vector2i(5, 0), Vector2i(6, 0),
+	Vector2i(7, 0), Vector2i(8, 0), Vector2i(9, 0),
+	Vector2i(10, 0), Vector2i(11, 0), Vector2i(12, 0),
+	Vector2i(13, 0), Vector2i(14, 0), Vector2i(15, 0),
+	Vector2i(16, 0), Vector2i(17, 0),
+]
 var waterCoors 		 = [Vector2i(18,0), Vector2i(19,0)]
 var startFieldCoords = [Vector2i(23,4)]
 var blockFieldCoords = [Vector2i(20,4)]
@@ -30,6 +38,8 @@ var spawnPosition = Vector2i(0,0)
 var endPosition = Vector2i(-10,-10)
 var walkable_tiles: Array[Vector2i] = []
 var spawnable_tiles: Array[Vector2i] = []
+var biome_map_data: BiomeMapData
+var biome_definitions: Dictionary[StringName, BiomeDefinition] = {}
 
 var level_type = -1
 var level_no : int = -1
@@ -58,6 +68,7 @@ func _ready():
 func generateMap(level_dict : Dictionary):
 	print("generated:"+str(level_dict))
 	generation_started.emit()
+	clear_biome_map()
 	level_no 	= level_dict["level"]
 	level_type 	= level_dict["type"]
 	tile_map 		 = $TileMap
@@ -72,10 +83,12 @@ func generateMap(level_dict : Dictionary):
 	endPosition = Vector2i(-10, -10)
 	_reset_navigation_state()
 	object_manager.clear_villages()
+	object_manager.clear_landmarks()
 	object_manager.clear_trees(false)
 	var generated_trees: Array[TreeSpawnData] = []
 	var generated_villages: Array[VillagePlan] = []
 	var generated_village_definition: VillageDefinition
+	var generated_landmarks: Array[LandmarkPlan] = []
 
 	if level_type == Constants.MAP_MAIN:
 		map_type  		=  get_node_or_null("MainLevelGenerator")
@@ -85,6 +98,7 @@ func generateMap(level_dict : Dictionary):
 		generated_trees.assign(tiles[2])
 		generated_villages.assign(tiles[3])
 		generated_village_definition = tiles[4] as VillageDefinition
+		generated_landmarks.assign(tiles[5])
 		set_level_options(level_no)
 	elif level_type == Constants.MAP_LABY:
 		map_type  		 =  get_node_or_null("LabyrinthGenerator")
@@ -100,6 +114,7 @@ func generateMap(level_dict : Dictionary):
 		generated_trees.assign(tiles[2])
 		generated_villages.assign(tiles[3])
 		generated_village_definition = tiles[4] as VillageDefinition
+		generated_landmarks.assign(tiles[5])
 	else:
 		push_warning("Unsupported map type: %s" % level_type)
 		return
@@ -109,6 +124,7 @@ func generateMap(level_dict : Dictionary):
 	object_manager.load_tree_spawn_data(generated_trees)
 	rebuild_navigation_grid()
 	object_manager.load_villages(generated_villages, generated_village_definition)
+	object_manager.load_landmarks(generated_landmarks)
 
 
 func _reset_navigation_state() -> void:
@@ -162,6 +178,68 @@ func world_to_navigation_tile(global_pos: Vector2) -> Vector2i:
 
 func navigation_tile_to_world(tile: Vector2i) -> Vector2:
 	return tile_map.to_global(tile_map.map_to_local(tile))
+
+
+func configure_biome_map(
+		data: BiomeMapData,
+		definitions: Array[BiomeDefinition]
+	) -> void:
+	biome_map_data = data
+	biome_definitions.clear()
+	for definition: BiomeDefinition in definitions:
+		if definition != null and not definition.biome_id.is_empty():
+			biome_definitions[definition.biome_id] = definition
+	biomes_changed.emit()
+
+
+func clear_biome_map() -> void:
+	biome_map_data = null
+	biome_definitions.clear()
+	biomes_changed.emit()
+
+
+func get_biome_id(tile: Vector2i) -> StringName:
+	if biome_map_data == null:
+		return &""
+	return biome_map_data.get_biome_id(tile)
+
+
+func get_biome_definition(biome_id: StringName) -> BiomeDefinition:
+	return biome_definitions.get(biome_id) as BiomeDefinition
+
+
+func get_biome_definition_at(tile: Vector2i) -> BiomeDefinition:
+	return get_biome_definition(get_biome_id(tile))
+
+
+func set_biome_field(tile: Vector2i) -> void:
+	var definition: BiomeDefinition = get_biome_definition_at(tile)
+	if definition == null:
+		set_grass_field(tile)
+		return
+	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
+	rng.seed = Multihelper.mapSeed + tile.x * 73856093 + tile.y * 19349663
+	tile_map.set_cell(
+		tile,
+		tileset_source,
+		definition.get_random_ground_atlas(rng),
+		0
+	)
+
+
+func set_biome_path_field(tile: Vector2i) -> void:
+	var definition: BiomeDefinition = get_biome_definition_at(tile)
+	if definition == null:
+		set_grass_field(tile)
+		return
+	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
+	rng.seed = Multihelper.mapSeed + tile.x * 83492791 + tile.y * 29765797
+	tile_map.set_cell(
+		tile,
+		tileset_source,
+		definition.get_random_path_atlas(rng),
+		0
+	)
 
 
 func is_navigation_tile_in_bounds(tile: Vector2i) -> bool:
@@ -418,6 +496,18 @@ func generate_borders():
 		tile_map.set_cell( Vector2i(x2, edge_y2), tileset_source, tile_coord, 0)
 
 func set_grass_field(tile_place : Vector2i ):
+	var biome_definition: BiomeDefinition = get_biome_definition_at(tile_place)
+	if biome_definition != null:
+		var biome_rng: RandomNumberGenerator = RandomNumberGenerator.new()
+		biome_rng.seed = Multihelper.mapSeed + tile_place.x * 73856093 \
+			+ tile_place.y * 19349663
+		tile_map.set_cell(
+			tile_place,
+			tileset_source,
+			biome_definition.get_random_ground_atlas(biome_rng),
+			0
+		)
+		return
 	var rng = RandomNumberGenerator.new()
 	rng.seed = Multihelper.mapSeed + tile_place.x + tile_place.y # Deterministic but varies by position
 	var tile_coord = grassAtlasCoords[rng.randi() % grassAtlasCoords.size()]

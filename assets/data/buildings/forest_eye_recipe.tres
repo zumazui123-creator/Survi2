@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="StructureRecipe" load_steps=2 format=3]
+[ext_resource type="Script" path="res://scenes/gameplay/definitions/structure_recipe.gd" id="1"]
+[resource]
+script = ExtResource("1")
+recipe_id = &"forest_eye_from_sensor_tower"
+display_name = "Waldauge"
+description = "Ein Sensorturm wird mit einem Waldkern zum Waldauge."
+base_building_ids = Array[StringName]([&"sensor_tower"])
+ingredients = {"forestCore": 1}
+result_building_id = &"forest_eye"
+priority = 71

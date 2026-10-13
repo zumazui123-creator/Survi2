@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="LandmarkDefinition" load_steps=2 format=3]
+[ext_resource type="Script" path="res://scenes/map/landmarks/landmark_definition.gd" id="1"]
+[resource]
+script = ExtResource("1")
+landmark_id = &"bridge"
+display_name = "Holzbrücke"
+description = "Eine begehbare Querung über eine kurze Wasserstrecke."
+size_tiles = Vector2i(7, 3)
+spacing_tiles = 4
+map_color = Color(0.55, 0.32, 0.1, 1)
+is_bridge = true
+

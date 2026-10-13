@@ -27,6 +27,22 @@ const ITEM_DEFINITIONS: Array[ItemDefinition] = [
 	preload("res://assets/data/items/magic_axe_1.tres"),
 	preload("res://assets/data/items/magic_dagger_1.tres"),
 	preload("res://assets/data/items/magic_spear_1.tres"),
+	preload("res://assets/data/items/golem_core.tres"),
+	preload("res://assets/data/items/forest_core.tres"),
+	preload("res://assets/data/items/forest_stew.tres"),
+	preload("res://assets/data/items/ice_crystal.tres"),
+	preload("res://assets/data/items/frost_sword_1.tres"),
+	preload("res://assets/data/items/ancient_technology.tres"),
+	preload("res://assets/data/items/gold.tres"),
+	preload("res://assets/data/items/treasure_map.tres"),
+	preload("res://assets/data/items/magic_artifact.tres"),
+	preload("res://assets/data/items/rare_blueprint.tres"),
+	preload("res://assets/data/items/ghost_essence.tres"),
+	preload("res://assets/data/items/contraband.tres"),
+	preload("res://assets/data/items/potion_recipe.tres"),
+	preload("res://assets/data/items/ancient_tool.tres"),
+	preload("res://assets/data/items/legendary_ice.tres"),
+	preload("res://assets/data/items/spirit_potion.tres"),
 ]
 
 const ENEMY_DEFINITIONS: Array[ActorDefinition] = [
@@ -40,6 +56,18 @@ const ANIMAL_DEFINITIONS: Array[ActorDefinition] = [
 
 const NPC_DEFINITIONS: Array[ActorDefinition] = [
 	preload("res://assets/data/actors/villager.tres"),
+	preload("res://assets/data/actors/bandit.tres"),
+	preload("res://assets/data/actors/stone_golem.tres"),
+	preload("res://assets/data/actors/forest_colossus.tres"),
+	preload("res://assets/data/actors/forest_sapling.tres"),
+	preload("res://assets/data/actors/forest_spirit.tres"),
+	preload("res://assets/data/actors/swamp_ghost.tres"),
+	preload("res://assets/data/actors/arcane_sentinel.tres"),
+	preload("res://assets/data/actors/mechanical_guardian.tres"),
+	preload("res://assets/data/actors/sand_monster.tres"),
+	preload("res://assets/data/actors/ice_creature.tres"),
+	preload("res://assets/data/actors/swamp_crawler.tres"),
+	preload("res://assets/data/actors/frost_giant.tres"),
 ]
 
 const OBJECT_DEFINITIONS: Array[WorldObjectDefinition] = [
@@ -51,11 +79,15 @@ const OBJECT_DEFINITIONS: Array[WorldObjectDefinition] = [
 	preload("res://assets/data/world_objects/bush_1.tres"),
 	preload("res://assets/data/world_objects/ore_1.tres"),
 	preload("res://assets/data/world_objects/tree_3.tres"),
+	preload("res://assets/data/world_objects/tree_4.tres"),
+	preload("res://assets/data/world_objects/tree_5.tres"),
+	preload("res://assets/data/world_objects/tree_6.tres"),
 	preload("res://assets/data/world_objects/rock_3.tres"),
 	preload("res://assets/data/world_objects/magic_plant_1.tres"),
 	preload("res://assets/data/world_objects/crystal_1.tres"),
 	preload("res://assets/data/world_objects/magic_tree_1.tres"),
 	preload("res://assets/data/world_objects/magic_rock_1.tres"),
+	preload("res://assets/data/world_objects/ice_crystal_1.tres"),
 ]
 
 const PROJECTILE_DEFINITIONS: Array[ProjectileDefinition] = [
@@ -67,6 +99,8 @@ const PROJECTILE_DEFINITIONS: Array[ProjectileDefinition] = [
 	preload("res://assets/data/projectiles/fireball.tres"),
 	preload("res://assets/data/projectiles/ice_shard.tres"),
 	preload("res://assets/data/projectiles/lightning_bolt.tres"),
+	preload("res://assets/data/projectiles/golem_rock.tres"),
+	preload("res://assets/data/projectiles/forest_log.tres"),
 ]
 
 # Compatibility indexes keep existing gameplay callers working while content is

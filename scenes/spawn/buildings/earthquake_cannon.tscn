@@ -1,0 +1,22 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/spawn/buildings/magic_cannon.tscn" id="1_base"]
+
+[node name="EarthquakeCannon" instance=ExtResource("1_base")]
+building_id = &"earthquake_cannon"
+
+[node name="Sprite" parent="." index="0"]
+self_modulate = Color(0.58, 0.38, 0.2, 1)
+
+[node name="TargetFinder" parent="." index="3"]
+attack_range_tiles = 9.0
+
+[node name="TowerWeapon" parent="." index="4"]
+attack_damage = 54.0
+attack_interval = 2.25
+projectile_id = "magicPulse"
+damage_type = &"normal"
+area_radius_tiles = 3.5
+secondary_damage_multiplier = 0.82
+
+[editable path="."]

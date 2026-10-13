@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="StructureRecipe" load_steps=2 format=3]
+[ext_resource type="Script" path="res://scenes/gameplay/definitions/structure_recipe.gd" id="1"]
+[resource]
+script = ExtResource("1")
+recipe_id = &"world_tree_from_life_well"
+display_name = "Weltenbaum"
+description = "Ein Lebensbrunnen wird mit einem Waldkern zum Weltenbaum."
+base_building_ids = Array[StringName]([&"life_well"])
+ingredients = {"forestCore": 1}
+result_building_id = &"world_tree"
+priority = 72

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ActorDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/gameplay/definitions/actor_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+actor_id = &"sandMonster"
+max_hp = 135.0
+speed = 60.0
+attack = &"slash"
+attack_damage = 16.0
+attack_range = 55.0
+drops = {"crystalShard": {"min": 0, "max": 2}, "stone": {"min": 1, "max": 3}}
+visual_scale = Vector2(1.6, 1.1)
+placeholder_color = Color(0.86, 0.57, 0.16, 1)
+placeholder_size = Vector2i(42, 30)

@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="LandmarkDefinition" load_steps=2 format=3]
+[ext_resource type="Script" path="res://scenes/map/landmarks/landmark_definition.gd" id="1"]
+[resource]
+script = ExtResource("1")
+landmark_id = &"golem_temple"
+display_name = "Golem-Tempel"
+description = "Eine große Tempelruine mit einem schlafenden Steingolem und Opferaltar."
+size_tiles = Vector2i(15, 15)
+edge_margin_tiles = 12
+spacing_tiles = 12
+map_color = Color(0.5, 0.5, 0.55, 1)
+loot = {"magicStone": 2, "stone": 6}
+structure_style = &"temple"
+is_golem_temple = true
+allowed_biomes = Array[StringName]([&"mountain"])
+biome_border_margin_tiles = 2
+

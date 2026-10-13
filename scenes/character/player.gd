@@ -113,7 +113,13 @@ func _setup_local_player():
 		push_error("Player: player_local_ui.tscn does not instantiate PlayerLocalUI")
 		return
 	hud.add_child(local_ui)
-	local_ui.bind_components(code_player, rl_agent, rl_trainer, environment)
+	local_ui.bind_components(
+		code_player,
+		rl_agent,
+		rl_trainer,
+		environment,
+		playerName
+	)
 	local_ui.set_work_task_text(_work_task_text)
 	if not status_view.settings_requested.is_connected(local_ui.show_settings):
 		status_view.settings_requested.connect(local_ui.show_settings)
@@ -200,6 +206,15 @@ func launch_from_jump_pad(target_position: Vector2, duration: float) -> void:
 		return
 	if is_instance_valid(movement):
 		movement.launch_to_world_position(target_position, duration)
+
+
+@rpc("any_peer", "call_local", "reliable")
+func apply_movement_lock(duration: float) -> void:
+	var sender_id: int = multiplayer.get_remote_sender_id()
+	if sender_id != 0 and sender_id != 1:
+		return
+	var lock_until: int = Time.get_ticks_msec() + ceili(maxf(duration, 0.0) * 1000.0)
+	set_meta(&"movement_locked_until", lock_until)
 
 
 func _exit_tree() -> void:

@@ -3,6 +3,7 @@ class_name PlayerLocalUI
 
 @onready var code_controller: CodeEditorController = $CodeLayer/Code
 @onready var function_library: FunctionHandler = $FunctionLibrary
+@onready var interactive_input: InteractiveCommandInput = $InteractiveCommandInput
 @onready var tab_container: TabContainer = $CodeLayer/Code/TabContainer
 @onready var work_task_text: RichTextLabel = %WorkTaskText
 @onready var difficulty_button: OptionButton = %DifModeButton
@@ -20,9 +21,15 @@ func bind_components(
 		code_player: CodePlayer,
 		rl_agent: RLAgent,
 		rl_trainer: RLTrainer,
-		environment: Survi2NavigationEnv
+		environment: Survi2NavigationEnv,
+		player_profile_id: String
 	) -> void:
-	code_controller.bind_components(code_player, function_library)
+	var input_label: Label
+	if is_instance_valid(code_player) and is_instance_valid(code_player.player):
+		input_label = code_player.player.get_node_or_null("%InteractiveInputLabel") as Label
+	function_library.bind_player_profile(player_profile_id)
+	interactive_input.bind_components(code_player, function_library, input_label)
+	code_controller.bind_components(code_player, function_library, interactive_input)
 	ai_playground.bind_components(rl_agent, rl_trainer, environment)
 	environment_settings.bind_components(environment, rl_trainer)
 

@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="StructureRecipe" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/gameplay/definitions/structure_recipe.gd" id="1_recipe"]
+
+[resource]
+script = ExtResource("1_recipe")
+recipe_id = &"life_well_from_healing_well"
+display_name = "Lebensbrunnen"
+description = "Ein Heilbrunnen wird durch einen Golemkern dauerhaft verstaerkt."
+base_building_ids = Array[StringName]([&"healing_well"])
+ingredients = {"golemCore": 1}
+result_building_id = &"life_well"
+priority = 61

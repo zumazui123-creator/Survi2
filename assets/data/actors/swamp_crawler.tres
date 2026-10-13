@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ActorDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scenes/gameplay/definitions/actor_definition.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/characters/enemy/spider.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+actor_id = &"swampCrawler"
+texture = ExtResource("2")
+max_hp = 110.0
+speed = 72.0
+attack = &"slash"
+attack_damage = 14.0
+attack_range = 52.0
+drops = {"magicHerb": {"min": 0, "max": 2}, "contraband": {"min": 0, "max": 1}}
+visual_modulate = Color(0.52, 0.78, 0.32, 1)

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="StructureRecipe" load_steps=2 format=3]
+[ext_resource type="Script" path="res://scenes/gameplay/definitions/structure_recipe.gd" id="1"]
+[resource]
+script = ExtResource("1")
+recipe_id = &"living_wall_from_wall"
+display_name = "Lebende Mauer"
+description = "Eine Mauer wird mit einem Waldkern lebendig."
+base_building_ids = Array[StringName]([&"wall"])
+ingredients = {"forestCore": 1}
+result_building_id = &"living_wall"
+priority = 74

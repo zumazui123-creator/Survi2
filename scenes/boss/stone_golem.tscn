@@ -1,0 +1,121 @@
+[gd_scene load_steps=11 format=3]
+
+[ext_resource type="Script" path="res://scenes/boss/stone_golem.gd" id="1_script"]
+[ext_resource type="Script" path="res://scenes/enemy/components/enemy_navigation.gd" id="3_navigation"]
+[ext_resource type="Script" path="res://scenes/boss/boss_animated_visual.gd" id="4_visual"]
+[ext_resource type="Texture2D" path="res://assets/bosses/stone_golem_walk.png" id="5_walk"]
+[ext_resource type="Texture2D" path="res://assets/bosses/stone_golem_attack.png" id="6_attack"]
+
+[sub_resource type="RectangleShape2D" id="Shape"]
+size = Vector2(82, 82)
+
+[sub_resource type="SceneReplicationConfig" id="Replication"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+properties/1/path = NodePath(".:targetPlayerId")
+properties/1/spawn = true
+properties/1/replication_mode = 2
+properties/2/path = NodePath(".:hp")
+properties/2/spawn = true
+properties/2/replication_mode = 2
+properties/3/path = NodePath(".:actor_id")
+properties/3/spawn = true
+properties/3/replication_mode = 2
+properties/4/path = NodePath(".:dormant")
+properties/4/spawn = true
+properties/4/replication_mode = 1
+properties/5/path = NodePath(".:boss_phase")
+properties/5/spawn = true
+properties/5/replication_mode = 1
+properties/6/path = NodePath("MovingParts:rotation")
+properties/6/spawn = true
+properties/6/replication_mode = 2
+
+[sub_resource type="StyleBoxFlat" id="HPBackground"]
+bg_color = Color(0.15, 0.08, 0.05, 0.85)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_left = 4
+corner_radius_bottom_right = 4
+
+[sub_resource type="StyleBoxFlat" id="HPFill"]
+bg_color = Color(0.85, 0.26, 0.08, 0.95)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_left = 4
+corner_radius_bottom_right = 4
+
+[sub_resource type="Curve" id="ParticleCurve"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[node name="StoneGolem" type="CharacterBody2D" groups=["boss", "damageable", "sensor_enemy"]]
+collision_layer = 3
+collision_mask = 3
+script = ExtResource("1_script")
+actor_id = &"stoneGolem"
+
+[node name="MovingParts" type="Node2D" parent="."]
+
+[node name="BossVisual" type="AnimatedSprite2D" parent="MovingParts"]
+unique_name_in_owner = true
+texture_filter = 1
+offset = Vector2(0, -10)
+scale = Vector2(1.75, 1.75)
+script = ExtResource("4_visual")
+movement_textures = Array[Texture2D]([ExtResource("5_walk")])
+movement_frame_count = 7
+movement_fps = 7.0
+attack_textures = Array[Texture2D]([ExtResource("6_attack")])
+attack_frame_size = Vector2i(64, 96)
+attack_frame_count = 7
+attack_fps = 10.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("Shape")
+
+[node name="EnemyNavigation" type="Node2D" parent="."]
+script = ExtResource("3_navigation")
+repath_interval = 0.4
+
+[node name="AttackCooldown" type="Timer" parent="."]
+wait_time = 2.2
+one_shot = true
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("Replication")
+
+[node name="bloodParticles" type="CPUParticles2D" parent="."]
+emitting = false
+amount = 16
+lifetime = 0.5
+one_shot = true
+explosiveness = 1.0
+emission_shape = 1
+emission_sphere_radius = 34.0
+initial_velocity_min = 35.0
+initial_velocity_max = 120.0
+scale_amount_max = 3.0
+scale_amount_curve = SubResource("ParticleCurve")
+color = Color(0.46, 0.42, 0.34, 1)
+
+[node name="BossUI" type="Control" parent="."]
+offset_left = -75.0
+offset_top = -67.0
+offset_right = 75.0
+offset_bottom = -51.0
+
+[node name="HPBar" type="ProgressBar" parent="BossUI"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/background = SubResource("HPBackground")
+theme_override_styles/fill = SubResource("HPFill")
+max_value = 1.0
+value = 1.0
+show_percentage = false

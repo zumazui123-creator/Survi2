@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://gncc76jm6lpk" path="res://scenes/enemy/enemy.gd" id="1_afvkb"]
 [ext_resource type="Texture2D" uid="uid://cmgqoo4d6mewa" path="res://assets/characters/enemy/zombie.png" id="2_dxtpn"]
 [ext_resource type="Script" path="res://scenes/enemy/components/enemy_navigation.gd" id="3_navigation"]
+[ext_resource type="Script" path="res://scenes/actors/actor_visual_controller.gd" id="4_actor_visual"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_m76gk"]
 
@@ -53,6 +54,10 @@ script = ExtResource("1_afvkb")
 [node name="Sprite2D" type="Sprite2D" parent="MovingParts" unique_id=1068145211]
 unique_name_in_owner = true
 texture = ExtResource("2_dxtpn")
+
+[node name="ActorVisualController" type="Node" parent="." node_paths=PackedStringArray("sprite")]
+script = ExtResource("4_actor_visual")
+sprite = NodePath("../MovingParts/Sprite2D")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2117654563]
 shape = SubResource("CircleShape2D_m76gk")

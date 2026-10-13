@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/spawn/buildings/life_well.tscn" id="1_base"]
+[ext_resource type="Script" path="res://scenes/spawn/buildings/world_tree.gd" id="2_script"]
+
+[node name="WorldTree" instance=ExtResource("1_base")]
+script = ExtResource("2_script")
+building_id = &"world_tree"
+effect_radius_tiles = 6.0
+healing_per_tick = 12.0
+mana_per_tick = 10.0
+hydration_per_tick = 5.0
+food_per_tick = 4.0
+
+[node name="Visuals" parent="." index="0"]
+scale = Vector2(1.2, 1.2)
+self_modulate = Color(0.48, 1, 0.42, 1)
+
+[editable path="."]

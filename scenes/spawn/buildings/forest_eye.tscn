@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/spawn/buildings/sensor_tower.tscn" id="1_base"]
+
+[node name="ForestEye" instance=ExtResource("1_base")]
+building_id = &"forest_eye"
+sensor_radius_bonus = 12
+
+[node name="Sprite" parent="." index="0"]
+self_modulate = Color(0.24, 0.68, 0.2, 1)
+
+[node name="Crystal" parent="." index="1"]
+self_modulate = Color(0.45, 1, 0.18, 1)
+
+[editable path="."]

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scenes/gameplay/definitions/item_definition.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/items/food.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+item_id = &"forestStew"
+icon = ExtResource("2")
+kind = 1
+effects = {"hp": 55, "mana": 25, "food": 70, "hydration": 20}

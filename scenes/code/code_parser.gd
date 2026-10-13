@@ -344,10 +344,17 @@ func _create_source_lines(source_code: String) -> Array[Dictionary]:
 	var lines: PackedStringArray = source_code.split("\n", true)
 	for line_index: int in range(lines.size()):
 		result.append({
-			"text": lines[line_index],
+			"text": _strip_inline_comment(lines[line_index]),
 			"line_number": line_index + 1,
 		})
 	return result
+
+
+func _strip_inline_comment(source_line: String) -> String:
+	var comment_index: int = source_line.find("#")
+	if comment_index < 0:
+		return source_line
+	return source_line.substr(0, comment_index).rstrip(" \t")
 
 
 func _expand_functions(
@@ -359,7 +366,8 @@ func _expand_functions(
 
 	for line_data: Dictionary in lines:
 		var line: String = String(line_data.text).strip_edges()
-		if line.is_empty() or line.begins_with("#") or not functions.has(line):
+		var function_name: String = FunctionNamePolicy.normalize_name(line)
+		if line.is_empty() or line.begins_with("#") or not functions.has(function_name):
 			result.append(line_data)
 			if result.size() > MAX_EXPANDED_COMMANDS:
 				return _error(
@@ -368,8 +376,8 @@ func _expand_functions(
 				)
 			continue
 
-		if line in call_stack:
-			var recursion_path: String = " -> ".join(call_stack + [line])
+		if function_name in call_stack:
+			var recursion_path: String = " -> ".join(call_stack + [function_name])
 			return _error(
 				"Rekursive Funktion erkannt: %s" % recursion_path,
 				int(line_data.line_number)
@@ -380,19 +388,22 @@ func _expand_functions(
 				int(line_data.line_number)
 			)
 
-		var function_body: Dictionary = _normalize_function_body(functions[line])
+		var function_body: Dictionary = _normalize_function_body(functions[function_name])
 		if not bool(function_body.valid):
-			return _error("Ungültiger Funktionsinhalt für '%s'." % line, int(line_data.line_number))
+			return _error(
+				"Ungültiger Funktionsinhalt für '%s'." % function_name,
+				int(line_data.line_number)
+			)
 
 		var function_lines: Array[Dictionary] = []
 		for function_line: String in function_body.lines:
 			function_lines.append({
-				"text": String(function_line),
+				"text": _strip_inline_comment(String(function_line)),
 				"line_number": int(line_data.line_number),
 			})
 
 		var nested_stack: Array[String] = call_stack.duplicate()
-		nested_stack.append(line)
+		nested_stack.append(function_name)
 		var expanded_body: Dictionary = _expand_functions(function_lines, functions, nested_stack)
 		if expanded_body.has("error"):
 			return expanded_body

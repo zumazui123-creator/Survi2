@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="LandmarkDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/map/landmarks/landmark_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+landmark_id = &"ancient_tree"
+display_name = "Uralter Baum"
+description = "Ein uralter Baum steht in einem Kreis magischer Wurzeln. Sein leuchtendes Herz ist älter als die umliegenden Wälder."
+danger_description = "Wilde Tiere und Waldgeister beschützen das Herz des Baumes."
+reward_description = "magicWood und forestCore"
+size_tiles = Vector2i(17, 17)
+edge_margin_tiles = 12
+spacing_tiles = 12
+category = 1
+minimum_instances = 1
+maximum_instances = 1
+generation_priority = 90
+map_color = Color(0.12, 0.78, 0.23, 1)
+loot = {"forestCore": 1, "magicWood": 6}
+enemy_spawns = {"forestSpirit": 3, "pig": 2}
+structure_style = &"ancient_tree"
+allowed_biomes = Array[StringName]([&"forest"])
+biome_border_margin_tiles = 2

@@ -1,0 +1,212 @@
+[gd_scene load_steps=22 format=3]
+
+[ext_resource type="Script" path="res://scenes/boss/forest_colossus.gd" id="1_boss"]
+[ext_resource type="Texture2D" path="res://assets/items/magicWood.png" id="3_wood"]
+[ext_resource type="Script" path="res://scenes/enemy/components/enemy_navigation.gd" id="4_navigation"]
+[ext_resource type="Script" path="res://scenes/boss/boss_weak_point.gd" id="5_weak_point"]
+[ext_resource type="Script" path="res://scenes/boss/boss_arena_controller.gd" id="6_arena"]
+[ext_resource type="Script" path="res://scenes/boss/attacks/forest_root_attack.gd" id="7_root_attack"]
+[ext_resource type="Script" path="res://scenes/boss/attacks/forest_thorn_attack.gd" id="8_thorn_attack"]
+[ext_resource type="Script" path="res://scenes/boss/attacks/forest_vine_attack.gd" id="9_vine_attack"]
+[ext_resource type="Script" path="res://scenes/boss/attacks/forest_spore_attack.gd" id="10_spore_attack"]
+[ext_resource type="Script" path="res://scenes/boss/attacks/forest_log_attack.gd" id="11_log_attack"]
+[ext_resource type="Script" path="res://scenes/boss/attacks/forest_heal_attack.gd" id="12_heal_attack"]
+[ext_resource type="Script" path="res://scenes/boss/attacks/forest_summon_attack.gd" id="13_summon_attack"]
+[ext_resource type="Script" path="res://scenes/boss/boss_animated_visual.gd" id="14_visual"]
+[ext_resource type="Texture2D" path="res://assets/bosses/forest_colossus_front.png" id="15_front"]
+[ext_resource type="Texture2D" path="res://assets/bosses/forest_colossus_back.png" id="16_back"]
+[ext_resource type="Texture2D" path="res://assets/bosses/forest_colossus_side.png" id="17_side"]
+
+[sub_resource type="RectangleShape2D" id="BossShape"]
+size = Vector2(86, 86)
+
+[sub_resource type="CircleShape2D" id="RootShape"]
+radius = 18.0
+
+[sub_resource type="StyleBoxFlat" id="HPBackground"]
+bg_color = Color(0.08, 0.16, 0.07, 0.9)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_left = 4
+corner_radius_bottom_right = 4
+
+[sub_resource type="StyleBoxFlat" id="HPFill"]
+bg_color = Color(0.26, 0.85, 0.18, 0.96)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_left = 4
+corner_radius_bottom_right = 4
+
+[sub_resource type="SceneReplicationConfig" id="Replication"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+properties/1/path = NodePath(".:targetPlayerId")
+properties/1/spawn = true
+properties/1/replication_mode = 2
+properties/2/path = NodePath(".:hp")
+properties/2/spawn = true
+properties/2/replication_mode = 2
+properties/3/path = NodePath(".:actor_id")
+properties/3/spawn = true
+properties/3/replication_mode = 2
+properties/4/path = NodePath(".:dormant")
+properties/4/spawn = true
+properties/4/replication_mode = 1
+properties/5/path = NodePath(".:boss_phase")
+properties/5/spawn = true
+properties/5/replication_mode = 1
+properties/6/path = NodePath("RootHeartNorth:destroyed")
+properties/6/spawn = true
+properties/6/replication_mode = 1
+properties/7/path = NodePath("RootHeartSouth:destroyed")
+properties/7/spawn = true
+properties/7/replication_mode = 1
+properties/8/path = NodePath("RootHeartWest:destroyed")
+properties/8/spawn = true
+properties/8/replication_mode = 1
+properties/9/path = NodePath("RootHeartEast:destroyed")
+properties/9/spawn = true
+properties/9/replication_mode = 1
+
+[node name="ForestColossus" type="CharacterBody2D" groups=["boss", "damageable", "sensor_enemy", "forest_boss"]]
+collision_layer = 3
+collision_mask = 3
+script = ExtResource("1_boss")
+actor_id = &"forestColossus"
+
+[node name="MovingParts" type="Node2D" parent="."]
+
+[node name="BossVisual" type="AnimatedSprite2D" parent="MovingParts"]
+unique_name_in_owner = true
+texture_filter = 1
+offset = Vector2(0, -12)
+scale = Vector2(3.4, 3.4)
+script = ExtResource("14_visual")
+movement_textures = Array[Texture2D]([ExtResource("15_front"), ExtResource("17_side"), ExtResource("16_back"), ExtResource("17_side")])
+movement_frame_size = Vector2i(31, 35)
+movement_frame_count = 4
+movement_fps = 5.0
+animate_while_idle = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("BossShape")
+
+[node name="EnemyNavigation" type="Node2D" parent="."]
+script = ExtResource("4_navigation")
+
+[node name="AttackCooldown" type="Timer" parent="."]
+wait_time = 2.5
+one_shot = true
+
+[node name="Attacks" type="Node" parent="."]
+
+[node name="RootAttack" type="Node" parent="Attacks"]
+script = ExtResource("7_root_attack")
+
+[node name="ThornAttack" type="Node" parent="Attacks"]
+script = ExtResource("8_thorn_attack")
+
+[node name="VineAttack" type="Node" parent="Attacks"]
+script = ExtResource("9_vine_attack")
+
+[node name="SporeAttack" type="Node" parent="Attacks"]
+script = ExtResource("10_spore_attack")
+
+[node name="LogAttack" type="Node" parent="Attacks"]
+script = ExtResource("11_log_attack")
+
+[node name="HealAttack" type="Node" parent="Attacks"]
+script = ExtResource("12_heal_attack")
+minimum_phase = 2
+
+[node name="SummonAttack" type="Node" parent="Attacks"]
+script = ExtResource("13_summon_attack")
+minimum_phase = 2
+
+[node name="RootHeartNorth" type="StaticBody2D" parent="." groups=["boss_weak_point", "damageable", "sensor_object"]]
+position = Vector2(0, -128)
+collision_layer = 3
+script = ExtResource("5_weak_point")
+
+[node name="Sprite" type="Sprite2D" parent="RootHeartNorth"]
+scale = Vector2(0.65, 0.65)
+texture = ExtResource("3_wood")
+self_modulate = Color(0.35, 1, 0.22, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RootHeartNorth"]
+shape = SubResource("RootShape")
+
+[node name="RootHeartSouth" type="StaticBody2D" parent="." groups=["boss_weak_point", "damageable", "sensor_object"]]
+position = Vector2(0, 128)
+collision_layer = 3
+script = ExtResource("5_weak_point")
+
+[node name="Sprite" type="Sprite2D" parent="RootHeartSouth"]
+scale = Vector2(0.65, 0.65)
+texture = ExtResource("3_wood")
+self_modulate = Color(0.35, 1, 0.22, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RootHeartSouth"]
+shape = SubResource("RootShape")
+
+[node name="RootHeartWest" type="StaticBody2D" parent="." groups=["boss_weak_point", "damageable", "sensor_object"]]
+position = Vector2(-128, 0)
+collision_layer = 3
+script = ExtResource("5_weak_point")
+
+[node name="Sprite" type="Sprite2D" parent="RootHeartWest"]
+scale = Vector2(0.65, 0.65)
+texture = ExtResource("3_wood")
+self_modulate = Color(0.35, 1, 0.22, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RootHeartWest"]
+shape = SubResource("RootShape")
+
+[node name="RootHeartEast" type="StaticBody2D" parent="." groups=["boss_weak_point", "damageable", "sensor_object"]]
+position = Vector2(128, 0)
+collision_layer = 3
+script = ExtResource("5_weak_point")
+
+[node name="Sprite" type="Sprite2D" parent="RootHeartEast"]
+scale = Vector2(0.65, 0.65)
+texture = ExtResource("3_wood")
+self_modulate = Color(0.35, 1, 0.22, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RootHeartEast"]
+shape = SubResource("RootShape")
+
+[node name="BossArenaController" type="Node" parent="." node_paths=PackedStringArray("weak_point_paths")]
+script = ExtResource("6_arena")
+weak_point_paths = Array[NodePath]([NodePath("../RootHeartNorth"), NodePath("../RootHeartSouth"), NodePath("../RootHeartWest"), NodePath("../RootHeartEast")])
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("Replication")
+
+[node name="bloodParticles" type="CPUParticles2D" parent="."]
+emitting = false
+amount = 18
+lifetime = 0.55
+one_shot = true
+explosiveness = 1.0
+color = Color(0.25, 0.72, 0.12, 1)
+
+[node name="BossUI" type="Control" parent="."]
+offset_left = -85.0
+offset_top = -77.0
+offset_right = 85.0
+offset_bottom = -61.0
+
+[node name="HPBar" type="ProgressBar" parent="BossUI"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/background = SubResource("HPBackground")
+theme_override_styles/fill = SubResource("HPFill")
+max_value = 1.0
+value = 1.0
+show_percentage = false

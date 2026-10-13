@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="LandmarkDefinition" load_steps=2 format=3]
+[ext_resource type="Script" path="res://scenes/map/landmarks/landmark_definition.gd" id="1"]
+[resource]
+script = ExtResource("1")
+landmark_id = &"destroyed_village"
+display_name = "Zerstörtes Dorf"
+description = "Die Überreste einer vergessenen Siedlung erzählen von einer rätselhaften Katastrophe unter dem Wüstensand."
+danger_description = "Sandmonster bewachen die verschütteten Vorratskammern."
+reward_description = "Antike Werkzeuge, Baupläne und Kristalle"
+size_tiles = Vector2i(11, 11)
+spacing_tiles = 8
+category = 0
+minimum_instances = 1
+maximum_instances = 2
+generation_priority = 48
+map_color = Color(0.48, 0.25, 0.18, 1)
+loot = {"ancientTool": 2, "crystalShard": 4, "rareBlueprint": 1}
+enemy_spawns = {"sandMonster": 4}
+structure_style = &"destroyed_village"
+allowed_biomes = Array[StringName]([&"desert"])
+biome_border_margin_tiles = 1

@@ -6,11 +6,17 @@ const ERROR_LINE_COLOR: Color = Color(0.75, 0.12, 0.12, 0.5)
 
 var code_player: CodePlayer
 var function_library: FunctionHandler
+var interactive_input: InteractiveCommandInput
 var highlighter: MyCodeHighLighter
 var _highlighted_line: int = -1
 var _line_number_pattern: RegEx = RegEx.new()
 var _last_runtime_error: String = ""
 var _last_error_line: int = 0
+var _saved_code_text: String = ""
+var _saved_caret_line: int = 0
+var _saved_caret_column: int = 0
+var _has_saved_code: bool = false
+var _interactive_root_command: String = ""
 
 @onready var code_edit: CodeEdit = %CodeEdit
 @onready var item_list: ItemList = %ItemList
@@ -31,6 +37,7 @@ var _last_error_line: int = 0
 @onready var load_example_button: Button = %LoadExampleButton
 @onready var status_label: Label = %EditorStatus
 @onready var command_help_label: Label = %CommandHelp
+@onready var interactive_mode_button: CheckButton = %InteractiveModeButton
 
 
 func _ready() -> void:
@@ -45,10 +52,15 @@ func _ready() -> void:
 		print("Debug Code Playing enabled.")
 
 
-func bind_components(value_code_player: CodePlayer, value_function_library: FunctionHandler) -> void:
+func bind_components(
+		value_code_player: CodePlayer,
+		value_function_library: FunctionHandler,
+		value_interactive_input: InteractiveCommandInput
+	) -> void:
 	_disconnect_components()
 	code_player = value_code_player
 	function_library = value_function_library
+	interactive_input = value_interactive_input
 	if is_instance_valid(code_player):
 		code_player.execution_started.connect(_on_execution_started)
 		code_player.execution_finished.connect(_on_execution_ended)
@@ -58,15 +70,27 @@ func bind_components(value_code_player: CodePlayer, value_function_library: Func
 		code_player.pause_changed.connect(_on_pause_changed)
 	if is_instance_valid(function_library):
 		function_library.functions_changed.connect(_refresh_function_lists)
+	if is_instance_valid(interactive_input):
+		interactive_input.mode_changed.connect(_on_interactive_mode_changed)
+		interactive_input.command_accepted.connect(_on_interactive_command_accepted)
+		interactive_input.command_execution_started.connect(
+			_on_interactive_command_execution_started
+		)
+		interactive_input.command_rejected.connect(_on_interactive_command_rejected)
+		interactive_mode_button.set_pressed_no_signal(interactive_input.enabled)
 	_refresh_function_lists()
 	_set_execution_buttons(is_instance_valid(code_player) and code_player.is_running)
+	_update_editor_editability()
 
 
 func unbind_components() -> void:
+	_restore_code_after_interactive_mode()
 	_disconnect_components()
 	code_player = null
 	function_library = null
+	interactive_input = null
 	_set_execution_buttons(false)
+	_update_editor_editability()
 
 
 func _disconnect_components() -> void:
@@ -86,6 +110,19 @@ func _disconnect_components() -> void:
 	if is_instance_valid(function_library) \
 			and function_library.functions_changed.is_connected(_refresh_function_lists):
 		function_library.functions_changed.disconnect(_refresh_function_lists)
+	if is_instance_valid(interactive_input):
+		if interactive_input.mode_changed.is_connected(_on_interactive_mode_changed):
+			interactive_input.mode_changed.disconnect(_on_interactive_mode_changed)
+		if interactive_input.command_accepted.is_connected(_on_interactive_command_accepted):
+			interactive_input.command_accepted.disconnect(_on_interactive_command_accepted)
+		if interactive_input.command_execution_started.is_connected(
+				_on_interactive_command_execution_started
+			):
+			interactive_input.command_execution_started.disconnect(
+				_on_interactive_command_execution_started
+			)
+		if interactive_input.command_rejected.is_connected(_on_interactive_command_rejected):
+			interactive_input.command_rejected.disconnect(_on_interactive_command_rejected)
 
 
 func _setup_editor_assistance() -> void:
@@ -101,7 +138,11 @@ func _on_execution_started(_estimated_command_count: int) -> void:
 	_last_runtime_error = ""
 	_last_error_line = 0
 	_set_execution_buttons(true)
-	code_edit.editable = false
+	_update_editor_editability()
+	if is_instance_valid(interactive_input) and interactive_input.enabled:
+		_clear_line_highlight()
+		_set_status("Interactive Befehl wird ausgeführt …", false)
+		return
 	_set_status(
 		"Programm gestartet – Laufzeitlimit: %d Schritte." % code_player.max_runtime_commands,
 		false
@@ -110,7 +151,11 @@ func _on_execution_started(_estimated_command_count: int) -> void:
 
 func _on_execution_ended() -> void:
 	_set_execution_buttons(false)
-	code_edit.editable = true
+	_update_editor_editability()
+	if is_instance_valid(interactive_input) and interactive_input.enabled:
+		_clear_line_highlight()
+		_set_status("Interactive Modus bereit – nächstes Wort eingeben.", false)
+		return
 	if _last_runtime_error.is_empty():
 		_clear_line_highlight()
 		_set_status("Programm beendet.", false)
@@ -121,7 +166,12 @@ func _on_execution_ended() -> void:
 
 func _on_execution_cancelled() -> void:
 	_set_execution_buttons(false)
-	code_edit.editable = true
+	_update_editor_editability()
+	if is_instance_valid(interactive_input) and interactive_input.enabled \
+			and _last_runtime_error.is_empty():
+		_clear_line_highlight()
+		_set_status("Interactive Modus bereit – nächstes Wort eingeben.", false)
+		return
 	if _last_runtime_error.is_empty():
 		_clear_line_highlight()
 		_set_status("Programm abgebrochen.", false)
@@ -137,6 +187,9 @@ func _on_pause_changed(paused: bool) -> void:
 
 
 func _on_source_line_started(source_line: int, source_text: String) -> void:
+	if is_instance_valid(interactive_input) and interactive_input.enabled:
+		_render_interactive_execution(source_text)
+		return
 	_highlight_line(source_line, EXECUTION_LINE_COLOR)
 	_set_status("Zeile %d: %s" % [source_line, source_text], false)
 
@@ -151,15 +204,31 @@ func _on_runtime_error(message: String) -> void:
 
 
 func _set_execution_buttons(running: bool) -> void:
-	play_button.disabled = running or not is_instance_valid(code_player)
+	var interactive_enabled: bool = is_instance_valid(interactive_input) \
+		and interactive_input.enabled
+	play_button.disabled = running or interactive_enabled or not is_instance_valid(code_player)
 	pause_button.disabled = not running or not is_instance_valid(code_player)
-	step_button.disabled = not is_instance_valid(code_player)
+	step_button.disabled = interactive_enabled or not is_instance_valid(code_player)
 	stop_button.disabled = not running or not is_instance_valid(code_player)
-	load_example_button.disabled = running
-	undo_button.disabled = running
-	redo_button.disabled = running
+	load_example_button.disabled = running or interactive_enabled
+	undo_button.disabled = running or interactive_enabled
+	redo_button.disabled = running or interactive_enabled
 	if not running:
 		pause_button.text = "Pause"
+
+
+func _update_editor_editability() -> void:
+	var running: bool = is_instance_valid(code_player) and code_player.is_running
+	var interactive_enabled: bool = is_instance_valid(interactive_input) \
+		and interactive_input.enabled
+	var can_edit: bool = not running and not interactive_enabled
+	code_edit.editable = can_edit
+	function_code_edit.editable = not interactive_enabled
+	function_name_input.editable = not interactive_enabled
+	if interactive_enabled:
+		code_edit.release_focus()
+		function_code_edit.release_focus()
+		function_name_input.release_focus()
 
 
 func _refresh_function_lists() -> void:
@@ -233,7 +302,7 @@ func _on_function_code_text_changed() -> void:
 func _on_symbol_hovered(symbol: String, _line: int, _column: int) -> void:
 	var description: String = CodeCommandCatalog.get_description(symbol, Strings.current_locale)
 	if description.is_empty() and is_instance_valid(function_library) \
-			and function_library.functions.has(symbol):
+			and function_library.has_function(symbol):
 		description = "Ruft deine Funktion '%s' auf." % symbol
 	command_help_label.text = description if not description.is_empty() else "Fahre mit der Maus über einen Befehl für eine kurze Erklärung."
 
@@ -383,23 +452,12 @@ func _on_create_btn_pressed() -> void:
 	if not is_instance_valid(function_library):
 		_set_function_status("Der Funktionseditor ist derzeit nicht verfügbar.", true)
 		return
-	var function_name: String = function_name_input.text.strip_edges()
-	if function_name.is_empty():
-		_set_function_status("Die Funktion braucht einen Namen.", true)
+	var entered_name: String = function_name_input.text.strip_edges()
+	var validation_error: String = FunctionHandler.get_function_name_validation_error(entered_name)
+	if not validation_error.is_empty():
+		_set_function_status(validation_error, true)
 		return
-	if not function_name.is_valid_identifier():
-		_set_function_status(
-			"Der Name darf nur Buchstaben, Zahlen und Unterstriche enthalten.",
-			true
-		)
-		return
-	if not CodeCommandCatalog.get_description(function_name, Strings.current_locale).is_empty():
-		_set_function_status(
-			"'%s' ist bereits ein Befehl und kann nicht als Funktionsname verwendet werden."
-			% function_name,
-			true
-		)
-		return
+	var function_name: String = FunctionHandler.normalize_function_name(entered_name)
 	var function_body: String = function_code_edit.text.strip_edges()
 	if function_body.is_empty():
 		_set_function_status("Die Funktion braucht mindestens einen Befehl.", true)
@@ -408,6 +466,11 @@ func _on_create_btn_pressed() -> void:
 	if function_library.set_func(data):
 		_set_function_status("Funktion '%s' gespeichert." % function_name, false)
 		_set_status("Funktion '%s' gespeichert." % function_name, false)
+	else:
+		_set_function_status(
+			"Funktion '%s' konnte nicht dauerhaft gespeichert werden." % function_name,
+			true
+		)
 
 
 func _on_func_list_item_activated(index: int) -> void:
@@ -431,9 +494,10 @@ func _on_insert_function_pressed() -> void:
 		_set_function_status("Der Funktionsspeicher ist nicht verbunden.", true)
 		return
 	var function_name: String = function_name_input.text.strip_edges()
-	if function_name.is_empty() or not function_library.functions.has(function_name):
+	if function_name.is_empty() or not function_library.has_function(function_name):
 		_set_function_status("Speichere oder wähle zuerst eine Funktion aus.", true)
 		return
+	function_name = FunctionHandler.normalize_function_name(function_name)
 	_insert_text(function_name)
 	tab_container.current_tab = main_code_tab.get_index()
 	_set_status("Funktionsaufruf '%s' eingefügt." % function_name, false)
@@ -453,6 +517,99 @@ func _clear_function_editor() -> void:
 func _set_function_status(message: String, is_error: bool) -> void:
 	function_status.text = message
 	function_status.modulate = Color(1.0, 0.45, 0.45) if is_error else Color.WHITE
+
+
+func _on_interactive_mode_toggled(enabled: bool) -> void:
+	if not is_instance_valid(interactive_input):
+		interactive_mode_button.set_pressed_no_signal(false)
+		return
+	if is_instance_valid(code_player) and code_player.is_running:
+		code_player.cancel()
+	interactive_input.set_enabled(enabled)
+
+
+func _on_interactive_mode_changed(enabled: bool) -> void:
+	if enabled:
+		_cache_code_for_interactive_mode()
+	else:
+		_restore_code_after_interactive_mode()
+	interactive_mode_button.set_pressed_no_signal(enabled)
+	interactive_mode_button.text = "Interactive Modus: An" if enabled \
+		else "Interactive Modus: Aus"
+	_set_execution_buttons(is_instance_valid(code_player) and code_player.is_running)
+	_update_editor_editability()
+	if not enabled:
+		code_edit.grab_focus()
+	_set_status(
+		"Interactive Modus aktiv – tippe ein Wort und drücke die Leertaste."
+		if enabled else "Interactive Modus beendet – der Code-Editor ist wieder aktiv.",
+		false
+	)
+
+
+func _on_interactive_command_accepted(command: String) -> void:
+	_set_status("Interactive Befehl angenommen: %s" % command, false)
+
+
+func _on_interactive_command_execution_started(command: String) -> void:
+	_interactive_root_command = command
+	_render_interactive_execution("")
+
+
+func _render_interactive_execution(source_text: String) -> void:
+	if not _has_saved_code or _interactive_root_command.is_empty():
+		return
+	var is_function: bool = is_instance_valid(function_library) \
+		and function_library.has_function(_interactive_root_command)
+	var executing_line: int = 1
+	if is_function and not source_text.is_empty():
+		code_edit.text = "%s\n└─ %s" % [_interactive_root_command, source_text.strip_edges()]
+		executing_line = 2
+	elif source_text.is_empty():
+		code_edit.text = _interactive_root_command
+	else:
+		code_edit.text = source_text.strip_edges()
+	_highlight_line(executing_line, EXECUTION_LINE_COLOR)
+
+
+func _cache_code_for_interactive_mode() -> void:
+	if _has_saved_code:
+		return
+	_saved_code_text = code_edit.text
+	_saved_caret_line = code_edit.get_caret_line()
+	_saved_caret_column = code_edit.get_caret_column()
+	_has_saved_code = true
+	_interactive_root_command = ""
+	_clear_line_highlight()
+	code_edit.text = ""
+
+
+func _restore_code_after_interactive_mode() -> void:
+	if not _has_saved_code or not is_instance_valid(code_edit):
+		return
+	_clear_line_highlight()
+	code_edit.text = _saved_code_text
+	if code_edit.get_line_count() > 0:
+		var restored_line: int = clampi(
+			_saved_caret_line,
+			0,
+			code_edit.get_line_count() - 1
+		)
+		code_edit.set_caret_line(restored_line)
+		var restored_column: int = mini(
+			_saved_caret_column,
+			code_edit.get_line(restored_line).length()
+		)
+		code_edit.set_caret_column(restored_column)
+	_saved_code_text = ""
+	_saved_caret_line = 0
+	_saved_caret_column = 0
+	_has_saved_code = false
+	_interactive_root_command = ""
+
+
+func _on_interactive_command_rejected(command: String, reason: String) -> void:
+	_set_status("'%s' ist allein kein gültiger Befehl: %s" % [command, reason], true)
 
 
 func _exit_tree() -> void:

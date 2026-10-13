@@ -12,6 +12,16 @@ const DEFAULT_TREE_HP: float = 40.0
 const PASSIVE_COLOR: Color = Color.WHITE
 const PASSIVE_HIGHLIGHT_COLOR: Color = Color(1.0, 0.72, 0.12, 1.0)
 const HIDDEN_COLOR: Color = Color(1.0, 1.0, 1.0, 0.0)
+const TREE_NEIGHBOR_OFFSETS: Array[Vector2i] = [
+	Vector2i(-1, -1),
+	Vector2i(0, -1),
+	Vector2i(1, -1),
+	Vector2i(-1, 0),
+	Vector2i(1, 0),
+	Vector2i(-1, 1),
+	Vector2i(0, 1),
+	Vector2i(1, 1),
+]
 
 @export_group("Activation")
 @export_range(1, 64, 1) var activation_radius_tiles: int = 14
@@ -23,6 +33,7 @@ const HIDDEN_COLOR: Color = Color(1.0, 1.0, 1.0, 0.0)
 @export_group("Storage")
 @export_range(4, 64, 1) var chunk_size_tiles: int = 16
 @export_range(0.0, 3600.0, 1.0) var tree_spawn_delay: float = 60.0
+@export_range(1.0, 300.0, 1.0) var tree_regrowth_retry_delay: float = 15.0
 
 @onready var world_map: Map = get_parent().get_parent() as Map
 @onready var passive_trees: MultiMeshInstance2D = $PassiveTrees
@@ -37,11 +48,13 @@ var _activation_queue: Array[Vector2i] = []
 var _queued_tiles: Dictionary[Vector2i, bool] = {}
 var _respawn_remaining: Dictionary[Vector2i, float] = {}
 var _highlighted_tiles: Dictionary[Vector2i, bool] = {}
+var _passive_layers: Dictionary = {}
 var _activation_elapsed: float = 0.0
 var _batch_elapsed: float = 0.0
 
 
 func _ready() -> void:
+	_passive_layers[DEFAULT_TREE_OBJECT_ID] = passive_trees
 	_batch_elapsed = active_tree_batch_interval
 
 
@@ -89,8 +102,7 @@ func clear_trees(release_navigation: bool = true) -> void:
 			remove_child(child)
 			child.queue_free()
 
-	passive_trees.multimesh = null
-	passive_trees.texture = null
+	_clear_passive_representation()
 	tree_tiles.clear()
 	_tree_chunks.clear()
 	_active_tiles.clear()
@@ -286,43 +298,88 @@ func _get_chunk(tile: Vector2i) -> Vector2i:
 
 
 func _rebuild_passive_representation() -> void:
-	var texture: Texture2D = Items.get_object_texture(DEFAULT_TREE_OBJECT_ID)
-	if texture == null or tree_tiles.is_empty():
-		passive_trees.multimesh = null
-		passive_trees.texture = null
+	_clear_passive_representation()
+	if tree_tiles.is_empty():
 		return
 
-	var quad: QuadMesh = QuadMesh.new()
-	quad.size = texture.get_size()
-	var tree_multimesh: MultiMesh = MultiMesh.new()
-	tree_multimesh.transform_format = MultiMesh.TRANSFORM_2D
-	tree_multimesh.use_colors = true
-	tree_multimesh.mesh = quad
-	tree_multimesh.instance_count = tree_tiles.size()
-	passive_trees.texture = texture
-	passive_trees.multimesh = tree_multimesh
-
-	var instance_index: int = 0
+	var grouped_states: Dictionary = {}
 	for state: TreeState in tree_tiles.values():
-		state.passive_instance_index = instance_index
-		var local_position: Vector2 = to_local(world_map.navigation_tile_to_world(state.tile))
-		tree_multimesh.set_instance_transform_2d(
-			instance_index,
-			Transform2D(0.0, local_position)
-		)
-		_update_passive_instance(state)
-		instance_index += 1
+		var states: Array = grouped_states.get(state.object_id, [])
+		states.append(state)
+		grouped_states[state.object_id] = states
+
+	for object_id_value: Variant in grouped_states.keys():
+		var object_id: String = str(object_id_value)
+		var texture: Texture2D = Items.get_object_texture(object_id)
+		if texture == null:
+			push_warning("Tree texture is missing for object '%s'" % object_id)
+			continue
+
+		var layer: MultiMeshInstance2D = _get_or_create_passive_layer(object_id)
+		var quad: QuadMesh = QuadMesh.new()
+		quad.size = texture.get_size()
+		var tree_multimesh: MultiMesh = MultiMesh.new()
+		tree_multimesh.transform_format = MultiMesh.TRANSFORM_2D
+		tree_multimesh.use_colors = true
+		tree_multimesh.mesh = quad
+		var states: Array = grouped_states[object_id]
+		tree_multimesh.instance_count = states.size()
+		layer.texture = texture
+		layer.multimesh = tree_multimesh
+
+		for instance_index: int in range(states.size()):
+			var state: TreeState = states[instance_index] as TreeState
+			state.passive_instance_index = instance_index
+			var local_position: Vector2 = to_local(
+				world_map.navigation_tile_to_world(state.tile)
+			)
+			tree_multimesh.set_instance_transform_2d(
+				instance_index,
+				Transform2D(0.0, local_position)
+			)
+			_update_passive_instance(state)
+
+
+func _get_or_create_passive_layer(object_id: String) -> MultiMeshInstance2D:
+	var existing_layer: MultiMeshInstance2D = (
+		_passive_layers.get(object_id) as MultiMeshInstance2D
+	)
+	if existing_layer != null:
+		return existing_layer
+
+	var layer: MultiMeshInstance2D = MultiMeshInstance2D.new()
+	layer.name = "PassiveTrees_%s" % object_id
+	layer.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	add_child(layer)
+	_passive_layers[object_id] = layer
+	return layer
+
+
+func _clear_passive_representation() -> void:
+	for layer_value: Variant in _passive_layers.values():
+		var layer: MultiMeshInstance2D = layer_value as MultiMeshInstance2D
+		if layer == null:
+			continue
+		layer.multimesh = null
+		layer.texture = null
+		if layer != passive_trees:
+			layer.queue_free()
+	_passive_layers.clear()
+	_passive_layers[DEFAULT_TREE_OBJECT_ID] = passive_trees
 
 
 func _update_passive_instance(state: TreeState, pulse: float = 1.0) -> void:
-	if passive_trees.multimesh == null or state.passive_instance_index < 0:
+	var layer: MultiMeshInstance2D = (
+		_passive_layers.get(state.object_id) as MultiMeshInstance2D
+	)
+	if layer == null or layer.multimesh == null or state.passive_instance_index < 0:
 		return
 	var color: Color = PASSIVE_COLOR
 	if state.is_destroyed() or state.representation == TreeState.Representation.ACTIVE:
 		color = HIDDEN_COLOR
 	elif state.highlighted:
 		color = PASSIVE_COLOR.lerp(PASSIVE_HIGHLIGHT_COLOR, pulse)
-	passive_trees.multimesh.set_instance_color(state.passive_instance_index, color)
+	layer.multimesh.set_instance_color(state.passive_instance_index, color)
 
 
 func _update_passive_highlight_pulse() -> void:
@@ -346,6 +403,9 @@ func _update_regrowth(delta: float) -> void:
 		var state: TreeState = get_tree_state(tile)
 		if state == null or not state.is_destroyed():
 			continue
+		if not _has_living_tree_neighbor(tile):
+			_respawn_remaining[tile] = tree_regrowth_retry_delay
+			continue
 		state.restore()
 		world_map.add_navigation_blocker(tile)
 		_update_passive_instance(state)
@@ -353,6 +413,14 @@ func _update_regrowth(delta: float) -> void:
 		tree_regrew = true
 	if tree_regrew:
 		_refresh_activation_targets()
+
+
+func _has_living_tree_neighbor(tile: Vector2i) -> bool:
+	for offset: Vector2i in TREE_NEIGHBOR_OFFSETS:
+		var neighbor_state: TreeState = get_tree_state(tile + offset)
+		if neighbor_state != null and not neighbor_state.is_destroyed():
+			return true
+	return false
 
 
 func _get_max_hp(object_id: String) -> float:

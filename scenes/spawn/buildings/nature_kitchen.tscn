@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/spawn/buildings/cooking_station.tscn" id="1_base"]
+
+[node name="NatureKitchen" instance=ExtResource("1_base")]
+building_id = &"nature_kitchen"
+output_item_id = "forestStew"
+cooking_duration = 1.5
+
+[node name="Visuals" parent="." index="0"]
+self_modulate = Color(0.58, 1, 0.52, 1)
+
+[editable path="."]

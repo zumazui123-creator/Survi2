@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="LandmarkDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/map/landmarks/landmark_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+landmark_id = &"frost_boss_arena"
+display_name = "Arena des Frostgiganten"
+description = "Eine riesige vereiste Arena ist die Heimat eines uralten Frostgiganten. Ihre Mauern tragen die Namen früherer Herausforderer."
+danger_description = "Nur wer die Kälte und die Angriffe des Frostgiganten überlebt, kann die Arena wieder verlassen."
+reward_description = "frostWeapons und legendäre Eisressourcen"
+size_tiles = Vector2i(19, 19)
+edge_margin_tiles = 14
+spacing_tiles = 5
+category = 2
+minimum_instances = 1
+maximum_instances = 1
+generation_priority = 120
+map_color = Color(0.66, 0.9, 1, 1)
+loot = {"iceCrystal": 4}
+structure_style = &"frost_arena"
+boss_actor_id = &"frostGiant"
+allowed_biomes = Array[StringName]([&"snow"])
+biome_border_margin_tiles = 3

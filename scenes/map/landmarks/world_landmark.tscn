@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scenes/map/landmarks/world_landmark.gd" id="1_script"]
+
+[sub_resource type="SceneReplicationConfig" id="Replication"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+properties/1/path = NodePath(".:landmark_id")
+properties/1/spawn = true
+properties/1/replication_mode = 2
+properties/2/path = NodePath(".:bounds_size_tiles")
+properties/2/spawn = true
+properties/2/replication_mode = 2
+
+[node name="WorldLandmark" type="Node2D" groups=["sensor_object", "world_landmark"]]
+z_index = -5
+script = ExtResource("1_script")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("Replication")
