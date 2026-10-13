@@ -15,7 +15,7 @@ extends Node
 @export var landmark_definitions: Array[LandmarkDefinition] = []
 @export_group("Biomes")
 @export var biome_definitions: Array[BiomeDefinition] = []
-@export_range(0.0, 0.45, 0.01) var water_elevation_threshold: float = 0.22
+@export_range(0.0, 0.45, 0.01) var water_elevation_threshold: float = 0.26
 @export_range(1, 4, 1) var path_half_width_tiles: int = 1
 @export_range(4, 20, 1) var biome_landmark_reservation_radius: int = 12
 
