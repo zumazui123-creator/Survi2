@@ -5,13 +5,13 @@
 [ext_resource type="Script" uid="uid://bqqq0ujqgl6ln" path="res://scenes/map/mapGenerator/labyrinth.gd" id="3_qpycp"]
 [ext_resource type="Script" uid="uid://c8y1yilcj8bkg" path="res://scenes/map/mapGenerator/main_level.gd" id="5_qci3n"]
 [ext_resource type="Script" uid="uid://bc5swuf5dfhdv" path="res://scenes/map/trees/tree_manager.gd" id="6_tree_manager"]
-[ext_resource type="Script" path="res://scenes/main/object_manager.gd" id="7_object_manager"]
-[ext_resource type="Script" path="res://scenes/main/breakable_manager.gd" id="8_breakable_manager"]
-[ext_resource type="Script" path="res://scenes/main/building_manager.gd" id="9_building_manager"]
+[ext_resource type="Script" uid="uid://b6apphllx0oya" path="res://scenes/main/object_manager.gd" id="7_object_manager"]
+[ext_resource type="Script" uid="uid://dduo0212bbq8w" path="res://scenes/main/breakable_manager.gd" id="8_breakable_manager"]
+[ext_resource type="Script" uid="uid://dr2hjekho22i8" path="res://scenes/main/building_manager.gd" id="9_building_manager"]
 [ext_resource type="Resource" path="res://assets/data/buildings/wall.tres" id="10_wall_definition"]
 [ext_resource type="Resource" path="res://assets/data/buildings/defense_tower.tres" id="11_tower_definition"]
-[ext_resource type="Script" path="res://scenes/gameplay/definitions/building_definition.gd" id="12_building_definition"]
-[ext_resource type="Script" path="res://scenes/main/village_manager.gd" id="13_village_manager"]
+[ext_resource type="Script" uid="uid://cpdmb5xh7ry3k" path="res://scenes/gameplay/definitions/building_definition.gd" id="12_building_definition"]
+[ext_resource type="Script" uid="uid://dqjkhc4hxkgfw" path="res://scenes/main/village_manager.gd" id="13_village_manager"]
 [ext_resource type="Resource" path="res://assets/data/villages/default_village.tres" id="14_village_definition"]
 [ext_resource type="PackedScene" path="res://scenes/village/village_resident.tscn" id="15_village_resident"]
 [ext_resource type="PackedScene" path="res://scenes/village/village_pig.tscn" id="16_village_pig"]
@@ -106,7 +106,9 @@ village_definition = ExtResource("14_village_definition")
 landmark_definitions = Array[ExtResource("44_landmark_definition")]([ExtResource("79_ancient_tree"), ExtResource("50_bandit_camp"), ExtResource("80_abandoned_mine"), ExtResource("81_abandoned_tower"), ExtResource("48_graveyard"), ExtResource("82_shipwreck"), ExtResource("83_desert_temple"), ExtResource("54_destroyed_village"), ExtResource("84_magical_crater"), ExtResource("85_frost_arena")])
 biome_definitions = Array[ExtResource("73_biome_definition")]([ExtResource("74_forest_biome"), ExtResource("75_mountain_biome"), ExtResource("76_swamp_biome"), ExtResource("77_desert_biome"), ExtResource("78_snow_biome")])
 
+
 [node name="ObjectManager" type="Node2D" parent="." node_paths=PackedStringArray("tree_manager", "breakable_manager", "building_manager", "tile_structure_assembler", "village_manager", "landmark_manager", "teleport_network") groups=["object_manager"]]
+
 script = ExtResource("7_object_manager")
 tree_manager = NodePath("TreeManager")
 breakable_manager = NodePath("BreakableManager")
@@ -123,11 +125,11 @@ active_tree_batch_interval = 2.0
 
 [node name="PassiveTrees" type="MultiMeshInstance2D" parent="ObjectManager/TreeManager" unique_id=471359765]
 
-[node name="BreakableManager" type="Node2D" parent="ObjectManager" node_paths=PackedStringArray("world_map") groups=["breakable_manager"]]
+[node name="BreakableManager" type="Node2D" parent="ObjectManager" unique_id=877257521 node_paths=PackedStringArray("world_map") groups=["breakable_manager"]]
 script = ExtResource("8_breakable_manager")
 world_map = NodePath("../..")
 
-[node name="BuildingManager" type="Node2D" parent="ObjectManager" node_paths=PackedStringArray("world_map") groups=["building_manager", "buildings"]]
+[node name="BuildingManager" type="Node2D" parent="ObjectManager" unique_id=1047387073 node_paths=PackedStringArray("world_map") groups=["building_manager", "buildings"]]
 script = ExtResource("9_building_manager")
 world_map = NodePath("../..")
 building_definitions = Array[ExtResource("12_building_definition")]([ExtResource("10_wall_definition"), ExtResource("11_tower_definition"), ExtResource("17_campfire_definition"), ExtResource("18_cannon_definition"), ExtResource("24_magic_cannon_definition"), ExtResource("25_jump_pad_definition"), ExtResource("28_pit_definition"), ExtResource("30_shield_definition"), ExtResource("32_cooking_definition"), ExtResource("34_teleport_definition"), ExtResource("36_fire_definition"), ExtResource("38_sensor_definition"), ExtResource("40_well_definition"), ExtResource("55_golem_wall"), ExtResource("56_golem_guardian"), ExtResource("57_life_well"), ExtResource("58_earthquake_cannon"), ExtResource("63_nature_kitchen"), ExtResource("64_forest_eye"), ExtResource("65_world_tree"), ExtResource("66_vine_catapult"), ExtResource("67_living_wall")])
@@ -141,7 +143,7 @@ recipes = Array[ExtResource("20_structure_recipe")]([ExtResource("21_campfire_re
 [node name="TeleportNetwork" type="Node" parent="ObjectManager" groups=["teleport_network"]]
 script = ExtResource("42_teleport_network")
 
-[node name="VillageManager" type="Node2D" parent="ObjectManager" node_paths=PackedStringArray("world_map", "building_manager") groups=["village_manager"]]
+[node name="VillageManager" type="Node2D" parent="ObjectManager" unique_id=127240209 node_paths=PackedStringArray("world_map", "building_manager") groups=["village_manager"]]
 script = ExtResource("13_village_manager")
 world_map = NodePath("../..")
 building_manager = NodePath("../BuildingManager")
