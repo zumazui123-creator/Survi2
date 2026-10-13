@@ -541,7 +541,7 @@ func _on_interactive_mode_changed(enabled: bool) -> void:
 	if not enabled:
 		code_edit.grab_focus()
 	_set_status(
-		"Interactive Modus aktiv – tippe ein Wort und drücke die Leertaste."
+		"Interactive Modus aktiv – tippe ein Wort und drücke Leertaste oder Enter."
 		if enabled else "Interactive Modus beendet – der Code-Editor ist wieder aktiv.",
 		false
 	)

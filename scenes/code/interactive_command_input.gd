@@ -88,9 +88,7 @@ func _input(event: InputEvent) -> void:
 	if key_event.ctrl_pressed or key_event.alt_pressed or key_event.meta_pressed:
 		return
 
-	if key_event.keycode == KEY_SPACE \
-			or key_event.physical_keycode == KEY_SPACE \
-			or key_event.unicode == 32:
+	if _is_submit_key(key_event):
 		_submit_word()
 		get_viewport().set_input_as_handled()
 		return
@@ -111,6 +109,18 @@ func _input(event: InputEvent) -> void:
 	_update_display()
 	word_changed.emit(_word_buffer)
 	get_viewport().set_input_as_handled()
+
+
+func _is_submit_key(key_event: InputEventKey) -> bool:
+	return key_event.keycode == KEY_SPACE \
+		or key_event.physical_keycode == KEY_SPACE \
+		or key_event.unicode == 32 \
+		or key_event.keycode == KEY_ENTER \
+		or key_event.physical_keycode == KEY_ENTER \
+		or key_event.keycode == KEY_KP_ENTER \
+		or key_event.physical_keycode == KEY_KP_ENTER \
+		or key_event.unicode == 10 \
+		or key_event.unicode == 13
 
 
 func _remove_last_character() -> void:
