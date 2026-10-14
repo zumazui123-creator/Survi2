@@ -84,6 +84,27 @@
 [ext_resource type="Resource" path="res://assets/data/landmarks/desert_temple.tres" id="83_desert_temple"]
 [ext_resource type="Resource" path="res://assets/data/landmarks/magical_crater.tres" id="84_magical_crater"]
 [ext_resource type="Resource" path="res://assets/data/landmarks/frost_boss_arena.tres" id="85_frost_arena"]
+[ext_resource type="Script" path="res://scenes/world_events/world_event_definition.gd" id="86_event_definition"]
+[ext_resource type="Resource" path="res://assets/data/world_events/resident_attack.tres" id="87_resident_attack"]
+[ext_resource type="Resource" path="res://assets/data/world_events/merchant_ambush.tres" id="88_merchant_ambush"]
+[ext_resource type="Resource" path="res://assets/data/world_events/escaped_pig.tres" id="89_escaped_pig"]
+[ext_resource type="Resource" path="res://assets/data/world_events/meteor_crash.tres" id="90_meteor_crash"]
+[ext_resource type="Resource" path="res://assets/data/world_events/village_siege.tres" id="91_village_siege"]
+[ext_resource type="Resource" path="res://assets/data/world_events/rare_caravan.tres" id="92_rare_caravan"]
+[ext_resource type="Resource" path="res://assets/data/world_events/night_portal.tres" id="93_night_portal"]
+[ext_resource type="Script" path="res://scenes/world_events/world_event_manager.gd" id="94_event_manager"]
+[ext_resource type="PackedScene" path="res://scenes/npc/wandering_merchant.tscn" id="95_village_merchant"]
+[ext_resource type="PackedScene" path="res://scenes/map/landmarks/landmark_guardian.tscn" id="96_village_hostile"]
+[ext_resource type="Script" path="res://scenes/map/secrets/secret_location_definition.gd" id="97_secret_definition"]
+[ext_resource type="Resource" path="res://assets/data/secrets/hidden_cave.tres" id="98_hidden_cave"]
+[ext_resource type="Resource" path="res://assets/data/secrets/breakable_room.tres" id="99_breakable_room"]
+[ext_resource type="Resource" path="res://assets/data/secrets/secret_island.tres" id="100_secret_island"]
+[ext_resource type="Resource" path="res://assets/data/secrets/teleporter_ruins.tres" id="101_teleporter_ruins"]
+[ext_resource type="Resource" path="res://assets/data/secrets/mountain_passage.tres" id="102_mountain_passage"]
+[ext_resource type="Resource" path="res://assets/data/secrets/underground_room.tres" id="103_underground_room"]
+[ext_resource type="Resource" path="res://assets/data/secrets/jump_shortcut.tres" id="104_jump_shortcut"]
+[ext_resource type="Script" path="res://scenes/main/secret_location_manager.gd" id="105_secret_manager"]
+[ext_resource type="PackedScene" path="res://scenes/map/secrets/secret_location.tscn" id="106_secret_marker"]
 
 [node name="Map" type="Control" unique_id=1853554641]
 layout_mode = 3
@@ -104,10 +125,12 @@ script = ExtResource("3_qpycp")
 script = ExtResource("5_qci3n")
 village_definition = ExtResource("14_village_definition")
 landmark_definitions = Array[ExtResource("44_landmark_definition")]([ExtResource("79_ancient_tree"), ExtResource("50_bandit_camp"), ExtResource("80_abandoned_mine"), ExtResource("81_abandoned_tower"), ExtResource("48_graveyard"), ExtResource("82_shipwreck"), ExtResource("83_desert_temple"), ExtResource("54_destroyed_village"), ExtResource("84_magical_crater"), ExtResource("85_frost_arena")])
+world_event_definitions = Array[ExtResource("86_event_definition")]([ExtResource("87_resident_attack"), ExtResource("88_merchant_ambush"), ExtResource("89_escaped_pig"), ExtResource("90_meteor_crash"), ExtResource("91_village_siege"), ExtResource("92_rare_caravan"), ExtResource("93_night_portal")])
+secret_definitions = Array[ExtResource("97_secret_definition")]([ExtResource("98_hidden_cave"), ExtResource("99_breakable_room"), ExtResource("100_secret_island"), ExtResource("101_teleporter_ruins"), ExtResource("102_mountain_passage"), ExtResource("103_underground_room"), ExtResource("104_jump_shortcut")])
 biome_definitions = Array[ExtResource("73_biome_definition")]([ExtResource("74_forest_biome"), ExtResource("75_mountain_biome"), ExtResource("76_swamp_biome"), ExtResource("77_desert_biome"), ExtResource("78_snow_biome")])
 
 
-[node name="ObjectManager" type="Node2D" parent="." node_paths=PackedStringArray("tree_manager", "breakable_manager", "building_manager", "tile_structure_assembler", "village_manager", "landmark_manager", "teleport_network") groups=["object_manager"]]
+[node name="ObjectManager" type="Node2D" parent="." node_paths=PackedStringArray("tree_manager", "breakable_manager", "building_manager", "tile_structure_assembler", "village_manager", "landmark_manager", "world_event_manager", "secret_location_manager", "teleport_network") groups=["object_manager"]]
 
 script = ExtResource("7_object_manager")
 tree_manager = NodePath("TreeManager")
@@ -116,6 +139,8 @@ building_manager = NodePath("BuildingManager")
 tile_structure_assembler = NodePath("TileStructureAssembler")
 village_manager = NodePath("VillageManager")
 landmark_manager = NodePath("LandmarkManager")
+world_event_manager = NodePath("WorldEventManager")
+secret_location_manager = NodePath("SecretLocationManager")
 teleport_network = NodePath("TeleportNetwork")
 
 [node name="TreeManager" type="Node2D" parent="ObjectManager" unique_id=1255616609 groups=["tree_manager"]]
@@ -149,9 +174,25 @@ world_map = NodePath("../..")
 building_manager = NodePath("../BuildingManager")
 resident_scene = ExtResource("15_village_resident")
 pig_scene = ExtResource("16_village_pig")
+merchant_scene = ExtResource("95_village_merchant")
+hostile_scene = ExtResource("96_village_hostile")
 
 [node name="LandmarkManager" type="Node2D" parent="ObjectManager" node_paths=PackedStringArray("world_map", "building_manager") groups=["landmark_manager"]]
 script = ExtResource("43_landmark_manager")
 world_map = NodePath("../..")
 building_manager = NodePath("../BuildingManager")
 definitions = Array[ExtResource("44_landmark_definition")]([ExtResource("79_ancient_tree"), ExtResource("50_bandit_camp"), ExtResource("80_abandoned_mine"), ExtResource("81_abandoned_tower"), ExtResource("48_graveyard"), ExtResource("82_shipwreck"), ExtResource("83_desert_temple"), ExtResource("54_destroyed_village"), ExtResource("84_magical_crater"), ExtResource("85_frost_arena")])
+
+[node name="WorldEventManager" type="Node2D" parent="ObjectManager" node_paths=PackedStringArray("world_map", "village_manager") groups=["world_event_manager"]]
+script = ExtResource("94_event_manager")
+world_map = NodePath("../..")
+village_manager = NodePath("../VillageManager")
+definitions = Array[ExtResource("86_event_definition")]([ExtResource("87_resident_attack"), ExtResource("88_merchant_ambush"), ExtResource("89_escaped_pig"), ExtResource("90_meteor_crash"), ExtResource("91_village_siege"), ExtResource("92_rare_caravan"), ExtResource("93_night_portal")])
+
+[node name="SecretLocationManager" type="Node2D" parent="ObjectManager" node_paths=PackedStringArray("world_map", "building_manager", "tree_manager") groups=["secret_location_manager"]]
+script = ExtResource("105_secret_manager")
+world_map = NodePath("../..")
+building_manager = NodePath("../BuildingManager")
+tree_manager = NodePath("../TreeManager")
+marker_scene = ExtResource("106_secret_marker")
+definitions = Array[ExtResource("97_secret_definition")]([ExtResource("98_hidden_cave"), ExtResource("99_breakable_room"), ExtResource("100_secret_island"), ExtResource("101_teleporter_ruins"), ExtResource("102_mountain_passage"), ExtResource("103_underground_room"), ExtResource("104_jump_shortcut")])

@@ -13,6 +13,12 @@ extends Node
 @export var village_definition: VillageDefinition
 @export_group("Landmarks")
 @export var landmark_definitions: Array[LandmarkDefinition] = []
+@export_group("World events")
+@export var world_event_definitions: Array[WorldEventDefinition] = []
+@export_range(0, 20, 1) var minimum_world_events: int = 4
+@export_range(0, 20, 1) var maximum_world_events: int = 6
+@export_group("Hidden locations")
+@export var secret_definitions: Array[SecretLocationDefinition] = []
 @export_group("Biomes")
 @export var biome_definitions: Array[BiomeDefinition] = []
 @export_range(0.0, 0.45, 0.01) var water_elevation_threshold: float = 0.26
@@ -26,9 +32,14 @@ var spawnable_tiles: Array[Vector2i] = []
 var tree_spawn_data: Array[TreeSpawnData] = []
 var village_plans: Array[VillagePlan] = []
 var landmark_plans: Array[LandmarkPlan] = []
+var world_event_plans: Array[WorldEventPlan] = []
+var secret_location_plans: Array[SecretLocationPlan] = []
 var _tree_candidate_tiles: Array[Vector2i] = []
 var _village_reserved_tiles: Dictionary[Vector2i, bool] = {}
 var _landmark_reserved_tiles: Dictionary[Vector2i, bool] = {}
+var _world_event_reserved_tiles: Dictionary[Vector2i, bool] = {}
+var _secret_reserved_tiles: Dictionary[Vector2i, bool] = {}
+var _secret_terrain_blocked_tiles: Dictionary[Vector2i, bool] = {}
 var _water_tiles: Dictionary[Vector2i, bool] = {}
 var biome_map_data: BiomeMapData
 var _biome_definitions_by_id: Dictionary[StringName, BiomeDefinition] = {}
@@ -39,13 +50,20 @@ func generateMainMap(levelData : Dictionary):
 	tree_spawn_data.clear()
 	village_plans.clear()
 	landmark_plans.clear()
+	world_event_plans.clear()
+	secret_location_plans.clear()
 	_tree_candidate_tiles.clear()
 	_village_reserved_tiles.clear()
 	_landmark_reserved_tiles.clear()
+	_world_event_reserved_tiles.clear()
+	_secret_reserved_tiles.clear()
+	_secret_terrain_blocked_tiles.clear()
 	_water_tiles.clear()
 	generate_terrain(levelData)
 	_plan_landmarks()
 	_plan_villages()
+	_plan_world_events()
+	_plan_secret_locations()
 	_carve_paths_between_regions()
 	_select_tree_spawns()
 	map.set_level_options(1)
@@ -57,6 +75,8 @@ func generateMainMap(levelData : Dictionary):
 		village_plans,
 		village_definition,
 		landmark_plans,
+		world_event_plans,
+		secret_location_plans,
 	]
 	
 func generate_terrain(levelData : Dictionary) -> void:
@@ -137,7 +157,10 @@ func _select_tree_spawns() -> void:
 	)
 
 	for tile: Vector2i in selected_tiles:
-		if _village_reserved_tiles.has(tile) or _landmark_reserved_tiles.has(tile):
+		if _village_reserved_tiles.has(tile) \
+				or _landmark_reserved_tiles.has(tile) \
+				or _world_event_reserved_tiles.has(tile) \
+				or _secret_reserved_tiles.has(tile):
 			continue
 		var available_tree_ids: PackedStringArray = PackedStringArray()
 		var definition: BiomeDefinition = map.get_biome_definition_at(tile)
@@ -150,6 +173,7 @@ func _select_tree_spawns() -> void:
 		var tree_index: int = tree_rng.randi_range(0, available_tree_ids.size() - 1)
 		var tree_object_id: String = String(available_tree_ids[tree_index])
 		tree_spawn_data.append(TreeSpawnData.new(tile, tree_object_id))
+	_append_secret_cover_trees()
 
 
 func _plan_villages() -> void:
@@ -218,6 +242,107 @@ func _plan_landmarks() -> void:
 				walkable_tiles.append(tile)
 
 
+func _plan_world_events() -> void:
+	if world_event_definitions.is_empty():
+		return
+	var available_tiles: Dictionary[Vector2i, bool] = {}
+	for tile: Vector2i in walkable_tiles:
+		available_tiles[tile] = true
+	var blocked_tiles: Dictionary[Vector2i, bool] = {}
+	for tile: Vector2i in _landmark_reserved_tiles:
+		blocked_tiles[tile] = true
+	for tile: Vector2i in _village_reserved_tiles:
+		blocked_tiles[tile] = true
+	var planner: WorldEventPlanner = WorldEventPlanner.new()
+	world_event_plans = planner.create_plans(
+		Vector2i(map.width, map.height),
+		world_event_definitions,
+		Multihelper.mapSeed,
+		available_tiles,
+		blocked_tiles,
+		village_plans,
+		minimum_world_events,
+		maximum_world_events
+	)
+	for plan: WorldEventPlan in world_event_plans:
+		for tile: Vector2i in plan.get_reserved_tiles(Vector2i(map.width, map.height)):
+			_world_event_reserved_tiles[tile] = true
+			spawnable_tiles.erase(tile)
+			_tree_candidate_tiles.erase(tile)
+
+
+func _plan_secret_locations() -> void:
+	if secret_definitions.is_empty():
+		return
+	var walkable_index: Dictionary[Vector2i, bool] = {}
+	for tile: Vector2i in walkable_tiles:
+		walkable_index[tile] = true
+	var blocked_tiles: Dictionary[Vector2i, bool] = {}
+	for tile: Vector2i in _landmark_reserved_tiles:
+		blocked_tiles[tile] = true
+	for tile: Vector2i in _village_reserved_tiles:
+		blocked_tiles[tile] = true
+	for tile: Vector2i in _world_event_reserved_tiles:
+		blocked_tiles[tile] = true
+	var planner: SecretLocationPlanner = SecretLocationPlanner.new()
+	secret_location_plans = planner.create_plans(
+		Vector2i(map.width, map.height),
+		secret_definitions,
+		Multihelper.mapSeed,
+		walkable_index,
+		_water_tiles,
+		blocked_tiles,
+		biome_map_data
+	)
+	for plan: SecretLocationPlan in secret_location_plans:
+		for tile: Vector2i in plan.get_reserved_tiles():
+			_secret_reserved_tiles[tile] = true
+			spawnable_tiles.erase(tile)
+			_tree_candidate_tiles.erase(tile)
+		for tile: Vector2i in plan.terrain_blocked_tiles:
+			_secret_terrain_blocked_tiles[tile] = true
+		_apply_secret_terrain(plan)
+
+
+func _apply_secret_terrain(plan: SecretLocationPlan) -> void:
+	var floor_tiles: Array[Vector2i] = []
+	floor_tiles.assign(plan.room_tiles)
+	for tile: Vector2i in plan.access_building_tiles:
+		if tile not in floor_tiles:
+			floor_tiles.append(tile)
+	for tile: Vector2i in [plan.entrance_tile, plan.exit_tile]:
+		if tile not in floor_tiles:
+			floor_tiles.append(tile)
+	for tile: Vector2i in floor_tiles:
+		if tile.x < 0 or tile.y < 0 or tile.x >= map.width or tile.y >= map.height:
+			continue
+		_water_tiles.erase(tile)
+		if tile not in walkable_tiles:
+			walkable_tiles.append(tile)
+		spawnable_tiles.erase(tile)
+		map.set_grass_field(tile)
+	for tile: Vector2i in plan.terrain_blocked_tiles:
+		if tile.x < 0 or tile.y < 0 or tile.x >= map.width or tile.y >= map.height:
+			continue
+		walkable_tiles.erase(tile)
+		spawnable_tiles.erase(tile)
+		_tree_candidate_tiles.erase(tile)
+		_water_tiles[tile] = true
+		map.tile_map.set_cell(tile, map.tileset_source, map.waterCoors[0], 0)
+
+
+func _append_secret_cover_trees() -> void:
+	var occupied: Dictionary[Vector2i, bool] = {}
+	for spawn: TreeSpawnData in tree_spawn_data:
+		occupied[spawn.tile] = true
+	for plan: SecretLocationPlan in secret_location_plans:
+		for tile: Vector2i in plan.cover_tree_tiles:
+			if occupied.has(tile):
+				continue
+			tree_spawn_data.append(TreeSpawnData.new(tile, "tree0"))
+			occupied[tile] = true
+
+
 func _carve_paths_between_regions() -> void:
 	var destinations: Array[Vector2i] = []
 	for plan: VillagePlan in village_plans:
@@ -275,12 +400,16 @@ func _make_path_area_walkable(center_tile: Vector2i) -> void:
 func _make_path_tile_walkable(tile: Vector2i) -> void:
 	if tile.x < 0 or tile.y < 0 or tile.x >= map.width or tile.y >= map.height:
 		return
+	if _secret_terrain_blocked_tiles.has(tile):
+		return
 	_water_tiles.erase(tile)
 	_tree_candidate_tiles.erase(tile)
 	if tile not in walkable_tiles:
 		walkable_tiles.append(tile)
 	if not _village_reserved_tiles.has(tile) \
 			and not _landmark_reserved_tiles.has(tile) \
+			and not _world_event_reserved_tiles.has(tile) \
+			and not _secret_reserved_tiles.has(tile) \
 			and tile not in spawnable_tiles:
 		spawnable_tiles.append(tile)
 	map.set_biome_path_field(tile)

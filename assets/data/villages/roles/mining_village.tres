@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="VillageRoleDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/map/villages/village_role_definition.gd" id="1_role"]
+
+[resource]
+script = ExtResource("1_role")
+role_id = &"mining"
+display_name = "Bergbaudorf"
+description = "Bergleute fördern Eisen und Kohle aus den nahen Stollen."
+map_color = Color(0.55, 0.58, 0.62, 1)
+minimum_residents = 3
+maximum_residents = 5
+resident_actor_id = &"villager"
+minimum_pigs = 0
+maximum_pigs = 1
+loot = {"coal": 4, "iron": 5, "pickaxe1": 1, "stone": 4}

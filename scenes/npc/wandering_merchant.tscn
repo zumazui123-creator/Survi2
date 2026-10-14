@@ -10,6 +10,12 @@ radius = 13.0
 properties/0/path = NodePath(".:position")
 properties/0/spawn = true
 properties/0/replication_mode = 2
+properties/1/path = NodePath(".:invulnerable")
+properties/1/spawn = true
+properties/1/replication_mode = 2
+properties/2/path = NodePath(".:hp")
+properties/2/spawn = true
+properties/2/replication_mode = 2
 
 [node name="WanderingMerchant" type="CharacterBody2D" groups=["damageable", "sensor_animal", "world_merchant"]]
 collision_layer = 3
@@ -35,6 +41,24 @@ theme_override_font_sizes/font_size = 8
 
 [node name="MoveTimer" type="Timer" parent="."]
 wait_time = 3.0
+
+[node name="MerchantUI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="HPBar" type="ProgressBar" parent="MerchantUI"]
+visible = false
+custom_minimum_size = Vector2(60, 8)
+layout_mode = 0
+offset_left = -30.0
+offset_top = -55.0
+offset_right = 30.0
+offset_bottom = -47.0
+max_value = 1.0
+value = 1.0
+show_percentage = false
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("Replication")

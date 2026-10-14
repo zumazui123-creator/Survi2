@@ -1266,6 +1266,11 @@ func _validate_and_normalize_arguments(
 	if action == Strings.ACTION_BUILD or action == Strings.ACTION_PAINT:
 		if arguments.size() != 2:
 			return "Der Bau-Befehl benötigt einen Typ und eine Richtung."
+		if action == Strings.ACTION_BUILD:
+			var localized_buildings: Dictionary = Strings.BUILDING_NAMES.get(locale, {})
+			var building_name: String = arguments[0].to_lower()
+			if not localized_buildings.has(building_name):
+				return "Unbekannter Gebäudetyp: %s" % arguments[0]
 		var localized_actions: Dictionary = Strings.ACTION_NAMES.get(locale, {})
 		var direction_name: String = arguments[1]
 		if not localized_actions.has(direction_name):

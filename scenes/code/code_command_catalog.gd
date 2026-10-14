@@ -48,8 +48,8 @@ static func get_examples(locale: String = "de") -> Array[Dictionary]:
 		},
 		{
 			"name": "Kleine Verteidigung",
-			"code": "links\nbaue mauer links\nrechts\noben\nbaue turm oben\nunten",
-			"description": "Bewegt sich zwischen zwei Baupositionen und errichtet Mauer und Turm.",
+			"code": "links\nbaue mauer links\nrechts\noben\nbaue mauer oben\nunten",
+			"description": "Bewegt sich zwischen zwei Baupositionen und errichtet zwei Mauern.",
 		},
 		{
 			"name": "Baurezept: Lagerfeuer",
@@ -341,7 +341,7 @@ static func _get_german_entries() -> Array[Dictionary]:
 		_entry("sage", "sage Hallo", "Lässt die Figur den folgenden Text sagen.", ["sage"]),
 		_entry("nutze", "nutze item 1", "Benutzt den angegebenen Inventar-Slot.", ["nutze", "item"]),
 		_entry("droppe", "droppe item 1 links", "Legt ein Item aus dem angegebenen Inventar-Slot bevorzugt in der gewählten Richtung ab. Die Richtung ist optional.", ["droppe", "item"]),
-		_entry("baue", "baue mauer links", "Baut Mauer oder Turm auf einem freien Nachbar-Tile.", ["baue"]),
+		_entry("baue", "baue mauer links", "Baut eine Mauer auf einem freien Nachbar-Tile.", ["baue"]),
 		_entry("male", "male grass rechts", "Ändert ein angrenzendes Terrain-Tile.", ["male"]),
 		_entry("combo", "combo links attacke rechts attacke", "Führt eine bekannte Combo aus und verbraucht Mana.", ["combo"]),
 		_entry(

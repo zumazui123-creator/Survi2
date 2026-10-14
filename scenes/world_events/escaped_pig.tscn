@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/animal/animal.tscn" id="1_animal"]
+[ext_resource type="Script" path="res://scenes/world_events/escaped_pig.gd" id="2_script"]
+
+[node name="EscapedPig" groups=["damageable", "sensor_animal", "world_event_actor"] instance=ExtResource("1_animal")]
+script = ExtResource("2_script")
+actor_id = &"pig"

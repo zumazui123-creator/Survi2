@@ -3,6 +3,8 @@ class_name VillagePlan
 
 var village_id: int = -1
 var is_large: bool = false
+var role_id: StringName = &""
+var resident_actor_id: StringName = &"man"
 var bounds: Rect2i = Rect2i()
 var interior_bounds: Rect2i = Rect2i()
 var gate_tiles: Array[Vector2i] = []
@@ -10,16 +12,22 @@ var approach_tiles: Array[Vector2i] = []
 var wall_tiles: Array[Vector2i] = []
 var resident_spawn_tiles: Array[Vector2i] = []
 var pig_spawn_tiles: Array[Vector2i] = []
+var merchant_spawn_tiles: Array[Vector2i] = []
+var hostile_spawn_tiles: Array[Vector2i] = []
+var hostile_actor_ids: Array[StringName] = []
+var feature_building_tiles: Array[Vector2i] = []
 var loot_spawn_tiles: Array[Vector2i] = []
 
 
 func _init(
 		id: int = -1,
 		village_bounds: Rect2i = Rect2i(),
-		large_village: bool = false
+		large_village: bool = false,
+		planned_role_id: StringName = &""
 	) -> void:
 	village_id = id
 	is_large = large_village
+	role_id = planned_role_id
 	bounds = village_bounds
 	if bounds.size.x >= 3 and bounds.size.y >= 3:
 		interior_bounds = Rect2i(bounds.position + Vector2i.ONE, bounds.size - Vector2i(2, 2))

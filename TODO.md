@@ -3,6 +3,70 @@
 TODO:
 
 
+
+
+
+6. Programmier-Rätsel
+Das wäre für dein Spiel besonders passend. Bestimmte Orte lassen sich mit kleinen Programmen lösen:
+Generell: loest man das Raetsel richtig wird man gut mit items belohnt.
+- Bei den Tempel: mehrere Schalter in einer Reihenfolge betreten und das in einer bestimmten Zeit.
+- Irgendwo bei den Gebirgen: ein Labyrinth zu einer bestimmen zeit durchgehen, sonst wird man zurueck zum start
+    teleportiert. Beim betreten startet ein Count down. Der Start punkt ist ein weisses tile 
+    und der End punkte ein schwarzes
+- Bei einem Friedhof: Gegenstände in einer richtigen reihe droppen. 4 Tiles mit den Farben: 
+    Tile 1 Gelb 
+    Tile 2 Blau 
+    Tile 3 Rot
+    Tile 4 Lila
+
+- Ghost Monster in den Suempfen mit Sensorbedingungen umgehen
+- Bei den Wald Biom: Es gibt ein Pfad der zum Schatz fuehrt. Diese Pfad
+    wird links und rechts von pfeilen beschossen, man muss mauer bauen und stueck fuer 
+    stueck nach oben zum schatz gehen.
+- eine Figur aus einem Gefahrenbereich programmieren
+- eine Brücke aus Mauern bauen
+Als Belohnung gibt es neue Befehle, Funktionen oder seltene Items.
+
+8. Boss-Territorien ankündigen
+Der Spieler sollte erkennen, dass er sich einem Boss nähert:
+- zerbrochene Bäume beim Waldkoloss
+- große Fußspuren beim Golem
+- erschütternder Bildschirm
+- besondere Musik
+- kleinere Diener
+- Warnungen von Dorfbewohnern
+Damit wird bereits die Suche nach dem Boss spannend.
+
+
+
+
+
+
+vielleicht Spaeter:
+Bewohner könnten Aufträge geben, handeln und ihre Einstellung zum Spieler verändern.
+
+Done:
+9. Versteckte Orte und Abkürzungen
+- Höhleneingänge hinter Bäumen
+- zerstörbare Wände
+- geheime Inseln
+- Teleporter-Ruinen
+- kleine Passagen zwischen Bergen
+- Untergrundräume
+- Abkürzungen, die erst mit Sprung-Tiles erreichbar werden
+Manche Geheimnisse könnten nur vom Sensor erkannt werden.
+
+
+
+7. Dörfer mit eigener Persönlichkeit
+Die Dörfer könnten unterschiedliche Rollen erhalten:
+- Bauerndorf mit Nahrung und Tieren
+- Bergbaudorf mit Eisen
+- Magierdorf mit Mana-Items
+- befestigtes Militärdorf
+- verlassenes oder von Gegnern besetztes Dorf
+- Händlerstadt als großes Hauptdorf
+
 2. Markante Orte
 Spieler sollten schon aus einiger Entfernung erkennen können, dass irgendwo etwas Interessantes liegt:
 - verlassene Türme
@@ -90,83 +154,6 @@ Während der Reise können kurze Situationen entstehen:
 Diese Ereignisse könnten pro Kartengenerierung an anderen Orten stattfinden.
 
 
-6. Programmier-Rätsel
-Das wäre für dein Spiel besonders passend. Bestimmte Orte lassen sich mit kleinen Programmen lösen:
-Generell: loest man das Raetsel richtig wird man gut mit items belohnt.
-- Bei den Tempel: mehrere Schalter in einer Reihenfolge betreten und das in einer bestimmten Zeit.
-- Irgendwo bei den Gebirgen: ein Labyrinth zu einer bestimmen zeit durchgehen, sonst wird man zurueck zum start
-    teleportiert. Beim betreten startet ein Count down. Der Start punkt ist ein weisses tile 
-    und der End punkte ein schwarzes
-- Bei einem Friedhof: Gegenstände in einer richtigen reihe droppen. 4 Tiles mit den Farben: 
-    Tile 1 Gelb 
-    Tile 2 Blau 
-    Tile 3 Rot
-    Tile 4 Lila
-
-- Ghost Monster in den Suempfen mit Sensorbedingungen umgehen
-- Bei den Wald Biom: Es gibt ein Pfad der zum Schatz fuehrt. Diese Pfad
-    wird links und rechts von pfeilen beschossen, man muss mauer bauen und stueck fuer 
-    stueck nach oben zum schatz gehen.
-- eine Figur aus einem Gefahrenbereich programmieren
-- eine Brücke aus Mauern bauen
-Als Belohnung gibt es neue Befehle, Funktionen oder seltene Items.
-
-7. Dörfer mit eigener Persönlichkeit
-Die Dörfer könnten unterschiedliche Rollen erhalten:
-- Bauerndorf mit Nahrung und Tieren
-- Bergbaudorf mit Eisen
-- Magierdorf mit Mana-Items
-- befestigtes Militärdorf
-- verlassenes oder von Gegnern besetztes Dorf
-- Händlerstadt als großes Hauptdorf
-
-8. Boss-Territorien ankündigen
-Der Spieler sollte erkennen, dass er sich einem Boss nähert:
-- zerbrochene Bäume beim Waldkoloss
-- große Fußspuren beim Golem
-- erschütternder Bildschirm
-- besondere Musik
-- kleinere Diener
-- Warnungen von Dorfbewohnern
-Damit wird bereits die Suche nach dem Boss spannend.
-9. Versteckte Orte und Abkürzungen
-- Höhleneingänge hinter Bäumen
-- zerstörbare Wände
-- geheime Inseln
-- Teleporter-Ruinen
-- kleine Passagen zwischen Bergen
-- Untergrundräume
-- Abkürzungen, die erst mit Sprung-Tiles erreichbar werden
-Manche Geheimnisse könnten nur vom Sensor erkannt werden.
-10. Veränderungen über Zeit
-Bereits besuchte Orte sollten sich verändern können:
-- Bäume wachsen nach.
-- Dörfer werden angegriffen oder ausgebaut.
-- Gegner errichten Lager.
-- Ressourcen erscheinen nach einem Sturm.
-- Bosse wandern zwischen Regionen.
-- zerstörte Gebäude bleiben sichtbar
-- Händler wechseln ihren Standort
-Dadurch bleibt auch eine bekannte Karte interessant.
-
-
-Meine empfohlene Reihenfolge
-1. Fog of War mit entdeckbaren Orten
-2. Biome mit exklusiven Ressourcen
-3. Landmarken und kleine Ruinen
-4. Straßen zwischen Dörfern und wichtigen Orten
-5. zufällige Weltereignisse
-6. Programmier-Rätsel
-7. Dorfaufträge und Fraktionen
-8. dynamische Veränderungen
-Am stärksten zu deinem Spiel passen meiner Meinung nach programmierbare Erkundungsrätsel. Damit wäre der Code-Editor nicht nur zur Bewegung und zum Kämpfen da, sondern auch der Schlüssel zum Entdecken geheimer Bereiche.
-
-
-
-vielleicht Spaeter:
-Bewohner könnten Aufträge geben, handeln und ihre Einstellung zum Spieler verändern.
-
-Done:
 1. Unterschiedliche Biome
 Jedes Biom sollte eigene Gefahren, Ressourcen und Sehenswürdigkeiten besitzen:
 Biom	Besonderheit	Exklusive Belohnung

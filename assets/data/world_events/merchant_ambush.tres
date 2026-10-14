@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="WorldEventDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/world_events/world_event_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+event_id = &"merchant_ambush"
+display_name = "Überfallener Händler"
+description = "Banditen haben einen reisenden Händler umzingelt."
+spawn_probability = 0.7
+reservation_radius_tiles = 3
+marker_style = &"merchant_ambush"
+marker_color = Color(0.95, 0.32, 0.12, 1)
+friendly_role = 1
+target_role = 2
+hostile_actor_id = &"bandit"
+minimum_hostiles = 3
+maximum_hostiles = 4
+map_color = Color(0.95, 0.32, 0.12, 1)

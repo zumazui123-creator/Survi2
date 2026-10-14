@@ -1,6 +1,13 @@
-[gd_resource type="Resource" script_class="VillageDefinition" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="VillageDefinition" load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://scenes/map/villages/village_definition.gd" id="1_definition"]
+[ext_resource type="Resource" path="res://assets/data/villages/roles/farmer_village.tres" id="2_farmer"]
+[ext_resource type="Resource" path="res://assets/data/villages/roles/mining_village.tres" id="3_mining"]
+[ext_resource type="Resource" path="res://assets/data/villages/roles/mage_village.tres" id="4_mage"]
+[ext_resource type="Resource" path="res://assets/data/villages/roles/military_village.tres" id="5_military"]
+[ext_resource type="Resource" path="res://assets/data/villages/roles/occupied_village.tres" id="6_occupied"]
+[ext_resource type="Resource" path="res://assets/data/villages/roles/merchant_city.tres" id="7_city"]
+[ext_resource type="Script" path="res://scenes/map/villages/village_role_definition.gd" id="8_role_script"]
 
 [resource]
 script = ExtResource("1_definition")
@@ -23,3 +30,5 @@ large_minimum_pigs = 4
 large_maximum_pigs = 7
 large_village_loot = {"crystalShard": 3, "energy_drink": 2, "magicAxe1": 1, "magicSpear1": 1, "magicSword1": 1}
 wall_building_id = &"wall"
+role_definitions = Array[ExtResource("8_role_script")]([ExtResource("2_farmer"), ExtResource("3_mining"), ExtResource("4_mage"), ExtResource("5_military"), ExtResource("6_occupied"), ExtResource("7_city")])
+large_village_role_id = &"merchant_city"

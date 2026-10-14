@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="WorldEventDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/world_events/world_event_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+event_id = &"night_portal"
+display_name = "Magisches Nachtportal"
+description = "Ein leuchtendes Portal öffnet sich nur in der Nacht. Geister bewachen den Übergang."
+spawn_probability = 1.0
+always_plan = true
+activation = 1
+reservation_radius_tiles = 4
+marker_style = &"portal"
+marker_color = Color(0.66, 0.25, 1, 1)
+glowing = true
+hostile_actor_id = &"swampGhost"
+minimum_hostiles = 2
+maximum_hostiles = 4
+map_color = Color(0.66, 0.25, 1, 1)

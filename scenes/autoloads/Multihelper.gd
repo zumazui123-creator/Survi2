@@ -190,6 +190,8 @@ func addPlayer(playerName, id, characterFile):
 	if not is_instance_valid(newPlayer):
 		push_error("Multihelper: player scene did not instantiate Survi2Player")
 		return
+	if multiplayer.is_server():
+		Inventory.initialize_player_inventory(str(id))
 	newPlayer.playerName = playerName
 	newPlayer.characterFile = characterFile
 	newPlayer.name = str(id)

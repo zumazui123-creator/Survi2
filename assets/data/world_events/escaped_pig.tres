@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="WorldEventDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/world_events/world_event_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+event_id = &"escaped_pig"
+display_name = "Entlaufenes Schwein"
+description = "Ein Schwein ist aus dem nahen Dorf entlaufen und streift außerhalb der Mauern umher."
+spawn_probability = 0.8
+placement = 2
+reservation_radius_tiles = 1
+marker_style = &"escaped_pig"
+marker_color = Color(1, 0.55, 0.7, 1)
+friendly_role = 2
+map_color = Color(1, 0.55, 0.7, 1)

@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="WorldEventDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/world_events/world_event_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+event_id = &"meteor_crash"
+display_name = "Abgestürzter Meteorit"
+description = "Ein frischer Krater enthält seltene Erze, zieht aber neugierige Reisende an."
+spawn_probability = 0.7
+reservation_radius_tiles = 3
+marker_style = &"meteor"
+marker_color = Color(1, 0.42, 0.08, 1)
+loot = {"crystalShard": 2, "iron": 2, "magicStone": 2}
+map_color = Color(1, 0.42, 0.08, 1)
