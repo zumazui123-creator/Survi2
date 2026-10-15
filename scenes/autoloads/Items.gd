@@ -224,6 +224,25 @@ func get_item_icon(item_id: String) -> Texture2D:
 	return definition.icon if definition else null
 
 
+func get_item_recipe(item_id: String) -> Dictionary:
+	var definition: ItemDefinition = item_definitions.get(item_id) as ItemDefinition
+	if definition != null and not definition.recipe.is_empty():
+		return definition.recipe
+	return {}
+
+
+func get_craftable_item_ids() -> PackedStringArray:
+	var craftable_ids: PackedStringArray = PackedStringArray()
+	for definition: ItemDefinition in ITEM_DEFINITIONS:
+		if definition == null \
+				or definition.item_id.is_empty() \
+				or definition.recipe.is_empty():
+			continue
+		craftable_ids.append(String(definition.item_id))
+	craftable_ids.sort()
+	return craftable_ids
+
+
 func get_actor_texture(actor_id: String) -> Texture2D:
 	var definition: ActorDefinition = actor_definitions.get(actor_id)
 	return definition.texture if definition else null

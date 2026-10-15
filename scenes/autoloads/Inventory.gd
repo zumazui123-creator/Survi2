@@ -112,7 +112,9 @@ func removeItem(id, item, amount=1) -> bool:
 	return false
 
 func canCraftItem(id, item) -> bool:
-	var recipe = Items.recipes[item]
+	var recipe: Dictionary = Items.get_item_recipe(str(item))
+	if recipe.is_empty():
+		return false
 	for ing in recipe.keys():
 		if !checkHasItemAmount(str(id), ing, recipe[ing]):
 			return false
@@ -148,7 +150,7 @@ func useItemDurability(id, item, durabilityDamage = 1):
 @rpc("any_peer", "call_local", "reliable")
 func tryCraftItem(id, item) -> bool:
 	if canCraftItem(id, item):
-		var recipe = Items.recipes[item]
+		var recipe: Dictionary = Items.get_item_recipe(str(item))
 		for ing in recipe.keys():
 			if !removeItem(id, ing, recipe[ing]):
 				return false
