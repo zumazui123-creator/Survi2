@@ -64,6 +64,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 4
 tooltip_text = "Schaltet die Tastatur zwischen Code-Editor und direkter Wortsteuerung um."
+theme_override_font_sizes/font_size = 14
 text = "Interactive Modus: Aus"
 
 [node name="CodeEdit" type="CodeEdit" parent="CodeLayer/Code/TabContainer/Code" unique_id=1757023759]
@@ -72,8 +73,7 @@ custom_minimum_size = Vector2(0, 360)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_constants/line_spacing = 4
-theme_override_font_sizes/font_size = 13
+theme_override_font_sizes/font_size = 14
 scroll_smooth = true
 scroll_past_end_of_file = true
 syntax_highlighter = SubResource("CodeHighlighter_vreni")
@@ -163,94 +163,101 @@ layout_mode = 2
 text = "Fahre mit der Maus über einen Befehl für eine kurze Erklärung."
 autowrap_mode = 2
 resize_font_to_fit = true
-minimum_font_size = 14
+minimum_font_size = 13
 maximum_font_size = 13
 
 [node name="ActionsContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/Code" unique_id=1139331600]
 modulate = Color(1, 1, 1, 0.984314)
 layout_mode = 2
-size_flags_horizontal = 4
+size_flags_horizontal = 17
 size_flags_vertical = 3
+theme_override_constants/separation = 3
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer" unique_id=1118339553]
+[node name="MarginContainer" type="MarginContainer" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer" unique_id=1577009593]
+layout_mode = 2
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 6
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/MarginContainer" unique_id=1118339553]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="BewegContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer" unique_id=1303574342]
+[node name="BewegContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/MarginContainer/HBoxContainer" unique_id=1303574342]
 layout_mode = 2
 theme_override_constants/separation = 1
 
-[node name="BewegeLabel" type="Label" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer" unique_id=1542221444]
+[node name="BewegeLabel" type="Label" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/MarginContainer/HBoxContainer/BewegContainer" unique_id=1542221444]
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Bewege"
 
-[node name="ObenButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer" unique_id=827057773]
+[node name="ObenButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/MarginContainer/HBoxContainer/BewegContainer" unique_id=827057773]
 layout_mode = 2
 tooltip_text = "Fügt den Befehl für ein Tile nach oben ein"
 text = "oben"
 
-[node name="LinksRechtsContainer" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer" unique_id=1051260093]
+[node name="LinksRechtsContainer" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/MarginContainer/HBoxContainer/BewegContainer" unique_id=1051260093]
 layout_mode = 2
 theme_override_constants/separation = 9
 
-[node name="LinksButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer/LinksRechtsContainer" unique_id=75737517]
+[node name="LinksButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/MarginContainer/HBoxContainer/BewegContainer/LinksRechtsContainer" unique_id=75737517]
 layout_mode = 2
 tooltip_text = "Fügt den Befehl für ein Tile nach links ein"
 text = "links"
 
-[node name="rechtsButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer/LinksRechtsContainer" unique_id=2008059962]
+[node name="rechtsButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/MarginContainer/HBoxContainer/BewegContainer/LinksRechtsContainer" unique_id=2008059962]
 layout_mode = 2
 tooltip_text = "Fügt den Befehl für ein Tile nach rechts ein"
 text = "rechts"
 
-[node name="UntenButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer" unique_id=1412224385]
+[node name="UntenButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/MarginContainer/HBoxContainer/BewegContainer" unique_id=1412224385]
 layout_mode = 2
 tooltip_text = "Fügt den Befehl für ein Tile nach unten ein"
 text = "unten"
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer" unique_id=305099569]
+[node name="VBoxContainer2" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/MarginContainer/HBoxContainer" unique_id=305099569]
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_constants/separation = 2
 
-[node name="Label" type="Label" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer2" unique_id=1930048048]
+[node name="Label" type="Label" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/MarginContainer/HBoxContainer/VBoxContainer2" unique_id=1930048048]
 layout_mode = 2
 text = "Action"
 
-[node name="attackeButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer2" unique_id=288217940]
+[node name="attackeButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/MarginContainer/HBoxContainer/VBoxContainer2" unique_id=288217940]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 8
 tooltip_text = "Greift das Tile vor den Händen an"
 text = "attacke"
 
-[node name="trinkeButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer2" unique_id=1715721747]
+[node name="trinkeButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/MarginContainer/HBoxContainer/VBoxContainer2" unique_id=1715721747]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 8
 tooltip_text = "Trinkt aus einem Wasser-Tile an den Händen"
 text = "trinke"
 
-[node name="sageButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer2" unique_id=568166206]
+[node name="sageButton" type="Button" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/MarginContainer/HBoxContainer/VBoxContainer2" unique_id=568166206]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 8
 tooltip_text = "Lässt die Figur einen Text sagen"
 text = "sage"
 
-[node name="VBoxContainer3" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer" unique_id=2079471987]
+[node name="VBoxContainer3" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/MarginContainer/HBoxContainer" unique_id=2079471987]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer3" unique_id=1616721237]
+[node name="Label" type="Label" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/MarginContainer/HBoxContainer/VBoxContainer3" unique_id=1616721237]
 layout_mode = 2
 text = "Funktionen"
 
-[node name="ItemList" type="ItemList" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer3" unique_id=575498734]
+[node name="ItemList" type="ItemList" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/MarginContainer/HBoxContainer/VBoxContainer3" unique_id=575498734]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 19
 size_flags_vertical = 3
 select_mode = 1
 
@@ -545,7 +552,7 @@ metadata/_tab_index = 2
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_constants/separation = 8
+theme_override_constants/separation = 4
 
 [node name="Title" type="Label" parent="CodeLayer/Code/TabContainer/Functionen/Content" unique_id=1367115835]
 layout_mode = 2
@@ -888,14 +895,14 @@ fit_content = true
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ButtonCotainer/UndoButton" to="CodeLayer/Code" method="_on_undo_button_pressed"]
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ButtonCotainer/RedoButton" to="CodeLayer/Code" method="_on_redo_button_pressed"]
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ExampleContainer/LoadExampleButton" to="CodeLayer/Code" method="_on_load_example_pressed"]
-[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer/ObenButton" to="CodeLayer/Code" method="_on_oben_button_pressed"]
-[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer/LinksRechtsContainer/LinksButton" to="CodeLayer/Code" method="_on_links_button_pressed"]
-[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer/LinksRechtsContainer/rechtsButton" to="CodeLayer/Code" method="_on_rechts_button_pressed"]
-[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer/UntenButton" to="CodeLayer/Code" method="_on_unten_button_pressed"]
-[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer2/attackeButton" to="CodeLayer/Code" method="_on_attacke_button_pressed"]
-[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer2/trinkeButton" to="CodeLayer/Code" method="_on_trinke_button_pressed"]
-[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer2/sageButton" to="CodeLayer/Code" method="_on_sage_button_pressed"]
-[connection signal="item_activated" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer3/ItemList" to="CodeLayer/Code" method="_on_item_list_item_activated"]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/MarginContainer/HBoxContainer/BewegContainer/ObenButton" to="CodeLayer/Code" method="_on_oben_button_pressed"]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/MarginContainer/HBoxContainer/BewegContainer/LinksRechtsContainer/LinksButton" to="CodeLayer/Code" method="_on_links_button_pressed"]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/MarginContainer/HBoxContainer/BewegContainer/LinksRechtsContainer/rechtsButton" to="CodeLayer/Code" method="_on_rechts_button_pressed"]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/MarginContainer/HBoxContainer/BewegContainer/UntenButton" to="CodeLayer/Code" method="_on_unten_button_pressed"]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/MarginContainer/HBoxContainer/VBoxContainer2/attackeButton" to="CodeLayer/Code" method="_on_attacke_button_pressed"]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/MarginContainer/HBoxContainer/VBoxContainer2/trinkeButton" to="CodeLayer/Code" method="_on_trinke_button_pressed"]
+[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/MarginContainer/HBoxContainer/VBoxContainer2/sageButton" to="CodeLayer/Code" method="_on_sage_button_pressed"]
+[connection signal="item_activated" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/MarginContainer/HBoxContainer/VBoxContainer3/ItemList" to="CodeLayer/Code" method="_on_item_list_item_activated"]
 [connection signal="item_selected" from="CodeLayer/Code/TabContainer/KI/ScrollContainer/Content/AgentSettingsPanel/VBox/EpisodeGrid/AgentSelector" to="CodeLayer/Code/TabContainer/KI" method="_on_agent_selected"]
 [connection signal="value_changed" from="CodeLayer/Code/TabContainer/KI/ScrollContainer/Content/AgentSettingsPanel/VBox/EpisodeGrid/MaxStepsInput" to="CodeLayer/Code/TabContainer/KI" method="_on_max_steps_changed"]
 [connection signal="value_changed" from="CodeLayer/Code/TabContainer/KI/ScrollContainer/Content/AgentSettingsPanel/VBox/EpisodeGrid/RolloutCountInput" to="CodeLayer/Code/TabContainer/KI" method="_on_rollout_count_changed"]
