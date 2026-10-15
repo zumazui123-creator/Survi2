@@ -6,7 +6,7 @@ var canCraft: bool = false
 var recipe: Dictionary = {}
 var itemId: String = "":
 	set(value):
-		recipe = Items.recipes.get(value, {})
+		recipe = Items.get_item_recipe(value)
 		itemId = value
 		$TextureRect.texture = Items.get_item_icon(value)
 		var display_name: String = value.capitalize()

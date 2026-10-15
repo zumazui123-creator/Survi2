@@ -68,8 +68,7 @@ func populateRecipes():
 	var inventory_is_ready: bool = Inventory.inventories.has(player_id)
 	for c in %Recipes.get_children():
 		c.queue_free()
-	for recipe_value: Variant in Items.recipes.keys():
-		var recipe_id: String = str(recipe_value)
+	for recipe_id: String in Items.get_craftable_item_ids():
 		var recipeSlot: Node = recipeSlotScene.instantiate()
 		recipeSlot.itemId = recipe_id
 		recipeSlot.canCraft = inventory_is_ready \
@@ -116,20 +115,27 @@ func _on_craft_button_pressed():
 		$AnimationPlayer.play("craftAppear")
 
 func recipeSelected(id):
-	selectedRecipe = id
-	if Inventory.canCraftItem(str(multiplayer.get_unique_id()), id):
+	var recipe_id: String = str(id)
+	var recipe: Dictionary = Items.get_item_recipe(recipe_id)
+	if recipe.is_empty():
+		return
+	selectedRecipe = recipe_id
+	if Inventory.canCraftItem(str(multiplayer.get_unique_id()), recipe_id):
 		%craftButton.disabled = false
 	else:
 		%craftButton.disabled = true
-	%recipeName.text = id
+	%recipeName.text = recipe_id.capitalize()
 	for c in %ingList.get_children():
 		c.queue_free()
 	%RecipeBox.visible = true
-	for ing in Items.recipes[id].keys():
+	for ing: Variant in recipe.keys():
 		var itemSlotScene: PackedScene = preload("res://scenes/ui/inventory/inventory_slot.tscn")
 		var itemSlot: Node = itemSlotScene.instantiate()
 		itemSlot.itemId = ing
-		itemSlot.setRecipeText(Inventory.checkItemCount(str(multiplayer.get_unique_id()), ing),Items.recipes[id][ing])
+		itemSlot.setRecipeText(
+			Inventory.checkItemCount(str(multiplayer.get_unique_id()), ing),
+			recipe[ing]
+		)
 		%ingList.add_child(itemSlot)	
 
 func closeRecipe():
