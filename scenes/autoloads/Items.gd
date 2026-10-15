@@ -233,10 +233,13 @@ func get_item_recipe(item_id: String) -> Dictionary:
 
 func get_craftable_item_ids() -> PackedStringArray:
 	var craftable_ids: PackedStringArray = PackedStringArray()
-	for definition: ItemDefinition in ITEM_DEFINITIONS:
-		if definition == null \
-				or definition.item_id.is_empty() \
-				or definition.recipe.is_empty():
+	for resource: Resource in ITEM_DEFINITIONS:
+		var definition: ItemDefinition = resource as ItemDefinition
+		if definition == null:
+			continue
+		if definition.item_id.is_empty():
+			continue
+		if definition.recipe.is_empty():
 			continue
 		craftable_ids.append(String(definition.item_id))
 	craftable_ids.sort()
