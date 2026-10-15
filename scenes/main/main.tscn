@@ -137,11 +137,11 @@ _spawnable_scenes = PackedStringArray("uid://bmhxilkffhqa5")
 spawn_path = NodePath("../Players")
 
 [node name="AnimalSpawner" type="MultiplayerSpawner" parent="." unique_id=2005880034]
-_spawnable_scenes = PackedStringArray("uid://4yb25tbuu2at", "res://scenes/village/village_pig.tscn", "res://scenes/npc/wandering_merchant.tscn")
+_spawnable_scenes = PackedStringArray("uid://4yb25tbuu2at", "res://scenes/village/village_pig.tscn", "res://scenes/npc/wandering_merchant.tscn", "res://scenes/world_events/escaped_pig.tscn", "res://scenes/world_events/caravan_merchant.tscn")
 spawn_path = NodePath("../Animals")
 
 [node name="EnemySpawner" type="MultiplayerSpawner" parent="." unique_id=1050839693]
-_spawnable_scenes = PackedStringArray("uid://d3bgdspo4bhr4", "res://scenes/village/village_resident.tscn", "res://scenes/boss/stone_golem.tscn", "res://scenes/boss/forest_colossus.tscn", "res://scenes/map/landmarks/landmark_guardian.tscn")
+_spawnable_scenes = PackedStringArray("uid://d3bgdspo4bhr4", "res://scenes/village/village_resident.tscn", "res://scenes/boss/stone_golem.tscn", "res://scenes/boss/forest_colossus.tscn", "res://scenes/map/landmarks/landmark_guardian.tscn", "res://scenes/world_events/world_event_attacker.tscn")
 spawn_path = NodePath("../Enemies")
 
 [node name="ProjectileSpawner" type="MultiplayerSpawner" parent="." unique_id=1312236852]
@@ -159,6 +159,10 @@ spawn_path = NodePath("../Map/ObjectManager/BuildingManager")
 [node name="LandmarkSpawner" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("res://scenes/map/landmarks/world_landmark.tscn")
 spawn_path = NodePath("../Map/ObjectManager/LandmarkManager")
+
+[node name="WorldEventSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("res://scenes/world_events/world_event_marker.tscn")
+spawn_path = NodePath("../Map/ObjectManager/WorldEventManager")
 
 [node name="PickupSpawner" type="MultiplayerSpawner" parent="." unique_id=406642788]
 _spawnable_scenes = PackedStringArray("uid://bfq4kkw8jhqay")

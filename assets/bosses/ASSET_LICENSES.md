@@ -17,4 +17,28 @@
 - License: CC0 / public domain
 - Attribution is not required, but the artist is credited here as a courtesy.
 
-Only the artwork files listed above were copied into this project. Music and other files from the source packs are not included.
+Only the individually listed files were copied into this project; unrelated files from the source packs are not included.
+
+## Boss territory tree stump
+
+- File: `territories/tree_stump.png`
+- Source: [TreeStump 48x48 on OpenGameArt](https://opengameart.org/content/treestump-48x48)
+- Artist: InThePixel
+- License: CC0 / public domain
+- Changes: Renamed from `treestump_00.png`; scaled at runtime to match the tile size.
+
+## Boss territory footprint
+
+- File: `territories/golem_footprint.png`
+- Source: [Footprint / shoeprint silhouette on OpenGameArt](https://opengameart.org/content/footprint-shoeprint-silhouette)
+- Artist: KobatoGames
+- License: CC0 / public domain
+- Changes: Renamed from `shoeprint.png`; tinted and scaled at runtime for the Golem territory.
+
+## Boss approach music
+
+- File: `territories/boss_approach.ogg`
+- Source: [Chiptune Battle Music on OpenGameArt](https://opengameart.org/content/chiptune-battle-music)
+- Artist: pmiller
+- License: CC0 / public domain
+- Changes: Renamed from `battle_music_01-loop.ogg`; played as a looping proximity theme.

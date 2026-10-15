@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="BossTerritoryDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scenes/map/boss_territories/boss_territory_definition.gd" id="1"]
+[ext_resource type="AudioStream" path="res://assets/bosses/territories/boss_approach.ogg" id="2"]
+
+[resource]
+script = ExtResource("1")
+landmark_id = &"frost_boss_arena"
+boss_actor_id = &"frostGiant"
+boss_name = "Frostgigant"
+approach_warning = "Das Eis ist von tiefen Rissen durchzogen. Eine eisige Macht wartet voraus."
+villager_warning = "Kehrt um, wenn das Eis Risse zeigt. Dort beginnt das Reich des Frostgiganten."
+warning_radius_tiles = 25
+danger_radius_tiles = 14
+shake_strength = 3.5
+shake_duration = 0.65
+shake_interval = 3.5
+marker_style = 2
+marker_count = 14
+marker_width_tiles = 1.0
+marker_modulate = Color(0.62, 0.9, 1, 0.8)
+music = ExtResource("2")
+music_volume_db = -9.0
+music_loop_offset_seconds = 7.5

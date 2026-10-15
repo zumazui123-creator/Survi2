@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="VillageRoleDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/map/villages/village_role_definition.gd" id="1_role"]
+
+[resource]
+script = ExtResource("1_role")
+role_id = &"occupied"
+display_name = "Besetztes Dorf"
+description = "Die Bewohner sind verschwunden; Banditen und Monster halten die Ruinen besetzt."
+map_color = Color(0.35, 0.28, 0.25, 1)
+minimum_residents = 0
+maximum_residents = 0
+minimum_pigs = 0
+maximum_pigs = 0
+hostile_actor_ids = Array[StringName]([&"bandit", &"zombie", &"spider"])
+minimum_hostiles = 4
+maximum_hostiles = 7
+wall_density = 0.65
+loot = {"contraband": 2, "gold": 2, "treasureMap": 1}

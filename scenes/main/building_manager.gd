@@ -68,7 +68,8 @@ func place_building(
 func place_generated_building(
 		building_id: StringName,
 		tile: Vector2i,
-		source_id: StringName
+		source_id: StringName,
+		owner_peer_id: int = 0
 	) -> BuildingEntity:
 	if not multiplayer.is_server():
 		return null
@@ -83,7 +84,12 @@ func place_generated_building(
 	)
 	if placement_result != BuildingPlacementValidator.Result.OK:
 		return null
-	var building: BuildingEntity = _spawn_building(definition, tile, 0, occupied_tiles)
+	var building: BuildingEntity = _spawn_building(
+		definition,
+		tile,
+		owner_peer_id,
+		occupied_tiles
+	)
 	if building != null:
 		building.set_meta(&"generated_source", source_id)
 		building_placed.emit(tile, building)

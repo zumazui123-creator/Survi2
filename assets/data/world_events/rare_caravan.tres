@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="WorldEventDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/world_events/world_event_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+event_id = &"rare_caravan"
+display_name = "Karawane mit seltenen Waren"
+description = "Zwei Händler transportieren Gold, Magiekraut und eine seltene Schatzkarte."
+spawn_probability = 0.65
+placement = 2
+reservation_radius_tiles = 3
+marker_style = &"caravan"
+marker_color = Color(0.95, 0.68, 0.15, 1)
+friendly_role = 3
+navigation_required = true
+deliver_loot_at_destination = true
+loot = {"gold": 3, "magicHerb": 2, "treasureMap": 1}
+map_color = Color(0.95, 0.68, 0.15, 1)

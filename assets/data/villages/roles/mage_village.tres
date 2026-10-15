@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="VillageRoleDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/map/villages/village_role_definition.gd" id="1_role"]
+
+[resource]
+script = ExtResource("1_role")
+role_id = &"mage"
+display_name = "Magierdorf"
+description = "Magische Brunnen und seltene Zutaten versorgen die Zauberkundigen."
+map_color = Color(0.63, 0.35, 0.94, 1)
+minimum_residents = 2
+maximum_residents = 4
+resident_actor_id = &"villager"
+feature_building_id = &"healing_well"
+feature_building_count = 1
+loot = {"crystalShard": 2, "energy_drink": 3, "magicHerb": 2, "magicStone": 1, "spiritPotion": 1}

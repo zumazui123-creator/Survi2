@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="VillageRoleDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/map/villages/village_role_definition.gd" id="1_role"]
+
+[resource]
+script = ExtResource("1_role")
+role_id = &"farmer"
+display_name = "Bauerndorf"
+description = "Felder, Nahrung und viele Tiere prägen dieses friedliche Dorf."
+map_color = Color(0.72, 0.82, 0.28, 1)
+minimum_residents = 3
+maximum_residents = 5
+resident_actor_id = &"villager"
+minimum_pigs = 5
+maximum_pigs = 8
+feature_building_id = &"cooking_station"
+feature_building_count = 1
+loot = {"berries": 3, "food": 5, "water": 2}

@@ -147,7 +147,15 @@ func _drop_item_authoritative(
 	if not Inventory.removeItem(player_id, item_id, 1):
 		return false
 	var drop_position: Vector2 = world_map.navigation_tile_to_world(drop_tile)
-	if spawner.spawn_pickup(item_id, drop_position, 1):
+	if spawner.spawn_pickup(
+		item_id,
+		drop_position,
+		1,
+		{
+			"source": &"player_drop",
+			"peer_id": sender_id,
+		}
+	):
 		return true
 
 	Inventory.addItem(player_id, item_id, 1)

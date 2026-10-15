@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="VillageRoleDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/map/villages/village_role_definition.gd" id="1_role"]
+
+[resource]
+script = ExtResource("1_role")
+role_id = &"merchant_city"
+display_name = "Händlerstadt"
+description = "Das große Hauptdorf ist ein sicherer Handelsplatz mit seltenen Waren."
+map_color = Color(0.95, 0.7, 0.16, 1)
+large_village_only = true
+minimum_residents = 8
+maximum_residents = 11
+resident_actor_id = &"villager"
+minimum_pigs = 3
+maximum_pigs = 5
+merchant_count = 3
+feature_building_id = &"tower"
+feature_building_count = 2
+loot = {"crystalShard": 3, "energy_drink": 2, "gold": 4, "magicAxe1": 1, "magicSpear1": 1, "magicSword1": 1, "treasureMap": 1}

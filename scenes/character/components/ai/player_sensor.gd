@@ -52,6 +52,9 @@ const ACTION_DIRECTIONS: Array[Vector2i] = [
 
 @onready var world_map: Map = get_tree().get_first_node_in_group("world_map")
 @onready var tree_manager: TreeManager = get_tree().get_first_node_in_group("tree_manager")
+@onready var secret_location_manager: SecretLocationManager = get_tree().get_first_node_in_group(
+	"secret_location_manager"
+) as SecretLocationManager
 
 var last_observation: Dictionary = {}
 var visualization_enabled: bool = false
@@ -94,6 +97,7 @@ func scan() -> Dictionary:
 		var local_map: PackedByteArray = observation["local_map"]
 		_fill_terrain_layers(local_map, origin_tile)
 		_mark_tree_data(local_map, origin_tile)
+		_mark_secret_locations(local_map, origin_tile)
 		_mark_entity_group(local_map, GROUP_OBJECT, CHANNEL_OBJECT, origin_tile, true)
 		_mark_entity_group(local_map, GROUP_ITEM, CHANNEL_ITEM, origin_tile, false)
 		_mark_entity_group(local_map, GROUP_ANIMAL, CHANNEL_ANIMAL, origin_tile, false)
@@ -406,6 +410,8 @@ func _mark_entity_group(
 			continue
 		if entity is TreeEntity:
 			continue
+		if entity is SecretLocation and not (entity as SecretLocation).is_revealed():
+			continue
 
 		var anchor_tile: Vector2i = world_map.world_to_navigation_tile(entity.global_position)
 		var occupied_tiles: Array[Vector2i] = [anchor_tile]
@@ -436,6 +442,23 @@ func _mark_tree_data(local_map: PackedByteArray, origin_tile: Vector2i) -> void:
 		_detected_tree_tiles[state.tile] = true
 		if is_instance_valid(state.active_node):
 			_detected_entities[state.active_node] = true
+
+
+func _mark_secret_locations(
+		local_map: PackedByteArray,
+		origin_tile: Vector2i
+	) -> void:
+	if not is_instance_valid(secret_location_manager):
+		secret_location_manager = get_tree().get_first_node_in_group(
+			"secret_location_manager"
+		) as SecretLocationManager
+	if not is_instance_valid(secret_location_manager):
+		return
+	for tile: Vector2i in secret_location_manager.scan_secret_tiles(
+			origin_tile,
+			get_effective_scan_radius()
+		):
+		_set_channel(local_map, CHANNEL_OBJECT, tile - origin_tile)
 
 
 func _scan_stats() -> PackedFloat32Array:

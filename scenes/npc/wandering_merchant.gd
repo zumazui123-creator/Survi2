@@ -3,6 +3,16 @@ class_name WanderingMerchant
 
 @export_range(1, 8, 1) var wander_radius_tiles: int = 4
 @export_range(0.5, 10.0, 0.5) var move_interval: float = 3.0
+@export var external_navigation_enabled: bool = false
+@export var invulnerable: bool = true:
+	set(value):
+		invulnerable = value
+		_update_health_display()
+@export_range(1.0, 500.0, 1.0) var max_hp: float = 60.0
+@export_range(0.0, 500.0, 1.0) var hp: float = 60.0:
+	set(value):
+		hp = clampf(value, 0.0, max_hp)
+		_update_health_display()
 
 @onready var world_map: Map = get_tree().get_first_node_in_group("world_map") as Map
 @onready var move_timer: Timer = $MoveTimer
@@ -18,12 +28,15 @@ func _ready() -> void:
 			and not _world_spawner.pickup_spawned.is_connected(_on_pickup_spawned):
 		_world_spawner.pickup_spawned.connect(_on_pickup_spawned)
 	move_timer.wait_time = move_interval
-	if multiplayer.is_server():
+	if multiplayer.is_server() and not external_navigation_enabled:
 		move_timer.start()
+	_update_health_display()
 
 
 func _on_move_timer_timeout() -> void:
-	if not multiplayer.is_server() or not is_instance_valid(world_map):
+	if external_navigation_enabled \
+			or not multiplayer.is_server() \
+			or not is_instance_valid(world_map):
 		return
 	var current: Vector2i = world_map.world_to_navigation_tile(global_position)
 	var directions: Array[Vector2i] = [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN]
@@ -64,5 +77,19 @@ func _try_trade(pickup: WorldPickup) -> void:
 	)
 
 
-func getDamage(_causer: Node, _amount: float, _damage_type: StringName) -> void:
-	pass
+func getDamage(_causer: Node, amount: float, _damage_type: StringName) -> void:
+	if not multiplayer.is_server() or invulnerable or amount <= 0.0:
+		return
+	hp -= amount
+	if hp <= 0.0:
+		queue_free()
+
+
+func _update_health_display() -> void:
+	if not is_node_ready():
+		return
+	var hp_bar: ProgressBar = get_node_or_null("MerchantUI/HPBar") as ProgressBar
+	if hp_bar == null:
+		return
+	hp_bar.visible = not invulnerable
+	hp_bar.value = hp / maxf(max_hp, 1.0)

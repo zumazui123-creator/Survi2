@@ -1,0 +1,59 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/boss/boss_territory_warning.gd" id="1_script"]
+
+[sub_resource type="StyleBoxFlat" id="WarningPanel"]
+bg_color = Color(0.055, 0.045, 0.04, 0.92)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.82, 0.24, 0.12, 0.95)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+content_margin_left = 18.0
+content_margin_top = 12.0
+content_margin_right = 18.0
+content_margin_bottom = 12.0
+
+[node name="BossTerritoryWarning" type="PanelContainer"]
+visible = false
+z_index = 2100
+custom_minimum_size = Vector2(430, 86)
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 320.0
+offset_top = 24.0
+offset_right = -320.0
+offset_bottom = 110.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("WarningPanel")
+script = ExtResource("1_script")
+
+[node name="Content" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="TitleLabel" type="Label" parent="Content"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.5, 0.2, 1)
+theme_override_font_sizes/font_size = 19
+text = "Boss-Territorium"
+horizontal_alignment = 1
+
+[node name="MessageLabel" type="Label" parent="Content"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.95, 0.95, 1)
+theme_override_font_sizes/font_size = 15
+text = "Etwas Gewaltiges ist in der Nähe."
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="DisplayTimer" type="Timer" parent="."]
+unique_name_in_owner = true
+one_shot = true

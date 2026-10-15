@@ -1,0 +1,73 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/puzzles/program_puzzle_hud.gd" id="1_script"]
+
+[sub_resource type="StyleBoxFlat" id="PuzzlePanel"]
+bg_color = Color(0.035, 0.055, 0.075, 0.94)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.5, 0.88, 1, 0.95)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+content_margin_left = 16.0
+content_margin_top = 10.0
+content_margin_right = 16.0
+content_margin_bottom = 10.0
+
+[node name="ProgramPuzzleHUD" type="PanelContainer" groups=["program_puzzle_hud"]]
+visible = false
+z_index = 2050
+custom_minimum_size = Vector2(400, 112)
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 340.0
+offset_top = 118.0
+offset_right = -340.0
+offset_bottom = 230.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("PuzzlePanel")
+script = ExtResource("1_script")
+
+[node name="Content" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="TitleLabel" type="Label" parent="Content"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Programmier-Rätsel"
+horizontal_alignment = 1
+
+[node name="MessageLabel" type="Label" parent="Content"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.94, 0.96, 1, 1)
+theme_override_font_sizes/font_size = 14
+text = "Betrete die Schalter in der richtigen Reihenfolge."
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="Status" type="HBoxContainer" parent="Content"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 24
+
+[node name="ProgressLabel" type="Label" parent="Content/Status"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Fortschritt: 0 / 4"
+
+[node name="TimeLabel" type="Label" parent="Content/Status"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Restzeit: 20 s"
+
+[node name="HideTimer" type="Timer" parent="."]
+unique_name_in_owner = true
+one_shot = true

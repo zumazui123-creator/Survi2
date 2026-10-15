@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="BossTerritoryDefinition" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scenes/map/boss_territories/boss_territory_definition.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/bosses/territories/tree_stump.png" id="2"]
+[ext_resource type="AudioStream" path="res://assets/bosses/territories/boss_approach.ogg" id="3"]
+
+[resource]
+script = ExtResource("1")
+landmark_id = &"forest_heart"
+boss_actor_id = &"forestColossus"
+boss_name = "Waldkoloss"
+approach_warning = "Zerbrochene Bäume säumen den Weg. Der Boden bebt zwischen den Wurzeln."
+villager_warning = "Meidet das Herz des Waldes. Wo die Bäume geknickt sind, schläft der Waldkoloss."
+warning_radius_tiles = 22
+danger_radius_tiles = 12
+shake_strength = 2.5
+shake_duration = 0.55
+shake_interval = 4.0
+marker_style = 0
+marker_texture = ExtResource("2")
+marker_count = 15
+marker_width_tiles = 0.9
+marker_min_radius_tiles = 4
+marker_max_radius_tiles = 8
+marker_modulate = Color(0.82, 0.78, 0.68, 1)
+music = ExtResource("3")
+music_volume_db = -11.0
+music_loop_offset_seconds = 7.5

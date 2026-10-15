@@ -7,6 +7,10 @@ class_name ObjectManager
 @export var tile_structure_assembler: TileStructureAssembler
 @export var village_manager: VillageManager
 @export var landmark_manager: LandmarkManager
+@export var boss_territory_manager: BossTerritoryManager
+@export var program_puzzle_manager: ProgramPuzzleManager
+@export var world_event_manager: WorldEventManager
+@export var secret_location_manager: SecretLocationManager
 @export var teleport_network: TeleportNetwork
 
 
@@ -78,11 +82,39 @@ func clear_villages() -> void:
 func load_landmarks(plans: Array[LandmarkPlan]) -> void:
 	if is_instance_valid(landmark_manager):
 		landmark_manager.load_landmarks(plans)
+	if is_instance_valid(boss_territory_manager):
+		boss_territory_manager.load_territories(plans)
+	if is_instance_valid(program_puzzle_manager):
+		program_puzzle_manager.load_puzzles(plans)
 
 
 func clear_landmarks() -> void:
+	if is_instance_valid(program_puzzle_manager):
+		program_puzzle_manager.clear_puzzles()
+	if is_instance_valid(boss_territory_manager):
+		boss_territory_manager.clear_territories()
 	if is_instance_valid(landmark_manager):
 		landmark_manager.clear_landmarks()
+
+
+func load_world_events(plans: Array[WorldEventPlan]) -> void:
+	if is_instance_valid(world_event_manager):
+		world_event_manager.load_events(plans)
+
+
+func clear_world_events() -> void:
+	if is_instance_valid(world_event_manager):
+		world_event_manager.clear_events()
+
+
+func load_secret_locations(plans: Array[SecretLocationPlan]) -> void:
+	if is_instance_valid(secret_location_manager):
+		secret_location_manager.load_secrets(plans)
+
+
+func clear_secret_locations() -> void:
+	if is_instance_valid(secret_location_manager):
+		secret_location_manager.clear_secrets()
 
 
 func get_landmark_plans() -> Array[LandmarkPlan]:
@@ -98,6 +130,8 @@ func is_tile_in_village(tile: Vector2i) -> bool:
 
 
 func clear_all(release_tree_navigation: bool = true) -> void:
+	clear_secret_locations()
+	clear_world_events()
 	clear_landmarks()
 	clear_villages()
 	clear_trees(release_tree_navigation)

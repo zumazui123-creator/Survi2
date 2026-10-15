@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="TimedMazePuzzleDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/map/program_puzzles/timed_maze_puzzle_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+puzzle_id = &"mountain_timed_maze"
+landmark_id = &"mountain_maze"
+display_name = "Runenlabyrinth im Gebirge"
+instructions = "Untersuche das Labyrinth und programmiere deinen Weg vorab. Das weiße Feld startet den Countdown; erreiche danach rechtzeitig das schwarze Zielfeld."
+time_limit_seconds = 45.0
+rewards = {"magicStone": 5, "iron": 12, "gold": 10, "magicArtifact": 1, "rareBlueprint": 1}
+discovery_radius_tiles = 12

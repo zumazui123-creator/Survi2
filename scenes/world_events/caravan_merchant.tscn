@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/npc/wandering_merchant.tscn" id="1_merchant"]
+[ext_resource type="Script" path="res://scenes/world_events/caravan_merchant.gd" id="2_caravan"]
+[ext_resource type="Script" path="res://scenes/world_events/navigation/world_event_route_follower.gd" id="3_follower"]
+
+[node name="CaravanMerchant" groups=["damageable", "sensor_animal", "world_merchant", "world_event_actor", "world_event_navigator"] instance=ExtResource("1_merchant")]
+script = ExtResource("2_caravan")
+external_navigation_enabled = true
+
+[node name="RouteFollower" type="Node" parent="."]
+script = ExtResource("3_follower")
+
+[node name="TradeLabel" parent="." index="2"]
+text = "Karawane: seltene Waren unterwegs"
+
+[node name="Sprite2D" parent="." index="0"]
+self_modulate = Color(0.95, 0.62, 0.18, 1)
+
+[editable path="."]

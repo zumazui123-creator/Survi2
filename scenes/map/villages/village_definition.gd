@@ -36,6 +36,10 @@ class_name VillageDefinition
 @export_group("Buildings")
 @export var wall_building_id: StringName = &"wall"
 
+@export_group("Village roles")
+@export var role_definitions: Array[VillageRoleDefinition] = []
+@export var large_village_role_id: StringName = &"merchant_city"
+
 
 func get_village_count(rng: RandomNumberGenerator) -> int:
 	var lower: int = mini(minimum_villages, maximum_villages)
@@ -91,6 +95,25 @@ func get_pig_count(rng: RandomNumberGenerator, is_large: bool = false) -> int:
 		mini(minimum_pigs, maximum_pigs),
 		maxi(minimum_pigs, maximum_pigs)
 	)
+
+
+func get_role(role_id: StringName) -> VillageRoleDefinition:
+	for role: VillageRoleDefinition in role_definitions:
+		if role != null and role.role_id == role_id:
+			return role
+	return null
+
+
+func get_large_village_role() -> VillageRoleDefinition:
+	return get_role(large_village_role_id)
+
+
+func get_small_village_roles() -> Array[VillageRoleDefinition]:
+	var roles: Array[VillageRoleDefinition] = []
+	for role: VillageRoleDefinition in role_definitions:
+		if role != null and not role.large_village_only:
+			roles.append(role)
+	return roles
 
 
 func _make_odd(value: int) -> int:

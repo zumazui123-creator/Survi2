@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://dygjuft04c3qw" path="res://assets/items/wood.png" id="1_d0dnh"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_xjrky"]
-radius = 17.0
+radius = 11.9
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_ladu8"]
 properties/0/path = NodePath(".:position")

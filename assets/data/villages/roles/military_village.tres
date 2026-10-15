@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="VillageRoleDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/map/villages/village_role_definition.gd" id="1_role"]
+
+[resource]
+script = ExtResource("1_role")
+role_id = &"military"
+display_name = "Militärdorf"
+description = "Eine vollständig befestigte Garnison mit Wachtürmen und Waffenlager."
+map_color = Color(0.82, 0.24, 0.2, 1)
+minimum_residents = 5
+maximum_residents = 8
+resident_actor_id = &"bandit"
+feature_building_id = &"tower"
+feature_building_count = 4
+loot = {"iron": 3, "rareBlueprint": 1, "spear1": 1, "sword1": 1}

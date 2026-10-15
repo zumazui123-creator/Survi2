@@ -14,6 +14,8 @@ var _discovered_locations: Dictionary[String, bool] = {}
 var _world_map: Map
 var _village_manager: VillageManager
 var _landmark_manager: LandmarkManager
+var _world_event_manager: WorldEventManager
+var _secret_location_manager: SecretLocationManager
 var _local_player: Survi2Player
 var _last_player_tile: Vector2i = Vector2i.ZERO
 var _has_last_player_tile: bool = false
@@ -63,6 +65,14 @@ func is_village_discovered(plan: VillagePlan) -> bool:
 	return plan != null and _discovered_locations.has(_get_village_key(plan))
 
 
+func is_world_event_discovered(plan: WorldEventPlan) -> bool:
+	return plan != null and _discovered_locations.has(_get_world_event_key(plan))
+
+
+func is_secret_discovered(plan: SecretLocationPlan) -> bool:
+	return plan != null and _discovered_locations.has(_get_secret_key(plan))
+
+
 func reset_exploration() -> void:
 	explored_tiles.clear()
 	_explored_tile_list.clear()
@@ -84,6 +94,14 @@ func _resolve_world_dependencies() -> void:
 		_landmark_manager = get_tree().get_first_node_in_group(
 			"landmark_manager"
 		) as LandmarkManager
+	if not is_instance_valid(_world_event_manager):
+		_world_event_manager = get_tree().get_first_node_in_group(
+			"world_event_manager"
+		) as WorldEventManager
+	if not is_instance_valid(_secret_location_manager):
+		_secret_location_manager = get_tree().get_first_node_in_group(
+			"secret_location_manager"
+		) as SecretLocationManager
 
 
 func _connect_world_signals() -> void:
@@ -96,6 +114,12 @@ func _connect_world_signals() -> void:
 	if is_instance_valid(_landmark_manager) \
 			and not _landmark_manager.landmarks_changed.is_connected(_on_locations_changed):
 		_landmark_manager.landmarks_changed.connect(_on_locations_changed)
+	if is_instance_valid(_world_event_manager) \
+			and not _world_event_manager.events_changed.is_connected(_on_locations_changed):
+		_world_event_manager.events_changed.connect(_on_locations_changed)
+	if is_instance_valid(_secret_location_manager) \
+			and not _secret_location_manager.secrets_changed.is_connected(_on_locations_changed):
+		_secret_location_manager.secrets_changed.connect(_on_locations_changed)
 
 
 func _find_local_player() -> Survi2Player:
@@ -158,9 +182,44 @@ func _check_location_discoveries(player_tile: Vector2i) -> void:
 			if _discovered_locations.has(village_key) \
 					or not _is_near_bounds(player_tile, plan.bounds):
 				continue
-			var display_name: String = "Großes Dorf" if plan.is_large else "Dorf"
-			var description: String = "Eine befestigte Siedlung mit Bewohnern und Tieren."
+			var role: VillageRoleDefinition = _village_manager.get_role_for_plan(plan)
+			var display_name: String = role.display_name \
+				if role != null else ("Großes Dorf" if plan.is_large else "Dorf")
+			var description: String = role.description if role != null \
+				else "Eine befestigte Siedlung mit Bewohnern und Tieren."
 			_discover_location(village_key, display_name, description)
+
+	if is_instance_valid(_world_event_manager):
+		for plan: WorldEventPlan in _world_event_manager.get_active_plans():
+			var event_key: String = _get_world_event_key(plan)
+			var event_bounds: Rect2i = Rect2i(plan.center_tile - Vector2i.ONE, Vector2i(3, 3))
+			if _discovered_locations.has(event_key) \
+					or not _is_near_bounds(player_tile, event_bounds):
+				continue
+			var definition: WorldEventDefinition = _world_event_manager.get_definition(
+				plan.event_id
+			)
+			var display_name: String = String(plan.event_id).capitalize()
+			var description: String = "Ein zufälliges Ereignis findet hier statt."
+			if definition != null:
+				display_name = definition.display_name
+				description = definition.description
+			_discover_location(event_key, display_name, description)
+
+	if is_instance_valid(_secret_location_manager):
+		for plan: SecretLocationPlan in _secret_location_manager.get_plans():
+			var secret_key: String = _get_secret_key(plan)
+			if _discovered_locations.has(secret_key) \
+					or not _secret_location_manager.is_revealed(plan.plan_id):
+				continue
+			var definition: SecretLocationDefinition = _secret_location_manager.get_definition(
+				plan.secret_id
+			)
+			var display_name: String = definition.display_name if definition != null \
+				else "Geheimer Ort"
+			var description: String = definition.description if definition != null \
+				else "Du hast einen verborgenen Ort entdeckt."
+			_discover_location(secret_key, display_name, description)
 
 
 func _check_biome_discovery(player_tile: Vector2i) -> void:
@@ -214,6 +273,14 @@ func _get_village_key(plan: VillagePlan) -> String:
 		plan.bounds.position.x,
 		plan.bounds.position.y,
 	]
+
+
+func _get_world_event_key(plan: WorldEventPlan) -> String:
+	return "event:%s" % plan.get_key()
+
+
+func _get_secret_key(plan: SecretLocationPlan) -> String:
+	return "secret:%d:%s" % [plan.plan_id, String(plan.secret_id)]
 
 
 func _on_generation_started() -> void:

@@ -16,6 +16,7 @@ func create_plans(
 	rng.seed = seed ^ 0x56494C4C
 	var next_village_id: int = 0
 	if definition.generate_large_village:
+		var large_role: VillageRoleDefinition = definition.get_large_village_role()
 		var large_plan: VillagePlan = _try_create_plan(
 			next_village_id,
 			map_size,
@@ -23,7 +24,8 @@ func create_plans(
 			rng,
 			plans,
 			walkable_tiles,
-			true
+			true,
+			large_role
 		)
 		if large_plan != null:
 			plans.append(large_plan)
@@ -32,7 +34,12 @@ func create_plans(
 			push_warning("VillagePlanner: no walkable area was large enough for the large village")
 
 	var requested_count: int = definition.get_village_count(rng)
-	for _village_index: int in range(requested_count):
+	var small_roles: Array[VillageRoleDefinition] = definition.get_small_village_roles()
+	_shuffle_roles(small_roles, rng)
+	for village_index: int in range(requested_count):
+		var role: VillageRoleDefinition = null
+		if not small_roles.is_empty():
+			role = small_roles[village_index % small_roles.size()]
 		var plan: VillagePlan = _try_create_plan(
 			next_village_id,
 			map_size,
@@ -40,7 +47,8 @@ func create_plans(
 			rng,
 			plans,
 			walkable_tiles,
-			false
+			false,
+			role
 		)
 		if plan != null:
 			plans.append(plan)
@@ -60,7 +68,8 @@ func _try_create_plan(
 		rng: RandomNumberGenerator,
 		existing_plans: Array[VillagePlan],
 		walkable_tiles: Dictionary[Vector2i, bool],
-		is_large: bool
+		is_large: bool,
+		role: VillageRoleDefinition
 	) -> VillagePlan:
 	for _attempt: int in range(definition.placement_attempts_per_village):
 		var size: Vector2i = definition.get_random_size(rng, is_large)
@@ -77,7 +86,7 @@ func _try_create_plan(
 			continue
 		if not _is_area_walkable(bounds.grow(2), walkable_tiles):
 			continue
-		return _build_plan(village_id, bounds, definition, rng, is_large)
+		return _build_plan(village_id, bounds, definition, rng, is_large, role)
 	return _find_fallback_plan(
 		village_id,
 		map_size,
@@ -85,7 +94,8 @@ func _try_create_plan(
 		rng,
 		existing_plans,
 		walkable_tiles,
-		is_large
+		is_large,
+		role
 	)
 
 
@@ -96,7 +106,8 @@ func _find_fallback_plan(
 		rng: RandomNumberGenerator,
 		existing_plans: Array[VillagePlan],
 		walkable_tiles: Dictionary[Vector2i, bool],
-		is_large: bool
+		is_large: bool,
+		role: VillageRoleDefinition
 	) -> VillagePlan:
 	var size: Vector2i = definition.get_minimum_size(is_large)
 	var minimum_position: Vector2i = Vector2i.ONE * definition.map_edge_margin_tiles
@@ -115,7 +126,7 @@ func _find_fallback_plan(
 			continue
 		if not _is_area_walkable(bounds.grow(2), walkable_tiles):
 			continue
-		return _build_plan(village_id, bounds, definition, rng, is_large)
+		return _build_plan(village_id, bounds, definition, rng, is_large, role)
 	return null
 
 
@@ -147,9 +158,13 @@ func _build_plan(
 		bounds: Rect2i,
 		definition: VillageDefinition,
 		rng: RandomNumberGenerator,
-		is_large: bool
+		is_large: bool,
+		role: VillageRoleDefinition
 	) -> VillagePlan:
-	var plan: VillagePlan = VillagePlan.new(village_id, bounds, is_large)
+	var planned_role_id: StringName = role.role_id if role != null else &""
+	var plan: VillagePlan = VillagePlan.new(village_id, bounds, is_large, planned_role_id)
+	if role != null:
+		plan.resident_actor_id = role.resident_actor_id
 	var gate_side: int = rng.randi_range(0, 3)
 	var center_x: int = bounds.position.x + floori(float(bounds.size.x) / 2.0)
 	var center_y: int = bounds.position.y + floori(float(bounds.size.y) / 2.0)
@@ -179,27 +194,66 @@ func _build_plan(
 				or x == bounds.end.x - 1 \
 				or y == bounds.position.y \
 				or y == bounds.end.y - 1
-			if is_border and tile not in plan.gate_tiles:
+			var wall_density: float = role.wall_density if role != null else 1.0
+			if is_border and tile not in plan.gate_tiles \
+					and rng.randf() <= wall_density:
 				plan.wall_tiles.append(tile)
 
 	var available_tiles: Array[Vector2i] = []
 	for y: int in range(plan.interior_bounds.position.y, plan.interior_bounds.end.y):
 		for x: int in range(plan.interior_bounds.position.x, plan.interior_bounds.end.x):
 			available_tiles.append(Vector2i(x, y))
-	if is_large:
+	if role != null and not role.loot.is_empty():
 		_reserve_center_loot_tiles(plan, available_tiles)
+	elif is_large:
+		_reserve_center_loot_tiles(plan, available_tiles)
+	if role != null and role.feature_building_id != &"":
+		_reserve_feature_tiles(plan, available_tiles, role.feature_building_count)
 	_shuffle_tiles(available_tiles, rng)
 
-	var resident_count: int = mini(
-		definition.get_resident_count(rng, is_large),
-		available_tiles.size()
-	)
+	var requested_residents: int = role.get_resident_count(rng) \
+		if role != null else definition.get_resident_count(rng, is_large)
+	var resident_count: int = mini(requested_residents, available_tiles.size())
 	for _resident_index: int in range(resident_count):
 		plan.resident_spawn_tiles.append(available_tiles.pop_back())
-	var pig_count: int = mini(definition.get_pig_count(rng, is_large), available_tiles.size())
+	var requested_pigs: int = role.get_pig_count(rng) \
+		if role != null else definition.get_pig_count(rng, is_large)
+	var pig_count: int = mini(requested_pigs, available_tiles.size())
 	for _pig_index: int in range(pig_count):
 		plan.pig_spawn_tiles.append(available_tiles.pop_back())
+	var merchant_count: int = mini(
+		role.merchant_count if role != null else 0,
+		available_tiles.size()
+	)
+	for _merchant_index: int in range(merchant_count):
+		plan.merchant_spawn_tiles.append(available_tiles.pop_back())
+	var hostile_count: int = mini(
+		role.get_hostile_count(rng) if role != null else 0,
+		available_tiles.size()
+	)
+	for _hostile_index: int in range(hostile_count):
+		plan.hostile_spawn_tiles.append(available_tiles.pop_back())
+		plan.hostile_actor_ids.append(role.get_random_hostile_actor_id(rng))
 	return plan
+
+
+func _reserve_feature_tiles(
+		plan: VillagePlan,
+		available_tiles: Array[Vector2i],
+		requested_count: int
+	) -> void:
+	var corners: Array[Vector2i] = [
+		plan.interior_bounds.position,
+		Vector2i(plan.interior_bounds.end.x - 1, plan.interior_bounds.position.y),
+		Vector2i(plan.interior_bounds.position.x, plan.interior_bounds.end.y - 1),
+		plan.interior_bounds.end - Vector2i.ONE,
+	]
+	var feature_count: int = mini(maxi(requested_count, 0), corners.size())
+	for index: int in range(feature_count):
+		var tile: Vector2i = corners[index]
+		if tile in available_tiles:
+			plan.feature_building_tiles.append(tile)
+			available_tiles.erase(tile)
 
 
 func _reserve_center_loot_tiles(
@@ -230,3 +284,14 @@ func _shuffle_tiles(tiles: Array[Vector2i], rng: RandomNumberGenerator) -> void:
 		var temporary: Vector2i = tiles[index]
 		tiles[index] = tiles[swap_index]
 		tiles[swap_index] = temporary
+
+
+func _shuffle_roles(
+		roles: Array[VillageRoleDefinition],
+		rng: RandomNumberGenerator
+	) -> void:
+	for index: int in range(roles.size() - 1, 0, -1):
+		var swap_index: int = rng.randi_range(0, index)
+		var temporary: VillageRoleDefinition = roles[index]
+		roles[index] = roles[swap_index]
+		roles[swap_index] = temporary

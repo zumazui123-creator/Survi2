@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="WorldEventDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/world_events/world_event_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+event_id = &"village_siege"
+display_name = "Dorfbelagerung"
+description = "Banditen belagern ein befestigtes Dorf und greifen dessen Bewohner an."
+spawn_probability = 0.65
+placement = 2
+reservation_radius_tiles = 3
+marker_style = &"village_siege"
+marker_color = Color(0.92, 0.12, 0.08, 1)
+target_role = 1
+retarget_village_residents = true
+hostile_actor_id = &"bandit"
+minimum_hostiles = 4
+maximum_hostiles = 6
+map_color = Color(0.92, 0.12, 0.08, 1)

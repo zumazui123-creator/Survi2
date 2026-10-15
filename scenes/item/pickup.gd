@@ -28,6 +28,25 @@ func consume_for_structure(amount: int) -> int:
 		queue_free()
 	return consumed
 
+
+func try_reserve() -> bool:
+	if not is_available_for_structure():
+		return false
+	_reserved_for_structure = true
+	return true
+
+
+func release_reservation() -> void:
+	if not is_queued_for_deletion() and stackCount > 0:
+		_reserved_for_structure = false
+
+
+func consume_reserved() -> void:
+	if not _reserved_for_structure or is_queued_for_deletion():
+		return
+	stackCount = 0
+	queue_free()
+
 @rpc("any_peer", "call_remote", "reliable")
 func _on_body_entered(body: Node) -> void:
 	if multiplayer.is_server() \

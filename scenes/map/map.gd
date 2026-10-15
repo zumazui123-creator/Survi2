@@ -82,6 +82,8 @@ func generateMap(level_dict : Dictionary):
 	spawnPosition = Vector2i.ZERO
 	endPosition = Vector2i(-10, -10)
 	_reset_navigation_state()
+	object_manager.clear_world_events()
+	object_manager.clear_secret_locations()
 	object_manager.clear_villages()
 	object_manager.clear_landmarks()
 	object_manager.clear_trees(false)
@@ -89,6 +91,8 @@ func generateMap(level_dict : Dictionary):
 	var generated_villages: Array[VillagePlan] = []
 	var generated_village_definition: VillageDefinition
 	var generated_landmarks: Array[LandmarkPlan] = []
+	var generated_world_events: Array[WorldEventPlan] = []
+	var generated_secret_locations: Array[SecretLocationPlan] = []
 
 	if level_type == Constants.MAP_MAIN:
 		map_type  		=  get_node_or_null("MainLevelGenerator")
@@ -99,6 +103,8 @@ func generateMap(level_dict : Dictionary):
 		generated_villages.assign(tiles[3])
 		generated_village_definition = tiles[4] as VillageDefinition
 		generated_landmarks.assign(tiles[5])
+		generated_world_events.assign(tiles[6])
+		generated_secret_locations.assign(tiles[7])
 		set_level_options(level_no)
 	elif level_type == Constants.MAP_LABY:
 		map_type  		 =  get_node_or_null("LabyrinthGenerator")
@@ -115,6 +121,8 @@ func generateMap(level_dict : Dictionary):
 		generated_villages.assign(tiles[3])
 		generated_village_definition = tiles[4] as VillageDefinition
 		generated_landmarks.assign(tiles[5])
+		generated_world_events.assign(tiles[6])
+		generated_secret_locations.assign(tiles[7])
 	else:
 		push_warning("Unsupported map type: %s" % level_type)
 		return
@@ -125,6 +133,8 @@ func generateMap(level_dict : Dictionary):
 	rebuild_navigation_grid()
 	object_manager.load_villages(generated_villages, generated_village_definition)
 	object_manager.load_landmarks(generated_landmarks)
+	object_manager.load_world_events(generated_world_events)
+	object_manager.load_secret_locations(generated_secret_locations)
 
 
 func _reset_navigation_state() -> void:
@@ -339,6 +349,17 @@ func add_navigation_blocker(tile: Vector2i) -> void:
 		_bump_navigation_revision()
 
 
+func add_navigation_blockers(tiles: Array[Vector2i]) -> void:
+	var navigation_changed_by_batch: bool = false
+	for tile: Vector2i in tiles:
+		navigation_blockers[tile] = int(navigation_blockers.get(tile, 0)) + 1
+		if astar_ready and astar_grid.is_in_boundsv(tile):
+			astar_grid.set_point_solid(tile, true)
+			navigation_changed_by_batch = true
+	if navigation_changed_by_batch:
+		_bump_navigation_revision()
+
+
 func remove_navigation_blocker(tile: Vector2i) -> void:
 	if not navigation_blockers.has(tile):
 		return
@@ -348,6 +369,23 @@ func remove_navigation_blocker(tile: Vector2i) -> void:
 		if astar_ready and astar_grid.is_in_boundsv(tile) and tile in walkable_tiles:
 			astar_grid.set_point_solid(tile, false)
 	if astar_ready:
+		_bump_navigation_revision()
+
+
+func remove_navigation_blockers(tiles: Array[Vector2i]) -> void:
+	var navigation_changed_by_batch: bool = false
+	for tile: Vector2i in tiles:
+		if not navigation_blockers.has(tile):
+			continue
+		navigation_blockers[tile] = int(navigation_blockers[tile]) - 1
+		if navigation_blockers[tile] <= 0:
+			navigation_blockers.erase(tile)
+			if astar_ready and astar_grid.is_in_boundsv(tile) \
+					and tile in walkable_tiles:
+				astar_grid.set_point_solid(tile, false)
+		if astar_ready:
+			navigation_changed_by_batch = true
+	if navigation_changed_by_batch:
 		_bump_navigation_revision()
 
 

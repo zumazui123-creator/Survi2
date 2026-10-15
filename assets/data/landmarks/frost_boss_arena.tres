@@ -18,6 +18,7 @@ maximum_instances = 1
 generation_priority = 120
 map_color = Color(0.66, 0.9, 1, 1)
 loot = {"iceCrystal": 4}
+enemy_spawns = {"iceCreature": 4}
 structure_style = &"frost_arena"
 boss_actor_id = &"frostGiant"
 allowed_biomes = Array[StringName]([&"snow"])

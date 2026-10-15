@@ -4,6 +4,12 @@ signal inventoryUpdated(id)
 signal itemRemoved(id, item)
 signal updateReceived(id)
 
+const STARTING_ITEMS: Dictionary = {
+	"wood": 7,
+	"iron": 7,
+	"stone": 40,
+}
+
 var inventories := {}
 # {1: {"wood": 5, "iron": 3}}
 var durabilities := {}
@@ -12,6 +18,21 @@ var durabilities := {}
 
 func getItems(id :String):
 	return inventories.get(id, {})
+
+
+func initialize_player_inventory(id: String) -> bool:
+	if inventories.has(id):
+		return false
+	var starting_inventory: Dictionary = {}
+	for item_id_variant: Variant in STARTING_ITEMS:
+		var item_id: String = String(item_id_variant)
+		var amount: int = int(STARTING_ITEMS[item_id_variant])
+		if amount > 0:
+			starting_inventory[item_id] = amount
+	inventories[id] = starting_inventory
+	durabilities[id] = {}
+	inventoryUpdated.emit(id)
+	return true
 
 func get_item_id_at_slot(id: String, slot_number: int) -> String:
 	if slot_number < 1:

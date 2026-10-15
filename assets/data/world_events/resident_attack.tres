@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="WorldEventDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/world_events/world_event_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+event_id = &"resident_attack"
+display_name = "Bewohner in Gefahr"
+description = "Wilde Tiere greifen einen Bewohner an. Hilf ihm, bevor er besiegt wird."
+spawn_probability = 0.75
+placement = 1
+reservation_radius_tiles = 2
+marker_style = &"resident_attack"
+marker_color = Color(1, 0.78, 0.12, 1)
+target_role = 1
+hostile_actor_id = &"spider"
+minimum_hostiles = 2
+maximum_hostiles = 3
+map_color = Color(1, 0.78, 0.12, 1)
