@@ -236,7 +236,7 @@ func get_craftable_item_ids() -> PackedStringArray:
 	for resource: Resource in ITEM_DEFINITIONS:
 		var definition: ItemDefinition = resource as ItemDefinition
 		if definition == null:
-			continue
+			continue #TODO torch is null 
 		if definition.item_id.is_empty():
 			continue
 		if definition.recipe.is_empty():
