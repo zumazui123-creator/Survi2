@@ -167,8 +167,8 @@ teleport_network = NodePath("TeleportNetwork")
 
 [node name="TreeManager" type="Node2D" parent="ObjectManager" unique_id=1255616609 groups=["tree_manager"]]
 script = ExtResource("6_tree_manager")
-active_tree_batch_size = 200
-active_tree_batch_interval = 2.0
+active_tree_batch_size = 25
+active_tree_batch_interval = 0.25
 
 [node name="PassiveTrees" type="MultiMeshInstance2D" parent="ObjectManager/TreeManager" unique_id=471359765]
 
