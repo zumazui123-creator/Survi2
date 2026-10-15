@@ -3,6 +3,7 @@ extends Node
 @export_group("Tree placement")
 @export_range(0, 100000, 1) var max_trees_per_map: int = 2500
 @export_range(0.0, 1.0, 0.001) var max_tree_map_ratio: float = 0.06
+@export_range(0.0, 1.0, 0.05) var initial_tree_count_scale: float = 0.6
 @export var tree_object_ids: PackedStringArray = PackedStringArray([
 	"tree0",
 	"tree4",
@@ -422,6 +423,7 @@ func _get_tree_limit(candidate_count: int) -> int:
 		result = mini(result, area_limit)
 	if max_trees_per_map > 0:
 		result = mini(result, max_trees_per_map)
+	result = floori(float(result) * initial_tree_count_scale)
 	return maxi(result, 0)
 
 

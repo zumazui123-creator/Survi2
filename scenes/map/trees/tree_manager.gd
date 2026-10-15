@@ -12,6 +12,7 @@ const DEFAULT_TREE_HP: float = 40.0
 const PASSIVE_COLOR: Color = Color.WHITE
 const PASSIVE_HIGHLIGHT_COLOR: Color = Color(1.0, 0.72, 0.12, 1.0)
 const HIDDEN_COLOR: Color = Color(1.0, 1.0, 1.0, 0.0)
+const PASSIVE_TREE_ROTATION: float = PI
 const TREE_NEIGHBOR_OFFSETS: Array[Vector2i] = [
 	Vector2i(-1, -1),
 	Vector2i(0, -1),
@@ -341,7 +342,7 @@ func _rebuild_passive_representation() -> void:
 			)
 			tree_multimesh.set_instance_transform_2d(
 				instance_index,
-				Transform2D(0.0, local_position)
+				Transform2D(PASSIVE_TREE_ROTATION, local_position)
 			)
 			_update_passive_instance(state)
 
