@@ -14,4 +14,4 @@ damage = 20.0
 damage_type = &"normal"
 durability = 40.0
 equipment_scene = ExtResource("3_scene")
-recipe = {"wood": 3}
+recipe = {"wood": 3, "stone": 1}
