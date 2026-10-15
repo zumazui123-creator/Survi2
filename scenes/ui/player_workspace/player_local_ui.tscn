@@ -6,7 +6,7 @@
 [ext_resource type="Script" uid="uid://dsnm03bgpmori" path="res://scenes/character/components/code.gd" id="4_code"]
 [ext_resource type="Script" uid="uid://cq4ykx1tbo4pp" path="res://scenes/ui/player_workspace/navigation_reward_policy_editor.gd" id="5_reward_editor"]
 [ext_resource type="Script" uid="uid://veoh825sn128" path="res://scenes/ui/player_workspace/ai_environment_settings_ui.gd" id="6_environment_settings"]
-[ext_resource type="Script" path="res://scenes/code/interactive_command_input.gd" id="7_interactive_input"]
+[ext_resource type="Script" uid="uid://cpso1buinynof" path="res://scenes/code/interactive_command_input.gd" id="7_interactive_input"]
 
 [sub_resource type="CodeHighlighter" id="CodeHighlighter_vreni"]
 number_color = Color(0.16078432, 0.5294118, 0.36862746, 1)
@@ -22,7 +22,7 @@ script = ExtResource("1_ui")
 [node name="FunctionLibrary" type="Node" parent="." unique_id=1453966637]
 script = ExtResource("3_function")
 
-[node name="InteractiveCommandInput" type="Node" parent="."]
+[node name="InteractiveCommandInput" type="Node" parent="." unique_id=1091525514]
 script = ExtResource("7_interactive_input")
 
 [node name="CodeLayer" type="CanvasLayer" parent="." unique_id=336348594]
@@ -59,7 +59,7 @@ size_flags_horizontal = 4
 size_flags_vertical = 0
 text = "Haupt-Code"
 
-[node name="InteractiveModeButton" type="CheckButton" parent="CodeLayer/Code/TabContainer/Code"]
+[node name="InteractiveModeButton" type="CheckButton" parent="CodeLayer/Code/TabContainer/Code" unique_id=342268910]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 4
@@ -72,7 +72,7 @@ custom_minimum_size = Vector2(0, 360)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_constants/line_spacing = 3
+theme_override_constants/line_spacing = 4
 theme_override_font_sizes/font_size = 13
 scroll_smooth = true
 scroll_past_end_of_file = true
@@ -129,11 +129,13 @@ text = "↷"
 
 [node name="ExampleContainer" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/Code" unique_id=43551448]
 layout_mode = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 6
 
 [node name="Label" type="Label" parent="CodeLayer/Code/TabContainer/Code/ExampleContainer" unique_id=2097721802]
 layout_mode = 2
 text = "Beispiel:"
+resize_font_to_fit = true
+maximum_font_size = 14
 
 [node name="ExampleSelector" type="OptionButton" parent="CodeLayer/Code/TabContainer/Code/ExampleContainer" unique_id=381592330]
 unique_name_in_owner = true
@@ -150,6 +152,9 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "Bereit"
 autowrap_mode = 2
+resize_font_to_fit = true
+minimum_font_size = 13
+maximum_font_size = 13
 
 [node name="CommandHelp" type="Label" parent="CodeLayer/Code/TabContainer/Code" unique_id=857863717]
 unique_name_in_owner = true
@@ -157,6 +162,9 @@ modulate = Color(0.78, 0.82, 0.9, 1)
 layout_mode = 2
 text = "Fahre mit der Maus über einen Befehl für eine kurze Erklärung."
 autowrap_mode = 2
+resize_font_to_fit = true
+minimum_font_size = 14
+maximum_font_size = 13
 
 [node name="ActionsContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/Code" unique_id=1139331600]
 modulate = Color(1, 1, 1, 0.984314)
@@ -166,10 +174,11 @@ size_flags_vertical = 3
 
 [node name="HBoxContainer" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer" unique_id=1118339553]
 layout_mode = 2
-theme_override_constants/separation = 10
+theme_override_constants/separation = 8
 
 [node name="BewegContainer" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer" unique_id=1303574342]
 layout_mode = 2
+theme_override_constants/separation = 1
 
 [node name="BewegeLabel" type="Label" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer" unique_id=1542221444]
 layout_mode = 2
@@ -203,6 +212,7 @@ text = "unten"
 [node name="VBoxContainer2" type="VBoxContainer" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer" unique_id=305099569]
 layout_mode = 2
 size_flags_horizontal = 0
+theme_override_constants/separation = 2
 
 [node name="Label" type="Label" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer2" unique_id=1930048048]
 layout_mode = 2
@@ -243,19 +253,6 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 select_mode = 1
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer" unique_id=664948786]
-layout_mode = 2
-size_flags_vertical = 3
-alignment = 1
-
-[node name="createFunction" type="Button" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer2" unique_id=79635568]
-layout_mode = 2
-text = "Neue Funktion"
-
-[node name="loadFunction" type="Button" parent="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer2" unique_id=1071860524]
-layout_mode = 2
-text = "Funktionen verwalten"
 
 [node name="KI" type="MarginContainer" parent="CodeLayer/Code/TabContainer" unique_id=1000470522]
 unique_name_in_owner = true
@@ -882,6 +879,7 @@ bbcode_enabled = true
 text = "Geh zum weißen Feld!"
 fit_content = true
 
+[connection signal="toggled" from="CodeLayer/Code/TabContainer/Code/InteractiveModeButton" to="CodeLayer/Code" method="_on_interactive_mode_toggled"]
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ButtonCotainer/PlayButton" to="CodeLayer/Code" method="_on_play_button_pressed"]
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ButtonCotainer/PauseButton" to="CodeLayer/Code" method="_on_pause_button_pressed"]
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ButtonCotainer/StopButton" to="CodeLayer/Code" method="_on_stop_button_pressed"]
@@ -889,7 +887,6 @@ fit_content = true
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ButtonCotainer/StepButton" to="CodeLayer/Code" method="_on_step_button_pressed"]
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ButtonCotainer/UndoButton" to="CodeLayer/Code" method="_on_undo_button_pressed"]
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ButtonCotainer/RedoButton" to="CodeLayer/Code" method="_on_redo_button_pressed"]
-[connection signal="toggled" from="CodeLayer/Code/TabContainer/Code/InteractiveModeButton" to="CodeLayer/Code" method="_on_interactive_mode_toggled"]
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ExampleContainer/LoadExampleButton" to="CodeLayer/Code" method="_on_load_example_pressed"]
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer/ObenButton" to="CodeLayer/Code" method="_on_oben_button_pressed"]
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/BewegContainer/LinksRechtsContainer/LinksButton" to="CodeLayer/Code" method="_on_links_button_pressed"]
@@ -899,8 +896,6 @@ fit_content = true
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer2/trinkeButton" to="CodeLayer/Code" method="_on_trinke_button_pressed"]
 [connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer2/sageButton" to="CodeLayer/Code" method="_on_sage_button_pressed"]
 [connection signal="item_activated" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer/VBoxContainer3/ItemList" to="CodeLayer/Code" method="_on_item_list_item_activated"]
-[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer2/createFunction" to="CodeLayer/Code" method="_on_create_function_pressed"]
-[connection signal="pressed" from="CodeLayer/Code/TabContainer/Code/ActionsContainer/HBoxContainer2/loadFunction" to="CodeLayer/Code" method="_on_load_function_pressed"]
 [connection signal="item_selected" from="CodeLayer/Code/TabContainer/KI/ScrollContainer/Content/AgentSettingsPanel/VBox/EpisodeGrid/AgentSelector" to="CodeLayer/Code/TabContainer/KI" method="_on_agent_selected"]
 [connection signal="value_changed" from="CodeLayer/Code/TabContainer/KI/ScrollContainer/Content/AgentSettingsPanel/VBox/EpisodeGrid/MaxStepsInput" to="CodeLayer/Code/TabContainer/KI" method="_on_max_steps_changed"]
 [connection signal="value_changed" from="CodeLayer/Code/TabContainer/KI/ScrollContainer/Content/AgentSettingsPanel/VBox/EpisodeGrid/RolloutCountInput" to="CodeLayer/Code/TabContainer/KI" method="_on_rollout_count_changed"]
