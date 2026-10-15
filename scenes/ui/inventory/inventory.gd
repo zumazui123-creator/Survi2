@@ -12,6 +12,7 @@ var chatinput
 func _ready():
 	Inventory.updateReceived.connect(inventoryUpdated)
 	populateSlots()
+	populateRecipes()
 
 func _unhandled_input(_event):
 	if Input.is_action_pressed("esc"):
@@ -63,12 +64,16 @@ func populateItems():
 
 func populateRecipes():
 	var recipeSlotScene: PackedScene = preload("res://scenes/ui/inventory/recipe_slot.tscn")
+	var player_id: String = str(multiplayer.get_unique_id())
+	var inventory_is_ready: bool = Inventory.inventories.has(player_id)
 	for c in %Recipes.get_children():
 		c.queue_free()
-	for recipe in Items.recipes.keys():
+	for recipe_value: Variant in Items.recipes.keys():
+		var recipe_id: String = str(recipe_value)
 		var recipeSlot: Node = recipeSlotScene.instantiate()
-		recipeSlot.itemId = recipe
-		recipeSlot.canCraft = Inventory.canCraftItem(str(multiplayer.get_unique_id()), recipe)
+		recipeSlot.itemId = recipe_id
+		recipeSlot.canCraft = inventory_is_ready \
+			and Inventory.canCraftItem(player_id, recipe_id)
 		%Recipes.add_child(recipeSlot)
 		recipeSlot.recipeSelected.connect(recipeSelected)
 
