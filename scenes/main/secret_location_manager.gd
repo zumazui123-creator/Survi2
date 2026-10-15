@@ -65,6 +65,8 @@ func load_secrets(plans: Array[SecretLocationPlan]) -> void:
 func clear_secrets() -> void:
 	for marker: SecretLocation in _markers.values():
 		if is_instance_valid(marker):
+			if marker.get_parent() == self:
+				remove_child(marker)
 			marker.queue_free()
 	# Clear plans before buildings so their removal signals cannot open a secret
 	# or spawn rewards while the world is being regenerated.
@@ -135,6 +137,9 @@ func _spawn_access_objects(plan: SecretLocationPlan) -> void:
 			or definition.terrain_style == SecretLocationDefinition.TerrainStyle.PASSAGE:
 		for tile: Vector2i in plan.barrier_tiles:
 			_spawn_generated_building(definition.barrier_building_id, tile, plan.plan_id)
+	if definition.boundary_building_id != &"":
+		for tile: Vector2i in plan.boundary_tiles:
+			_spawn_generated_building(definition.boundary_building_id, tile, plan.plan_id)
 	if definition.access_type == SecretLocationDefinition.AccessType.TELEPORT:
 		for tile: Vector2i in plan.access_building_tiles:
 			_spawn_generated_building(&"teleport_pad", tile, -1000 - plan.plan_id)
@@ -166,12 +171,14 @@ func _reveal_near_players() -> void:
 		var player: Node2D = child as Node2D
 		if player == null:
 			continue
+		if not multiplayer.is_server() and not player.is_multiplayer_authority():
+			continue
 		var player_tile: Vector2i = world_map.world_to_navigation_tile(player.global_position)
 		for plan: SecretLocationPlan in _plans.values():
 			var definition: SecretLocationDefinition = get_definition(plan.secret_id)
 			if definition == null or definition.sensor_only:
 				continue
-			if _tile_distance(player_tile, plan.center_tile) <= definition.reveal_distance_tiles:
+			if _distance_to_bounds(player_tile, plan.bounds) <= definition.reveal_distance_tiles:
 				_reveal_secret(plan.plan_id, false)
 
 
@@ -199,7 +206,11 @@ func _reveal_secret(plan_id: int, via_sensor: bool) -> void:
 
 @rpc("any_peer", "call_remote", "reliable")
 func _server_reveal_secret(plan_id: int, via_sensor: bool) -> void:
-	if multiplayer.is_server():
+	if multiplayer.is_server() and _can_peer_reveal(
+			multiplayer.get_remote_sender_id(),
+			plan_id,
+			via_sensor
+		):
 		_reveal_secret(plan_id, via_sensor)
 
 
@@ -229,6 +240,9 @@ func _open_secret(plan_id: int) -> void:
 	if plan == null or definition == null:
 		return
 	_opened[plan_id] = true
+	if is_instance_valid(tree_manager):
+		for cover_tile: Vector2i in plan.cover_tree_tiles:
+			tree_manager.prevent_tree_regrowth(cover_tile)
 	secret_opened.emit(plan, definition)
 	_try_spawn_loot(plan_id)
 
@@ -296,3 +310,34 @@ func _rebuild_definition_index() -> void:
 
 func _tile_distance(left: Vector2i, right: Vector2i) -> int:
 	return absi(left.x - right.x) + absi(left.y - right.y)
+
+
+func _distance_to_bounds(tile: Vector2i, bounds: Rect2i) -> int:
+	var closest: Vector2i = Vector2i(
+		clampi(tile.x, bounds.position.x, bounds.end.x - 1),
+		clampi(tile.y, bounds.position.y, bounds.end.y - 1)
+	)
+	return _tile_distance(tile, closest)
+
+
+func _can_peer_reveal(peer_id: int, plan_id: int, via_sensor: bool) -> bool:
+	var plan: SecretLocationPlan = _plans.get(plan_id) as SecretLocationPlan
+	var definition: SecretLocationDefinition = get_definition(plan.secret_id) \
+		if plan != null else null
+	if plan == null or definition == null or not is_instance_valid(world_map):
+		return false
+	var players_root: Node = get_tree().get_first_node_in_group("players_root")
+	if players_root == null:
+		return false
+	var player: CharacterBody2D = players_root.get_node_or_null(str(peer_id)) as CharacterBody2D
+	if player == null:
+		return false
+	var player_tile: Vector2i = world_map.world_to_navigation_tile(player.global_position)
+	if not via_sensor:
+		return not definition.sensor_only \
+			and _distance_to_bounds(player_tile, plan.bounds) \
+			<= definition.reveal_distance_tiles
+	var sensor: PlayerSensor = player.get("sensor") as PlayerSensor
+	var sensor_radius: int = sensor.get_effective_scan_radius() \
+		if is_instance_valid(sensor) else 10
+	return _tile_distance(player_tile, plan.center_tile) <= sensor_radius

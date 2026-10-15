@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ActorDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scenes/gameplay/definitions/actor_definition.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/objects/rock1.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+actor_id = &"stoneMinion"
+texture = ExtResource("2")
+max_hp = 90.0
+speed = 54.0
+attack = &"slash"
+attack_damage = 12.0
+attack_range = 48.0
+drops = {"stone": {"min": 1, "max": 3}}
+visual_scale = Vector2(0.65, 0.65)

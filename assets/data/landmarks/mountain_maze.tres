@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="LandmarkDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/map/landmarks/landmark_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+landmark_id = &"mountain_maze"
+display_name = "Runenlabyrinth"
+description = "Ein uraltes Steinlabyrinth fordert Reisende dazu auf, ihren Weg als Programm zu planen."
+danger_description = "Wer den Ausgang nicht rechtzeitig erreicht, wird durch die Runen zum Start zurückversetzt."
+reward_description = "magicStone, Eisen, Gold, ein magisches Artefakt und ein seltener Bauplan"
+size_tiles = Vector2i(17, 17)
+edge_margin_tiles = 10
+spacing_tiles = 10
+placement_attempts = 1600
+category = 2
+minimum_instances = 1
+maximum_instances = 1
+generation_priority = 118
+map_color = Color(0.72, 0.76, 0.88, 1)
+structure_style = &"none"
+allowed_biomes = Array[StringName]([&"mountain"])
+biome_border_margin_tiles = 1

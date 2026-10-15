@@ -11,6 +11,7 @@ var room_tiles: Array[Vector2i] = []
 var terrain_blocked_tiles: Array[Vector2i] = []
 var cover_tree_tiles: Array[Vector2i] = []
 var barrier_tiles: Array[Vector2i] = []
+var boundary_tiles: Array[Vector2i] = []
 var access_building_tiles: Array[Vector2i] = []
 var loot_tiles: Array[Vector2i] = []
 
@@ -40,6 +41,9 @@ func get_reserved_tiles() -> Array[Vector2i]:
 		if tile not in result:
 			result.append(tile)
 	for tile: Vector2i in cover_tree_tiles:
+		if tile not in result:
+			result.append(tile)
+	for tile: Vector2i in boundary_tiles:
 		if tile not in result:
 			result.append(tile)
 	for tile: Vector2i in [entrance_tile, exit_tile]:

@@ -1,18 +1,64 @@
 
 
 TODO:
+Programmier-Rätsel
+Bestimmte Orte lassen sich mit kleinen Programmen lösen:
+Generell: loest man das Raetsel richtig wird man gut mit items belohnt.
+- Bei den Tempel: mehrere Schalter in einer Reihenfolge betreten und das in einer bestimmten Zeit.
+    ein Schalter ist einfach nur ein weises Teil oder kann auch huebscher sein(dieses leuchtet 
+    wenn man es beruehrt ), 
+    sollte diese tile beruhrt werden erscheint als label der
+    text der zahl des Tiles also zum beispiel 1. Jetzt versucht man mit seinem spieler von 1 bis 4 in der
+    richtigen Reihenfolge alle teil zu beruhren, dann hat man ds raetsel geloest.
 
 
+Programmier-Rätsel
+Bestimmte Orte lassen sich mit kleinen Programmen lösen:
+Generell: loest man das Raetsel richtig wird man gut mit items belohnt.
+- Irgendwo bei den Gebirgen: ein Labyrinth zu einer bestimmen zeit durchgehen,also den ausgang finden, 
+    sonst wird man zurueck zum start
+    teleportiert. Beim betreten startet ein Count down. Der Start punkt ist ein weisses tile(dieses leuchtet 
+    wenn man es beruehrt ) und der End punkte ein schwarzes hat man das weise teil beruhrt und in einer bestimmten zeit
+    das schwarze tile beruhrt hat man das raetsel geloest.
 
 
+Programmier-Rätsel
+Bestimmte Orte lassen sich mit kleinen Programmen lösen:
+Generell: loest man das Raetsel richtig wird man gut mit items belohnt.
+- Bei einem Friedhof: Gegenstände in einer richtigen reihe droppen. 4 Tiles mit den Text: 
+    Tile 1 "stone"  
+    Tile 2 "wood" 
+    Tile 3 "iron"
+    Tile 4 "food"
+    sollten alle gedroppten item auf den richtigen tile liegen hat man das Raetsel geloest.
+
+Programmier-Rätsel
+Bestimmte Orte lassen sich mit kleinen Programmen lösen:
+Generell: loest man das Raetsel richtig wird man gut mit items belohnt.
+- Ghost Monster in den Suempfen mit Sensorbedingungen umgehen.
+    Die Ghosts bewachen einen Schatz und man sieht den Sensor Sicht des Ghost. 
+    Der Ghost geht in einen bestimmten pattern um den schatz oder in der naehe des schatzen.
+    Ziel ist es schnell den schatz zu beruhren ohne von einen ghost gesehen zu werden, 
+    wird man von einem ghost gesehen, verschwindet der schatz und erscheint erst wenn kein spieler 
+    in der naehe ist. 
+
+Programmier-Rätsel
+Bestimmte Orte lassen sich mit kleinen Programmen lösen:
+Generell: loest man das Raetsel richtig wird man gut mit items belohnt.
+- eine Brücke aus Mauern bauen.
+    eine Bruecke ist in der mitte kaputt und kann nur mit mauern repariert werden, um zu schatz
+    zu gelangen, ist die bruecke repariert erscheint der schatz 
 
 6. Programmier-Rätsel
 Das wäre für dein Spiel besonders passend. Bestimmte Orte lassen sich mit kleinen Programmen lösen:
 Generell: loest man das Raetsel richtig wird man gut mit items belohnt.
 - Bei den Tempel: mehrere Schalter in einer Reihenfolge betreten und das in einer bestimmten Zeit.
-- Irgendwo bei den Gebirgen: ein Labyrinth zu einer bestimmen zeit durchgehen, sonst wird man zurueck zum start
-    teleportiert. Beim betreten startet ein Count down. Der Start punkt ist ein weisses tile 
-    und der End punkte ein schwarzes
+
+- Irgendwo bei den Gebirgen: ein Labyrinth zu einer bestimmen zeit durchgehen,also den ausgang finden, 
+    sonst wird man zurueck zum start
+    teleportiert. Beim betreten startet ein Count down. Der Start punkt ist ein weisses tile(dieses leuchtet 
+    wenn man es beruehrt ) und der End punkte ein schwarzes
+
 - Bei einem Friedhof: Gegenstände in einer richtigen reihe droppen. 4 Tiles mit den Farben: 
     Tile 1 Gelb 
     Tile 2 Blau 
@@ -20,15 +66,29 @@ Generell: loest man das Raetsel richtig wird man gut mit items belohnt.
     Tile 4 Lila
 
 - Ghost Monster in den Suempfen mit Sensorbedingungen umgehen
+
 - Bei den Wald Biom: Es gibt ein Pfad der zum Schatz fuehrt. Diese Pfad
     wird links und rechts von pfeilen beschossen, man muss mauer bauen und stueck fuer 
     stueck nach oben zum schatz gehen.
-- eine Figur aus einem Gefahrenbereich programmieren
+
 - eine Brücke aus Mauern bauen
 Als Belohnung gibt es neue Befehle, Funktionen oder seltene Items.
 
+
+
+
+
+
+
+
+vielleicht Spaeter:
+Bewohner könnten Aufträge geben, handeln und ihre Einstellung zum Spieler verändern.
+
+
+
+Done:
 8. Boss-Territorien ankündigen
-Der Spieler sollte erkennen, dass er sich einem Boss nähert:
+Der Spieler sollte erkennen, dass er sich einem Boss nähert, png oder animation aus Openart entnehmen:
 - zerbrochene Bäume beim Waldkoloss
 - große Fußspuren beim Golem
 - erschütternder Bildschirm
@@ -39,13 +99,6 @@ Damit wird bereits die Suche nach dem Boss spannend.
 
 
 
-
-
-
-vielleicht Spaeter:
-Bewohner könnten Aufträge geben, handeln und ihre Einstellung zum Spieler verändern.
-
-Done:
 9. Versteckte Orte und Abkürzungen
 - Höhleneingänge hinter Bäumen
 - zerstörbare Wände

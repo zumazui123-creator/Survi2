@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="SequencePuzzleDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/map/program_puzzles/sequence_puzzle_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+puzzle_id = &"desert_temple_sequence"
+landmark_id = &"desert_temple"
+display_name = "Runenfolge des Wüstentempels"
+instructions = "Erkunde zuerst die vier leuchtenden Platten. Beim Betreten erscheint ihre Zahl. Schreibe danach ein Bewegungsprogramm, das 1 → 2 → 3 → 4 innerhalb der Zeit abläuft."
+time_limit_seconds = 24.0
+switch_offsets = Array[Vector2i]([Vector2i(-3, -3), Vector2i(3, -3), Vector2i(3, 3), Vector2i(-3, 3)])
+rewards = {"ancientTech": 3, "crystalShard": 10, "gold": 8, "rareBlueprint": 1}
+reward_offset = Vector2i(0, 4)
+discovery_radius_tiles = 9

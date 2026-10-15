@@ -160,6 +160,12 @@ func get_tree_state(tile: Vector2i) -> TreeState:
 	return tree_tiles.get(tile) as TreeState
 
 
+## Keeps deliberately cleared passages open without changing normal forest
+## regrowth. The destroyed TreeState remains available to sensor queries.
+func prevent_tree_regrowth(tile: Vector2i) -> void:
+	_respawn_remaining.erase(tile)
+
+
 func get_trees_in_radius(
 		center_tile: Vector2i,
 		radius: int,

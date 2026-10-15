@@ -7,6 +7,8 @@ class_name ObjectManager
 @export var tile_structure_assembler: TileStructureAssembler
 @export var village_manager: VillageManager
 @export var landmark_manager: LandmarkManager
+@export var boss_territory_manager: BossTerritoryManager
+@export var program_puzzle_manager: ProgramPuzzleManager
 @export var world_event_manager: WorldEventManager
 @export var secret_location_manager: SecretLocationManager
 @export var teleport_network: TeleportNetwork
@@ -80,9 +82,17 @@ func clear_villages() -> void:
 func load_landmarks(plans: Array[LandmarkPlan]) -> void:
 	if is_instance_valid(landmark_manager):
 		landmark_manager.load_landmarks(plans)
+	if is_instance_valid(boss_territory_manager):
+		boss_territory_manager.load_territories(plans)
+	if is_instance_valid(program_puzzle_manager):
+		program_puzzle_manager.load_puzzles(plans)
 
 
 func clear_landmarks() -> void:
+	if is_instance_valid(program_puzzle_manager):
+		program_puzzle_manager.clear_puzzles()
+	if is_instance_valid(boss_territory_manager):
+		boss_territory_manager.clear_territories()
 	if is_instance_valid(landmark_manager):
 		landmark_manager.clear_landmarks()
 

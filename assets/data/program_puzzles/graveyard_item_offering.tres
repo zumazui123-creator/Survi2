@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ItemOfferingPuzzleDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/map/program_puzzles/item_offering_puzzle_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+puzzle_id = &"graveyard_item_offering"
+landmark_id = &"graveyard"
+display_name = "Opferfolge der vier Gräber"
+instructions = "Droppe die Gegenstände nacheinander auf die beschrifteten Felder: 1 stone, 2 wood, 3 iron, 4 food. Nur Spieler-Drops zählen."
+offering_offsets = Array[Vector2i]([Vector2i(-3, 1), Vector2i(-1, 1), Vector2i(1, 1), Vector2i(3, 1)])
+required_items = PackedStringArray("stone", "wood", "iron", "food")
+rewards = {"ghostEssence": 6, "spiritPotion": 3, "magicHerb": 5, "gold": 8}
+reward_offset = Vector2i(0, -1)
+discovery_radius_tiles = 9

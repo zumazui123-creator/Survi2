@@ -400,7 +400,7 @@ func _make_path_area_walkable(center_tile: Vector2i) -> void:
 func _make_path_tile_walkable(tile: Vector2i) -> void:
 	if tile.x < 0 or tile.y < 0 or tile.x >= map.width or tile.y >= map.height:
 		return
-	if _secret_terrain_blocked_tiles.has(tile):
+	if _secret_reserved_tiles.has(tile) or _secret_terrain_blocked_tiles.has(tile):
 		return
 	_water_tiles.erase(tile)
 	_tree_candidate_tiles.erase(tile)

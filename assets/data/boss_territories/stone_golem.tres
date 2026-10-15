@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="BossTerritoryDefinition" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scenes/map/boss_territories/boss_territory_definition.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/bosses/territories/golem_footprint.png" id="2"]
+[ext_resource type="AudioStream" path="res://assets/bosses/territories/boss_approach.ogg" id="3"]
+
+[resource]
+script = ExtResource("1")
+landmark_id = &"golem_temple"
+boss_actor_id = &"stoneGolem"
+boss_name = "Steingolem"
+approach_warning = "Riesige Fußspuren durchziehen den Fels. Jeder Schritt lässt den Boden erzittern."
+villager_warning = "Im Gebirge folgt niemand den gewaltigen Spuren. Sie führen direkt zum Golem-Tempel."
+warning_radius_tiles = 24
+danger_radius_tiles = 13
+shake_strength = 4.0
+shake_duration = 0.7
+shake_interval = 3.25
+marker_style = 1
+marker_texture = ExtResource("2")
+marker_count = 12
+marker_width_tiles = 1.25
+marker_modulate = Color(0.34, 0.29, 0.24, 0.72)
+music = ExtResource("3")
+music_volume_db = -8.0
+music_loop_offset_seconds = 7.5

@@ -58,6 +58,7 @@ const NPC_DEFINITIONS: Array[ActorDefinition] = [
 	preload("res://assets/data/actors/villager.tres"),
 	preload("res://assets/data/actors/bandit.tres"),
 	preload("res://assets/data/actors/stone_golem.tres"),
+	preload("res://assets/data/actors/stone_minion.tres"),
 	preload("res://assets/data/actors/forest_colossus.tres"),
 	preload("res://assets/data/actors/forest_sapling.tres"),
 	preload("res://assets/data/actors/forest_spirit.tres"),

@@ -105,6 +105,26 @@
 [ext_resource type="Resource" path="res://assets/data/secrets/jump_shortcut.tres" id="104_jump_shortcut"]
 [ext_resource type="Script" path="res://scenes/main/secret_location_manager.gd" id="105_secret_manager"]
 [ext_resource type="PackedScene" path="res://scenes/map/secrets/secret_location.tscn" id="106_secret_marker"]
+[ext_resource type="Resource" path="res://assets/data/buildings/secret_rock_wall.tres" id="107_secret_rock_wall"]
+[ext_resource type="Script" path="res://scenes/map/boss_territories/boss_territory_definition.gd" id="108_boss_territory_definition"]
+[ext_resource type="Script" path="res://scenes/map/boss_territories/boss_territory_manager.gd" id="109_boss_territory_manager"]
+[ext_resource type="Resource" path="res://assets/data/boss_territories/forest_colossus.tres" id="110_forest_territory"]
+[ext_resource type="Resource" path="res://assets/data/boss_territories/stone_golem.tres" id="111_golem_territory"]
+[ext_resource type="Resource" path="res://assets/data/boss_territories/frost_giant.tres" id="112_frost_territory"]
+[ext_resource type="PackedScene" path="res://scenes/ui/boss/boss_territory_warning.tscn" id="113_boss_warning"]
+[ext_resource type="Script" path="res://scenes/map/program_puzzles/sequence_puzzle_definition.gd" id="115_sequence_puzzle_definition"]
+[ext_resource type="Script" path="res://scenes/map/program_puzzles/program_puzzle_manager.gd" id="116_program_puzzle_manager"]
+[ext_resource type="Resource" path="res://assets/data/program_puzzles/desert_temple_sequence.tres" id="117_desert_puzzle"]
+[ext_resource type="Resource" path="res://assets/data/program_puzzles/golem_temple_sequence.tres" id="118_golem_puzzle"]
+[ext_resource type="PackedScene" path="res://scenes/ui/puzzles/program_puzzle_hud.tscn" id="119_program_puzzle_hud"]
+[ext_resource type="Resource" path="res://assets/data/landmarks/mountain_maze.tres" id="120_mountain_maze"]
+[ext_resource type="Script" path="res://scenes/map/program_puzzles/timed_maze_puzzle_definition.gd" id="121_timed_maze_definition"]
+[ext_resource type="Script" path="res://scenes/map/program_puzzles/timed_maze_puzzle_handler.gd" id="122_timed_maze_handler"]
+[ext_resource type="Resource" path="res://assets/data/program_puzzles/mountain_timed_maze.tres" id="123_mountain_timed_maze"]
+[ext_resource type="Script" path="res://scenes/map/program_puzzles/sequence_puzzle_handler.gd" id="124_sequence_handler"]
+[ext_resource type="Script" path="res://scenes/map/program_puzzles/item_offering_puzzle_definition.gd" id="125_offering_definition"]
+[ext_resource type="Script" path="res://scenes/map/program_puzzles/item_offering_puzzle_handler.gd" id="126_offering_handler"]
+[ext_resource type="Resource" path="res://assets/data/program_puzzles/graveyard_item_offering.tres" id="127_graveyard_offering"]
 
 [node name="Map" type="Control" unique_id=1853554641]
 layout_mode = 3
@@ -124,13 +144,13 @@ script = ExtResource("3_qpycp")
 [node name="MainLevelGenerator" type="Node" parent="." unique_id=784512027]
 script = ExtResource("5_qci3n")
 village_definition = ExtResource("14_village_definition")
-landmark_definitions = Array[ExtResource("44_landmark_definition")]([ExtResource("79_ancient_tree"), ExtResource("50_bandit_camp"), ExtResource("80_abandoned_mine"), ExtResource("81_abandoned_tower"), ExtResource("48_graveyard"), ExtResource("82_shipwreck"), ExtResource("83_desert_temple"), ExtResource("54_destroyed_village"), ExtResource("84_magical_crater"), ExtResource("85_frost_arena")])
+landmark_definitions = Array[ExtResource("44_landmark_definition")]([ExtResource("62_forest_heart"), ExtResource("45_golem_temple"), ExtResource("120_mountain_maze"), ExtResource("79_ancient_tree"), ExtResource("50_bandit_camp"), ExtResource("80_abandoned_mine"), ExtResource("81_abandoned_tower"), ExtResource("48_graveyard"), ExtResource("82_shipwreck"), ExtResource("83_desert_temple"), ExtResource("54_destroyed_village"), ExtResource("84_magical_crater"), ExtResource("85_frost_arena")])
 world_event_definitions = Array[ExtResource("86_event_definition")]([ExtResource("87_resident_attack"), ExtResource("88_merchant_ambush"), ExtResource("89_escaped_pig"), ExtResource("90_meteor_crash"), ExtResource("91_village_siege"), ExtResource("92_rare_caravan"), ExtResource("93_night_portal")])
 secret_definitions = Array[ExtResource("97_secret_definition")]([ExtResource("98_hidden_cave"), ExtResource("99_breakable_room"), ExtResource("100_secret_island"), ExtResource("101_teleporter_ruins"), ExtResource("102_mountain_passage"), ExtResource("103_underground_room"), ExtResource("104_jump_shortcut")])
 biome_definitions = Array[ExtResource("73_biome_definition")]([ExtResource("74_forest_biome"), ExtResource("75_mountain_biome"), ExtResource("76_swamp_biome"), ExtResource("77_desert_biome"), ExtResource("78_snow_biome")])
 
 
-[node name="ObjectManager" type="Node2D" parent="." node_paths=PackedStringArray("tree_manager", "breakable_manager", "building_manager", "tile_structure_assembler", "village_manager", "landmark_manager", "world_event_manager", "secret_location_manager", "teleport_network") groups=["object_manager"]]
+[node name="ObjectManager" type="Node2D" parent="." node_paths=PackedStringArray("tree_manager", "breakable_manager", "building_manager", "tile_structure_assembler", "village_manager", "landmark_manager", "boss_territory_manager", "program_puzzle_manager", "world_event_manager", "secret_location_manager", "teleport_network") groups=["object_manager"]]
 
 script = ExtResource("7_object_manager")
 tree_manager = NodePath("TreeManager")
@@ -139,6 +159,8 @@ building_manager = NodePath("BuildingManager")
 tile_structure_assembler = NodePath("TileStructureAssembler")
 village_manager = NodePath("VillageManager")
 landmark_manager = NodePath("LandmarkManager")
+boss_territory_manager = NodePath("BossTerritoryManager")
+program_puzzle_manager = NodePath("ProgramPuzzleManager")
 world_event_manager = NodePath("WorldEventManager")
 secret_location_manager = NodePath("SecretLocationManager")
 teleport_network = NodePath("TeleportNetwork")
@@ -157,7 +179,7 @@ world_map = NodePath("../..")
 [node name="BuildingManager" type="Node2D" parent="ObjectManager" unique_id=1047387073 node_paths=PackedStringArray("world_map") groups=["building_manager", "buildings"]]
 script = ExtResource("9_building_manager")
 world_map = NodePath("../..")
-building_definitions = Array[ExtResource("12_building_definition")]([ExtResource("10_wall_definition"), ExtResource("11_tower_definition"), ExtResource("17_campfire_definition"), ExtResource("18_cannon_definition"), ExtResource("24_magic_cannon_definition"), ExtResource("25_jump_pad_definition"), ExtResource("28_pit_definition"), ExtResource("30_shield_definition"), ExtResource("32_cooking_definition"), ExtResource("34_teleport_definition"), ExtResource("36_fire_definition"), ExtResource("38_sensor_definition"), ExtResource("40_well_definition"), ExtResource("55_golem_wall"), ExtResource("56_golem_guardian"), ExtResource("57_life_well"), ExtResource("58_earthquake_cannon"), ExtResource("63_nature_kitchen"), ExtResource("64_forest_eye"), ExtResource("65_world_tree"), ExtResource("66_vine_catapult"), ExtResource("67_living_wall")])
+building_definitions = Array[ExtResource("12_building_definition")]([ExtResource("10_wall_definition"), ExtResource("11_tower_definition"), ExtResource("17_campfire_definition"), ExtResource("18_cannon_definition"), ExtResource("24_magic_cannon_definition"), ExtResource("25_jump_pad_definition"), ExtResource("28_pit_definition"), ExtResource("30_shield_definition"), ExtResource("32_cooking_definition"), ExtResource("34_teleport_definition"), ExtResource("36_fire_definition"), ExtResource("38_sensor_definition"), ExtResource("40_well_definition"), ExtResource("55_golem_wall"), ExtResource("56_golem_guardian"), ExtResource("57_life_well"), ExtResource("58_earthquake_cannon"), ExtResource("63_nature_kitchen"), ExtResource("64_forest_eye"), ExtResource("65_world_tree"), ExtResource("66_vine_catapult"), ExtResource("67_living_wall"), ExtResource("107_secret_rock_wall")])
 
 [node name="TileStructureAssembler" type="Node" parent="ObjectManager" node_paths=PackedStringArray("world_map", "building_manager") groups=["tile_structure_assembler"]]
 script = ExtResource("19_structure_assembler")
@@ -181,7 +203,35 @@ hostile_scene = ExtResource("96_village_hostile")
 script = ExtResource("43_landmark_manager")
 world_map = NodePath("../..")
 building_manager = NodePath("../BuildingManager")
-definitions = Array[ExtResource("44_landmark_definition")]([ExtResource("79_ancient_tree"), ExtResource("50_bandit_camp"), ExtResource("80_abandoned_mine"), ExtResource("81_abandoned_tower"), ExtResource("48_graveyard"), ExtResource("82_shipwreck"), ExtResource("83_desert_temple"), ExtResource("54_destroyed_village"), ExtResource("84_magical_crater"), ExtResource("85_frost_arena")])
+definitions = Array[ExtResource("44_landmark_definition")]([ExtResource("62_forest_heart"), ExtResource("45_golem_temple"), ExtResource("120_mountain_maze"), ExtResource("79_ancient_tree"), ExtResource("50_bandit_camp"), ExtResource("80_abandoned_mine"), ExtResource("81_abandoned_tower"), ExtResource("48_graveyard"), ExtResource("82_shipwreck"), ExtResource("83_desert_temple"), ExtResource("54_destroyed_village"), ExtResource("84_magical_crater"), ExtResource("85_frost_arena")])
+
+[node name="BossTerritoryManager" type="Node2D" parent="ObjectManager" node_paths=PackedStringArray("world_map", "village_manager", "music_player") groups=["boss_territory_manager"]]
+script = ExtResource("109_boss_territory_manager")
+world_map = NodePath("../..")
+village_manager = NodePath("../VillageManager")
+definitions = Array[ExtResource("108_boss_territory_definition")]([ExtResource("110_forest_territory"), ExtResource("111_golem_territory"), ExtResource("112_frost_territory")])
+warning_scene = ExtResource("113_boss_warning")
+music_player = NodePath("BossMusic")
+
+[node name="BossMusic" type="AudioStreamPlayer" parent="ObjectManager/BossTerritoryManager"]
+volume_db = -40.0
+
+[node name="ProgramPuzzleManager" type="Node2D" parent="ObjectManager" node_paths=PackedStringArray("world_map") groups=["program_puzzle_manager"]]
+script = ExtResource("116_program_puzzle_manager")
+world_map = NodePath("../..")
+hud_scene = ExtResource("119_program_puzzle_hud")
+
+[node name="SequencePuzzleHandler" type="Node2D" parent="ObjectManager/ProgramPuzzleManager"]
+script = ExtResource("124_sequence_handler")
+definitions = Array[ExtResource("115_sequence_puzzle_definition")]([ExtResource("117_desert_puzzle"), ExtResource("118_golem_puzzle")])
+
+[node name="TimedMazePuzzleHandler" type="Node2D" parent="ObjectManager/ProgramPuzzleManager"]
+script = ExtResource("122_timed_maze_handler")
+definitions = Array[ExtResource("121_timed_maze_definition")]([ExtResource("123_mountain_timed_maze")])
+
+[node name="ItemOfferingPuzzleHandler" type="Node2D" parent="ObjectManager/ProgramPuzzleManager"]
+script = ExtResource("126_offering_handler")
+definitions = Array[ExtResource("125_offering_definition")]([ExtResource("127_graveyard_offering")])
 
 [node name="WorldEventManager" type="Node2D" parent="ObjectManager" node_paths=PackedStringArray("world_map", "village_manager") groups=["world_event_manager"]]
 script = ExtResource("94_event_manager")

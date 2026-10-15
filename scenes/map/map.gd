@@ -349,6 +349,17 @@ func add_navigation_blocker(tile: Vector2i) -> void:
 		_bump_navigation_revision()
 
 
+func add_navigation_blockers(tiles: Array[Vector2i]) -> void:
+	var navigation_changed_by_batch: bool = false
+	for tile: Vector2i in tiles:
+		navigation_blockers[tile] = int(navigation_blockers.get(tile, 0)) + 1
+		if astar_ready and astar_grid.is_in_boundsv(tile):
+			astar_grid.set_point_solid(tile, true)
+			navigation_changed_by_batch = true
+	if navigation_changed_by_batch:
+		_bump_navigation_revision()
+
+
 func remove_navigation_blocker(tile: Vector2i) -> void:
 	if not navigation_blockers.has(tile):
 		return
@@ -358,6 +369,23 @@ func remove_navigation_blocker(tile: Vector2i) -> void:
 		if astar_ready and astar_grid.is_in_boundsv(tile) and tile in walkable_tiles:
 			astar_grid.set_point_solid(tile, false)
 	if astar_ready:
+		_bump_navigation_revision()
+
+
+func remove_navigation_blockers(tiles: Array[Vector2i]) -> void:
+	var navigation_changed_by_batch: bool = false
+	for tile: Vector2i in tiles:
+		if not navigation_blockers.has(tile):
+			continue
+		navigation_blockers[tile] = int(navigation_blockers[tile]) - 1
+		if navigation_blockers[tile] <= 0:
+			navigation_blockers.erase(tile)
+			if astar_ready and astar_grid.is_in_boundsv(tile) \
+					and tile in walkable_tiles:
+				astar_grid.set_point_solid(tile, false)
+		if astar_ready:
+			navigation_changed_by_batch = true
+	if navigation_changed_by_batch:
 		_bump_navigation_revision()
 
 

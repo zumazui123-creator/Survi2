@@ -197,6 +197,16 @@ func sendPos(pos):
 
 
 @rpc("any_peer", "call_local", "reliable")
+func teleport_from_server(target_global_position: Vector2) -> void:
+	var sender_id: int = multiplayer.get_remote_sender_id()
+	if sender_id != 0 and sender_id != 1:
+		return
+	global_position = target_global_position
+	if is_instance_valid(movement):
+		movement.synchronize_to_player_position(true)
+
+
+@rpc("any_peer", "call_local", "reliable")
 func launch_from_jump_pad(target_position: Vector2, duration: float) -> void:
 	var sender_id: int = multiplayer.get_remote_sender_id()
 	if sender_id != 0 and sender_id != 1:

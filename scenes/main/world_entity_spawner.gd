@@ -23,7 +23,12 @@ func spawn_pickups(item_id: String, world_position: Vector2, amount: int) -> voi
 		)
 
 
-func spawn_pickup(item_id: String, world_position: Vector2, amount: int = 1) -> bool:
+func spawn_pickup(
+		item_id: String,
+		world_position: Vector2,
+		amount: int = 1,
+		spawn_context: Dictionary = {}
+	) -> bool:
 	if not multiplayer.is_server() or not is_instance_valid(pickups_root) or amount < 1:
 		return false
 	if Items.item_definitions.get(item_id) == null:
@@ -33,6 +38,7 @@ func spawn_pickup(item_id: String, world_position: Vector2, amount: int = 1) -> 
 		return false
 	pickup.set("itemId", item_id)
 	pickup.set("stackCount", amount)
+	pickup.set_meta(&"spawn_context", spawn_context.duplicate())
 	pickup.position = pickups_root.to_local(world_position)
 	pickups_root.add_child(pickup, true)
 	pickup_spawned.emit(pickup)

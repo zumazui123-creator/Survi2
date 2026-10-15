@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="SequencePuzzleDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/map/program_puzzles/sequence_puzzle_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+puzzle_id = &"golem_temple_sequence"
+landmark_id = &"golem_temple"
+display_name = "Steinfolge des Golem-Tempels"
+instructions = "Die vier Runenplatten zeigen ihre Zahl erst bei Berührung. Merke dir ihre Positionen und programmiere den Weg von 1 bis 4, bevor die Zeit endet."
+time_limit_seconds = 22.0
+switch_offsets = Array[Vector2i]([Vector2i(-3, -3), Vector2i(3, -3), Vector2i(3, 3), Vector2i(-3, 3)])
+rewards = {"golemCore": 1, "magicStone": 6, "iron": 10, "gold": 6}
+reward_offset = Vector2i(0, 4)
+discovery_radius_tiles = 9

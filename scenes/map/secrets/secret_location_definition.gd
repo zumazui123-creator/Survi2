@@ -40,6 +40,7 @@ enum TerrainStyle {
 @export_range(1, 12, 1) var reveal_distance_tiles: int = 2
 @export var access_type: AccessType = AccessType.OPEN
 @export var barrier_building_id: StringName = &"wall"
+@export var boundary_building_id: StringName = &""
 
 @export_group("Reward")
 @export var loot: Dictionary = {}
