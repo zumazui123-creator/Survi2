@@ -1317,6 +1317,19 @@ func _validate_and_normalize_arguments(
 			return "Der Befehl benötigt einen Spielernamen. Beispiel: sende gegner zu Max"
 		return ""
 
+	if action == Strings.ACTION_ADMIN_INVISIBILITY:
+		if arguments.size() > 1:
+			return "Beispiel: unsichtbar an"
+		if arguments.size() == 1 \
+				and arguments[0].to_lower() not in ["an", "aus", "on", "off"]:
+			return "Erlaubt sind: unsichtbar, unsichtbar an oder unsichtbar aus"
+		return ""
+
+	if action == Strings.ACTION_ADMIN_TELEPORT:
+		if arguments.is_empty():
+			return "Der Befehl benötigt einen Spielernamen. Beispiel: teleportiere zu Max"
+		return ""
+
 	return "Unbekannte Aktion: %s" % action
 
 

@@ -25,6 +25,7 @@ var act : String = ""
 @export var rl_trainer: RLTrainer
 var local_ui: PlayerLocalUI
 var _work_task_text: String = ""
+var admin_invisible: bool = false
 @export var playerName : String:
 	set(value):
 		playerName = value
@@ -74,6 +75,7 @@ func _ready():
 				
 	if characterFile != "":
 		animation.set_character_sprite(characterFile)
+	_update_admin_visibility()
 
 
 func is_admin() -> bool:
@@ -100,6 +102,8 @@ func try_recover_body():
 	if characterFile == "" and info.has("body"):
 		print("Recovered body from Multihelper: " + str(info["body"]))
 		self.characterFile = info["body"]
+	if is_admin() and info.has("admin_invisible"):
+		set_admin_invisibility_from_server(bool(info["admin_invisible"]))
 
 	
 	_setup_local_player()
@@ -212,6 +216,34 @@ func teleport_from_server(target_global_position: Vector2) -> void:
 	global_position = target_global_position
 	if is_instance_valid(movement):
 		movement.synchronize_to_player_position(true)
+
+
+@rpc("any_peer", "call_local", "reliable")
+func set_admin_invisibility_from_server(value: bool) -> void:
+	var sender_id: int = multiplayer.get_remote_sender_id()
+	if sender_id != 0 and sender_id != 1:
+		return
+	if not is_admin():
+		return
+	admin_invisible = value
+	_update_admin_visibility()
+
+
+func _update_admin_visibility() -> void:
+	if not is_node_ready():
+		return
+	var is_local_player: bool = is_multiplayer_authority()
+	var visuals: CanvasItem = get_node_or_null("Visuals") as CanvasItem
+	if visuals != null:
+		visuals.visible = not admin_invisible or is_local_player
+		visuals.self_modulate = Color(1.0, 1.0, 1.0, 0.35) \
+			if admin_invisible and is_local_player else Color.WHITE
+	var world_ui: CanvasItem = get_node_or_null("WorldUI") as CanvasItem
+	if world_ui != null:
+		world_ui.visible = not admin_invisible or is_local_player
+	var path_line: CanvasItem = get_node_or_null("PathLine") as CanvasItem
+	if path_line != null:
+		path_line.visible = not admin_invisible or is_local_player
 
 
 @rpc("any_peer", "call_local", "reliable")

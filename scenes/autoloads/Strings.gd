@@ -20,6 +20,8 @@ const ACTION_USE_ITEM   = "useItem"
 const ACTION_DROP_ITEM  = "dropItem"
 const ACTION_ADMIN_CREATE_ENEMY = "adminCreateEnemy"
 const ACTION_ADMIN_SEND_ENEMY = "adminSendEnemy"
+const ACTION_ADMIN_INVISIBILITY = "adminInvisibility"
+const ACTION_ADMIN_TELEPORT = "adminTeleport"
 
 const direction_map = {
 	Strings.ACTION_WALK_LEFT: Vector2i.LEFT,
@@ -44,6 +46,8 @@ const ACTION_NAMES = {
 		"male":   ACTION_PAINT,
 		"erstelle gegner": ACTION_ADMIN_CREATE_ENEMY,
 		"sende gegner zu": ACTION_ADMIN_SEND_ENEMY,
+		"unsichtbar": ACTION_ADMIN_INVISIBILITY,
+		"teleportiere zu": ACTION_ADMIN_TELEPORT,
 	},
 	"en": {
 		"left":   ACTION_WALK_LEFT,
@@ -60,6 +64,8 @@ const ACTION_NAMES = {
 		"paint":  ACTION_PAINT,
 		"create enemy": ACTION_ADMIN_CREATE_ENEMY,
 		"send enemy to": ACTION_ADMIN_SEND_ENEMY,
+		"invisible": ACTION_ADMIN_INVISIBILITY,
+		"teleport to": ACTION_ADMIN_TELEPORT,
 	}
 }
 

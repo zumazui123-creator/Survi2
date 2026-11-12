@@ -42,6 +42,36 @@ func request_send_last_enemy(
 	return true
 
 
+func request_set_invisibility(
+		requesting_player: Survi2Player,
+		mode: String = ""
+	) -> bool:
+	if not PlayerRolePolicy.is_admin_player(requesting_player):
+		return false
+	var normalized_mode: String = mode.strip_edges().to_lower()
+	if normalized_mode not in ["", "an", "aus", "on", "off"]:
+		return false
+	var peer_id: int = requesting_player.get_multiplayer_authority()
+	if multiplayer.is_server():
+		return _server_set_invisibility(peer_id, normalized_mode)
+	_request_set_invisibility.rpc_id(1, normalized_mode)
+	return true
+
+
+func request_teleport_to_player(
+		requesting_player: Survi2Player,
+		target_player_name: String
+	) -> bool:
+	if not PlayerRolePolicy.is_admin_player(requesting_player) \
+			or target_player_name.strip_edges().is_empty():
+		return false
+	var peer_id: int = requesting_player.get_multiplayer_authority()
+	if multiplayer.is_server():
+		return _server_teleport_to_player(peer_id, target_player_name)
+	_request_teleport_to_player.rpc_id(1, target_player_name.strip_edges())
+	return true
+
+
 @rpc("any_peer", "call_remote", "reliable")
 func _request_create_enemy(actor_id: String) -> void:
 	if not multiplayer.is_server():
@@ -57,6 +87,23 @@ func _request_send_last_enemy(target_player_name: String) -> void:
 	if not multiplayer.is_server():
 		return
 	_server_send_last_enemy(
+		multiplayer.get_remote_sender_id(),
+		target_player_name
+	)
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func _request_set_invisibility(mode: String) -> void:
+	if not multiplayer.is_server():
+		return
+	_server_set_invisibility(multiplayer.get_remote_sender_id(), mode.to_lower())
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func _request_teleport_to_player(target_player_name: String) -> void:
+	if not multiplayer.is_server():
+		return
+	_server_teleport_to_player(
 		multiplayer.get_remote_sender_id(),
 		target_player_name
 	)
@@ -128,6 +175,97 @@ func _server_send_last_enemy(peer_id: int, target_player_name: String) -> bool:
 		]
 	)
 	return true
+
+
+func _server_set_invisibility(peer_id: int, mode: String) -> bool:
+	var admin: Survi2Player = _get_player_for_peer(peer_id)
+	if not PlayerRolePolicy.is_admin_player(admin):
+		return false
+	var normalized_mode: String = mode.strip_edges().to_lower()
+	if normalized_mode not in ["", "an", "aus", "on", "off"]:
+		return false
+	var invisible: bool = not admin.admin_invisible
+	if normalized_mode in ["an", "on"]:
+		invisible = true
+	elif normalized_mode in ["aus", "off"]:
+		invisible = false
+	_store_admin_invisibility(peer_id, invisible)
+	admin.set_admin_invisibility_from_server.rpc(invisible)
+	_notify(
+		admin,
+		"Admin: Unsichtbarkeit %s." % ("aktiviert" if invisible else "deaktiviert")
+	)
+	return true
+
+
+func _server_teleport_to_player(peer_id: int, target_player_name: String) -> bool:
+	var admin: Survi2Player = _get_player_for_peer(peer_id)
+	if not PlayerRolePolicy.is_admin_player(admin) or not is_instance_valid(world_map):
+		return false
+	var target: Survi2Player = _find_player_by_name(target_player_name)
+	if target == null:
+		_notify(admin, "Admin: Spieler '%s' wurde nicht gefunden." % target_player_name)
+		return false
+	if target == admin:
+		_notify(admin, "Admin: Du bist bereits bei diesem Spieler.")
+		return false
+	var destination_tile: Vector2i = _find_teleport_tile(target, admin)
+	if destination_tile == INVALID_TILE:
+		_notify(admin, "Admin: Neben '%s' ist kein freies Tile." % target.playerName)
+		return false
+	var destination: Vector2 = world_map.navigation_tile_to_world(destination_tile)
+	admin.teleport_from_server(destination)
+	if peer_id != multiplayer.get_unique_id():
+		admin.teleport_from_server.rpc_id(peer_id, destination)
+	_notify(admin, "Admin: Zu '%s' teleportiert." % target.playerName)
+	return true
+
+
+func _find_teleport_tile(
+		target: Survi2Player,
+		admin: Survi2Player
+	) -> Vector2i:
+	if not world_map.astar_ready:
+		return INVALID_TILE
+	var target_tile: Vector2i = world_map.world_to_navigation_tile(
+		target.global_position
+	)
+	var offsets: Array[Vector2i] = [
+		Vector2i.DOWN,
+		Vector2i.RIGHT,
+		Vector2i.LEFT,
+		Vector2i.UP,
+		Vector2i(1, 1),
+		Vector2i(-1, 1),
+		Vector2i(1, -1),
+		Vector2i(-1, -1),
+	]
+	for offset: Vector2i in offsets:
+		var candidate: Vector2i = target_tile + offset
+		if not world_map.is_navigation_tile_walkable(candidate, true):
+			continue
+		if _is_player_tile_occupied(candidate, admin):
+			continue
+		return candidate
+	return INVALID_TILE
+
+
+func _is_player_tile_occupied(tile: Vector2i, except_player: Survi2Player) -> bool:
+	for candidate: Node in get_tree().get_nodes_in_group(Strings.GROUP_PLAYER):
+		var player: Survi2Player = candidate as Survi2Player
+		if player == null or player == except_player:
+			continue
+		if world_map.world_to_navigation_tile(player.global_position) == tile:
+			return true
+	return false
+
+
+func _store_admin_invisibility(peer_id: int, invisible: bool) -> void:
+	if not Multihelper.spawnedPlayers.has(peer_id):
+		return
+	var player_info: Dictionary = Multihelper.spawnedPlayers[peer_id]
+	player_info["admin_invisible"] = invisible
+	Multihelper.spawnedPlayers[peer_id] = player_info
 
 
 func _find_spawn_tile(admin: Survi2Player) -> Vector2i:

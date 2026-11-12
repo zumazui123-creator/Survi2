@@ -443,6 +443,10 @@ func execute_command(command: CodeParser.ParsedCommand, execution_id: int) -> vo
 		admin_create_enemy(command.arguments, command.source_line)
 	elif action == Strings.ACTION_ADMIN_SEND_ENEMY:
 		admin_send_enemy(command.arguments, command.source_line)
+	elif action == Strings.ACTION_ADMIN_INVISIBILITY:
+		admin_set_invisibility(command.arguments, command.source_line)
+	elif action == Strings.ACTION_ADMIN_TELEPORT:
+		admin_teleport(command.arguments, command.source_line)
 	else:
 		_report_error("Unbekannter Befehl: " + action, command.source_line)
 
@@ -485,6 +489,55 @@ func admin_send_enemy(arguments: PackedStringArray, source_line: int) -> void:
 			"Der Gegner konnte nicht an diesen Spieler gesendet werden.",
 			source_line
 		)
+
+
+func admin_set_invisibility(arguments: PackedStringArray, source_line: int) -> void:
+	var admin_player: Survi2Player = player as Survi2Player
+	var service: AdminCommandService = _get_admin_command_service(
+		admin_player,
+		source_line
+	)
+	if service == null:
+		return
+	var mode: String = ""
+	if not arguments.is_empty():
+		mode = arguments[0].to_lower()
+	if not service.request_set_invisibility(admin_player, mode):
+		_report_error(
+			"Unsichtbarkeit konnte nicht geändert werden.",
+			source_line
+		)
+
+
+func admin_teleport(arguments: PackedStringArray, source_line: int) -> void:
+	var admin_player: Survi2Player = player as Survi2Player
+	var service: AdminCommandService = _get_admin_command_service(
+		admin_player,
+		source_line
+	)
+	if service == null:
+		return
+	var target_player_name: String = " ".join(arguments).strip_edges()
+	if not service.request_teleport_to_player(admin_player, target_player_name):
+		_report_error(
+			"Teleportation zu diesem Spieler ist nicht möglich.",
+			source_line
+		)
+
+
+func _get_admin_command_service(
+		admin_player: Survi2Player,
+		source_line: int
+	) -> AdminCommandService:
+	if not PlayerRolePolicy.is_admin_player(admin_player):
+		_report_error("Dieser Befehl ist nur für den Spieler 'Admin' erlaubt.", source_line)
+		return null
+	var service: AdminCommandService = get_tree().get_first_node_in_group(
+		"admin_command_service"
+	) as AdminCommandService
+	if service == null:
+		_report_error("Der AdminCommandService ist nicht verfügbar.", source_line)
+	return service
 
 
 func build(action: String, arguments: PackedStringArray, source_line: int) -> void:
