@@ -41,7 +41,7 @@ clip_contents = true
 offset_left = 22.0
 offset_top = 14.0
 offset_right = 418.0
-offset_bottom = 712.0
+offset_bottom = 726.49457
 size_flags_vertical = 3
 tab_alignment = 1
 current_tab = 0
@@ -69,11 +69,14 @@ text = "Interactive Modus: Aus"
 
 [node name="CodeEdit" type="CodeEdit" parent="CodeLayer/Code/TabContainer/Code" unique_id=1757023759]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 360)
+custom_minimum_size = Vector2(0, 380)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_font_sizes/font_size = 14
+theme_override_constants/caret_width = 1
+theme_override_constants/line_spacing = 3
+theme_override_constants/wrap_offset = 10
+theme_override_font_sizes/font_size = 12
 scroll_smooth = true
 scroll_past_end_of_file = true
 syntax_highlighter = SubResource("CodeHighlighter_vreni")
