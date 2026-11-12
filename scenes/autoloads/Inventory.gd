@@ -5,9 +5,14 @@ signal itemRemoved(id, item)
 signal updateReceived(id)
 
 const STARTING_ITEMS: Dictionary = {
-	"wood": 7,
+	"torch": 4,
 	"iron": 7,
+	"coal": 20,
+	"wood": 7,
 	"stone": 40,
+	"magicStone": 2,
+	"magicWood": 2,
+	"sap": 2,
 }
 
 var inventories := {}
