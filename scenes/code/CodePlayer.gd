@@ -19,7 +19,7 @@ signal variables_changed(snapshot: Dictionary)
 
 @export var player: CharacterBody2D
 @export var code_particles: CPUParticles2D
-@export_range(1, 10000, 1) var max_runtime_commands: int = 1000
+@export_range(1, 10000, 1) var max_runtime_commands: int = 10000
 
 var is_running: bool = false
 var is_paused: bool = false

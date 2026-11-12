@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="ItemDefinition" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://ck3m7homv5il1"]
 
 [ext_resource type="Script" uid="uid://b8bn4rx26cikq" path="res://scenes/gameplay/definitions/item_definition.gd" id="1_definition"]
 [ext_resource type="Texture2D" uid="uid://bobjoenkin6rs" path="res://assets/items/torch.png" id="2_texture"]
