@@ -31,6 +31,7 @@ var player_info = {"name": ""}
 var goal_tile = Vector2i(0,0)
 var code_player_enabled 	= true
 var host_as_player_enabled 	= true
+var day_night_cycle_enabled: bool = true
 
 var game : Node
 func setGameNode(gameNode : Node):
@@ -132,6 +133,7 @@ func player_loaded():
 	var mapData: Dictionary = {
 		"seed": mapSeed,
 		"level": level,
+		"day_night_cycle_enabled": day_night_cycle_enabled,
 	}
 	sendGameData.rpc_id(sender_id, spawnedPlayers, mapData)
 	#print(connectedPlayers)
@@ -143,7 +145,11 @@ func sendGameData(playerData, mapData):
 	spawnedPlayers = playerData
 	mapSeed = mapData["seed"]
 	level 	= mapData["level"]
+	day_night_cycle_enabled = bool(
+		mapData.get("day_night_cycle_enabled", true)
+	)
 	main = get_tree().get_first_node_in_group("world_root")
+	apply_day_night_cycle_setting()
 	loadMap()
 	data_loaded.emit()
 	set_process(true)
@@ -249,3 +255,10 @@ func setMobs(initialSpawnObjects : int , maxObjects : int ,
 
 func setLevel(set_level : Dictionary):
 	self.level = set_level
+
+
+func apply_day_night_cycle_setting() -> void:
+	GameTime.set_cycle_enabled(day_night_cycle_enabled)
+	main = get_tree().get_first_node_in_group("world_root")
+	if is_instance_valid(main) and main.has_method("set_day_night_cycle_enabled"):
+		main.call("set_day_night_cycle_enabled", day_night_cycle_enabled)

@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="GhostStealthPuzzleDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/map/program_puzzles/ghost_stealth_puzzle_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+puzzle_id = &"swamp_ghost_treasure"
+landmark_id = &"ghost_treasure"
+display_name = "Der bewachte Geisterhort"
+instructions = "Beobachte das feste Patrouillenmuster und die lila Sensorfelder. Programmiere einen sicheren Weg zum Schatz. Sieht ein Ghost einen Spieler, bleibt der Schatz verborgen, bis alle den Bereich verlassen haben."
+rewards = {"ghostEssence": 8, "gold": 10, "magicHerb": 6, "spiritPotion": 3}
+discovery_radius_tiles = 12
+ghost_actor_id = &"swampGhost"
+guard_count = 3
+movement_interval_seconds = 0.65
+patrol_waypoints = Array[Vector2i]([Vector2i(-4, -4), Vector2i(4, -4), Vector2i(4, 4), Vector2i(-4, 4)])
+vision_range_tiles = 5
+vision_half_width_tiles = 2
+treasure_offset = Vector2i(0, 0)
+reset_radius_tiles = 11

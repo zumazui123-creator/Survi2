@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="BridgeRepairPuzzleDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/map/program_puzzles/bridge_repair_puzzle_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+puzzle_id = &"broken_bridge_repair"
+landmark_id = &"bridge"
+display_name = "Die zerbrochene Brücke"
+instructions = "Die Brücke ist in der Mitte eingestürzt. Baue auf jede orange markierte Lücke eine Mauer. Die Mauer wird dabei als begehbares Brückensegment eingesetzt."
+rewards = {"gold": 10, "iron": 8, "magicStone": 4, "rareBlueprint": 1}
+discovery_radius_tiles = 10
+required_building_id = &"wall"
+gap_tile_count = 2

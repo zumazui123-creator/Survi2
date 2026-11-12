@@ -17,6 +17,7 @@
 [ext_resource type="Script" uid="uid://c4ai745s7sera" path="res://scenes/main/world_entity_spawner.gd" id="14_spawner"]
 [ext_resource type="Script" path="res://scenes/ui/minimap/map_exploration_tracker.gd" id="15_exploration"]
 [ext_resource type="Script" path="res://scenes/ui/minimap/discovery_banner.gd" id="16_discovery_banner"]
+[ext_resource type="Script" path="res://scenes/main/admin_command_service.gd" id="17_admin_service"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_dr53p"]
 properties/0/path = NodePath("dayNight:time")
@@ -61,6 +62,11 @@ script = ExtResource("4_th5th")
 script = ExtResource("14_spawner")
 pickups_root = NodePath("../Pickups")
 projectiles_root = NodePath("../Projectiles")
+
+[node name="AdminCommandService" type="Node" parent="." node_paths=PackedStringArray("enemies_root", "world_map") groups=["admin_command_service"]]
+script = ExtResource("17_admin_service")
+enemies_root = NodePath("../Enemies")
+world_map = NodePath("../Map")
 
 [node name="NavHelper" type="Node2D" parent="." unique_id=244153116 node_paths=PackedStringArray("tilemap", "map", "players_root")]
 script = ExtResource("10_40gnc")

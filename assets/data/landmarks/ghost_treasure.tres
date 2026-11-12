@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="LandmarkDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/map/landmarks/landmark_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+landmark_id = &"ghost_treasure"
+display_name = "Geisterhort im Sumpf"
+description = "Ein verfluchter Schatz liegt auf einer trockenen Insel im Sumpf. Ghosts ziehen in einem festen Muster um ihn herum."
+danger_description = "Die lila Sensorfelder zeigen den Blick der Ghosts. Bei Sichtkontakt verschwindet der Schatz."
+reward_description = "Geisteressenzen, seltene Tränke, magische Kräuter und Gold"
+size_tiles = Vector2i(13, 13)
+edge_margin_tiles = 8
+spacing_tiles = 8
+placement_attempts = 1800
+category = 1
+minimum_instances = 1
+maximum_instances = 1
+generation_priority = 84
+map_color = Color(0.62, 0.34, 0.82, 1)
+loot = {}
+enemy_spawns = {}
+structure_style = &"ghost_treasure"
+allowed_biomes = Array[StringName]([&"swamp"])
+biome_border_margin_tiles = 2

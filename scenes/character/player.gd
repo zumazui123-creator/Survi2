@@ -28,6 +28,8 @@ var _work_task_text: String = ""
 @export var playerName : String:
 	set(value):
 		playerName = value
+		if status:
+			status.invulnerable = PlayerRolePolicy.is_admin_name(value)
 		if status_view:
 			status_view.set_player_name(value)
 
@@ -45,6 +47,8 @@ func _enter_tree():
 	set_multiplayer_authority(name.to_int())
 
 func _ready():
+	if status:
+		status.invulnerable = is_admin()
 	var line = Line2D.new()
 	line.name = "PathLine"
 	line.default_color = Color(1, 1, 1, 0.3)
@@ -70,6 +74,10 @@ func _ready():
 				
 	if characterFile != "":
 		animation.set_character_sprite(characterFile)
+
+
+func is_admin() -> bool:
+	return PlayerRolePolicy.is_admin_name(playerName)
 
 
 func _on_multidata_received():

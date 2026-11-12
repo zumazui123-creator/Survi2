@@ -344,7 +344,9 @@ func _update_intruders() -> void:
 		if players_root != null:
 			for child: Node in players_root.get_children():
 				var player: CharacterBody2D = child as CharacterBody2D
-				if player != null and is_player_inside(village_id, player):
+				if player != null \
+						and not PlayerRolePolicy.is_admin_player(player) \
+						and is_player_inside(village_id, player):
 					current.append(player)
 		for value: Variant in current:
 			var entering_player: CharacterBody2D = value as CharacterBody2D

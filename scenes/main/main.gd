@@ -4,6 +4,8 @@ extends Node2D
 @export var entity_spawner: WorldEntitySpawner
 
 func _ready() -> void:
+	$dayNight.time_tick.connect(%DayNightCycleUI.set_daytime)
+	set_day_night_cycle_enabled(Multihelper.day_night_cycle_enabled)
 	%Map.generation_started.connect(_clear_dynamic_world)
 	if multiplayer.is_server():
 		print(Multihelper.level)
@@ -12,8 +14,14 @@ func _ready() -> void:
 		object_manager.spawn_initial_breakables()
 		if not Multihelper.host_as_player_enabled:
 			$HUD.queue_free()
-	$dayNight.time_tick.connect(%DayNightCycleUI.set_daytime)
 	#createHUD()
+
+
+func set_day_night_cycle_enabled(enabled: bool) -> void:
+	GameTime.set_cycle_enabled(enabled)
+	var visual_cycle: Node = get_node_or_null("dayNight")
+	if visual_cycle != null and visual_cycle.has_method("set_cycle_enabled"):
+		visual_cycle.call("set_cycle_enabled", enabled)
 
 
 #func createHUD(): # brauche leider den Platz fuer den Code editor

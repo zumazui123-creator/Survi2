@@ -164,7 +164,8 @@ func enemyPlayerKilled():
 	increaseScore.rpc(Constants.PK_SCORE_GAIN)
 
 func getDamage(causer: Node, amount: float, _damage_type: StringName) -> void:
-	if amount <= 0.0 or stats.hp <= 0.0:
+	if PlayerRolePolicy.is_admin_player(player) \
+			or amount <= 0.0 or stats.hp <= 0.0:
 		return
 
 	var attacker_combat: PlayerCombat = _resolve_attacking_combat(causer)

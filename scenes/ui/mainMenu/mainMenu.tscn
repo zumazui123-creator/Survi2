@@ -222,6 +222,20 @@ text = "Host as Player"
 layout_mode = 2
 button_pressed = true
 
+[node name="DayNightCycleContainer" type="HBoxContainer" parent="HBoxContainer2/PanelContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="Label" type="Label" parent="HBoxContainer2/PanelContainer/VBoxContainer/HBoxContainer2/DayNightCycleContainer"]
+layout_mode = 2
+text = "Tag-/Nacht-Zyklus"
+
+[node name="DayNightCycleBtn" type="CheckButton" parent="HBoxContainer2/PanelContainer/VBoxContainer/HBoxContainer2/DayNightCycleContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Ausschalten, um dauerhaft bei Tageslicht zu spielen."
+button_pressed = true
+
 [node name="CodePlayerContainer" type="HBoxContainer" parent="HBoxContainer2/PanelContainer/VBoxContainer/HBoxContainer2" unique_id=898297727]
 visible = false
 layout_mode = 2
@@ -242,4 +256,5 @@ button_pressed = true
 [connection signal="pressed" from="HBoxContainer2/PanelContainer/VBoxContainer/StartBtn" to="." method="_on_start_btn_pressed"]
 [connection signal="pressed" from="HBoxContainer2/PanelContainer/VBoxContainer/HBoxContainer/JoinBtn" to="." method="_on_join_btn_pressed"]
 [connection signal="toggled" from="HBoxContainer2/PanelContainer/VBoxContainer/HBoxContainer2/HostWithPlayerContainer/HostAsPlayerBtn" to="." method="_on_host_as_player_btn_toggled"]
+[connection signal="toggled" from="HBoxContainer2/PanelContainer/VBoxContainer/HBoxContainer2/DayNightCycleContainer/DayNightCycleBtn" to="." method="_on_day_night_cycle_btn_toggled"]
 [connection signal="toggled" from="HBoxContainer2/PanelContainer/VBoxContainer/HBoxContainer2/CodePlayerContainer/CodePlayerBtn" to="." method="_on_code_player_btn_toggled"]

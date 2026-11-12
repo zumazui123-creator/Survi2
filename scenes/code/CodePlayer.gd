@@ -439,8 +439,52 @@ func execute_command(command: CodeParser.ParsedCommand, execution_id: int) -> vo
 			)
 	elif action == Strings.ACTION_SAY:
 		say(command.arguments)
+	elif action == Strings.ACTION_ADMIN_CREATE_ENEMY:
+		admin_create_enemy(command.arguments, command.source_line)
+	elif action == Strings.ACTION_ADMIN_SEND_ENEMY:
+		admin_send_enemy(command.arguments, command.source_line)
 	else:
 		_report_error("Unbekannter Befehl: " + action, command.source_line)
+
+
+func admin_create_enemy(arguments: PackedStringArray, source_line: int) -> void:
+	var admin_player: Survi2Player = player as Survi2Player
+	if not PlayerRolePolicy.is_admin_player(admin_player):
+		_report_error("Dieser Befehl ist nur für den Spieler 'Admin' erlaubt.", source_line)
+		return
+	var service: AdminCommandService = get_tree().get_first_node_in_group(
+		"admin_command_service"
+	) as AdminCommandService
+	if service == null:
+		_report_error("Der AdminCommandService ist nicht verfügbar.", source_line)
+		return
+	var actor_id: StringName = &"zombie"
+	if not arguments.is_empty():
+		actor_id = StringName(arguments[0].to_lower())
+	if not service.request_create_enemy(admin_player, actor_id):
+		_report_error(
+			"Der Gegner konnte nicht erstellt werden. Erlaubt sind zombie und spider.",
+			source_line
+		)
+
+
+func admin_send_enemy(arguments: PackedStringArray, source_line: int) -> void:
+	var admin_player: Survi2Player = player as Survi2Player
+	if not PlayerRolePolicy.is_admin_player(admin_player):
+		_report_error("Dieser Befehl ist nur für den Spieler 'Admin' erlaubt.", source_line)
+		return
+	var service: AdminCommandService = get_tree().get_first_node_in_group(
+		"admin_command_service"
+	) as AdminCommandService
+	if service == null:
+		_report_error("Der AdminCommandService ist nicht verfügbar.", source_line)
+		return
+	var target_player_name: String = " ".join(arguments).strip_edges()
+	if not service.request_send_last_enemy(admin_player, target_player_name):
+		_report_error(
+			"Der Gegner konnte nicht an diesen Spieler gesendet werden.",
+			source_line
+		)
 
 
 func build(action: String, arguments: PackedStringArray, source_line: int) -> void:

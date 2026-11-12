@@ -1307,6 +1307,16 @@ func _validate_and_normalize_arguments(
 	if action == Strings.ACTION_SAY:
 		return ""
 
+	if action == Strings.ACTION_ADMIN_CREATE_ENEMY:
+		if arguments.size() > 1:
+			return "Beispiel: erstelle gegner zombie"
+		return ""
+
+	if action == Strings.ACTION_ADMIN_SEND_ENEMY:
+		if arguments.is_empty():
+			return "Der Befehl benötigt einen Spielernamen. Beispiel: sende gegner zu Max"
+		return ""
+
 	return "Unbekannte Aktion: %s" % action
 
 

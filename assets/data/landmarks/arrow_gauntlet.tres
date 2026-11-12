@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="LandmarkDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/map/landmarks/landmark_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+landmark_id = &"arrow_gauntlet"
+display_name = "Pfeilpfad des Waldes"
+description = "Ein schmaler Waldpfad führt zwischen versteckten Pfeilwerfern zu einem Schatz."
+danger_description = "Pfeile fliegen abwechselnd von links und rechts ueber den Pfad."
+reward_description = "Gold, magicWood, forestCore und ein seltener Bauplan"
+size_tiles = Vector2i(9, 19)
+edge_margin_tiles = 10
+spacing_tiles = 10
+placement_attempts = 1200
+category = 1
+minimum_instances = 1
+maximum_instances = 1
+generation_priority = 86
+map_color = Color(0.72, 0.48, 0.12, 1)
+structure_style = &"arrow_gauntlet"
+path_destination_offset = Vector2i(0, 9)
+allowed_biomes = Array[StringName]([&"forest"])
+biome_border_margin_tiles = 2

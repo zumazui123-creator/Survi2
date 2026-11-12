@@ -72,6 +72,7 @@ signal died()
 		food_changed.emit(food)
 
 var terminated: bool = false
+var invulnerable: bool = false
 var _mana_regeneration_elapsed: float = 0.0
 
 
@@ -128,7 +129,7 @@ func _apply_level_up() -> void:
 
 
 func apply_damage(amount: float) -> void:
-	if amount > 0.0:
+	if amount > 0.0 and not invulnerable:
 		hp -= amount
 
 

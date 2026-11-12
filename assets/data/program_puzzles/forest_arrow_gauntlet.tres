@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="ArrowGauntletPuzzleDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/map/program_puzzles/arrow_gauntlet_puzzle_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+puzzle_id = &"forest_arrow_gauntlet"
+landmark_id = &"arrow_gauntlet"
+display_name = "Pfeilpfad des Waldes"
+instructions = "Ein Pfad führt nach oben zum Schatz. Pfeile werden von beiden Seiten abgeschossen. Baue links und rechts Mauern als Deckung und rücke Schritt für Schritt vor."
+rewards = {"forestCore": 2, "gold": 12, "magicWood": 7, "rareBlueprint": 1}
+discovery_radius_tiles = 11
+start_offset = Vector2i(0, 7)
+treasure_offset = Vector2i(0, -7)
+hazard_row_offsets = PackedInt32Array(-5, -3, -1, 1, 3, 5)
+barrier_x_offset = 3
+barrier_half_height = 8
+emitter_x_offset = 2
+volley_interval_seconds = 1.25
+arrow_speed = 430.0
+arrow_damage = 10.0
+arrow_building_damage = 4.0
+arrow_lifetime_seconds = 1.2
+activation_radius_tiles = 11

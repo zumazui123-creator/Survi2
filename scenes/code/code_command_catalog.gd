@@ -52,6 +52,12 @@ static func get_examples(locale: String = "de") -> Array[Dictionary]:
 			"description": "Bewegt sich zwischen zwei Baupositionen und errichtet zwei Mauern.",
 		},
 		{
+			"name": "Admin: Gegner senden",
+			"code": "erstelle gegner zombie\nsende gegner zu Spielername",
+			"description": "Erstellt einen Zombie und schickt ihn zum angegebenen Spieler. Nur für den Spieler Admin.",
+			"admin_only": true,
+		},
+		{
 			"name": "Baurezept: Lagerfeuer",
 			"code": "baue mauer links\ndroppe item 1 links # torch\nsage Lagerfeuer gebaut",
 			"description": "Baut links eine Mauer und legt eine Fackel aus Slot 1 auf dasselbe Tile. Daraus entsteht automatisch ein Lagerfeuer.",
@@ -345,6 +351,26 @@ static func _get_german_entries() -> Array[Dictionary]:
 		_entry("male", "male grass rechts", "Ändert ein angrenzendes Terrain-Tile.", ["male"]),
 		_entry("combo", "combo links attacke rechts attacke", "Führt eine bekannte Combo aus und verbraucht Mana.", ["combo"]),
 		_entry(
+			"erstelle gegner",
+			"erstelle gegner zombie",
+			"Erstellt als Admin einen Zombie oder eine Spinne in der Nähe.",
+			["erstelle", "gegner", "zombie", "spider"],
+			"admin",
+			true,
+			"Admin: Gegner erstellen",
+			true
+		),
+		_entry(
+			"sende gegner zu",
+			"sende gegner zu Spielername",
+			"Schickt den zuletzt erstellten Admin-Gegner zu einem Spieler.",
+			["sende", "gegner", "zu"],
+			"admin",
+			true,
+			"Admin: Gegner senden",
+			true
+		),
+		_entry(
 			"variable =",
 			"schritte = 3",
 			"Speichert eine Zahl, einen Text, eine andere Variable oder einen berechneten Wert.",
@@ -497,6 +523,26 @@ static func _get_english_entries() -> Array[Dictionary]:
 		_entry("build", "build wall left", "Builds on a free adjacent tile.", ["build"]),
 		_entry("combo", "combo left attack right attack", "Executes a known mana combo.", ["combo"]),
 		_entry(
+			"create enemy",
+			"create enemy zombie",
+			"Creates a zombie or spider near the Admin player.",
+			["create", "enemy", "zombie", "spider"],
+			"admin",
+			true,
+			"Admin: Create enemy",
+			true
+		),
+		_entry(
+			"send enemy to",
+			"send enemy to PlayerName",
+			"Sends the most recently created Admin enemy to a player.",
+			["send", "enemy", "to"],
+			"admin",
+			true,
+			"Admin: Send enemy",
+			true
+		),
+		_entry(
 			"repeat",
 			"repeat 3 times\n    \nend",
 			"Repeats a finite block.",
@@ -543,7 +589,8 @@ static func _entry(
 		keywords: Array[String],
 		group: String = "movement",
 		show_in_functions: bool = false,
-		function_label: String = ""
+		function_label: String = "",
+		admin_only: bool = false
 	) -> Dictionary:
 	return {
 		"trigger": trigger,
@@ -553,4 +600,5 @@ static func _entry(
 		"group": group,
 		"show_in_functions": show_in_functions,
 		"function_label": function_label,
+		"admin_only": admin_only,
 	}

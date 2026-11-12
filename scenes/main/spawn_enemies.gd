@@ -22,7 +22,16 @@ func trySpawnEnemies():
 		return
 	print("SpawnEnemies at hour: "+str( GameTime.get_hour()) )	
 	var players = Multihelper.spawnedPlayers.keys()
+	var players_root: Node = Multihelper.getPlayers()
 	for player in players:
+		var player_node: Survi2Player
+		if is_instance_valid(players_root):
+			player_node = players_root.get_node_or_null(str(player)) as Survi2Player
+		var registered_info: Dictionary = Multihelper.spawnedPlayers.get(player, {})
+		var registered_name: String = String(registered_info.get("name", ""))
+		if PlayerRolePolicy.is_admin_name(registered_name) \
+				or PlayerRolePolicy.is_admin_player(player_node):
+			continue
 		var playerEnemies := getPlayerEnemyCount(player)
 		if playerEnemies < maxEnemiesPerPlayer:
 			var toSpawn = min(maxEnemiesPerPlayer - playerEnemies, enemyWaveCount)

@@ -6,6 +6,7 @@ extends Control
 @onready var ipInputLine = %IpInputLine
 @onready var hostAsPlayerBtn = $HBoxContainer2/PanelContainer/VBoxContainer/HBoxContainer2/HostWithPlayerContainer/HostAsPlayerBtn
 @onready var codePlayerBtn = $HBoxContainer2/PanelContainer/VBoxContainer/HBoxContainer2/CodePlayerContainer/CodePlayerBtn
+@onready var day_night_cycle_btn: CheckButton = %DayNightCycleBtn
 
 var selcted_level : Dictionary = {}
 
@@ -13,6 +14,9 @@ func _ready():
 	selcted_level = Levels.LabyrinthLevels.get(0)
 	Multihelper.host_as_player_enabled = hostAsPlayerBtn.button_pressed
 	Multihelper.code_player_enabled = codePlayerBtn.button_pressed
+	day_night_cycle_btn.set_pressed_no_signal(
+		Multihelper.day_night_cycle_enabled
+	)
 	if OS.has_feature("dedicated_server"):
 		Multihelper.create_game()
 		
@@ -57,3 +61,7 @@ func _on_code_player_btn_toggled(toggled_on: bool) -> void:
 
 func _on_host_as_player_btn_toggled(toggled_on: bool) -> void:
 	Multihelper.host_as_player_enabled = toggled_on
+
+
+func _on_day_night_cycle_btn_toggled(toggled_on: bool) -> void:
+	Multihelper.day_night_cycle_enabled = toggled_on

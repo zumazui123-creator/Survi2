@@ -78,6 +78,7 @@ func bind_components(
 		)
 		interactive_input.command_rejected.connect(_on_interactive_command_rejected)
 		interactive_mode_button.set_pressed_no_signal(interactive_input.enabled)
+	_refresh_examples()
 	_refresh_function_lists()
 	_set_execution_buttons(is_instance_valid(code_player) and code_player.is_running)
 	_update_editor_editability()
@@ -237,6 +238,8 @@ func _refresh_function_lists() -> void:
 	item_list.clear()
 	function_list.clear()
 	for entry: Dictionary in CodeCommandCatalog.get_function_templates(Strings.current_locale):
+		if bool(entry.get("admin_only", false)) and not _is_admin_player():
+			continue
 		_add_list_item(
 			String(entry.get("function_label", entry.get("trigger", "Vorlage"))),
 			String(entry.get("insert_text", "")),
@@ -273,6 +276,8 @@ func _add_list_item(label: String, insert_text: String, description: String) -> 
 func _refresh_examples() -> void:
 	example_selector.clear()
 	for example: Dictionary in CodeCommandCatalog.get_examples(Strings.current_locale):
+		if bool(example.get("admin_only", false)) and not _is_admin_player():
+			continue
 		var option_index: int = example_selector.item_count
 		example_selector.add_item(String(example.get("name", "Beispiel")))
 		example_selector.set_item_metadata(option_index, String(example.get("code", "")))
@@ -280,6 +285,11 @@ func _refresh_examples() -> void:
 			option_index,
 			String(example.get("description", "Vollständiges Beispielprogramm"))
 		)
+
+
+func _is_admin_player() -> bool:
+	return is_instance_valid(code_player) \
+		and PlayerRolePolicy.is_admin_player(code_player.player)
 
 
 func _insert_text(text: String) -> void:

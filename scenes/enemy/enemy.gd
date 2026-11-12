@@ -1,6 +1,8 @@
 extends Creature
 class_name Enemy
 
+const ADMIN_WAITING_FOR_TARGET_META: StringName = &"admin_waiting_for_target"
+
 enum AIState { IDLE, CHASE, ATTACK, BLOCKED, DEAD }
 
 @export var ai_state: AIState = AIState.IDLE
@@ -14,6 +16,8 @@ func _physics_process(delta: float) -> void:
 		velocity = Vector2.ZERO
 		return
 	_update_target()
+	if PlayerRolePolicy.is_admin_player(target_player):
+		target_player = null
 	if not is_instance_valid(target_player):
 		velocity = Vector2.ZERO
 		ai_state = AIState.IDLE
@@ -53,12 +57,15 @@ func move_towards_position(next_position: Vector2) -> void:
 ## Extension point for enemies with conditional hostility, such as village
 ## residents. Normal enemies keep targeting the nearest available player.
 func _update_target() -> void:
+	if bool(get_meta(ADMIN_WAITING_FOR_TARGET_META, false)):
+		target_player = null
+		return
 	if not is_instance_valid(target_player):
 		resolve_target_player(true)
 
 
 func _should_despawn_while_idle() -> bool:
-	return true
+	return not bool(get_meta(ADMIN_WAITING_FOR_TARGET_META, false))
 
 func _before_death() -> void:
 	ai_state = AIState.DEAD

@@ -18,6 +18,8 @@ const ACTION_BUILD      = "build"
 const ACTION_PAINT      = "paint"
 const ACTION_USE_ITEM   = "useItem"
 const ACTION_DROP_ITEM  = "dropItem"
+const ACTION_ADMIN_CREATE_ENEMY = "adminCreateEnemy"
+const ACTION_ADMIN_SEND_ENEMY = "adminSendEnemy"
 
 const direction_map = {
 	Strings.ACTION_WALK_LEFT: Vector2i.LEFT,
@@ -40,6 +42,8 @@ const ACTION_NAMES = {
 		"droppe item" : ACTION_DROP_ITEM,
 		"baue":   ACTION_BUILD,
 		"male":   ACTION_PAINT,
+		"erstelle gegner": ACTION_ADMIN_CREATE_ENEMY,
+		"sende gegner zu": ACTION_ADMIN_SEND_ENEMY,
 	},
 	"en": {
 		"left":   ACTION_WALK_LEFT,
@@ -54,6 +58,8 @@ const ACTION_NAMES = {
 		"drop item" : ACTION_DROP_ITEM,
 		"build":  ACTION_BUILD,
 		"paint":  ACTION_PAINT,
+		"create enemy": ACTION_ADMIN_CREATE_ENEMY,
+		"send enemy to": ACTION_ADMIN_SEND_ENEMY,
 	}
 }
 

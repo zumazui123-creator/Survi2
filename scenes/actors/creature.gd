@@ -43,6 +43,9 @@ func _ready() -> void:
 func tryAttack() -> void:
 	if not _is_server() or _is_dead or not is_instance_valid(target_player):
 		return
+	if PlayerRolePolicy.is_admin_player(target_player):
+		target_player = null
+		return
 	var attack_cooldown := get_node_or_null("AttackCooldown") as Timer
 	if attack_cooldown == null or not attack_cooldown.is_stopped():
 		return
@@ -116,6 +119,14 @@ func resolve_target_player(allow_nearest := false) -> CharacterBody2D:
 	return target_player
 
 
+func assign_target_player(value: Survi2Player) -> bool:
+	if not is_instance_valid(value) or PlayerRolePolicy.is_admin_player(value):
+		return false
+	target_player = value
+	targetPlayerId = value.get_multiplayer_authority()
+	return true
+
+
 func _apply_actor_definition(id: StringName) -> void:
 	var definition := Items.actor_definitions.get(String(id)) as ActorDefinition
 	if definition == null:
@@ -155,6 +166,8 @@ func _resolve_target_player(allow_nearest := false) -> void:
 		target_player = null
 		return
 	target_player = players_root.get_node_or_null(str(targetPlayerId)) as CharacterBody2D
+	if PlayerRolePolicy.is_admin_player(target_player):
+		target_player = null
 	if is_instance_valid(target_player) or not allow_nearest:
 		return
 
@@ -163,6 +176,8 @@ func _resolve_target_player(allow_nearest := false) -> void:
 		if not candidate is CharacterBody2D:
 			continue
 		var candidate_player := candidate as CharacterBody2D
+		if PlayerRolePolicy.is_admin_player(candidate_player):
+			continue
 		var candidate_distance := global_position.distance_squared_to(candidate_player.global_position)
 		if candidate_distance < nearest_distance:
 			nearest_distance = candidate_distance
