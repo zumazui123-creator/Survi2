@@ -346,7 +346,7 @@ static func _get_german_entries() -> Array[Dictionary]:
 		_entry("trinke", "trinke", "Trinkt, wenn die Hände ein Wasser-Tile berühren.", ["trinke"]),
 		_entry("sage", "sage Hallo", "Lässt die Figur den folgenden Text sagen.", ["sage"]),
 		_entry("nutze", "nutze item 1", "Benutzt den angegebenen Inventar-Slot.", ["nutze", "item"]),
-		_entry("droppe", "droppe item 1 links", "Legt ein Item aus dem angegebenen Inventar-Slot bevorzugt in der gewählten Richtung ab. Die Richtung ist optional.", ["droppe", "item"]),
+		_entry("droppe", "droppe item eisen links", "Legt ein Item über seine Slotnummer, interne ID oder seinen deutschen Namen ab. Die Richtung ist optional.", ["droppe", "item", "eisen", "fackel", "kohle"]),
 		_entry("baue", "baue mauer links", "Baut eine Mauer auf einem freien Nachbar-Tile.", ["baue"]),
 		_entry("male", "male grass rechts", "Ändert ein angrenzendes Terrain-Tile.", ["male"]),
 		_entry("combo", "combo links attacke rechts attacke", "Führt eine bekannte Combo aus und verbraucht Mana.", ["combo"]),
@@ -539,7 +539,7 @@ static func _get_english_entries() -> Array[Dictionary]:
 		_entry("drink", "drink", "Drinks when the hands touch water.", ["drink"]),
 		_entry("speak", "speak Hello", "Makes the player say the following text.", ["speak"]),
 		_entry("use item", "use item 1", "Uses an inventory slot.", ["use", "item"]),
-		_entry("drop item", "drop item 1 left", "Drops one item from an inventory slot, preferably in the optional direction.", ["drop", "item"]),
+		_entry("drop item", "drop item iron left", "Drops one item by slot number or item ID, preferably in the optional direction.", ["drop", "item", "iron", "torch", "coal"]),
 		_entry("build", "build wall left", "Builds on a free adjacent tile.", ["build"]),
 		_entry("combo", "combo left attack right attack", "Executes a known mana combo.", ["combo"]),
 		_entry(

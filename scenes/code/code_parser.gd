@@ -1289,10 +1289,16 @@ func _validate_and_normalize_arguments(
 		return ""
 
 	if action == Strings.ACTION_DROP_ITEM:
-		if arguments.size() < 1 or arguments.size() > 2 or not arguments[0].is_valid_int():
-			return "Der Drop-Befehl benötigt einen Item-Index und optional eine Richtung."
-		if arguments[0].to_int() < 1:
-			return "Der Item-Index muss bei 1 beginnen."
+		if arguments.size() < 1 or arguments.size() > 2:
+			return "Der Drop-Befehl benötigt einen Item-Slot oder Itemnamen und optional eine Richtung."
+		if arguments[0].is_valid_int():
+			if arguments[0].to_int() < 1:
+				return "Der Item-Index muss bei 1 beginnen."
+		else:
+			var drop_item_id: String = Items.resolve_item_id(arguments[0], locale)
+			if drop_item_id.is_empty():
+				return "Unbekanntes Item: %s" % arguments[0]
+			arguments[0] = drop_item_id
 		if arguments.size() == 2:
 			var drop_localized_actions: Dictionary = Strings.ACTION_NAMES.get(locale, {})
 			var drop_direction_name: String = arguments[1].to_lower()

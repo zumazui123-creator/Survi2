@@ -434,7 +434,7 @@ func execute_command(command: CodeParser.ParsedCommand, execution_id: int) -> vo
 	elif action == Strings.ACTION_DROP_ITEM:
 		if not player.items.drop_item(command.arguments):
 			_report_error(
-				"Das Item konnte nicht gedroppt werden. Prüfe Slot und freie Nachbar-Tiles.",
+				"Das Item konnte nicht gedroppt werden. Prüfe Slot oder Itemname und freie Nachbar-Tiles.",
 				command.source_line
 			)
 	elif action == Strings.ACTION_SAY:

@@ -92,12 +92,18 @@ func use_item(arguments: PackedStringArray) -> bool:
 
 
 func drop_item(arguments: PackedStringArray) -> bool:
-	if arguments.size() < 1 or arguments.size() > 2 or not arguments[0].is_valid_int():
+	if arguments.size() < 1 or arguments.size() > 2:
 		return false
-	var slot_number: int = arguments[0].to_int()
 	var player_id: String = str(player.name)
-	var item_id: String = Inventory.get_item_id_at_slot(player_id, slot_number)
+	var item_id: String = ""
+	if arguments[0].is_valid_int():
+		var slot_number: int = arguments[0].to_int()
+		item_id = Inventory.get_item_id_at_slot(player_id, slot_number)
+	else:
+		item_id = Items.resolve_item_id(arguments[0], Strings.current_locale)
 	if item_id.is_empty():
+		return false
+	if not Inventory.checkHasItemAmount(player_id, item_id, 1):
 		return false
 
 	var preferred_direction: Vector2i = _get_facing_tile_direction()

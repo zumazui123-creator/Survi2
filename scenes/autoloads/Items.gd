@@ -224,6 +224,18 @@ func get_item_icon(item_id: String) -> Texture2D:
 	return definition.icon if definition else null
 
 
+func resolve_item_id(value: String, locale: String = "") -> String:
+	var localized_id: String = Strings.translate_item_name(locale, value)
+	if not localized_id.is_empty() and item_definitions.has(localized_id):
+		return localized_id
+	var normalized_value: String = value.strip_edges()
+	for item_id_value: Variant in item_definitions.keys():
+		var item_id: String = String(item_id_value)
+		if item_id.nocasecmp_to(normalized_value) == 0:
+			return item_id
+	return ""
+
+
 func get_item_recipe(item_id: String) -> Dictionary:
 	var definition: ItemDefinition = item_definitions.get(item_id) as ItemDefinition
 	if definition != null and not definition.recipe.is_empty():

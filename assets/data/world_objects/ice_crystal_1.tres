@@ -9,4 +9,4 @@ object_id = &"iceCrystal1"
 texture = ExtResource("2_texture")
 max_hp = 125.0
 required_tool = &"pickaxe"
-drops = {"iceCrystal": {"min": 1, "max": 2}}
+drops = {"iceCrystal": {"min": 2, "max": 4}}

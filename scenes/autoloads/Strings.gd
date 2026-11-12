@@ -82,6 +82,57 @@ const BUILDING_NAMES = {
 }
 
 
+# Localized, single-word aliases used by code commands. Canonical item IDs
+# remain valid in every language and are resolved by Items.resolve_item_id().
+const ITEM_NAMES = {
+	"de": {
+		"holz": "wood",
+		"stein": "stone",
+		"eisen": "iron",
+		"kohle": "coal",
+		"harz": "sap",
+		"magischesholz": "magicWood",
+		"magischerstein": "magicStone",
+		"magischesgras": "magicHerb",
+		"kristallscherbe": "crystalShard",
+		"nahrung": "food",
+		"gekochtenahrung": "cookedFood",
+		"beeren": "berries",
+		"wasser": "water",
+		"energydrink": "energy_drink",
+		"fackel": "torch",
+		"schwert1": "sword1",
+		"axt1": "axe1",
+		"spitzhacke1": "pickaxe1",
+		"speer1": "spear1",
+		"dolch1": "dagger1",
+		"axt2": "axe2",
+		"spitzhacke2": "pickaxe2",
+		"magischesschwert1": "magicSword1",
+		"magischeaxt1": "magicAxe1",
+		"magischerdolch1": "magicDagger1",
+		"magischerspeer1": "magicSpear1",
+		"golemkern": "golemCore",
+		"waldkern": "forestCore",
+		"waldeintopf": "forestStew",
+		"eiskristall": "iceCrystal",
+		"frostschwert1": "frostSword1",
+		"altetechnik": "ancientTech",
+		"gold": "gold",
+		"schatzkarte": "treasureMap",
+		"magischesartefakt": "magicArtifact",
+		"seltenerbauplan": "rareBlueprint",
+		"geisteressenz": "ghostEssence",
+		"schmuggelware": "contraband",
+		"trankrezept": "potionRecipe",
+		"alteswerkzeug": "ancientTool",
+		"legendäreseis": "legendaryIce",
+		"geistertrank": "spiritPotion",
+	},
+	"en": {},
+}
+
+
 # --- Code Keywords ---
 const KEYWORD_FUNC = "func"
 const KEYWORD_END = "ende"
@@ -109,7 +160,7 @@ const KEYWORD_COMBO_CROSS_EXPLOSION = "combo oben attacke unten attacke links at
 const KEYWORD_COMBO_WHIRLWIND = "combo links attacke rechts attacke oben attacke unten attacke"
 const KEYWORD_COMBO = KEYWORD_COMBO_SOUND_WAVE
 const KEYWORD_USE_ITEM = "nutze item 3"
-const KEYWORD_DROP_ITEM = "droppe item 3 links"
+const KEYWORD_DROP_ITEM = "droppe item eisen links"
 
 const CONDITION_ENEMY: StringName = &"enemy"
 const CONDITION_ANIMAL: StringName = &"animal"
@@ -269,6 +320,12 @@ func translate_player_stat_name(lang: String, value: String) -> StringName:
 	if not stat_names.has(normalized_value):
 		return &""
 	return StringName(stat_names[normalized_value])
+
+
+func translate_item_name(lang: String, value: String) -> String:
+	var localized_names: Dictionary = ITEM_NAMES.get(lang, {})
+	var normalized_value: String = value.strip_edges().to_lower()
+	return String(localized_names.get(normalized_value, ""))
 
 	# var code_cmd = sperated_line
 	# var parameter = "" inp_action.trim_prefix(Strings.ACTION_USE_ITEM).strip_edges()Z

@@ -9,4 +9,4 @@ object_id = &"magicRock1"
 texture = ExtResource("2_texture")
 max_hp = 110.0
 required_tool = &"pickaxe"
-drops = {"magicStone": {"min": 1,"max": 2}}
+drops = {"magicStone": {"min": 2,"max": 4}}

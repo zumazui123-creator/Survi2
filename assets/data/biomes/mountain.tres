@@ -9,6 +9,6 @@ map_color = Color(0.5, 0.38, 0.25, 1)
 ground_atlas_coords = Array[Vector2i]([Vector2i(4, 0), Vector2i(5, 0)])
 path_atlas_coords = Array[Vector2i]([Vector2i(12, 0), Vector2i(13, 0)])
 tree_density = 0.02
-resource_object_weights = {"rock1": 5.0, "rock2": 4.0, "rock3": 3.0, "ore1": 1.4, "magicRock1": 0.25}
+resource_object_weights = {"rock1": 5.0, "rock2": 4.0, "rock3": 3.0, "ore1": 1.4, "magicRock1": 0.55}
 movement_speed_multiplier = 0.9
 hazard_description = "Steile Wege verlangsamen die Bewegung."
