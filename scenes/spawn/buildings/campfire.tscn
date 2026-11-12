@@ -179,7 +179,7 @@ script = ExtResource("2_navigation")
 
 [node name="BurnTimeComponent" type="Node" parent="."]
 script = ExtResource("3_burn_timer")
-burn_duration_seconds = 180.0
+burn_duration_seconds = 1800.0
 
 [node name="Timer" type="Timer" parent="BurnTimeComponent"]
 one_shot = true

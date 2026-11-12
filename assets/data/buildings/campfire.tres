@@ -7,7 +7,7 @@
 script = ExtResource("1_definition")
 building_id = &"campfire"
 display_name = "Lagerfeuer"
-description = "Ein mit Steinen umgebenes Feuer, das ein Tile blockiert und nach drei Minuten erlischt."
+description = "Ein mit Steinen umgebenes Feuer, das ein Tile blockiert und nach dreißig Minuten erlischt."
 scene = ExtResource("2_scene")
 max_hp = 90.0
 required_tool = &"pickaxe"
