@@ -148,6 +148,7 @@ func increaseScore(by):
 	# Stats werden jetzt über den Status erhöht
 	stats.max_hp += by * 5
 	stats.hp += by * 5
+	stats.synchronize_health_state()
 	stats.attack_damage += by
 	stats.gain_exp(10*by)
 	Multihelper.spawnedPlayers[int(str(player.name))]["score"] += by

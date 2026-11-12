@@ -53,8 +53,8 @@ static func get_examples(locale: String = "de") -> Array[Dictionary]:
 		},
 		{
 			"name": "Admin: Gegner senden",
-			"code": "erstelle gegner zombie\nsende gegner zu Spielername",
-			"description": "Erstellt einen Zombie und schickt ihn zum angegebenen Spieler. Nur für den Spieler Admin.",
+			"code": "unsichtbar an\nteleportiere zu Spielername\nerstelle gegner zombie\nsende gegner zu Spielername\nunsichtbar aus",
+			"description": "Teleportiert den unsichtbaren Admin zu einem Spieler und schickt einen Zombie los. Nur für den Spieler Admin.",
 			"admin_only": true,
 		},
 		{
@@ -371,6 +371,26 @@ static func _get_german_entries() -> Array[Dictionary]:
 			true
 		),
 		_entry(
+			"unsichtbar",
+			"unsichtbar an",
+			"Schaltet die Unsichtbarkeit des Admins um oder gezielt an beziehungsweise aus.",
+			["unsichtbar", "an", "aus"],
+			"admin",
+			true,
+			"Admin: Unsichtbarkeit",
+			true
+		),
+		_entry(
+			"teleportiere zu",
+			"teleportiere zu Spielername",
+			"Teleportiert den Admin auf ein freies Tile neben dem angegebenen Spieler.",
+			["teleportiere", "zu"],
+			"admin",
+			true,
+			"Admin: Teleportieren",
+			true
+		),
+		_entry(
 			"variable =",
 			"schritte = 3",
 			"Speichert eine Zahl, einen Text, eine andere Variable oder einen berechneten Wert.",
@@ -540,6 +560,26 @@ static func _get_english_entries() -> Array[Dictionary]:
 			"admin",
 			true,
 			"Admin: Send enemy",
+			true
+		),
+		_entry(
+			"invisible",
+			"invisible on",
+			"Toggles Admin invisibility or explicitly turns it on or off.",
+			["invisible", "on", "off"],
+			"admin",
+			true,
+			"Admin: Invisibility",
+			true
+		),
+		_entry(
+			"teleport to",
+			"teleport to PlayerName",
+			"Teleports the Admin to a free tile next to the named player.",
+			["teleport", "to"],
+			"admin",
+			true,
+			"Admin: Teleport",
 			true
 		),
 		_entry(

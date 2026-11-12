@@ -126,13 +126,34 @@ func _apply_level_up() -> void:
 	max_hp += 20.0
 	hp = max_hp
 	leveled_up.emit(level)
+	synchronize_health_state()
 
 
 func apply_damage(amount: float) -> void:
 	if amount > 0.0 and not invulnerable:
 		hp -= amount
+		synchronize_health_state()
 
 
 func heal(amount: float) -> void:
 	if amount > 0.0:
 		hp += amount
+		synchronize_health_state()
+
+
+## Health is server-authoritative while player movement remains client-owned.
+## This dedicated RPC avoids coupling HP replication to the client-authoritative
+## movement synchronizer and reuses the property setters so every client emits
+## `hp_changed` for its local health bar.
+func synchronize_health_state() -> void:
+	if not is_inside_tree() or not multiplayer.is_server():
+		return
+	_receive_health_state.rpc(hp, max_hp)
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func _receive_health_state(current_hp: float, maximum_hp: float) -> void:
+	if multiplayer.get_remote_sender_id() != 1:
+		return
+	max_hp = maximum_hp
+	hp = current_hp
